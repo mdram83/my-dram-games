@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  #php
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mydramgames-app
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./application:/var/www
+
+  #webserver
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: mydramgames-nginx
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ./application:/var/www
+      - ./.nginx/fastcgi_params:/etc/nginx/fastcgi_params
+      - ./.nginx/conf.d:/etc/nginx/conf.d
+
+  #database
+  db:
+    image: mysql:latest
+    container_name: mydramgames-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
