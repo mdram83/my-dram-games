@@ -11,6 +11,7 @@ services:
     restart: always
     ports:
       - "5173:5173"
+      - "6001:6001"
     working_dir: /var/www
     volumes:
       - ./application:/var/www
