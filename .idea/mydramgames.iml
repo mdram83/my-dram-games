@@ -121,6 +121,24 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/psr7" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/guzzlehttp/promises" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/graham-campbell/result-type" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/cboden/ratchet" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/pusher/pusher-php-server" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/ratchet/rfc6455" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/dns" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/http" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/stream" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/event-loop" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/socket" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/promise" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/beyondcode/laravel-websockets" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/fig/http-message-util" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/facade/ignition-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/evenement/evenement" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/psr-http-message-bridge" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/ringcentral/psr7" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
