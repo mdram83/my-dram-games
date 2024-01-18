@@ -4,7 +4,7 @@
             <div class="col-lg-2">
                 <div class="header__logo">
                     <a href="/">
-                        <img src="img/logo.png" alt="">
+                        <img src="{{ asset('img/logo.png') }}" alt="">
                     </a>
                 </div>
             </div>
@@ -32,7 +32,18 @@
             <div class="col-lg-2">
                 <div class="header__right">
                     <a href="#" class="search-switch"><span class="icon_search"></span></a>
-                    <a href="{{ route('login') }}"><span class="icon_profile"></span></a>
+
+                    @auth
+                        <a class="fs1 text-white" href="{{ route('logout') }}" aria-hidden="true" data-icon="&#x51;"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"></a>
+                        <form id="logout-form" class="collapse" method="POST" action="{{ route('logout') }}">
+                            @csrf
+                        </form>
+                    @endauth
+
+                    @guest
+                        <a href="{{ route('login') }}"><span class="icon_profile"></span></a>
+                    @endguest
                 </div>
             </div>
         </div>

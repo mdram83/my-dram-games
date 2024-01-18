@@ -4,7 +4,7 @@
     <section class="hero">
         <div class="container">
             <div class="hero__slider owl-carousel">
-                <div class="hero__items set-bg" data-setbg="img/tmp/hero/hero-1.jpg">
+                <div class="hero__items set-bg" data-setbg="{{ asset('img/tmp/hero/hero-1.jpg') }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="hero__text">
@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero__items set-bg" data-setbg="img/tmp/hero/hero-1.jpg">
+                <div class="hero__items set-bg" data-setbg="{{ asset('img/tmp/hero/hero-1.jpg') }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="hero__text">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero__items set-bg" data-setbg="img/tmp/hero/hero-1.jpg">
+                <div class="hero__items set-bg" data-setbg="{{ asset('img/tmp/hero/hero-1.jpg') }}">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="hero__text">
@@ -69,7 +69,7 @@
                             <!-- Index -->
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-1.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-1.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -85,7 +85,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-2.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-2.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-3.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-3.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -117,7 +117,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-4.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-4.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -133,7 +133,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-5.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-5.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -149,7 +149,7 @@
                             </div>
                             <div class="col-lg-4 col-md-6 col-sm-6">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="img/tmp/trending/trend-6.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="{{ asset('img/tmp/trending/trend-6.jpg') }}">
                                         <div class="ep">18 / 18</div>
                                         <div class="comment"><i class="fa fa-comments"></i> 11</div>
                                         <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -188,31 +188,31 @@
                             <div class="filter__gallery">
                                 <!-- Index -->
                                 <div class="product__sidebar__view__item set-bg mix day years"
-                                     data-setbg="img/tmp/sidebar/tv-1.jpg">
+                                     data-setbg="{{ asset('img/tmp/sidebar/tv-1.jpg') }}">
                                     <div class="ep">18 / ?</div>
                                     <div class="view"><i class="fa fa-eye"></i> 9141</div>
                                     <h5><a href="#">Boruto: Naruto next generations</a></h5>
                                 </div>
                                 <div class="product__sidebar__view__item set-bg mix month week"
-                                     data-setbg="img/tmp/sidebar/tv-2.jpg">
+                                     data-setbg="{{ asset('img/tmp/sidebar/tv-2.jpg') }}">
                                     <div class="ep">18 / ?</div>
                                     <div class="view"><i class="fa fa-eye"></i> 9141</div>
                                     <h5><a href="#">The Seven Deadly Sins: Wrath of the Gods</a></h5>
                                 </div>
                                 <div class="product__sidebar__view__item set-bg mix week years"
-                                     data-setbg="img/tmp/sidebar/tv-3.jpg">
+                                     data-setbg="{{ asset('img/tmp/sidebar/tv-3.jpg') }}">
                                     <div class="ep">18 / ?</div>
                                     <div class="view"><i class="fa fa-eye"></i> 9141</div>
                                     <h5><a href="#">Sword art online alicization war of underworld</a></h5>
                                 </div>
                                 <div class="product__sidebar__view__item set-bg mix years month"
-                                     data-setbg="img/tmp/sidebar/tv-4.jpg">
+                                     data-setbg="{{ asset('img/tmp/sidebar/tv-4.jpg') }}">
                                     <div class="ep">18 / ?</div>
                                     <div class="view"><i class="fa fa-eye"></i> 9141</div>
                                     <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
                                 </div>
                                 <div class="product__sidebar__view__item set-bg mix day"
-                                     data-setbg="img/tmp/sidebar/tv-5.jpg">
+                                     data-setbg="{{ asset('img/tmp/sidebar/tv-5.jpg') }}">
                                     <div class="ep">18 / ?</div>
                                     <div class="view"><i class="fa fa-eye"></i> 9141</div>
                                     <h5><a href="#">Fate stay night unlimited blade works</a></h5>
@@ -230,7 +230,7 @@
                             <!-- Index -->
                             <div class="product__sidebar__comment__item">
                                 <div class="product__sidebar__comment__item__pic">
-                                    <img src="img/tmp/sidebar/comment-1.jpg" alt="">
+                                    <img src="{{ asset('img/tmp/sidebar/comment-1.jpg') }}" alt="">
                                 </div>
                                 <div class="product__sidebar__comment__item__text">
                                     <ul>

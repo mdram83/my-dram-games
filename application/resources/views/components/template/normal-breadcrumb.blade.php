@@ -1,5 +1,5 @@
 <!-- Normal Breadcrumb Begin -->
-<section class="normal-breadcrumb set-bg" data-setbg="img/tmp/normal-breadcrumb.jpg">
+<section class="normal-breadcrumb set-bg" data-setbg="{{ asset('img/tmp/normal-breadcrumb.jpg') }}">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
