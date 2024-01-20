@@ -32,21 +32,21 @@ class GameDefinitionPhpConfigTest extends TestCase
             ->andReturn($definition);
     }
 
-    public function test_game_definition_object_created(): void
+    public function testGameDefinitionCreated(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertInstanceOf(GameDefinition::class, $gameConfig);
     }
 
-    public function test_throw_exception_if_configuration_has_no_slug(): void
+    public function testThrowExceptionIfNoSlugInConfig(): void
     {
         $this->expectException(GameDefinitionException::class);
         $this->mockConfigFacade(null);
         new GameDefinitionPhpConfig($this->slug);
     }
 
-    public function test_throw_exception_if_configuration_has_no_name(): void
+    public function testThrowExceptionIfNoNameInConfig(): void
     {
         $this->expectException(GameDefinitionException::class);
 
@@ -58,7 +58,7 @@ class GameDefinitionPhpConfigTest extends TestCase
         new GameDefinitionPhpConfig($this->slug);
     }
 
-    public function test_throw_exception_if_configuration_has_no_numberOfPlayers(): void
+    public function testThrowExceptionIfNoNumberOfPlayersInConfig(): void
     {
         $this->expectException(GameDefinitionException::class);
 
@@ -70,7 +70,7 @@ class GameDefinitionPhpConfigTest extends TestCase
         new GameDefinitionPhpConfig($this->slug);
     }
 
-    public function test_throw_exception_if_configuration_has_no_isActive(): void
+    public function testThrowExceptionIfNoIsActiveInConfig(): void
     {
         $this->expectException(GameDefinitionException::class);
 
@@ -82,35 +82,35 @@ class GameDefinitionPhpConfigTest extends TestCase
         new GameDefinitionPhpConfig($this->slug);
     }
 
-    public function test_get_name(): void
+    public function testGetName(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->definition['name'], $gameConfig->getName());
     }
 
-    public function test_get_slug(): void
+    public function testGetSlug(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->slug, $gameConfig->getSlug());
     }
 
-    public function test_get_description(): void
+    public function testGetDescription(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->definition['description'], $gameConfig->getDescription());
     }
 
-    public function test_get_numberofPlayers(): void
+    public function testGetNumberOfPlayers(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->definition['numberOfPlayers'], $gameConfig->getNumberOfPlayers());
     }
 
-    public function test_get_numberOfPlayersDescription_with_one_number(): void
+    public function testGetNumberOfPlayersDecriptionWithOneNumber(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2]]);
         $this->mockConfigFacade($definition);
@@ -118,7 +118,7 @@ class GameDefinitionPhpConfigTest extends TestCase
         $this->assertEquals('2', $gameConfig->getNumberOfPlayersDescription());
     }
 
-    public function test_get_numberOfPlayersDescription_with_consecutive_numbers(): void
+    public function testGetNumberOfPlayersDecriptionWithConsecutiveNumbers(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 3, 4]]);
         $this->mockConfigFacade($definition);
@@ -126,7 +126,7 @@ class GameDefinitionPhpConfigTest extends TestCase
         $this->assertEquals('2-4', $gameConfig->getNumberOfPlayersDescription());
     }
 
-    public function test_get_numberOfPlayersDescription_with_non_consecutive_numbers(): void
+    public function testGetNumberOfPlayersDecriptionWithNonConsecutiveNumbers(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 4, 6]]);
         $this->mockConfigFacade($definition);
@@ -134,21 +134,21 @@ class GameDefinitionPhpConfigTest extends TestCase
         $this->assertEquals('2, 4, 6', $gameConfig->getNumberOfPlayersDescription());
     }
 
-    public function test_get_durationInMinutes(): void
+    public function testGetDurationInMinutes(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->definition['durationInMinutes'], $gameConfig->getDurationInMinutes());
     }
 
-    public function test_get_minPlayerAge(): void
+    public function testGetMinPlayerAge(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
         $this->assertEquals($this->definition['minPlayerAge'], $gameConfig->getMinPlayerAge());
     }
 
-    public function test_get_isActive(): void
+    public function testGetIsActive(): void
     {
         $this->mockConfigFacade();
         $gameConfig = new GameDefinitionPhpConfig($this->slug);
