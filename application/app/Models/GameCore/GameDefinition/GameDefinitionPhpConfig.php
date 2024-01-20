@@ -86,6 +86,20 @@ class GameDefinitionPhpConfig implements GameDefinition
         return min($this->numberOfPlayers) . '-' . max($this->numberOfPlayers);
     }
 
+    public function toArray(): array
+    {
+        return [
+            'slug' => $this->getSlug(),
+            'name' => $this->getName(),
+            'description' => $this->getDescription(),
+            'numberOfPlayers' => $this->getNumberOfPlayers(),
+            'numberOfPlayersDescription' => $this->getNumberOfPlayersDescription(),
+            'durationInMinutes' => $this->getDurationInMinutes(),
+            'minPlayerAge' => $this->getMinPlayerAge(),
+            'isActive' => $this->isActive(),
+        ];
+    }
+
     private function hasConsecutiveNumberOfPlayers(): bool
     {
         for ($i = 1; $i < count($this->numberOfPlayers); $i++) {

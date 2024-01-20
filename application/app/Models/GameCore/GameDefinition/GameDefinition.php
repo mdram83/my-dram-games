@@ -12,4 +12,5 @@ interface GameDefinition
     public function getDurationInMinutes(): ?int;
     public function getMinPlayerAge(): ?int;
     public function isActive(): bool;
+    public function toArray(): array;
 }

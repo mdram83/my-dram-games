@@ -85,73 +85,82 @@ class GameDefinitionPhpConfigTest extends TestCase
     public function testGetName(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['name'], $gameConfig->getName());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['name'], $gameDefinition->getName());
     }
 
     public function testGetSlug(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->slug, $gameConfig->getSlug());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->slug, $gameDefinition->getSlug());
     }
 
     public function testGetDescription(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['description'], $gameConfig->getDescription());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['description'], $gameDefinition->getDescription());
     }
 
     public function testGetNumberOfPlayers(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['numberOfPlayers'], $gameConfig->getNumberOfPlayers());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['numberOfPlayers'], $gameDefinition->getNumberOfPlayers());
     }
 
     public function testGetNumberOfPlayersDecriptionWithOneNumber(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2]]);
         $this->mockConfigFacade($definition);
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals('2', $gameConfig->getNumberOfPlayersDescription());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals('2', $gameDefinition->getNumberOfPlayersDescription());
     }
 
     public function testGetNumberOfPlayersDecriptionWithConsecutiveNumbers(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 3, 4]]);
         $this->mockConfigFacade($definition);
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals('2-4', $gameConfig->getNumberOfPlayersDescription());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals('2-4', $gameDefinition->getNumberOfPlayersDescription());
     }
 
     public function testGetNumberOfPlayersDecriptionWithNonConsecutiveNumbers(): void
     {
         $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 4, 6]]);
         $this->mockConfigFacade($definition);
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals('2, 4, 6', $gameConfig->getNumberOfPlayersDescription());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals('2, 4, 6', $gameDefinition->getNumberOfPlayersDescription());
     }
 
     public function testGetDurationInMinutes(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['durationInMinutes'], $gameConfig->getDurationInMinutes());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['durationInMinutes'], $gameDefinition->getDurationInMinutes());
     }
 
     public function testGetMinPlayerAge(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['minPlayerAge'], $gameConfig->getMinPlayerAge());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['minPlayerAge'], $gameDefinition->getMinPlayerAge());
     }
 
     public function testGetIsActive(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new GameDefinitionPhpConfig($this->slug);
-        $this->assertEquals($this->definition['isActive'], $gameConfig->isActive());
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals($this->definition['isActive'], $gameDefinition->isActive());
+    }
+
+    public function testToArray(): void
+    {
+        $this->mockConfigFacade();
+        $gameDefinition = new GameDefinitionPhpConfig($this->slug);
+        $this->assertEquals(
+            array_merge(['slug' => $this->slug], $this->definition, ['numberOfPlayersDescription' => '2']),
+            $gameDefinition->toArray());
     }
 }
