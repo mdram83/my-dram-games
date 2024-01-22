@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\GameDefinition\GameDefinitionAjaxController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => view('home'))->name('home');
+//Route::get('/', fn() => view('home'))->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::middleware('ajax')->group(function() {
     Route::get('/ajax/gameDefinition', [GameDefinitionAjaxController::class, 'index'])
