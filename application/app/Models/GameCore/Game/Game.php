@@ -3,11 +3,11 @@
 namespace App\Models\GameCore\Game;
 
 use App\Models\GameCore\GameDefinition\GameDefinition;
-use App\Models\User;
+use App\Models\GameCore\Player\Player;
 
 interface Game
 {
-    public function addPlayer(User $player): void;
+    public function addPlayer(Player $player): void;
     public function getPlayers(): array;
     public function setNumberOfPlayers(int $numberOfPlayers): void;
     public function getNumberOfPlayers(): int;
