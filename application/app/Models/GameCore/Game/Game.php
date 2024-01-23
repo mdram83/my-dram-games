@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models\GameCore\Game;
+
+use App\Models\GameCore\GameDefinition\GameDefinition;
+use App\Models\User;
+
+interface Game
+{
+    public function addPlayer(User $player): void;
+    public function getPlayers(): array;
+    public function setNumberOfPlayers(int $numberOfPlayers): void;
+    public function getNumberOfPlayers(): int;
+    public function setGameDefinition(GameDefinition $gameDefinition): void;
+    public function getGameDefinition(): GameDefinition;
+}
