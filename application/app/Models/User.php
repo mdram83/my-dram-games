@@ -3,8 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\GameCore\Game\GameEloquentModel;
 use App\Models\GameCore\Player\Player;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -53,5 +56,15 @@ class User extends Authenticatable implements Player
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function games(): BelongsToMany
+    {
+        return $this->belongsToMany(GameEloquentModel::class);
+    }
+
+    public function hostedGames(): HasMany
+    {
+        return $this->hasMany(GameEloquentModel::class);
     }
 }

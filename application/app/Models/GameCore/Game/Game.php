@@ -7,8 +7,9 @@ use App\Models\GameCore\Player\Player;
 
 interface Game
 {
-    public function addPlayer(Player $player): void;
+    public function addPlayer(Player $player, bool $host = false): void;
     public function getPlayers(): array;
+    public function getHost(): Player;
     public function setNumberOfPlayers(int $numberOfPlayers): void;
     public function getNumberOfPlayers(): int;
     public function setGameDefinition(GameDefinition $gameDefinition): void;
