@@ -10,7 +10,6 @@ class GameEloquent implements Game
     protected GameEloquentModel $model;
     protected GameDefinition $gameDefinition;
     protected array $players = [];
-    protected Player $host;
 
     public function __construct()
     {
@@ -41,13 +40,12 @@ class GameEloquent implements Game
 
         $this->players[] = $player;
 
-        if ($host === true) {
-            $this->host = $player;
-//            $this->model->host()->associate($player); // TODO seems I need to save model before this step. Think how to solve that for unit testing (if possible).
-        }
-
         // TODO: Implement addPlayer() method (saving in model as relationship / sync, attach etc.)
-        // TODO: as above for host
+
+        if ($host === true) {
+            $this->model->host()->associate($player);
+            $this->model->refresh();
+        }
     }
 
     public function getPlayers(): array
@@ -60,7 +58,8 @@ class GameEloquent implements Game
         if (!$this->hasHost()) {
             throw new GameException('Host not set');
         }
-        return $this->host;
+
+        return $this->model->host;
     }
 
     public function setNumberOfPlayers(int $numberOfPlayers): void
@@ -126,7 +125,7 @@ class GameEloquent implements Game
 
     protected function hasHost(): bool
     {
-        return isset($this->host);
+        return isset($this->model->host);
     }
 
     protected function hasGameDefinition(): bool

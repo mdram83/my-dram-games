@@ -21,6 +21,6 @@ class GameEloquentModel extends Model
 
     public function host(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

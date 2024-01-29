@@ -1,15 +1,19 @@
 <?php
 
-namespace Tests\Unit\Model\GameCore\Game;
+namespace Tests\Feature\Model\GameCore\Game;
 
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\GameDefinition\GameDefinition;
 use App\Models\GameCore\Player\Player;
-use PHPUnit\Framework\TestCase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class GameEloquentTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected GameEloquent $game;
     protected Player $playerOne;
     protected Player $playerTwo;
@@ -19,11 +23,8 @@ class GameEloquentTest extends TestCase
     {
         parent::setUp();
 
-        $this->playerOne = $this->createMock(Player::class);
-        $this->playerOne->method('getId')->willReturn(1);
-
+        $this->playerOne = User::factory()->create();
         $this->gameDefinition = $this->createMock(GameDefinition::class);
-
         $this->game = new GameEloquent();
     }
 
