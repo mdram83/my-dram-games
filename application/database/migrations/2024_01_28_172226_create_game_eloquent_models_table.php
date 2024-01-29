@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('game_eloquent_models', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
-            $table->unsignedTinyInteger('numberOfPlayers');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unsignedTinyInteger('numberOfPlayers')->nullable();
+            $table->string('gameDefinition', 255)->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 

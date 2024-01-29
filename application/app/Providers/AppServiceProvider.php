@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactoryPhpConfig;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepositoryPhpConfig;
@@ -18,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
             GameDefinitionRepository::class,
             fn() => new GameDefinitionRepositoryPhpConfig(new GameDefinitionFactoryPhpConfig())
         );
+        app()->bind(GameDefinitionFactory::class, fn() => new GameDefinitionFactoryPhpConfig());
     }
 
     /**

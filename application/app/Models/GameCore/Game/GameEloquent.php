@@ -3,17 +3,21 @@
 namespace App\Models\GameCore\Game;
 
 use App\Models\GameCore\GameDefinition\GameDefinition;
+use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\Player\Player;
 
 class GameEloquent implements Game
 {
     protected GameEloquentModel $model;
+    protected GameDefinitionFactory $gameDefinitionFactory;
     protected GameDefinition $gameDefinition;
-    protected array $players = [];
 
-    public function __construct()
+    public function __construct(GameDefinitionFactory $gameDefinitionFactory)
     {
         $this->model = new GameEloquentModel();
+        $this->saveModel();
+
+        $this->gameDefinitionFactory = $gameDefinitionFactory;
     }
 
     public function addPlayer(Player $player, bool $host = false): void
@@ -34,23 +38,22 @@ class GameEloquent implements Game
             throw new GameException('Host already added');
         }
 
-        if ($host === false && count($this->players) === 0) {
+        if ($host === false && !$this->hasPlayers()) {
             throw new GameException('Host not set');
         }
 
-        $this->players[] = $player;
-
-        // TODO: Implement addPlayer() method (saving in model as relationship / sync, attach etc.)
-
         if ($host === true) {
             $this->model->host()->associate($player);
-            $this->model->refresh();
+            $this->saveModel();
         }
+
+        $this->model->players()->attach($player->getId());
+        $this->model->refresh();
     }
 
     public function getPlayers(): array
     {
-        return $this->players;
+        return $this->model->players->all();
     }
 
     public function getHost(): Player
@@ -77,6 +80,7 @@ class GameEloquent implements Game
         }
 
         $this->model->numberOfPlayers = $numberOfPlayers;
+        $this->saveModel();
     }
 
     public function getNumberOfPlayers(): int
@@ -92,9 +96,11 @@ class GameEloquent implements Game
         if ($this->hasGameDefinition()) {
             throw new GameException('Game definition already set');
         }
+
         $this->gameDefinition = $gameDefinition;
 
-        // TODO: Implement setGameDefinition() method (saving in database with model property using e.g. slug only or seralized object)
+        $this->model->gameDefinition = $gameDefinition->getSlug();
+        $this->saveModel();
     }
 
     public function getGameDefinition(): GameDefinition
@@ -102,6 +108,12 @@ class GameEloquent implements Game
         if (!$this->hasGameDefinition()) {
             throw new GameException('Game definition not set');
         }
+
+        if (!isset($this->gameDefinition)) {
+            $slug = $this->model->gameDefinition;
+            $this->gameDefinition = $this->gameDefinitionFactory->create($slug);
+        }
+
         return $this->gameDefinition;
     }
 
@@ -112,14 +124,14 @@ class GameEloquent implements Game
 
     protected function canAddMorePlayers(): bool
     {
-        return count($this->players) < $this->getNumberOfPlayers();
+        return count($this->getPlayers()) < $this->getNumberOfPlayers();
     }
 
     protected function isPlayerAdded(Player $player): bool
     {
         return in_array(
             $player->getId(),
-            array_map(fn($currentPlayer) => $currentPlayer->getId(), $this->players)
+            array_map(fn($currentPlayer) => $currentPlayer->getId(), $this->getPlayers())
         );
     }
 
@@ -130,11 +142,21 @@ class GameEloquent implements Game
 
     protected function hasGameDefinition(): bool
     {
-        return isset($this->gameDefinition);
+        return isset($this->model->gameDefinition);
     }
 
     protected function isAllowedNumberOfPlayers(int $numberOfPlayers): bool
     {
-        return in_array($numberOfPlayers, $this->gameDefinition->getNumberOfPlayers());
+        return in_array($numberOfPlayers, $this->getGameDefinition()->getNumberOfPlayers());
+    }
+
+    public function saveModel(): void
+    {
+        $this->model->save();
+    }
+
+    public function hasPlayers(): bool
+    {
+        return count($this->getPlayers()) > 0;
     }
 }

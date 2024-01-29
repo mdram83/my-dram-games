@@ -5,9 +5,11 @@ namespace Tests\Feature\Model\GameCore\Game;
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\GameDefinition\GameDefinition;
+use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\Player\Player;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class GameEloquentTest extends TestCase
@@ -25,7 +27,7 @@ class GameEloquentTest extends TestCase
 
         $this->playerOne = User::factory()->create();
         $this->gameDefinition = $this->createMock(GameDefinition::class);
-        $this->game = new GameEloquent();
+        $this->game = new GameEloquent(App::make(GameDefinitionFactory::class));
     }
 
     protected function configureGameDefinitionMock(array $numberOfPlayers): void
@@ -42,8 +44,7 @@ class GameEloquentTest extends TestCase
 
     protected function configurePlayerTwo(): void
     {
-        $this->playerTwo = $this->createMock(Player::class);
-        $this->playerTwo->method('getId')->willReturn(2);
+        $this->playerTwo = User::factory()->create();
     }
 
     public function testGameEloquentObjectCreated(): void
@@ -166,13 +167,23 @@ class GameEloquentTest extends TestCase
         $this->game->addPlayer($this->playerTwo);
     }
 
+    public function testGameHostAddedAndReturned(): void
+    {
+        $this->configureGameForXPlayers();
+        $this->game->addPlayer($this->playerOne, true);
+
+        $this->assertEquals($this->playerOne->getId(), $this->game->getHost()->getId());
+    }
+
     public function testGameHostAddedAndBecomesAlsoOneOfPlayers(): void
     {
         $this->configureGameForXPlayers();
         $this->game->addPlayer($this->playerOne, true);
 
-        $this->assertTrue(in_array($this->playerOne, $this->game->getPlayers()));
-        $this->assertSame($this->playerOne, $this->game->getHost());
+        $hostId = $this->playerOne->getId();
+        $playerIds = array_map(fn($player) => $player->getId(), $this->game->getPlayers());
+
+        $this->assertTrue(in_array($hostId, $playerIds));
     }
 
     public function testThrowExceptionWhenGettingHostAndNotSet(): void
@@ -189,6 +200,11 @@ class GameEloquentTest extends TestCase
         $this->game->addPlayer($this->playerOne, true);
         $this->game->addPlayer($this->playerTwo);
 
-        $this->assertEquals([$this->playerOne, $this->playerTwo], $this->game->getPlayers());
+        $expectedPlayerIds = [$this->playerOne->getId(), $this->playerTwo->getId()];
+        $actualPlayerIds = array_map(fn($player) => $player->getId(), $this->game->getPlayers());
+        sort($expectedPlayerIds);
+        sort($actualPlayerIds);
+
+        $this->assertEquals($expectedPlayerIds, $actualPlayerIds);
     }
 }
