@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Game\GameController;
 use App\Http\Controllers\GameDefinition\GameDefinitionAjaxController;
 use App\Http\Controllers\GameDefinition\GameDefinitionController;
 use App\Http\Controllers\HomeController;
@@ -8,11 +9,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/games/{slug}', [GameDefinitionController::class, 'show'])->name('games');
-Route::get('/play/{slug}', fn() => view('home'))->name('play');
+Route::get('/play/{slug}', [GameController::class, 'create'])->name('play');
 
 Route::middleware('ajax')->group(function() {
-    Route::get('/ajax/gameDefinition', [GameDefinitionAjaxController::class, 'index'])
-        ->name('ajax.gameDefinition.index');
+    Route::get('/ajax/gameDefinition', [GameDefinitionAjaxController::class, 'index'])->name('ajax.gameDefinition.index');
+    Route::post('/play/{slug}', [GameController::class, 'store'])->name('ajax.play.store');
 });
 
 Route::middleware('auth')->group(function () {
