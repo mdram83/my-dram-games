@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Game;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ControllerException;
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\GameDefinition\GameDefinitionException;
@@ -20,20 +21,17 @@ class GameController extends Controller
     public function store(Request $request, GameDefinitionRepository $repository, string $slug): Response
     {
         try {
-            $this->validateAuth();
             $this->validateStoreRequest($request, $slug);
 
-        } catch (Exception $e) {
-            return new Response($e->getMessage(), $e->getCode());
-        }
-
-        try {
             // TODO streamline below with Factory/Builder/Repo or so
             $gameDefinition = $repository->getOne($slug);
             $game = new GameEloquent(new GameDefinitionFactoryPhpConfig());
             $game->setGameDefinition($gameDefinition);
             $game->setNumberOfPlayers($request->input('numberOfPlayers'));
             $game->addPlayer($request->user(), true);
+
+        } catch (ControllerException $e) {
+            return new Response($e->getMessage(), $e->getCode());
 
         } catch (GameDefinitionException|GameException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
@@ -45,6 +43,16 @@ class GameController extends Controller
         return new Response([], SymfonyResponse::HTTP_OK);
     }
 
+    private function validateStoreRequest(Request $request, string $slug): void
+    {
+        try {
+            $this->validateAuth();
+            $this->validateStoreRequestInputs($request, $slug);
+        } catch (Exception $e) {
+            throw new ControllerException($e->getMessage(), $e->getCode());
+        }
+    }
+
     private function validateAuth(): void
     {
         if (!Auth::check()) {
@@ -53,7 +61,7 @@ class GameController extends Controller
         }
     }
 
-    private function validateStoreRequest(Request $request, string $slug): void
+    private function validateStoreRequestInputs(Request $request, string $slug): void
     {
         $validator = Validator::make(array_merge($request->all(), ['slug' => $slug]), [
             'slug' => 'required|string|max:255',
