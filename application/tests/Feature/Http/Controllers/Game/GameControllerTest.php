@@ -34,7 +34,7 @@ class GameControllerTest extends TestCase
         }
     }
 
-    protected function getResponse(
+    protected function getStoreResponse(
         string $slug = null,
         int|string $numberOfPlayers = null,
         bool $nullifySlug = false,
@@ -50,7 +50,7 @@ class GameControllerTest extends TestCase
             ]));
     }
 
-    public function testNonAjaxRequestResponseUnauthorized(): void
+    public function testStoreNonAjaxRequestResponseUnauthorized(): void
     {
         $response = $this
             ->actingAs($this->player, 'web')
@@ -58,7 +58,7 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testNonAuthRequestResponseUnauthorized(): void
+    public function testStoreNonAuthRequestResponseUnauthorized(): void
     {
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
@@ -66,49 +66,55 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testThrowExceptionWithMissingSlug(): void
+    public function testStoreThrowExceptionWithMissingSlug(): void
     {
         $this->expectException(\Exception::class);
-        $this->getResponse(nullifySlug: true);
+        $this->getStoreResponse(nullifySlug: true);
     }
 
-    public function testBadRequestWithInconsistentSlug(): void
+    public function testStoreBadRequestWithInconsistentSlug(): void
     {
-        $response = $this->getResponse(slug: 'very-dummy-definitely-missing-slug-123');
+        $response = $this->getStoreResponse(slug: 'very-dummy-definitely-missing-slug-123');
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testBadRequestWithMissingNumberOfPlayers(): void
+    public function testStoreBadRequestWithMissingNumberOfPlayers(): void
     {
-        $response = $this->getResponse(nullifyNumberOfPlayers: true);
+        $response = $this->getStoreResponse(nullifyNumberOfPlayers: true);
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testBadRequestWithIncorrectNumberOfPlayers(): void
+    public function testStoreBadRequestWithIncorrectNumberOfPlayers(): void
     {
-        $response = $this->getResponse(numberOfPlayers: 'incorrect-value');
+        $response = $this->getStoreResponse(numberOfPlayers: 'incorrect-value');
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testBadRequestWithInconsistentNumberOfPlayers(): void
+    public function testStoreBadRequestWithInconsistentNumberOfPlayers(): void
     {
         $maxNumberOfPlayers = max($this->gameDefinition->getNumberOfPlayers());
-        $response = $this->getResponse(numberOfPlayers: $maxNumberOfPlayers + 1);
+        $response = $this->getStoreResponse(numberOfPlayers: $maxNumberOfPlayers + 1);
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testGameJsonAndHttpOkWithProperRequest(): void
+    public function testStoreGameHttpOkWithProperRequest(): void
     {
-//        $response = $this->getResponse();
-//        $response->assertStatus(Response::HTTP_OK);
-        // TODO assert json has game id, owner id, numberofplayers, gameDefinition details etc. that you will need on frontend
+        $response = $this->getStoreResponse();
+        $response->assertStatus(Response::HTTP_OK);
+    }
 
-        /* What I want to make available after request?
-         * gameId (hash which is id from db
-         * host name
-         * number of players
-         * ?gameDefinition - same as in GameDefinitionController; Maybe not needed as already available on frontend for user?
-         */
+    public function testStoreGameJsonCompleteWithProperRequest(): void
+    {
+        $response = $this->getStoreResponse();
 
+        $this->assertNotNull($response['game']['id']);
+        $this->assertNotNull($response['game']['host']['name']);
+        $this->assertNotNull($response['game']['numberOfPlayers']);
+        $this->assertNotNull($response['game']['players'][0]['name']);
+
+        $response
+            ->assertJsonPath('game.host.name', $this->player->getName())
+            ->assertJsonPath('game.numberOfPlayers', $this->gameDefinition->getNumberOfPlayers()[0])
+            ->assertJsonPath('game.players.0.name', $this->player->getName());
     }
 }

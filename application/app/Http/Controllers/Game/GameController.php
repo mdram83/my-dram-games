@@ -23,12 +23,20 @@ class GameController extends Controller
         try {
             $this->validateStoreRequest($request, $slug);
 
-            // TODO streamline below with Factory/Builder/Repo or so
             $gameDefinition = $repository->getOne($slug);
             $game = new GameEloquent(new GameDefinitionFactoryPhpConfig());
             $game->setGameDefinition($gameDefinition);
             $game->setNumberOfPlayers($request->input('numberOfPlayers'));
             $game->addPlayer($request->user(), true);
+
+            $responseContent = [
+                'game' => [
+                    'id' => $game->getId(),
+                    'host' => ['name' => $game->getHost()->getName()],
+                    'numberOfPlayers' => $game->getNumberOfPlayers(),
+                    'players' => array_map(fn($player) => ['name' => $player->getName()], $game->getPlayers()),
+                ],
+            ];
 
         } catch (ControllerException $e) {
             return new Response($e->getMessage(), $e->getCode());
@@ -40,7 +48,7 @@ class GameController extends Controller
             return new Response(['message' => 'Internal error'], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new Response([], SymfonyResponse::HTTP_OK);
+        return new Response($responseContent, SymfonyResponse::HTTP_OK);
     }
 
     private function validateStoreRequest(Request $request, string $slug): void
