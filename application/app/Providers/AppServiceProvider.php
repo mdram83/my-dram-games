@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\Game\GameFactoryEloquent;
+use App\Models\GameCore\Game\GameRepository;
+use App\Models\GameCore\Game\GameRepositoryEloquent;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactoryPhpConfig;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
@@ -28,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
             app()->make(GameDefinitionRepository::class),
             app()->make(GameDefinitionFactory::class)
         ));
+
+        app()->bind(GameRepository::class, fn() => app()->make(GameRepositoryEloquent::class));
     }
 
     /**

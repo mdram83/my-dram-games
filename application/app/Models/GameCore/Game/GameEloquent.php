@@ -12,12 +12,16 @@ class GameEloquent implements Game
     protected GameDefinitionFactory $gameDefinitionFactory;
     protected GameDefinition $gameDefinition;
 
-    public function __construct(GameDefinitionFactory $gameDefinitionFactory)
+    public function __construct(GameDefinitionFactory $gameDefinitionFactory, string $id = null)
     {
-        $this->model = new GameEloquentModel();
-        $this->saveModel();
-
         $this->gameDefinitionFactory = $gameDefinitionFactory;
+
+        if ($id === null) {
+            $this->registerNewModel();
+        } else {
+            $this->loadExisingModel($id);
+        }
+
     }
 
     public function getId(): string|int
@@ -155,13 +159,27 @@ class GameEloquent implements Game
         return in_array($numberOfPlayers, $this->getGameDefinition()->getNumberOfPlayers());
     }
 
-    public function saveModel(): void
+    protected function saveModel(): void
     {
         $this->model->save();
     }
 
-    public function hasPlayers(): bool
+    protected function hasPlayers(): bool
     {
         return count($this->getPlayers()) > 0;
+    }
+
+    protected function registerNewModel(): void
+    {
+        $this->model = new GameEloquentModel();
+        $this->saveModel();
+    }
+
+    protected function loadExisingModel(string $id): void
+    {
+        if (!($model = GameEloquentModel::where('id', $id)->first())) {
+            throw new GameException('Game not found');
+        }
+        $this->model = $model;
     }
 }

@@ -9,8 +9,8 @@ use App\Models\GameCore\Player\Player;
 class GameFactoryEloquent implements GameFactory
 {
     public function __construct(
-        readonly private GameDefinitionRepository $gameDefinitionRepository,
-        readonly private GameDefinitionFactory $gameDefinitionFactory,
+        private readonly GameDefinitionRepository $gameDefinitionRepository,
+        private readonly GameDefinitionFactory $gameDefinitionFactory,
     )
     {
 
