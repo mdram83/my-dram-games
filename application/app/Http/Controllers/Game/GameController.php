@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
+use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionException;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactoryPhpConfig;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
@@ -18,16 +19,11 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class GameController extends Controller
 {
-    public function store(Request $request, GameDefinitionRepository $repository, string $slug): Response
+    public function store(Request $request, GameFactory $factory, string $slug): Response
     {
         try {
             $this->validateStoreRequest($request, $slug);
-
-            $gameDefinition = $repository->getOne($slug);
-            $game = new GameEloquent(new GameDefinitionFactoryPhpConfig());
-            $game->setGameDefinition($gameDefinition);
-            $game->setNumberOfPlayers($request->input('numberOfPlayers'));
-            $game->addPlayer($request->user(), true);
+            $game = $factory->create($slug, $request->input('numberOfPlayers'), $request->user());
 
             $responseContent = [
                 'game' => [
