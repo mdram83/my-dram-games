@@ -20,6 +20,11 @@ class GameEloquent implements Game
         $this->gameDefinitionFactory = $gameDefinitionFactory;
     }
 
+    public function getId(): string|int
+    {
+        return $this->model->id;
+    }
+
     public function addPlayer(Player $player, bool $host = false): void
     {
         if (!$this->hasNumberOfPlayers()) {

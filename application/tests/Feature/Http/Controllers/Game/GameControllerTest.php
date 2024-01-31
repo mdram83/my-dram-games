@@ -102,5 +102,13 @@ class GameControllerTest extends TestCase
 //        $response = $this->getResponse();
 //        $response->assertStatus(Response::HTTP_OK);
         // TODO assert json has game id, owner id, numberofplayers, gameDefinition details etc. that you will need on frontend
+
+        /* What I want to make available after request?
+         * gameId (hash which is id from db
+         * host name
+         * number of players
+         * ?gameDefinition - same as in GameDefinitionController; Maybe not needed as already available on frontend for user?
+         */
+
     }
 }

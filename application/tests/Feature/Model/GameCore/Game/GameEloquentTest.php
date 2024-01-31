@@ -52,6 +52,11 @@ class GameEloquentTest extends TestCase
         $this->assertInstanceOf(GameEloquent::class, $this->game);
     }
 
+    public function testGameIdAvailableUponGameCreation(): void
+    {
+        $this->assertNotNull($this->game->getId());
+    }
+
     // Setting/Getting GameDefinition
 
     public function testThrowExceptionWhenOverwritingGameDefinition(): void

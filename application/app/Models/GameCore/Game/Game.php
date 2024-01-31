@@ -7,6 +7,7 @@ use App\Models\GameCore\Player\Player;
 
 interface Game
 {
+    public function getId(): int|string;
     public function addPlayer(Player $player, bool $host = false): void;
     public function getPlayers(): array;
     public function getHost(): Player;
