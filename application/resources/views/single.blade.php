@@ -61,7 +61,10 @@
                                         <ul>
                                             <li><span>Scores:</span> 7.31 / 1,515</li>
                                             <li><span>Rating:</span> 8.5 / 161 times</li>
-                                            <li><span>Duration:</span> {{ $gameDefinition['durationInMinutes'] }} minutes</li>
+                                            <li><span>Duration:</span>
+                                                {{ $gameDefinition['durationInMinutes'] }}
+                                                {{ $gameDefinition['durationInMinutes'] == 1 ? 'minute' : 'minutes'}}
+                                            </li>
                                             <li><span>Min. age:</span> {{ $gameDefinition['minPlayerAge'] }}</li>
                                             <li><span>Views:</span> 131,541</li>
                                         </ul>
@@ -71,8 +74,8 @@
                             <div class="anime__details__btn">
                                 <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>
                                 @if($gameDefinition['isActive'] === true)
-                                    <a href="{{ route('play', $slug = $gameDefinition['slug']) }}" class="watch-btn">
-                                        <span>Play Now</span>
+                                    <a href="#" class="watch-btn">
+                                        <span>New Game</span>
                                         <i class="fa fa-angle-right"></i>
                                     </a>
                                 @endif

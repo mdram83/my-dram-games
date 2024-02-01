@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/games/{slug}', [GameDefinitionController::class, 'show'])->name('games');
-Route::get('/play/{slug}', [GameController::class, 'create'])->name('play');
 
 Route::middleware('ajax')->group(function() {
     Route::get('/ajax/gameDefinition', [GameDefinitionAjaxController::class, 'index'])->name('ajax.gameDefinition.index');
