@@ -72,13 +72,20 @@
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-                                <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>
+{{--                                <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>--}}
+
                                 @if($gameDefinition['isActive'] === true)
-                                    <a href="#" class="watch-btn">
-                                        <span>New Game</span>
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
+                                    @push('custom-scripts')
+                                        @vite('resources/js/template/single/single.jsx')
+                                    @endpush
+                                    <div class=""
+                                         id="js-single-new-game-section"
+                                         data-gamedefinition="{{ json_encode($gameDefinition) }}"
+                                         data-storeurl="{{ route('ajax.play.store', $gameDefinition['slug']) }}"
+                                         data-joinurlbase="{{ route('join', '') }}"
+                                    ></div>
                                 @endif
+
                             </div>
                         </div>
                     </div>
