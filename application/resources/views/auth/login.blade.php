@@ -1,3 +1,5 @@
+@php($redirect = request()->query('redirect') ?? null)
+
 <x-app-layout>
 
     <x-template.normal-breadcrumb title="Login" subtitle="Welcome to the official Anime blog." />
@@ -13,7 +15,7 @@
                         <x-auth-session-status class="mb-4" :status="session('status')" />
 
                         <h3>Login</h3>
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login', ['redirect' => $redirect]) }}">
                             @csrf
 
                             <!-- Email Address -->
@@ -54,7 +56,7 @@
                 <div class="col-lg-6">
                     <div class="login__register">
                         <h3>Dont’t Have An Account?</h3>
-                        <a href="{{ route('register') }}" class="primary-btn">Register Now</a>
+                        <a href="{{ route('register', ['redirect' => $redirect]) }}" class="primary-btn">Register Now</a>
                     </div>
                 </div>
             </div>

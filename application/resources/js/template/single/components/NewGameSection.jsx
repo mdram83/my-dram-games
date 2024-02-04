@@ -29,8 +29,6 @@ export const NewGameSection = ({gameDefinition, storeUrl, joinUrlBase}) => {
 
     return (
         <>
-            {/*TODO handle logged and not logged users for New Game button (redirections to login/register and back to slugged game*/}
-
             {buttonOn && <SiteButton value="New Game" onClick={() => enableForm()} />}
             {formOn && <NewGameForm {...gameDefinition} storeUrl={storeUrl} onCancel={() => cancelForm()} onCreate={(game) => showGame(game)} />}
             {gameOn && <NewGameSummary game={game} joinUrlBase={joinUrlBase} />}

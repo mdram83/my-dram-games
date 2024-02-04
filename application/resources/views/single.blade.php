@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
 <x-app-layout>
 
     <!-- Breadcrumb Begin -->
@@ -52,8 +53,12 @@
                                         <ul>
                                             <li><span>Type:</span> TV Series</li>
                                             <li><span>Studios:</span> Lerche</li>
-                                            <li><span>No. players:</span> {{ $gameDefinition['numberOfPlayersDescription'] }}</li>
-                                            <li><span>Status:</span> {{ $gameDefinition['isActive'] ? 'Active' : 'Inactive' }}</li>
+                                            <li>
+                                                <span>No. players:</span> {{ $gameDefinition['numberOfPlayersDescription'] }}
+                                            </li>
+                                            <li>
+                                                <span>Status:</span> {{ $gameDefinition['isActive'] ? 'Active' : 'Inactive' }}
+                                            </li>
                                             <li><span>Genre:</span> Action, Adventure, Fantasy, Magic</li>
                                         </ul>
                                     </div>
@@ -72,18 +77,23 @@
                                 </div>
                             </div>
                             <div class="anime__details__btn">
-{{--                                <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>--}}
+                                {{--                                <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>--}}
 
                                 @if($gameDefinition['isActive'] === true)
+
                                     @push('custom-scripts')
                                         @vite('resources/js/template/single/single.jsx')
                                     @endpush
+
                                     <div class=""
                                          id="js-single-new-game-section"
                                          data-gamedefinition="{{ json_encode($gameDefinition) }}"
                                          data-storeurl="{{ route('ajax.play.store', $gameDefinition['slug']) }}"
                                          data-joinurlbase="{{ route('join', '') }}"
+                                         data-auth="{{ Auth::check() }}"
+                                         data-loginurl="{{ route('login') }}"
                                     ></div>
+
                                 @endif
 
                             </div>
@@ -169,22 +179,26 @@
                         <div class="section-title">
                             <h5>you might like...</h5>
                         </div>
-                        <div class="product__sidebar__view__item set-bg" data-setbg="{{ asset('img/tmp/sidebar/tv-1.jpg') }}">
+                        <div class="product__sidebar__view__item set-bg"
+                             data-setbg="{{ asset('img/tmp/sidebar/tv-1.jpg') }}">
                             <div class="ep">18 / ?</div>
                             <div class="view"><i class="fa fa-eye"></i> 9141</div>
                             <h5><a href="#">Boruto: Naruto next generations</a></h5>
                         </div>
-                        <div class="product__sidebar__view__item set-bg" data-setbg="{{ asset('img/tmp/sidebar/tv-2.jpg') }}">
+                        <div class="product__sidebar__view__item set-bg"
+                             data-setbg="{{ asset('img/tmp/sidebar/tv-2.jpg') }}">
                             <div class="ep">18 / ?</div>
                             <div class="view"><i class="fa fa-eye"></i> 9141</div>
                             <h5><a href="#">The Seven Deadly Sins: Wrath of the Gods</a></h5>
                         </div>
-                        <div class="product__sidebar__view__item set-bg" data-setbg="{{ asset('img/tmp/sidebar/tv-3.jpg') }}">
+                        <div class="product__sidebar__view__item set-bg"
+                             data-setbg="{{ asset('img/tmp/sidebar/tv-3.jpg') }}">
                             <div class="ep">18 / ?</div>
                             <div class="view"><i class="fa fa-eye"></i> 9141</div>
                             <h5><a href="#">Sword art online alicization war of underworld</a></h5>
                         </div>
-                        <div class="product__sidebar__view__item set-bg" data-setbg="{{ asset('img/tmp/sidebar/tv-4.jpg') }}">
+                        <div class="product__sidebar__view__item set-bg"
+                             data-setbg="{{ asset('img/tmp/sidebar/tv-4.jpg') }}">
                             <div class="ep">18 / ?</div>
                             <div class="view"><i class="fa fa-eye"></i> 9141</div>
                             <h5><a href="#">Fate/stay night: Heaven's Feel I. presage flower</a></h5>
