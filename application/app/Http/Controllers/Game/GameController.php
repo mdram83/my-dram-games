@@ -7,15 +7,21 @@ use App\Http\Controllers\ControllerException;
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameFactory;
+use App\Models\GameCore\Game\GameRepository;
 use App\Models\GameCore\GameDefinition\GameDefinitionException;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactoryPhpConfig;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use Exception;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GameController extends Controller
 {
@@ -37,6 +43,33 @@ class GameController extends Controller
         }
 
         return new Response($responseContent, SymfonyResponse::HTTP_OK);
+    }
+
+    public function update(Request $request, GameRepository $repository, string $slug, int|string $gameId): View|Response|RedirectResponse
+    {
+        try {
+            $game = $repository->getOne($gameId);
+            $currentPlayer = $request->user();
+
+            if (!in_array($currentPlayer->getId(), array_map(fn($player) => $player->getId(), $game->getPlayers()))) {
+                $game->addPlayer($currentPlayer);
+                $message = 'You have joined the game!';
+            }
+
+            $responseContent = [
+                'gameDefinition' => $game->getGameDefinition()->toArray(),
+                'game' => $game->toArray(),
+            ];
+
+        } catch (GameException $e) {
+            return Redirect::route('games', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
+
+        } catch (Exception) {
+            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, 'Internal error');
+        }
+
+        Session::flash('success', ($message ?? 'Welcome back!'));
+        return view('single', $responseContent);
     }
 
     private function validateStoreRequest(Request $request, string $slug): void

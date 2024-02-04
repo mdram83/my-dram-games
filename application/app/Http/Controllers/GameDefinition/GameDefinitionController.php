@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GameDefinitionController extends Controller
 {
@@ -18,7 +19,7 @@ class GameDefinitionController extends Controller
         try {
             $gameDefinition = $repository->getOne($slug)->toArray();
         } catch (Exception) {
-            return new Response('Not found', 404);
+            throw new NotFoundHttpException();
         }
 
         return view('single', ['gameDefinition' => $gameDefinition]);

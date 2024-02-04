@@ -1,4 +1,5 @@
 @php use Illuminate\Support\Facades\Auth; @endphp
+
 <x-app-layout>
 
     <!-- Breadcrumb Begin -->
@@ -89,7 +90,7 @@
                                          id="js-single-new-game-section"
                                          data-gamedefinition="{{ json_encode($gameDefinition) }}"
                                          data-storeurl="{{ route('ajax.play.store', $gameDefinition['slug']) }}"
-                                         data-joinurlbase="{{ route('join', '') }}"
+                                         data-joinurlbase="{{ route('join', ['slug' => $gameDefinition['slug'], 'gameId' => '/']) }}"
                                          data-auth="{{ Auth::check() }}"
                                          data-loginurl="{{ route('login') }}"
                                     ></div>

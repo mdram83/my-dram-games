@@ -35,12 +35,12 @@ class GameEloquent implements Game
             throw new GameException('Number of players not set');
         }
 
-        if (!$this->canAddMorePlayers()) {
-            throw new GameException('Number of players exceeded');
-        }
-
         if ($this->isPlayerAdded($player)) {
             throw new GameException('Player already added');
+        }
+
+        if (!$this->canAddMorePlayers()) {
+            throw new GameException('Number of players exceeded');
         }
 
         if ($host === true && $this->hasHost()) {

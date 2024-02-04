@@ -88,6 +88,9 @@
     </div>
     <!-- Search model end -->
 
+    <!-- Flash Message -->
+    <x-flash/>
+
     <!-- Js Plugins -->
     <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
