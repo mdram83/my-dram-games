@@ -212,4 +212,28 @@ class GameEloquentTest extends TestCase
 
         $this->assertEquals($expectedPlayerIds, $actualPlayerIds);
     }
+
+    public function testThrowExceptionWhenToArrayWithoutUpfrontSetup(): void
+    {
+        $this->expectException(GameException::class);
+        $this->game->toArray();
+    }
+
+    public function testToArray(): void
+    {
+        $this->configureGameForXPlayers();
+        $this->configurePlayerTwo();
+
+        $this->game->addPlayer($this->playerOne, true);
+        $this->game->addPlayer($this->playerTwo);
+
+        $expected = [
+            'id' => $this->game->getId(),
+            'host' => ['name' => $this->game->getHost()->getName()],
+            'numberOfPlayers' => $this->game->getNumberOfPlayers(),
+            'players' => array_map(fn($player) => ['name' => $player->getName()], $this->game->getPlayers()),
+        ];
+
+        $this->assertEquals($expected, $this->game->toArray());
+    }
 }

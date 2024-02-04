@@ -126,6 +126,16 @@ class GameEloquent implements Game
         return $this->gameDefinition;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'host' => ['name' => $this->getHost()->getName()],
+            'numberOfPlayers' => $this->getNumberOfPlayers(),
+            'players' => array_map(fn($player) => ['name' => $player->getName()], $this->getPlayers()),
+        ];
+    }
+
     protected function hasNumberOfPlayers(): bool
     {
         return isset($this->model->numberOfPlayers);

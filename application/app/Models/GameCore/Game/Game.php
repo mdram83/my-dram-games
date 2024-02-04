@@ -15,4 +15,5 @@ interface Game
     public function getNumberOfPlayers(): int;
     public function setGameDefinition(GameDefinition $gameDefinition): void;
     public function getGameDefinition(): GameDefinition;
+    public function toArray():array;
 }

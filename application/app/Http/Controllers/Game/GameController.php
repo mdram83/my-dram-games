@@ -24,15 +24,7 @@ class GameController extends Controller
         try {
             $this->validateStoreRequest($request, $slug);
             $game = $factory->create($slug, $request->input('numberOfPlayers'), $request->user());
-
-            $responseContent = [
-                'game' => [
-                    'id' => $game->getId(),
-                    'host' => ['name' => $game->getHost()->getName()],
-                    'numberOfPlayers' => $game->getNumberOfPlayers(),
-                    'players' => array_map(fn($player) => ['name' => $player->getName()], $game->getPlayers()),
-                ],
-            ];
+            $responseContent = ['game' => $game->toArray()];
 
         } catch (ControllerException $e) {
             return new Response($e->getMessage(), $e->getCode());
