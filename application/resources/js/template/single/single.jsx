@@ -13,7 +13,13 @@ if (newGameSectionElement) {
             'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset.gamedefinition)),
             'storeUrl': newGameSectionElement.dataset.storeurl,
             'joinUrlBase': newGameSectionElement.dataset.joinurlbase,
+            'currentPlayerName': newGameSectionElement.dataset.currentplayername,
         }
+
+        if (newGameSectionElement.dataset.currentgame) {
+            props.currentGame = Object.assign({}, JSON.parse(newGameSectionElement.dataset.currentgame));
+        }
+
         createRoot(newGameSectionElement).render(<NewGameSection {...props} />);
 
     } else {

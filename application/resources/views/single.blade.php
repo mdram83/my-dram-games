@@ -93,6 +93,8 @@
                                          data-joinurlbase="{{ route('join', ['slug' => $gameDefinition['slug'], 'gameId' => '/']) }}"
                                          data-auth="{{ Auth::check() }}"
                                          data-loginurl="{{ route('login') }}"
+                                         data-currentplayername="{{ Auth::getUser()->name }}"
+                                         data-currentgame="{{ isset($game) ? json_encode($game) : null }}"
                                     ></div>
 
                                 @endif

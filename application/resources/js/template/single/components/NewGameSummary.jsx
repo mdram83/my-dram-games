@@ -1,11 +1,13 @@
 import React from "react";
 import {SiteButton} from "../../components/SiteButton.jsx";
 
-export const NewGameSummary = ({game, joinUrlBase}) => {
+export const NewGameSummary = ({game, joinUrlBase, currentPlayerName}) => {
 
     const joinUrl = joinUrlBase + '/' + game.id;
-    const joinUrlRedirect = () => window.location.href = joinUrl;
+    const startGame = () => window.location.href = joinUrl;
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
+
+    const isCurrentPlayerHost = game.host.name === currentPlayerName;
 
     const {players} = game;
     const playersList = [];
@@ -47,7 +49,7 @@ export const NewGameSummary = ({game, joinUrlBase}) => {
             </div>
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
-                <SiteButton value='Start' onClick={() => joinUrlRedirect()} className='mr-2' faClassName='fa-play' />
+                {isCurrentPlayerHost && <SiteButton value='Start' onClick={() => startGame()} className='mr-2' faClassName='fa-play' />}
                 <SiteButton value='Copy Link' onClick={() => joinUrlCopy()} faClassName='fa-link' />
             </div>
 
