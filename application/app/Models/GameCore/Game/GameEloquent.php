@@ -146,7 +146,7 @@ class GameEloquent implements Game
         return count($this->getPlayers()) < $this->getNumberOfPlayers();
     }
 
-    protected function isPlayerAdded(Player $player): bool
+    public function isPlayerAdded(Player $player): bool
     {
         return in_array(
             $player->getId(),

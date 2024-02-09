@@ -236,4 +236,15 @@ class GameEloquentTest extends TestCase
 
         $this->assertEquals($expected, $this->game->toArray());
     }
+
+    public function testIsPlayerAdded(): void
+    {
+        $this->configureGameForXPlayers();
+        $this->configurePlayerTwo();
+
+        $this->game->addPlayer($this->playerOne, true);
+
+        $this->assertTrue($this->game->isPlayerAdded($this->playerOne));
+        $this->assertFalse($this->game->isPlayerAdded($this->playerTwo));
+    }
 }

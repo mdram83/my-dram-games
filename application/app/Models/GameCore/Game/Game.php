@@ -10,6 +10,7 @@ interface Game
     public function getId(): int|string;
     public function addPlayer(Player $player, bool $host = false): void;
     public function getPlayers(): array;
+    public function isPlayerAdded(Player $player): bool;
     public function getHost(): Player;
     public function setNumberOfPlayers(int $numberOfPlayers): void;
     public function getNumberOfPlayers(): int;
