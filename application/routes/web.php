@@ -3,6 +3,7 @@
 use App\Http\Controllers\Game\GameController;
 use App\Http\Controllers\GameDefinition\GameDefinitionAjaxController;
 use App\Http\Controllers\GameDefinition\GameDefinitionController;
+use App\Http\Controllers\GamePlay\GamePlayController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,7 @@ Route::middleware('ajax')->group(function() {
 
 Route::middleware('auth')->group(function() {
     Route::get('/games/{slug}/{gameId}', [GameController::class, 'update'])->name('join');
-    Route::get('/play/{gameId}', fn() => 'play game placeholder')->name('play');
+    Route::get('/play/{gameId}', [GamePlayController::class, 'join'])->name('play');
 });
 
 Route::middleware('auth')->group(function () {

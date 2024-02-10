@@ -191,6 +191,17 @@ class GameEloquentTest extends TestCase
         $this->assertTrue(in_array($hostId, $playerIds));
     }
 
+    public function testIsPlayerAdded(): void
+    {
+        $this->configureGameForXPlayers();
+        $this->configurePlayerTwo();
+
+        $this->game->addPlayer($this->playerOne, true);
+
+        $this->assertTrue($this->game->isPlayerAdded($this->playerOne));
+        $this->assertFalse($this->game->isPlayerAdded($this->playerTwo));
+    }
+
     public function testThrowExceptionWhenGettingHostAndNotSet(): void
     {
         $this->expectException(GameException::class);
@@ -211,6 +222,24 @@ class GameEloquentTest extends TestCase
         sort($actualPlayerIds);
 
         $this->assertEquals($expectedPlayerIds, $actualPlayerIds);
+    }
+
+    public function testIsHostThrowsExceptionIfNoHost(): void
+    {
+        $this->expectException(GameException::class);
+        $this->game->isHost($this->playerOne);
+    }
+
+    public function testIsHostWhenHostAdded(): void
+    {
+        $this->configureGameForXPlayers();
+        $this->configurePlayerTwo();
+
+        $this->game->addPlayer($this->playerOne, true);
+        $this->game->addPlayer($this->playerTwo);
+
+        $this->assertTrue($this->game->isHost($this->playerOne));
+        $this->assertFalse($this->game->isHost($this->playerTwo));
     }
 
     public function testThrowExceptionWhenToArrayWithoutUpfrontSetup(): void
@@ -235,16 +264,5 @@ class GameEloquentTest extends TestCase
         ];
 
         $this->assertEquals($expected, $this->game->toArray());
-    }
-
-    public function testIsPlayerAdded(): void
-    {
-        $this->configureGameForXPlayers();
-        $this->configurePlayerTwo();
-
-        $this->game->addPlayer($this->playerOne, true);
-
-        $this->assertTrue($this->game->isPlayerAdded($this->playerOne));
-        $this->assertFalse($this->game->isPlayerAdded($this->playerTwo));
     }
 }

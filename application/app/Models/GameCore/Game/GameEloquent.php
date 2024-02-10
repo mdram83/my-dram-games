@@ -74,6 +74,11 @@ class GameEloquent implements Game
         return $this->model->host;
     }
 
+    public function isHost(Player $player): bool
+    {
+        return $this->getHost()->getId() === $player->getId();
+    }
+
     public function setNumberOfPlayers(int $numberOfPlayers): void
     {
         if (!$this->hasGameDefinition()) {

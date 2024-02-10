@@ -51,7 +51,7 @@ class GameController extends Controller
             $game = $repository->getOne($gameId);
             $currentPlayer = $request->user();
 
-            if (!in_array($currentPlayer->getId(), array_map(fn($player) => $player->getId(), $game->getPlayers()))) {
+            if (!$game->isPlayerAdded($currentPlayer)) {
                 $game->addPlayer($currentPlayer);
                 $message = 'You have joined the game!';
             }
