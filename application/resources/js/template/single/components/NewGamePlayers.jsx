@@ -1,7 +1,7 @@
 import React from "react";
 import {useEffect} from "react";
 
-export const NewGamePlayers = ({game, currentPlayerName}) => {
+export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady}) => {
 
     const {players} = game;
     const initialPlayersStatus = players.map((player) => {
@@ -46,6 +46,12 @@ export const NewGamePlayers = ({game, currentPlayerName}) => {
             .leaving((user) => updatePlayerStatus(user.name, false))
             .error((error) => console.log(error));
     }, []);
+
+    useEffect(() => {
+        setAllPlayersReady(
+            playersStatus.length === game.numberOfPlayers && playersStatus.every((player) => player.connected)
+        );
+    });
 
     const renderPlayersList = () => {
 

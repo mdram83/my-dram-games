@@ -13,6 +13,7 @@ if (newGameSectionElement) {
             'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset.gamedefinition)),
             'storeUrl': newGameSectionElement.dataset.storeurl,
             'joinUrlBase': newGameSectionElement.dataset.joinurlbase,
+            'playUrlBase': newGameSectionElement.dataset.playurlbase,
             'currentPlayerName': newGameSectionElement.dataset.currentplayername,
         }
 

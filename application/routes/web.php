@@ -17,6 +17,7 @@ Route::middleware('ajax')->group(function() {
 
 Route::middleware('auth')->group(function() {
     Route::get('/games/{slug}/{gameId}', [GameController::class, 'update'])->name('join');
+    Route::get('/play/{gameId}', fn() => 'play game placeholder')->name('play');
 });
 
 Route::middleware('auth')->group(function () {

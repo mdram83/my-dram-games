@@ -91,6 +91,7 @@
                                          data-gamedefinition="{{ json_encode($gameDefinition) }}"
                                          data-storeurl="{{ route('ajax.play.store', $gameDefinition['slug']) }}"
                                          data-joinurlbase="{{ route('join', ['slug' => $gameDefinition['slug'], 'gameId' => '/']) }}"
+                                         data-playurlbase="{{ route('play', ['gameId' => '/']) }}"
                                          data-auth="{{ Auth::check() }}"
                                          data-loginurl="{{ route('login') }}"
                                          data-currentplayername="{{ Auth::getUser()?->name }}"
