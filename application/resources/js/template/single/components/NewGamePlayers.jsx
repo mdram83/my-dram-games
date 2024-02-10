@@ -44,6 +44,10 @@ export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady}) =>
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
+            .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => {
+                // TODO continue here
+                console.log(e)
+            })
             .error((error) => console.log(error));
     }, []);
 

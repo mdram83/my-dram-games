@@ -3,8 +3,9 @@
 namespace App\Events\GameCore\GamePlay;
 
 use App\Broadcasting\GameCore\Game\GameChannel;
-use Illuminate\Broadcasting\Channel;
+use App\Models\GameCore\Game\Game;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -16,14 +17,18 @@ class GamePlayStartedEvent implements ShouldBroadcast
     use SerializesModels;
 
     public string $gamePlayUrl;
+    private int|string $gameId;
 
-     public function __construct(int|string $gameId)
+     public function __construct(Game $game)
     {
-        $this->gamePlayUrl = route('play', $gameId);
+        $this->gameId = $game->getId();
+        $this->gamePlayUrl = route('play', $this->gameId);
     }
 
-    public function broadcastOn(): array|Channel
+    public function broadcastOn(): array
     {
-        return new GameChannel();
+        return [
+            new PresenceChannel(GameChannel::CHANNEL_ROUTE_PREFIX . $this->gameId)
+        ];
     }
 }

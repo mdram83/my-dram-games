@@ -18,4 +18,4 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel(GameChannel::CHANNEL_NAME, GameChannel::class);
+Broadcast::channel(GameChannel::getRouteName(), GameChannel::class);

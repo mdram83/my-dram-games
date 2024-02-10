@@ -4,23 +4,21 @@ namespace App\Broadcasting\GameCore\Game;
 
 use App\Models\GameCore\Game\GameRepository;
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Facades\App;
 
-class GameChannel extends Channel
+class GameChannel
 {
-    private GameRepository $repository;
-    public const CHANNEL_NAME = 'game.{gameId}';
+    public const CHANNEL_ROUTE_PREFIX = 'game.';
+    public const CHANNEL_ROUTE_PARAM = '{gameId}';
 
-    public function __construct()
+    public static function getRouteName(): string
     {
-        parent::__construct(static::CHANNEL_NAME);
-        $this->repository = App::make(GameRepository::class);
+        return static::CHANNEL_ROUTE_PREFIX . static::CHANNEL_ROUTE_PARAM;
     }
 
     public function join(User $user, int|string $gameId): array|bool
     {
-        if ($this->repository->getOne($gameId)->isPlayerAdded($user)) {
+        if (App::make(GameRepository::class)->getOne($gameId)->isPlayerAdded($user)) {
             return ['name' => $user->getName()];
         }
         return false;

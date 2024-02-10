@@ -28,16 +28,18 @@ class GamePlayController extends Controller
             }
 
             if ($game->isHost($player)) {
-                GamePlayStartedEvent::dispatch($gameId);
+                GamePlayStartedEvent::dispatch($game);
             }
 
         } catch (GameException $e) {
             return Redirect::route('home')->withErrors(['general' => $e->getMessage()]);
 
-        } catch (Exception) {
+        }
+        catch (Exception) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, 'Internal error');
         }
 
+        // TODO update later with proper GamePlay object created etc.
         return new Response('temp response', 200);
     }
 }
