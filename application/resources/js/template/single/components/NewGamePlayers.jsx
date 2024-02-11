@@ -45,8 +45,7 @@ export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady, aut
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
             .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => {
-                autoStart();
-                console.log(e);
+                autoStart(e.gamePlayUrl);
             })
             .error((error) => console.log(error));
     }, []);

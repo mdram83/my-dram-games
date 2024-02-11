@@ -6,11 +6,10 @@ import axios from "axios";
 export const NewGameSummary = ({game, joinUrlBase, playUrlBase, startUrlBase, currentPlayerName}) => {
 
     const joinUrl = joinUrlBase + '/' + game.id;
-    const playUrl = playUrlBase + '/' + game.id;
+    const playUrl = playUrlBase + '/' + game.id; // TODO this one will be used when player want to join gameplay already started (kind of restart playing)
     const startUrl = startUrlBase + '/' + game.id;
 
     const startGame = () => {
-        // window.location.assign(playUrl);
         axios
             .post(startUrl, {})
             .then(response => {
@@ -20,7 +19,7 @@ export const NewGameSummary = ({game, joinUrlBase, playUrlBase, startUrlBase, cu
                 console.log(error);
             });
     }
-    const play = () => window.location.assign(playUrl);
+    const play = (url) => window.location.assign(url);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
     const isCurrentPlayerHost = game.host.name === currentPlayerName;
 
@@ -34,7 +33,7 @@ export const NewGameSummary = ({game, joinUrlBase, playUrlBase, startUrlBase, cu
             <NewGamePlayers game={game}
                             currentPlayerName={currentPlayerName}
                             setAllPlayersReady={(ready) => setAllPlayersReady(ready)}
-                            autoStart={() => play()}
+                            autoStart={(url) => play(url)}
             />
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
