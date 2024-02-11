@@ -1,5 +1,5 @@
 const modules = import.meta.glob('./**/*.jsx');
-console.log(modules);
+modules.hasOwnProperty(undefined);
 
 import './bootstrap';
 import Alpine from 'alpinejs';

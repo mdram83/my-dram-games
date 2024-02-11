@@ -1,7 +1,7 @@
 import React from "react";
 import {useEffect} from "react";
 
-export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady}) => {
+export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady, autoStart}) => {
 
     const {players} = game;
     const initialPlayersStatus = players.map((player) => {
@@ -45,8 +45,8 @@ export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady}) =>
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
             .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => {
-                // TODO continue here
-                console.log(e)
+                // autoStart();
+                console.log(e);
             })
             .error((error) => console.log(error));
     }, []);

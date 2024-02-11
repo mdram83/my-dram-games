@@ -1,12 +1,24 @@
 import React from "react";
 import {SiteButton} from "../../components/SiteButton.jsx";
 import {NewGamePlayers} from "./NewGamePlayers.jsx";
+import axios from "axios";
 
 export const NewGameSummary = ({game, joinUrlBase, playUrlBase, currentPlayerName}) => {
 
     const joinUrl = joinUrlBase + '/' + game.id;
     const playUrl = playUrlBase + '/' + game.id;
-    const startGame = () => window.location.href = playUrl;
+    const startGame = () => {
+        // window.location.assign(playUrl);
+        axios
+            .get(playUrl, {})
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+    const autoStart = () => window.location.assign(playUrl);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
     const isCurrentPlayerHost = game.host.name === currentPlayerName;
 
@@ -20,6 +32,7 @@ export const NewGameSummary = ({game, joinUrlBase, playUrlBase, currentPlayerNam
             <NewGamePlayers game={game}
                             currentPlayerName={currentPlayerName}
                             setAllPlayersReady={(ready) => setAllPlayersReady(ready)}
+                            autoStart={() => startGame()}
             />
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameRepository;
 use Exception;
+use Illuminate\Contracts\Broadcasting\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GamePlayController extends Controller
 {
-    public function join(Request $request, GameRepository $repository, int|string $gameId): View|Response|RedirectResponse
+    public function join(
+        Request $request,
+        GameRepository $repository,
+//        Factory $broadcast,
+        int|string $gameId,
+    ): View|Response|RedirectResponse
     {
         try {
             $game = $repository->getOne($gameId);
@@ -29,6 +35,8 @@ class GamePlayController extends Controller
 
             if ($game->isHost($player)) {
                 GamePlayStartedEvent::dispatch($game);
+//                broadcast(new GamePlayStartedEvent($game))->toOthers();
+//                $broadcast->event(new GamePlayStartedEvent($game))->toOthers();
             }
 
         } catch (GameException $e) {
