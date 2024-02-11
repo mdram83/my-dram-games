@@ -3,7 +3,7 @@ import {NewGameForm} from "./NewGameForm.jsx";
 import {NewGameSummary} from "./NewGameSummary.jsx";
 import {SiteButton} from "../../components/SiteButton.jsx";
 
-export const NewGameSection = ({gameDefinition, storeUrl, joinUrlBase, playUrlBase, currentPlayerName, currentGame = undefined}) => {
+export const NewGameSection = ({gameDefinition, storeUrl, joinUrlBase, playUrlBase, startUrlBase, currentPlayerName, currentGame = undefined}) => {
 
     const [buttonOn, toggleButton] = React.useState(!currentGame);
     const [formOn, toggleForm] = React.useState(false);
@@ -31,7 +31,7 @@ export const NewGameSection = ({gameDefinition, storeUrl, joinUrlBase, playUrlBa
         <>
             {buttonOn && <SiteButton value="New Game" onClick={() => enableForm()} />}
             {formOn && <NewGameForm {...gameDefinition} storeUrl={storeUrl} onCancel={() => cancelForm()} onCreate={(game) => showGame(game)} />}
-            {gameOn && <NewGameSummary game={game} joinUrlBase={joinUrlBase} playUrlBase={playUrlBase} currentPlayerName={currentPlayerName} />}
+            {gameOn && <NewGameSummary game={game} joinUrlBase={joinUrlBase} playUrlBase={playUrlBase} startUrlBase={startUrlBase} currentPlayerName={currentPlayerName} />}
         </>
     );
 }

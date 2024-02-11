@@ -8,6 +8,7 @@ use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
@@ -16,12 +17,17 @@ use Tests\TestCase;
 
 class GamePlayControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected bool $commonSetup = false;
 
     protected Player $host;
     protected Player $player;
     protected Player $notPlayer;
     protected Game $game;
+
+    protected string $storeRouteName = 'play.store';
+    protected string $joinRouteName = 'play';
 
     public function setUp(): void
     {
@@ -44,62 +50,89 @@ class GamePlayControllerTest extends TestCase
         }
     }
 
-    public function getResponse(Player $player): TestResponse
+    public function getStoreResponse(Player $player): TestResponse
     {
         return $this
             ->actingAs($player)
-            ->get(route('play', ['gameId' => $this->game->getId()]));
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post(route($this->storeRouteName, ['gameId' => $this->game->getId()]));
     }
 
-    public function testGuestGetRedirectedToLoginWithRedirectUrl(): void
+    public function testStoreGuestUnauthorizedWithNoEvent(): void
     {
-        $response = $this->get(route('play', ['gameId' => $this->game->getId()]));
-        $response->assertStatus(Response::HTTP_FOUND);
+        Event::fake();
+        $response = $this
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post(route($this->storeRouteName, ['gameId' => $this->game->getId()]));
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        Event::assertNotDispatched(GamePlayStartedEvent::class);
     }
 
-    public function testNotPlayerGetForbiddenResponse(): void
+    public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
     {
-        $response = $this->getResponse($this->notPlayer);
+        Event::fake();
+        $response = $this->getStoreResponse($this->notPlayer);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
+        Event::assertNotDispatched(GamePlayStartedEvent::class);
     }
 
-    public function testHostGetOkResponseAndStartGenerateEvent(): void
+    public function testStorePlayerGetForbiddenResponseWithNoEvent(): void
+    {
+        Event::fake();
+        $response = $this->getStoreResponse($this->player);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        Event::assertNotDispatched(GamePlayStartedEvent::class);
+    }
+
+    public function testStoreHostGetOkResponseAndStartGenerateEvent(): void
     {
         Event::fake();
         $gameId = $this->game->getId();
 
-        $response = $this->getResponse($this->host);
+        $response = $this->getStoreResponse($this->host);
 
         $response->assertStatus(Response::HTTP_OK);
         Event::assertDispatched(GamePlayStartedEvent::class, function($e) use ($gameId) {
-            return $e->gamePlayUrl === route('play', $gameId);
+            return $e->gamePlayUrl === route($this->storeRouteName, $gameId);
         });
     }
 
-    public function testPlayerGetOkResponseAndStartEventNotGenerated(): void
+    public function testStoreWithWrongGameIdResultInError(): void
     {
-        Event::fake();
-
-        $response = $this->getResponse($this->player);
-        $response->assertStatus(Response::HTTP_OK);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        $response = $this
+            ->actingAs($this->host)
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post(route($this->storeRouteName, ['gameId' => 'wrong-123-gg']));
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function testJoinWithWrongGameId(): void
-    {
-        $response = $this->actingAs($this->host)->get(route('play', ['gameId' => 'wrong-123-gg']));
-        $response->assertStatus(Response::HTTP_FOUND);
-        $response->assertRedirectToRoute('home');
-        $response->assertSessionHasErrors(['general' => 'Game not found']);
-    }
-
-//    public function testHostGetOkResponseAndNoEventWhenStartingSecondTime(): void
+//    public function testStoreHostGetOkResponseAndNoEventWhenStartingSecondTime(): void
 //    {
 //        // TODO update later with proper functionality to start the game only once (creating GamePlay object!!!)
 //    }
 //
-//    public function testJoiningGamePlayNotStartedByHostFails(): void
+//    public function testStoreJoiningGamePlayNotStartedByHostFails(): void
 //    {
 //        // TODO update later with proper functionality to start the game (creating GamePlay object!!!)
 //    }
+
+    public function testJoinHostGetOkResponseAndView(): void
+    {
+
+    }
+
+    public function testJoinPlayerGetOkResponseAndView(): void
+    {
+
+    }
+
+    public function testJoinNotPlayerGetForbidden(): void
+    {
+
+    }
+
+    public function testJoinGuesGetLoginRedirect(): void
+    {
+
+    }
 }

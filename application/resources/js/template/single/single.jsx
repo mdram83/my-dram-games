@@ -14,6 +14,7 @@ if (newGameSectionElement) {
             'storeUrl': newGameSectionElement.dataset.storeurl,
             'joinUrlBase': newGameSectionElement.dataset.joinurlbase,
             'playUrlBase': newGameSectionElement.dataset.playurlbase,
+            'startUrlBase': newGameSectionElement.dataset.starturlbase,
             'currentPlayerName': newGameSectionElement.dataset.currentplayername,
         }
 

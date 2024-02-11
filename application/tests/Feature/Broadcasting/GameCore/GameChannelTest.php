@@ -17,25 +17,25 @@ class GameChannelTest extends TestCase
     protected User $host;
     protected User $guest;
     protected Game $game;
-    protected bool $setupDone = false;
+    protected bool $commonSetup = false;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        if ($this->setupDone) {
-            return;
+        if (!$this->commonSetup) {
+            $this->host = User::factory()->create();
+            $this->guest = User::factory()->create();
+
+            $slug = array_keys(Config::get('games')['gameDefinition'])[0];
+            $gameDefinition = App::make(GameDefinitionRepository::class)->getOne($slug);
+            $numberOfPlayers = $gameDefinition->getNumberOfPlayers()[0];
+
+            $factory = App::make(GameFactory::class);
+            $this->game = $factory->create($slug, $numberOfPlayers, $this->host);
+
+            $this->commonSetup = true;
         }
-
-        $this->host = User::factory()->create();
-        $this->guest = User::factory()->create();
-
-        $slug = array_keys(Config::get('games')['gameDefinition'])[0];
-        $gameDefinition = App::make(GameDefinitionRepository::class)->getOne($slug);
-        $numberOfPlayers = $gameDefinition->getNumberOfPlayers()[0];
-
-        $factory = App::make(GameFactory::class);
-        $this->game = $factory->create($slug, $numberOfPlayers, $this->host);
     }
 
     public function getResponse(

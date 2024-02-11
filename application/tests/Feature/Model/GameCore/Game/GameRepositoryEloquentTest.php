@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Model\GameCore\Game;
 
-use App\Models\GameCore\Game\Game;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\Game\GameRepository;
-use App\Models\GameCore\Game\GameRepositoryEloquent;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
 use App\Models\User;
