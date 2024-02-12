@@ -21,6 +21,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GameController extends Controller
 {
+    public const MESSAGE_PLAYER_JOINED = 'You have joined the game!';
+    public const MESSAGE_PLAYER_BACK = 'Welcome back!';
+    public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
+
     public function store(Request $request, GameFactory $factory): Response
     {
         try {
@@ -36,7 +40,7 @@ class GameController extends Controller
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
         } catch (Exception) {
-            return new Response(['message' => 'Internal error'], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return new Response(['message' => static::MESSAGE_INTERNAL_ERROR], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new Response($responseContent, SymfonyResponse::HTTP_OK);
@@ -50,7 +54,7 @@ class GameController extends Controller
 
             if (!$game->isPlayerAdded($currentPlayer)) {
                 $game->addPlayer($currentPlayer);
-                $message = 'You have joined the game!';
+                $message = static::MESSAGE_PLAYER_JOINED;
             }
 
             $responseContent = [
@@ -62,10 +66,10 @@ class GameController extends Controller
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
 
         } catch (Exception) {
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, 'Internal error');
+            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
 
-        Session::flash('success', ($message ?? 'Welcome back!'));
+        Session::flash('success', ($message ?? static::MESSAGE_PLAYER_BACK));
         return view('single', $responseContent);
     }
 
@@ -77,7 +81,7 @@ class GameController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $message = json_encode(['message' => 'Incorrect inputs', 'errors' => $validator->errors()]);
+            $message = json_encode(['message' => static::MESSAGE_INCORRECT_INPUTS, 'errors' => $validator->errors()]);
             throw new ControllerException($message);
         }
     }

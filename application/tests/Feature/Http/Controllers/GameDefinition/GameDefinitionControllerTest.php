@@ -20,13 +20,13 @@ class GameDefinitionControllerTest extends TestCase
 
     public function testResponseOk(): void
     {
-        $response = $this->get('/games/' . $this->slug);
+        $response = $this->get(route('games.show', $this->slug));
         $response->assertStatus(Response::HTTP_OK);
     }
 
     public function testDataIsProvided(): void
     {
-        $response = $this->get('games/' . $this->slug);
+        $response = $this->get(route('games.show', $this->slug));
 
         $repository = $this->app->make(GameDefinitionRepository::class);
         $gameDefinition = $repository->getOne($this->slug)->toArray();

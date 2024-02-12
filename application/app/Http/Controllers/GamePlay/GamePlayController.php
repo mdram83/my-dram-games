@@ -23,7 +23,7 @@ class GamePlayController extends Controller
             $player = $request->user();
 
             if (!$game->isPlayerAdded($player) || !$game->isHost($player)) {
-                return new Response('Forbidden', SymfonyResponse::HTTP_FORBIDDEN);
+                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
             }
 
             // TODO here I will need to create proper GamePlay object
@@ -34,7 +34,7 @@ class GamePlayController extends Controller
 
         }
         catch (Exception) {
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, 'Internal error');
+            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
 
         // TODO update later with proper GamePlay object created etc. if needed

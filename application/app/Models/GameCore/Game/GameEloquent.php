@@ -32,23 +32,23 @@ class GameEloquent implements Game
     public function addPlayer(Player $player, bool $host = false): void
     {
         if (!$this->hasNumberOfPlayers()) {
-            throw new GameException('Number of players not set');
+            throw new GameException(GameException::MESSAGE_NO_OF_PLAYERS_NOT_SET);
         }
 
         if ($this->isPlayerAdded($player)) {
-            throw new GameException('Player already added');
+            throw new GameException(GameException::MESSAGE_PLAYER_ALREADY_ADDED);
         }
 
         if (!$this->canAddMorePlayers()) {
-            throw new GameException('Number of players exceeded');
+            throw new GameException(GameException::MESSAGE_TOO_MANY_PLAYERS);
         }
 
         if ($host === true && $this->hasHost()) {
-            throw new GameException('Host already added');
+            throw new GameException(GameException::MESSAGE_HOST_ALREADY_ADDED);
         }
 
         if ($host === false && !$this->hasPlayers()) {
-            throw new GameException('Host not set');
+            throw new GameException(GameException::MESSAGE_HOST_NOT_SET);
         }
 
         if ($host === true) {
@@ -68,7 +68,7 @@ class GameEloquent implements Game
     public function getHost(): Player
     {
         if (!$this->hasHost()) {
-            throw new GameException('Host not set');
+            throw new GameException(GameException::MESSAGE_HOST_NOT_SET);
         }
 
         return $this->model->host;
@@ -82,15 +82,15 @@ class GameEloquent implements Game
     public function setNumberOfPlayers(int $numberOfPlayers): void
     {
         if (!$this->hasGameDefinition()) {
-            throw new GameException('Game definition not set');
+            throw new GameException(GameException::MESSAGE_GAME_DEFINITION_NOT_SET);
         }
 
         if (!$this->isAllowedNumberOfPlayers($numberOfPlayers)) {
-            throw new GameException('Number of players not matching game definition');
+            throw new GameException(GameException::MESSAGE_NO_OF_PLAYERS_EXCEED_DEF);
         }
 
         if ($this->hasNumberOfPlayers()) {
-            throw new GameException('Number of players already set');
+            throw new GameException(GameException::MESSAGE_NO_OF_PLAYERS_WAS_SET);
         }
 
         $this->model->numberOfPlayers = $numberOfPlayers;
@@ -100,7 +100,7 @@ class GameEloquent implements Game
     public function getNumberOfPlayers(): int
     {
         if (!$this->hasNumberOfPlayers()) {
-            throw new GameException('Number of players not set');
+            throw new GameException(GameException::MESSAGE_NO_OF_PLAYERS_NOT_SET);
         }
         return $this->model->numberOfPlayers;
     }
@@ -108,7 +108,7 @@ class GameEloquent implements Game
     public function setGameDefinition(GameDefinition $gameDefinition): void
     {
         if ($this->hasGameDefinition()) {
-            throw new GameException('Game definition already set');
+            throw new GameException(GameException::MESSAGE_GAME_DEFINITION_WAS_SET);
         }
 
         $this->gameDefinition = $gameDefinition;
@@ -120,7 +120,7 @@ class GameEloquent implements Game
     public function getGameDefinition(): GameDefinition
     {
         if (!$this->hasGameDefinition()) {
-            throw new GameException('Game definition not set');
+            throw new GameException(GameException::MESSAGE_GAME_DEFINITION_NOT_SET);
         }
 
         if (!isset($this->gameDefinition)) {
@@ -193,7 +193,7 @@ class GameEloquent implements Game
     protected function loadExisingModel(string $id): void
     {
         if (!($model = GameEloquentModel::where('id', $id)->first())) {
-            throw new GameException('Game not found');
+            throw new GameException(GameException::MESSAGE_GAME_NOT_FOUND);
         }
         $this->model = $model;
     }

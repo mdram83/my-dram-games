@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers\Game;
 
+use App\Http\Controllers\Game\GameController;
 use App\Models\GameCore\Game\Game;
+use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameRepository;
 use App\Models\GameCore\GameDefinition\GameDefinition;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
@@ -155,7 +157,7 @@ class GameControllerTest extends TestCase
         $response = $this->getJoinResponse(gameId: 'whateverToTestMissingMessage');
         $response->assertStatus(Response::HTTP_FOUND);
         $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
-        $response->assertSessionHasErrors(['general' => 'Game not found']);
+        $response->assertSessionHasErrors(['general' => GameException::MESSAGE_GAME_NOT_FOUND]);
     }
 
     public function testJoinGameAlreadyFullGetErrors(): void
@@ -171,7 +173,7 @@ class GameControllerTest extends TestCase
         $response = $this->getJoinResponse(gameId: $gameId);
         $response->assertStatus(Response::HTTP_FOUND);
         $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
-        $response->assertSessionHasErrors(['general' => 'Number of players exceeded']);
+        $response->assertSessionHasErrors(['general' => GameException::MESSAGE_TOO_MANY_PLAYERS]);
     }
 
     public function testJoinGameWithSuccess(): void
@@ -183,7 +185,7 @@ class GameControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewIs('single');
-        $response->assertSessionHas(['success' => 'You have joined the game!']);
+        $response->assertSessionHas(['success' => GameController::MESSAGE_PLAYER_JOINED]);
         $response->assertViewHas(['game.id' => $gameId, 'game.host.name' => $game->getHost()->getName()]);
     }
 
@@ -197,7 +199,7 @@ class GameControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewIs('single');
-        $response->assertSessionHas(['success' => 'Welcome back!']);
+        $response->assertSessionHas(['success' => GameController::MESSAGE_PLAYER_BACK]);
         $response->assertViewHas(['game.id' => $gameId, 'game.host.name' => $game->getHost()->getName()]);
     }
 }

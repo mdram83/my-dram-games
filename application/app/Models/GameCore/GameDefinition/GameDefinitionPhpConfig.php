@@ -20,7 +20,7 @@ class GameDefinitionPhpConfig implements GameDefinition
         $this->slug = $slug;
 
         if (!$definition = Config::get('games.gameDefinition.' . $this->slug)) {
-            throw new GameDefinitionException('Missing game configuration');
+            throw new GameDefinitionException(GameDefinitionException::MESSAGE_GAME_DEFINITION_MISSING);
         }
 
         if (
@@ -28,7 +28,7 @@ class GameDefinitionPhpConfig implements GameDefinition
             || !($this->numberOfPlayers = $definition['numberOfPlayers'] ?? [])
             || !isset($definition['isActive'])
         ) {
-            throw new GameDefinitionException('Incorrect game configuration');
+            throw new GameDefinitionException(GameDefinitionException::MESSAGE_INCORRECT_CONFIGURATION);
         }
 
         $this->description = $definition['description'] ?? null;

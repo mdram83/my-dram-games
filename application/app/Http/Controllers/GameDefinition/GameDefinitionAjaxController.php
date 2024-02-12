@@ -17,7 +17,7 @@ class GameDefinitionAjaxController extends Controller
                 throw new Exception();
             }
         } catch (Exception) {
-            return new Response('Not found', 404);
+            return new Response(static::MESSAGE_NOT_FOUND, 404);
         }
 
         return new Response(json_encode($content));

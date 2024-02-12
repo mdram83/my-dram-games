@@ -8,12 +8,9 @@ export const NewGameSummary = ({game, slug}) => {
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, game.id);
 
     const startGame = () => {
-        axios
-            .post(window.MyDramGames.routes["ajax.gameplay.store"], {gameId: game.id})
+        axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameId: game.id})
             .then(response => { })
-            .catch(error => {
-                console.log(error);
-            });
+            .catch(error =>  console.log(error));
     }
     const play = () => window.location.href = window.MyDramGames.routes["gameplay.show"](game.id);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
@@ -25,22 +22,15 @@ export const NewGameSummary = ({game, slug}) => {
         <div className="text-white">
 
             <h4 className="font-bold font-sans mb-4">Game Settings</h4>
-
-            <NewGamePlayers game={game}
-                            setAllPlayersReady={(ready) => setAllPlayersReady(ready)}
-                            autoStart={(url) => play(url)}
-            />
+            <NewGamePlayers game={game} setAllPlayersReady={(ready) => setAllPlayersReady(ready)} autoStart={() => play()} />
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
-
                 {
                     isCurrentPlayerHost &&
                     allPlayersReady &&
                     <SiteButton value='Start' onClick={() => startGame()} className='mr-2' faClassName='fa-play' />
                 }
-
                 <SiteButton value='Copy Link' onClick={() => joinUrlCopy()} faClassName='fa-link' />
-
             </div>
 
             {/*TEMP SECTION*/}

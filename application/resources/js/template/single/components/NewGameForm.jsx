@@ -39,11 +39,7 @@ export const NewGameForm = (props) => {
                 props.onCreate(response.data.game);
             })
             .catch(error => {
-                setErrorMessage(
-                    error.response.status === 400
-                        ? 'Something went wrong. ' + (error.response.data.message ?? '')
-                        : 'Sorry, something went wrong'
-                );
+                setErrorMessage(error.response.data.message ?? 'Unexpected error');
                 toggleButtons(true);
             });
     }

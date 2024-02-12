@@ -40,6 +40,8 @@ class GameRepositoryEloquentTest extends TestCase
             $this->slug = $gameDefinition->getSlug();
             $this->numberOfPlayers = $gameDefinition->getNumberOfPlayers()[0];
             $this->host = User::factory()->create();
+
+            $this->commonSetup = true;
         }
     }
 

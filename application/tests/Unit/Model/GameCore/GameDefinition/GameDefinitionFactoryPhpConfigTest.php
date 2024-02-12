@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class GameDefinitionFactoryPhpConfigTest extends TestCase
 {
-    public function test_createGameDefinition(): void
+    public function testCreateGameDefinition(): void
     {
         $slug = 'test-slug';
         $definition = [
