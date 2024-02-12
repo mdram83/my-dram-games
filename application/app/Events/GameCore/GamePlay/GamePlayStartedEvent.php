@@ -16,13 +16,11 @@ class GamePlayStartedEvent implements ShouldBroadcast
     use InteractsWithSockets;
     use SerializesModels;
 
-    public string $gamePlayUrl;
     private int|string $gameId;
 
-     public function __construct(Game $game)
+    public function __construct(Game $game)
     {
         $this->gameId = $game->getId();
-        $this->gamePlayUrl = route('gameplay.show', $this->gameId);
     }
 
     public function broadcastOn(): array

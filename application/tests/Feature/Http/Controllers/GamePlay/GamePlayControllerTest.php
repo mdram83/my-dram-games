@@ -87,14 +87,9 @@ class GamePlayControllerTest extends TestCase
     public function testStoreHostGetOkResponseAndStartGenerateEvent(): void
     {
         Event::fake();
-        $gameId = $this->game->getId();
-
         $response = $this->getStoreResponse($this->host);
-
         $response->assertStatus(Response::HTTP_OK);
-        Event::assertDispatched(GamePlayStartedEvent::class, function($e) use ($gameId) {
-            return $e->gamePlayUrl === route($this->joinRouteName, $gameId);
-        });
+        Event::assertDispatched(GamePlayStartedEvent::class);
     }
 
     public function testStoreWithWrongGameIdResultInError(): void

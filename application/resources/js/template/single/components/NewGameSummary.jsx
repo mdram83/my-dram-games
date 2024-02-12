@@ -6,19 +6,16 @@ import axios from "axios";
 export const NewGameSummary = ({game, slug}) => {
 
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, game.id);
-    const playUrl = window.MyDramGames.routes["gameplay.show"](game.id); // TODO this one will be used when player want to join gameplay already started (kind of restart playing)
 
     const startGame = () => {
         axios
             .post(window.MyDramGames.routes["ajax.gameplay.store"], {gameId: game.id})
-            .then(response => {
-
-            })
+            .then(response => { })
             .catch(error => {
                 console.log(error);
             });
     }
-    const play = (url) => window.location.assign(url);
+    const play = () => window.location.href = window.MyDramGames.routes["gameplay.show"](game.id);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
     const isCurrentPlayerHost = game.host.name === window.MyDramGames.user.username;
 
