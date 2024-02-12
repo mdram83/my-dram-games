@@ -3,7 +3,7 @@ import {SiteButton} from "../../components/SiteButton.jsx";
 import {NewGamePlayers} from "./NewGamePlayers.jsx";
 import axios from "axios";
 
-export const NewGameSummary = ({game, slug, currentPlayerName}) => {
+export const NewGameSummary = ({game, slug}) => {
 
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, game.id);
     const playUrl = window.MyDramGames.routes["gameplay.show"](game.id); // TODO this one will be used when player want to join gameplay already started (kind of restart playing)
@@ -20,7 +20,7 @@ export const NewGameSummary = ({game, slug, currentPlayerName}) => {
     }
     const play = (url) => window.location.assign(url);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
-    const isCurrentPlayerHost = game.host.name === currentPlayerName;
+    const isCurrentPlayerHost = game.host.name === window.MyDramGames.user.username;
 
     const [allPlayersReady, setAllPlayersReady] = React.useState(false);
 
@@ -30,7 +30,6 @@ export const NewGameSummary = ({game, slug, currentPlayerName}) => {
             <h4 className="font-bold font-sans mb-4">Game Settings</h4>
 
             <NewGamePlayers game={game}
-                            currentPlayerName={currentPlayerName}
                             setAllPlayersReady={(ready) => setAllPlayersReady(ready)}
                             autoStart={(url) => play(url)}
             />

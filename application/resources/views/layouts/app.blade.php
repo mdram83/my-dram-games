@@ -102,6 +102,7 @@
     <script src="{{ asset('js/main.js') }}"></script>
 
     <x-jsfeeds.route-names />
+    <x-jsfeeds.user-data />
     @stack('custom-scripts')
 
 </body>

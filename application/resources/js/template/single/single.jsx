@@ -7,15 +7,13 @@ const newGameSectionElement = document.querySelector('#js-single-new-game-sectio
 
 if (newGameSectionElement) {
 
-    if (newGameSectionElement.dataset.auth) {
+    if (window.MyDramGames.user.auth) {
 
         const props = {
-            'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset.gamedefinition)),
-            'currentPlayerName': newGameSectionElement.dataset.currentplayername,
-        }
-
-        if (newGameSectionElement.dataset.currentgame) {
-            props.currentGame = Object.assign({}, JSON.parse(newGameSectionElement.dataset.currentgame));
+            'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset['game.definition'])),
+            'currentGame': newGameSectionElement.dataset['current.game']
+                ? Object.assign({}, JSON.parse(newGameSectionElement.dataset['current.game']))
+                : undefined,
         }
 
         createRoot(newGameSectionElement).render(<NewGameSection {...props} />);

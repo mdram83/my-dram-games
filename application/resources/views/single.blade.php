@@ -86,12 +86,9 @@
                                         @vite('resources/js/template/single/single.jsx')
                                     @endpush
 
-                                    <div class=""
-                                         id="js-single-new-game-section"
-                                         data-gamedefinition="{{ json_encode($gameDefinition) }}"
-                                         data-auth="{{ Auth::check() }}"
-                                         data-currentplayername="{{ Auth::getUser()?->name }}"
-                                         data-currentgame="{{ isset($game) ? json_encode($game) : null }}"
+                                    <div id="js-single-new-game-section"
+                                         data-game.definition="{{ json_encode($gameDefinition) }}"
+                                         data-current.game="{{ isset($game) ? json_encode($game) : null }}"
                                     ></div>
 
                                 @endif

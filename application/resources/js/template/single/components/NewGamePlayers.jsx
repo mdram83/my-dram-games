@@ -1,14 +1,14 @@
 import React from "react";
 import {useEffect} from "react";
 
-export const NewGamePlayers = ({game, currentPlayerName, setAllPlayersReady, autoStart}) => {
+export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
 
     const {players} = game;
     const initialPlayersStatus = players.map((player) => {
         return {
             name: player.name,
             host: player.name === game.host.name,
-            connected: player.name === currentPlayerName,
+            connected: player.name === false,
         }
     });
 
