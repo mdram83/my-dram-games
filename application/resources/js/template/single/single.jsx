@@ -11,10 +11,6 @@ if (newGameSectionElement) {
 
         const props = {
             'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset.gamedefinition)),
-            'storeUrl': newGameSectionElement.dataset.storeurl,
-            'joinUrlBase': newGameSectionElement.dataset.joinurlbase,
-            'playUrlBase': newGameSectionElement.dataset.playurlbase,
-            'startUrlBase': newGameSectionElement.dataset.starturlbase,
             'currentPlayerName': newGameSectionElement.dataset.currentplayername,
         }
 
@@ -25,11 +21,7 @@ if (newGameSectionElement) {
         createRoot(newGameSectionElement).render(<NewGameSection {...props} />);
 
     } else {
-
-        const props = {
-            'loginUrl': newGameSectionElement.dataset.loginurl,
-        }
-        createRoot(newGameSectionElement).render(<NewGameLoginRedirect {...props} />);
+        createRoot(newGameSectionElement).render(<NewGameLoginRedirect />);
 
     }
 }

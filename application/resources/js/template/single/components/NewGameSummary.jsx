@@ -3,17 +3,16 @@ import {SiteButton} from "../../components/SiteButton.jsx";
 import {NewGamePlayers} from "./NewGamePlayers.jsx";
 import axios from "axios";
 
-export const NewGameSummary = ({game, joinUrlBase, playUrlBase, startUrlBase, currentPlayerName}) => {
+export const NewGameSummary = ({game, slug, currentPlayerName}) => {
 
-    const joinUrl = joinUrlBase + '/' + game.id;
-    const playUrl = playUrlBase + '/' + game.id; // TODO this one will be used when player want to join gameplay already started (kind of restart playing)
-    const startUrl = startUrlBase + '/' + game.id;
+    const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, game.id);
+    const playUrl = window.MyDramGames.routes["gameplay.show"](game.id); // TODO this one will be used when player want to join gameplay already started (kind of restart playing)
 
     const startGame = () => {
         axios
-            .post(startUrl, {})
+            .post(window.MyDramGames.routes["ajax.gameplay.store"], {gameId: game.id})
             .then(response => {
-                console.log(response);
+
             })
             .catch(error => {
                 console.log(error);

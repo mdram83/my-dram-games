@@ -29,12 +29,12 @@ class GameDefinitionAjaxControllerTest extends TestCase
     {
         return $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->get(route('ajax.gameDefinition.index'));
+            ->get(route('ajax.games.index'));
     }
 
     public function testNonAjaxRequestResponseUnauthorized(): void
     {
-        $response = $this->get(route('ajax.gameDefinition.index'));
+        $response = $this->get(route('ajax.games.index'));
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 

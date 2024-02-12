@@ -16,6 +16,7 @@ export const NewGameForm = (props) => {
         setCreateButtonIcon(on ? 'fa-angle-double-right' : 'fa-cog fa-spin');
     }
 
+    const {slug} = props;
     const {numberOfPlayers} = props;
     const numberOfPlayersOptions = numberOfPlayers.map((number, index) => {
         const id = 'numberOfPlayers-' + number;
@@ -30,8 +31,9 @@ export const NewGameForm = (props) => {
     const submit = () => {
         toggleButtons(false);
         axios
-            .post(props.storeUrl, {
+            .post(window.MyDramGames.routes['ajax.game-invites.store'], {
                 numberOfPlayers: document.querySelector('input[name="numberOfPlayers"]:checked').value,
+                slug: slug,
             })
             .then(response => {
                 props.onCreate(response.data.game);

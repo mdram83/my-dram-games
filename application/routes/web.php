@@ -8,21 +8,21 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// TODO rethink and adjust routes and their names, considering storing names in ENV?
-
 Route::get('/', HomeController::class)->name('home');
-Route::get('/games/{slug}', [GameDefinitionController::class, 'show'])->name('games');
+Route::get('/games/{slug}', [GameDefinitionController::class, 'show'])->name('games.show');
 
 Route::middleware('ajax')->group(function() {
-    Route::get('/ajax/gameDefinition', [GameDefinitionAjaxController::class, 'index'])->name('ajax.gameDefinition.index');
-    Route::post('/ajax/play/{slug}', [GameController::class, 'store'])->name('ajax.play.store'); // TODO this one to rename
-    Route::post('/play/{gameId}', [GamePlayController::class, 'store'])->name('play.store'); // TODO this for building gameplay, add ajax prefix
+    Route::get('/ajax/games', [GameDefinitionAjaxController::class, 'index'])->name('ajax.games.index');
+});
+
+Route::middleware('ajax.auth')->group(function() {
+    Route::post('/ajax/game-invites', [GameController::class, 'store'])->name('ajax.game-invites.store');
+    Route::post('/ajax/gameplay', [GamePlayController::class, 'store'])->name('ajax.gameplay.store');
 });
 
 Route::middleware('auth')->group(function() {
-    Route::get('/games/{slug}/{gameId}', [GameController::class, 'update'])->name('join');
-    Route::get('/play/{gameId}', [GamePlayController::class, 'join'])->name('play'); // TODO this will be for joining
-
+    Route::get('/games/{slug}/{gameId}', [GameController::class, 'join'])->name('game-invites.join');
+    Route::get('/play/{gameId}', [GamePlayController::class, 'show'])->name('gameplay.show');
 });
 
 Route::middleware('auth')->group(function () {

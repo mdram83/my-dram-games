@@ -26,8 +26,8 @@ class GamePlayControllerTest extends TestCase
     protected Player $notPlayer;
     protected Game $game;
 
-    protected string $storeRouteName = 'play.store';
-    protected string $joinRouteName = 'play';
+    protected string $storeRouteName = 'ajax.gameplay.store';
+    protected string $joinRouteName = 'gameplay.show';
 
     public function setUp(): void
     {
@@ -55,7 +55,7 @@ class GamePlayControllerTest extends TestCase
         return $this
             ->actingAs($player)
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post(route($this->storeRouteName, ['gameId' => $this->game->getId()]));
+            ->json('POST', route($this->storeRouteName, ['gameId' => $this->game->getId()]));
     }
 
     public function testStoreGuestUnauthorizedWithNoEvent(): void
@@ -93,7 +93,7 @@ class GamePlayControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
         Event::assertDispatched(GamePlayStartedEvent::class, function($e) use ($gameId) {
-            return $e->gamePlayUrl === route($this->storeRouteName, $gameId);
+            return $e->gamePlayUrl === route($this->joinRouteName, $gameId);
         });
     }
 

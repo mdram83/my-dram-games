@@ -22,7 +22,7 @@ class GamePlayStartedEvent implements ShouldBroadcast
      public function __construct(Game $game)
     {
         $this->gameId = $game->getId();
-        $this->gamePlayUrl = route('play', $this->gameId);
+        $this->gamePlayUrl = route('gameplay.show', $this->gameId);
     }
 
     public function broadcastOn(): array

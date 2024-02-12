@@ -11,23 +11,15 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GamePlayController extends Controller
 {
-    public function store(
-        Request $request, GameRepository $repository, int|string $gameId
-    ): View|Response|RedirectResponse
+    public function store(Request $request, GameRepository $repository): View|Response|RedirectResponse
     {
-        if (!Auth::check()) {
-            return new Response('Unauthorized', SymfonyResponse::HTTP_UNAUTHORIZED);
-        }
-
         try {
-            $game = $repository->getOne($gameId);
+            $game = $repository->getOne($request->input('gameId'));
             $player = $request->user();
 
             if (!$game->isPlayerAdded($player) || !$game->isHost($player)) {
@@ -49,7 +41,7 @@ class GamePlayController extends Controller
         return new Response([], 200);
     }
 
-    public function join(): Response
+    public function show(): Response
     {
         // TODO temp, needs validation, auth, player etc, GamePlay object created etc.
         return new Response('temp response', 200);

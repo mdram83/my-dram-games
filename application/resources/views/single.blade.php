@@ -89,12 +89,7 @@
                                     <div class=""
                                          id="js-single-new-game-section"
                                          data-gamedefinition="{{ json_encode($gameDefinition) }}"
-                                         data-storeurl="{{ route('ajax.play.store', $gameDefinition['slug']) }}"
-                                         data-joinurlbase="{{ route('join', ['slug' => $gameDefinition['slug'], 'gameId' => '/']) }}"
-                                         data-playurlbase="{{ route('play', ['gameId' => '/']) }}"
-                                         data-starturlbase="{{ route('play.store', ['gameId' => '/']) }}"
                                          data-auth="{{ Auth::check() }}"
-                                         data-loginurl="{{ route('login') }}"
                                          data-currentplayername="{{ Auth::getUser()?->name }}"
                                          data-currentgame="{{ isset($game) ? json_encode($game) : null }}"
                                     ></div>

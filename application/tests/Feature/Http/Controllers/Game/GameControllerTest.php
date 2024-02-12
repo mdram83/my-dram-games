@@ -20,8 +20,8 @@ class GameControllerTest extends TestCase
     use RefreshDatabase;
 
     protected bool $commonSetup = false;
-    protected string $routeStore = 'ajax.play.store';
-    protected string $routeJoin = 'join';
+    protected string $routeStore = 'ajax.game-invites.store';
+    protected string $routeJoin = 'game-invites.join';
     protected string $slug;
     protected Player $playerHost;
     protected GameDefinition $gameDefinition;
@@ -48,10 +48,10 @@ class GameControllerTest extends TestCase
         return $this
             ->actingAs($this->playerHost, 'web')
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post(route($this->routeStore, [
-                'slug' => $slug ?? ($nullifySlug ? null : $this->slug),
-                'numberOfPlayers' => $numberOfPlayers ?? ($nullifyNumberOfPlayers ? null : $this->gameDefinition->getNumberOfPlayers()[0]),
-            ]));
+            ->json('POST', route($this->routeStore, [
+            'slug' => $slug ?? ($nullifySlug ? null : $this->slug),
+            'numberOfPlayers' => $numberOfPlayers ?? ($nullifyNumberOfPlayers ? null : $this->gameDefinition->getNumberOfPlayers()[0]),
+        ]));
     }
 
     protected function getJoinResponse(
@@ -91,10 +91,10 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testStoreThrowExceptionWithMissingSlug(): void
+    public function testStoreBadRequestWithMissingSlug(): void
     {
-        $this->expectException(\Exception::class);
-        $this->getStoreResponse(nullifySlug: true);
+        $response = $this->getStoreResponse(nullifySlug: true);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
     public function testStoreBadRequestWithInconsistentSlug(): void
@@ -154,7 +154,7 @@ class GameControllerTest extends TestCase
     {
         $response = $this->getJoinResponse(gameId: 'whateverToTestMissingMessage');
         $response->assertStatus(Response::HTTP_FOUND);
-        $response->assertRedirectToRoute('games', ['slug' => $this->slug]);
+        $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
         $response->assertSessionHasErrors(['general' => 'Game not found']);
     }
 
@@ -170,7 +170,7 @@ class GameControllerTest extends TestCase
 
         $response = $this->getJoinResponse(gameId: $gameId);
         $response->assertStatus(Response::HTTP_FOUND);
-        $response->assertRedirectToRoute('games', ['slug' => $this->slug]);
+        $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
         $response->assertSessionHasErrors(['general' => 'Number of players exceeded']);
     }
 
