@@ -13,12 +13,12 @@ class PlayerAnonymousEloquentTest extends TestCase
     use RefreshDatabase;
 
     protected string $testName = 'TestName123';
-    protected string $testId;
+    protected string $testHash;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testId = md5(time() . rand(1, 1000));
+        $this->testHash = md5(time() . rand(1, 1000));
     }
 
     public function testSaveFailWithoutId(): void
@@ -33,7 +33,7 @@ class PlayerAnonymousEloquentTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $anonymous = new PlayerAnonymousEloquent();
-        $anonymous->id = $this->testId;
+        $anonymous->id = $this->testHash;
         $anonymous->save();
     }
 
@@ -46,15 +46,19 @@ class PlayerAnonymousEloquentTest extends TestCase
 
     public function testGetId(): void
     {
-        PlayerAnonymousEloquent::factory()->create(['id' => $this->testId]);
-        $anonymous = PlayerAnonymousEloquent::find($this->testId);
-        $this->assertEquals($this->testId, $anonymous->getId());
+        PlayerAnonymousEloquent::factory()->create(['hash' => $this->testHash]);
+        $anonymous = PlayerAnonymousEloquent::where(['hash' => $this->testHash])->first();
+
+        $this->assertMatchesRegularExpression(
+            '/^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/',
+            $anonymous->getId()
+        );
     }
 
     public function testGetName(): void
     {
-        PlayerAnonymousEloquent::factory()->create(['id' => $this->testId, 'name' => $this->testName]);
-        $anonymous = PlayerAnonymousEloquent::find($this->testId);
+        PlayerAnonymousEloquent::factory()->create(['hash' => $this->testHash, 'name' => $this->testName]);
+        $anonymous = PlayerAnonymousEloquent::where(['hash' => $this->testHash])->first();
         $this->assertEquals($this->testName, $anonymous->getName());
     }
 }

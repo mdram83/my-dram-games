@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PlayerRepositoryEloquent implements PlayerRepository
 {
-    public function __construct(protected PlayerAnonymousIdGenerator $generator)
+    public function __construct(protected PlayerAnonymousHashGenerator $generator)
     {
 
     }
@@ -19,9 +19,10 @@ class PlayerRepositoryEloquent implements PlayerRepository
             return User::find(Auth::id());
         }
 
-        $playerId = $this->generator->generateId(session()->getId());
+        $hash = $this->generator->generateHash(session()->getId());
+
         return
-            PlayerAnonymousEloquent::find($playerId)
-            ?? PlayerAnonymousEloquent::factory()->create(['id' => $playerId]);
+            PlayerAnonymousEloquent::where(['hash' => $hash])->first()
+            ?? PlayerAnonymousEloquent::factory()->create(['hash' => $hash]);
     }
 }

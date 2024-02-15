@@ -4,7 +4,7 @@ namespace Tests\Feature\Model\GameCore\Player;
 
 use App\Models\GameCore\Player\Player;
 use App\Models\GameCore\Player\PlayerAnonymous;
-use App\Models\GameCore\Player\PlayerAnonymousIdGenerator;
+use App\Models\GameCore\Player\PlayerAnonymousHashGenerator;
 use App\Models\GameCore\Player\PlayerRegistered;
 use App\Models\GameCore\Player\PlayerRepository;
 use App\Models\GameCore\Player\PlayerRepositoryEloquent;
@@ -20,13 +20,14 @@ class PlayerRepositoryEloquentTest extends TestCase
     protected bool $commonSetup = false;
     protected PlayerRepositoryEloquent $repository;
     protected User $user;
+    protected PlayerAnonymousHashGenerator $generator;
 
     public function setUp(): void
     {
         parent::setUp();
         if (!$this->commonSetup) {
             $this->repository = App::make(PlayerRepository::class);
-            $this->idGenerator = App::make(PlayerAnonymousIdGenerator::class);
+            $this->generator = App::make(PlayerAnonymousHashGenerator::class);
             $this->user = User::factory()->create();
             $this->commonSetup = true;
         }
@@ -50,16 +51,20 @@ class PlayerRepositoryEloquentTest extends TestCase
 
     public function testUnauthenticatedUserReturnsSameInstanceOfPlayer(): void
     {
-        $sessionId = session()->getId();
+        session()->getId();
         $player = $this->repository->getOneCurrent();
         $samePlayer = $this->repository->getOneCurrent();
-        $expectedId = $this->idGenerator->generateId($sessionId);
+
+        session()->setId('test-id-for-new-session-user');
+        $newPlayer = $this->repository->getOneCurrent();
 
         $this->assertInstanceOf(Player::class, $player);
         $this->assertInstanceOf(PlayerAnonymous::class, $player);
         $this->assertInstanceOf(Player::class, $samePlayer);
         $this->assertInstanceOf(PlayerAnonymous::class, $samePlayer);
+        $this->assertInstanceOf(Player::class, $newPlayer);
+        $this->assertInstanceOf(PlayerAnonymous::class, $newPlayer);
         $this->assertEquals($player->getId(), $samePlayer->getId());
-        $this->assertEquals($expectedId, $player->getId());
+        $this->assertNotEquals($player->getId(), $newPlayer->getId());
     }
 }

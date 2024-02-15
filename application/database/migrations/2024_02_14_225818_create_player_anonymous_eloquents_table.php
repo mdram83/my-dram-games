@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('player_anonymous_eloquents', function (Blueprint $table) {
-            $table->string('id', 255)->primary();
+            $table->uuid('id')->primary();
+            $table->string('hash', 255);
             $table->string('name', 255);
             $table->timestamps();
         });

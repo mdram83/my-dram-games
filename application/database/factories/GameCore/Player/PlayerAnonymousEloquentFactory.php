@@ -18,9 +18,8 @@ class PlayerAnonymousEloquentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Anonymous ' . str_replace(
-                ' ', '', fake()->city() . fake()->numberBetween(1000, 9999)
-            ),
+            'name' => 'Anonymous ' . str_replace(' ', '', fake()->city() . fake()->numberBetween(1000, 9999)),
+            'hash' => null,
         ];
     }
 }

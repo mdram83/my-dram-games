@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedTinyInteger('numberOfPlayers')->nullable();
             $table->string('gameDefinition', 255)->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained()->cascadeOnDelete();
         });
     }
 

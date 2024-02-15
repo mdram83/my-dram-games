@@ -10,8 +10,8 @@ use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactoryPhpConfig;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepositoryPhpConfig;
-use App\Models\GameCore\Player\PlayerAnonymousIdGenerator;
-use App\Models\GameCore\Player\PlayerAnonymousIdGeneratorMd5;
+use App\Models\GameCore\Player\PlayerAnonymousHashGenerator;
+use App\Models\GameCore\Player\PlayerAnonymousHashGeneratorMd5;
 use App\Models\GameCore\Player\PlayerRepository;
 use App\Models\GameCore\Player\PlayerRepositoryEloquent;
 use Illuminate\Support\ServiceProvider;
@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         app()->bind(GameDefinitionFactory::class, fn() => new GameDefinitionFactoryPhpConfig());
-        app()->bind(PlayerAnonymousIdGenerator::class, fn() => new PlayerAnonymousIdGeneratorMd5());
+        app()->bind(PlayerAnonymousHashGenerator::class, fn() => new PlayerAnonymousHashGeneratorMd5());
         app()->bind(GameRepository::class, fn() => app()->make(GameRepositoryEloquent::class));
 
         app()->bind(
@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         ));
 
         app()->bind(PlayerRepository::class, fn() => new PlayerRepositoryEloquent(
-            app()->make(PlayerAnonymousIdGenerator::class)
+            app()->make(PlayerAnonymousHashGenerator::class)
         ));
     }
 

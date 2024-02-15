@@ -2,17 +2,19 @@
 
 namespace App\Models\GameCore\Player;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PlayerAnonymousEloquent extends Model implements PlayerAnonymous
 {
     use HasFactory;
+    use HasUuids;
 
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['hash', 'name'];
 
     public function getId(): int|string
     {

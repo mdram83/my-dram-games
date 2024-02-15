@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\GameCore\Game\GameEloquentModel;
 use App\Models\GameCore\Player\PlayerRegistered;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +18,7 @@ class User extends Authenticatable implements PlayerRegistered
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -48,7 +50,6 @@ class User extends Authenticatable implements PlayerRegistered
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
 
     public function getId(): int|string
     {
