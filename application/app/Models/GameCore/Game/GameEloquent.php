@@ -52,7 +52,7 @@ class GameEloquent implements Game
         }
 
         if ($host === true) {
-            $this->model->host()->associate($player);
+            $this->model->hostable()->associate($player);
             $this->saveModel();
         }
 
@@ -71,7 +71,7 @@ class GameEloquent implements Game
             throw new GameException(GameException::MESSAGE_HOST_NOT_SET);
         }
 
-        return $this->model->host;
+        return $this->model->hostable;
     }
 
     public function isHost(Player $player): bool
@@ -161,7 +161,7 @@ class GameEloquent implements Game
 
     protected function hasHost(): bool
     {
-        return isset($this->model->host);
+        return isset($this->model->hostable);
     }
 
     protected function hasGameDefinition(): bool

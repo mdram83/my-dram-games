@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class GameEloquentModel extends Model
 {
@@ -20,8 +21,8 @@ class GameEloquentModel extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function host(): BelongsTo
+    public function hostable(): MorphTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->morphTo();
     }
 }
