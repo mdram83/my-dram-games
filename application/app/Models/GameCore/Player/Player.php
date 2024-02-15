@@ -6,4 +6,5 @@ interface Player
 {
     public function getId(): int|string;
     public function getName(): string;
+    public function isRegistered(): bool;
 }
