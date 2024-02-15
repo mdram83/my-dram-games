@@ -56,13 +56,16 @@ class GameEloquent implements Game
             $this->saveModel();
         }
 
-        $this->model->players()->attach($player->getId());
+        $this->model->playersRegistered()->attach($player->getId());
         $this->model->refresh();
     }
 
     public function getPlayers(): array
     {
-        return $this->model->players->all();
+        return array_merge(
+            $this->model->playersRegistered->all(),
+            $this->model->playersAnonymous->all()
+        );
     }
 
     public function getHost(): Player
