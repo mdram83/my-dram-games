@@ -6,6 +6,7 @@ use App\Events\GameCore\GamePlay\GamePlayStartedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameRepository;
+use App\Models\GameCore\Player\Player;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -16,11 +17,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GamePlayController extends Controller
 {
-    public function store(Request $request, GameRepository $repository): View|Response|RedirectResponse
+    public function store(Request $request, GameRepository $repository, Player $player): View|Response|RedirectResponse
     {
         try {
             $game = $repository->getOne($request->input('gameId'));
-            $player = $request->user();
 
             if (!$game->isPlayerAdded($player) || !$game->isHost($player)) {
                 return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);

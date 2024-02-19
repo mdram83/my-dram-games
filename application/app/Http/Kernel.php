@@ -55,6 +55,8 @@ class Kernel extends HttpKernel
     protected $middlewareAliases = [
         'ajax' => \App\Http\Middleware\Ajax::class,
         'ajax.auth' => \App\Http\Middleware\AjaxAuth::class,
+        'player.auth' => \App\Http\Middleware\PlayerAuthMiddleware::class,
+        'player' => \App\Http\Middleware\PlayerMiddleware::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

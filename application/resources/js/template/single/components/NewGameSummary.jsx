@@ -14,7 +14,7 @@ export const NewGameSummary = ({game, slug}) => {
     }
     const play = () => window.location.href = window.MyDramGames.routes["gameplay.show"](game.id);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
-    const isCurrentPlayerHost = game.host.name === window.MyDramGames.user.username;
+    const isCurrentPlayerHost = game.host.name === window.MyDramGames.player.name;
 
     const [allPlayersReady, setAllPlayersReady] = React.useState(false);
 

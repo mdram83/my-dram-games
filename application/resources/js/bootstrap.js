@@ -19,8 +19,22 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
+const echoAuthEndpoint = () => {
+    const cookieName = import.meta.env.VITE_PLAYER_HASH_COOKIE_NAME;
+    const authEndpointBase = `/broadcasting/auth?${cookieName}=`;
+    const cookieValue = (name) => {
+        const regex = new RegExp(`(^| )${name}=([^;]+)`)
+        const match = document.cookie.match(regex)
+        if (match) {
+            return match[2];
+        }
+    }
+    return authEndpointBase + cookieValue(cookieName);
+}
+
 window.Echo = new Echo({
     broadcaster: 'pusher',
+    authEndpoint: echoAuthEndpoint(),
     key: import.meta.env.VITE_PUSHER_APP_KEY,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     wsHost: window.location.hostname,

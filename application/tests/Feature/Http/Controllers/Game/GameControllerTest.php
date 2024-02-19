@@ -5,6 +5,7 @@ namespace Tests\Feature\Http\Controllers\Game;
 use App\Http\Controllers\Game\GameController;
 use App\Models\GameCore\Game\Game;
 use App\Models\GameCore\Game\GameException;
+use App\Models\GameCore\Game\GameFactoryEloquent;
 use App\Models\GameCore\Game\GameRepository;
 use App\Models\GameCore\GameDefinition\GameDefinition;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
@@ -45,15 +46,22 @@ class GameControllerTest extends TestCase
         int|string $numberOfPlayers = null,
         bool $nullifySlug = false,
         bool $nullifyNumberOfPlayers = false,
+        bool $auth = true,
     ): TestResponse
     {
-        return $this
-            ->actingAs($this->playerHost, 'web')
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json('POST', route($this->routeStore, [
-            'slug' => $slug ?? ($nullifySlug ? null : $this->slug),
-            'numberOfPlayers' => $numberOfPlayers ?? ($nullifyNumberOfPlayers ? null : $this->gameDefinition->getNumberOfPlayers()[0]),
-        ]));
+        $slug = $slug ?? ($nullifySlug ? null : $this->slug);
+        $numberOfPlayers = $numberOfPlayers ?? (
+            $nullifyNumberOfPlayers
+                ? null
+                : $this->gameDefinition->getNumberOfPlayers()[0]
+        );
+
+        $response = $this->withHeader('X-Requested-With', 'XMLHttpRequest');
+        if ($auth) {
+            $response = $response->actingAs($this->playerHost, 'web');
+        }
+
+        return $response->json('POST', route($this->routeStore, [ 'slug' => $slug, 'numberOfPlayers' => $numberOfPlayers,]));
     }
 
     protected function getJoinResponse(
@@ -85,12 +93,10 @@ class GameControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testStoreNonAuthRequestResponseUnauthorized(): void
+    public function testStoreGuestWebRequestResponseOk(): void
     {
-        $response = $this
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post(route($this->routeStore, ['slug' => $this->slug]));
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response = $this->getStoreResponse(auth: false);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     public function testStoreBadRequestWithMissingSlug(): void
@@ -145,11 +151,14 @@ class GameControllerTest extends TestCase
             ->assertJsonPath('game.players.0.name', $this->playerHost->getName());
     }
 
-    public function testJoinGuestIsRedirectedToLogin(): void
+    public function testJoinGuestReceiveOkResponse(): void
     {
-        $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameId' => 'whateverToTestGuest']));
-        $response->assertStatus(Response::HTTP_FOUND);
-        $response->assertRedirectToRoute('login');
+        $game = App::make(GameFactoryEloquent::class)
+            ->create($this->slug, $this->gameDefinition->getNumberOfPlayers()[0], $this->playerHost);
+        $gameId = $game->getId();
+
+        $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameId' => $gameId]));
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     public function testJoinUserWithCorrectSlugWrongGameIdGetErrors(): void

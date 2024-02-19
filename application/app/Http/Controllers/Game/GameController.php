@@ -8,6 +8,7 @@ use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\Game\GameRepository;
 use App\Models\GameCore\GameDefinition\GameDefinitionException;
+use App\Models\GameCore\Player\Player;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -25,14 +26,14 @@ class GameController extends Controller
     public const MESSAGE_PLAYER_BACK = 'Welcome back!';
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
-    public function store(Request $request, GameFactory $factory): Response
+    public function store(Request $request, GameFactory $factory, Player $player): Response
     {
         try {
             $this->validateStoreRequest($request);
             $game = $factory->create(
                 $request->input('slug'),
                 $request->input('numberOfPlayers'),
-                $request->user()
+                $player
             );
             $responseContent = ['game' => $game->toArray()];
 
@@ -46,14 +47,13 @@ class GameController extends Controller
         return new Response($responseContent, SymfonyResponse::HTTP_OK);
     }
 
-    public function join(Request $request, GameRepository $repository, string $slug, int|string $gameId): View|Response|RedirectResponse
+    public function join(GameRepository $repository, Player $player, string $slug, int|string $gameId): View|Response|RedirectResponse
     {
         try {
             $game = $repository->getOne($gameId);
-            $currentPlayer = $request->user();
 
-            if (!$game->isPlayerAdded($currentPlayer)) {
-                $game->addPlayer($currentPlayer);
+            if (!$game->isPlayerAdded($player)) {
+                $game->addPlayer($player);
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
 

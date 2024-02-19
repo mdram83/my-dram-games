@@ -3,12 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\GameCore\Game\GameEloquentModel;
 use App\Models\GameCore\Player\PlayerRegistered;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -68,14 +65,13 @@ class User extends Authenticatable implements PlayerRegistered
         return true;
     }
 
-    public function games(): BelongsToMany|MorphToMany
-    {
-//        return $this->belongsToMany(GameEloquentModel::class);
-        return $this->morphToMany(GameEloquentModel::class, 'game_player');
-    }
-
-    public function hostedGames(): MorphMany
-    {
-        return $this->morphMany(GameEloquentModel::class, 'hostable');
-    }
+//    public function games(): MorphToMany
+//    {
+//        return $this->morphToMany(GameEloquentModel::class, 'game_player');
+//    }
+//
+//    public function hostedGames(): MorphMany
+//    {
+//        return $this->morphMany(GameEloquentModel::class, 'hostable');
+//    }
 }

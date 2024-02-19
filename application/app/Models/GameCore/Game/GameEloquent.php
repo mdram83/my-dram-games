@@ -5,6 +5,9 @@ namespace App\Models\GameCore\Game;
 use App\Models\GameCore\GameDefinition\GameDefinition;
 use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
 use App\Models\GameCore\Player\Player;
+use App\Models\GameCore\Player\PlayerAnonymous;
+use App\Models\GameCore\Player\PlayerRegistered;
+use Illuminate\Database\Eloquent\Model;
 
 class GameEloquent implements Game
 {
@@ -29,6 +32,9 @@ class GameEloquent implements Game
         return $this->model->id;
     }
 
+    /**
+     * @throws GameException
+     */
     public function addPlayer(Player $player, bool $host = false): void
     {
         if (!$this->hasNumberOfPlayers()) {
@@ -56,7 +62,18 @@ class GameEloquent implements Game
             $this->saveModel();
         }
 
-        $this->model->playersRegistered()->attach($player->getId());
+        if (is_a($player, PlayerRegistered::class)) {
+
+            $this->model->playersRegistered()->attach($player->getId());
+
+        } elseif (is_a($player, PlayerAnonymous::class)) {
+
+            $this->model->playersAnonymous()->attach($player->getId());
+
+        } else {
+            throw new GameException(GameException::MESSAGE_PLAYER_TYPE_UNSET);
+        }
+
         $this->model->refresh();
     }
 

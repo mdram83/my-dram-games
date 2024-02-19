@@ -4,9 +4,9 @@ namespace App\Models\GameCore\Player;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class PlayerAnonymousEloquent extends Model implements PlayerAnonymous
+class PlayerAnonymousEloquent extends Authenticatable implements PlayerAnonymous
 {
     use HasFactory;
     use HasUuids;

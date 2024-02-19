@@ -6,6 +6,7 @@ use App\Models\GameCore\Game\Game;
 use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
+use App\Models\GameCore\Player\PlayerAnonymousFactory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -31,10 +32,19 @@ class GameFactoryEloquentTest extends TestCase
         $this->numberOfPlayers = $gameDefinition->getNumberOfPlayers()[0];
     }
 
-    public function testGameCreated(): void
+    public function testGameCreatedWithUser(): void
     {
         $factory = App::make(GameFactory::class);
         $game = $factory->create($this->slug, $this->numberOfPlayers, $this->host);
+
+        $this->assertInstanceOf(Game::class, $game);
+    }
+
+    public function testGameCreatedWithGuest(): void
+    {
+        $factory = App::make(GameFactory::class);
+        $guestPlayer = App::make(PlayerAnonymousFactory::class)->create(['key' => 'test-key']);
+        $game = $factory->create($this->slug, $this->numberOfPlayers, $guestPlayer);
 
         $this->assertInstanceOf(Game::class, $game);
     }

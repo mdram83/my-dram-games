@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('player_anonymous_eloquents', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('hash', 255);
+            $table->string('hash', 255)->unique();
             $table->string('name', 255);
             $table->timestamps();
         });

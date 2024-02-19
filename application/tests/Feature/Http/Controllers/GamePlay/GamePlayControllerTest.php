@@ -8,6 +8,7 @@ use App\Models\GameCore\Game\GameFactory;
 use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -58,20 +59,20 @@ class GamePlayControllerTest extends TestCase
             ->json('POST', route($this->storeRouteName, ['gameId' => $this->game->getId()]));
     }
 
-    public function testStoreGuestUnauthorizedWithNoEvent(): void
-    {
-        Event::fake();
-        $response = $this
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post(route($this->storeRouteName, ['gameId' => $this->game->getId()]));
-        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
-    }
-
     public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
     {
         Event::fake();
         $response = $this->getStoreResponse($this->notPlayer);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        Event::assertNotDispatched(GamePlayStartedEvent::class);
+    }
+
+    public function testStoreGuestPlayerGetForbiddenResponseWithNoEvent(): void
+    {
+        Event::fake();
+        $response = $this
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->json('POST', route($this->storeRouteName, ['gameId' => $this->game->getId()]));
         $response->assertStatus(Response::HTTP_FORBIDDEN);
         Event::assertNotDispatched(GamePlayStartedEvent::class);
     }
@@ -110,24 +111,19 @@ class GamePlayControllerTest extends TestCase
 //    {
 //        // TODO update later with proper functionality to start the game (creating GamePlay object!!!)
 //    }
-
-    public function testJoinHostGetOkResponseAndView(): void
-    {
-
-    }
-
-    public function testJoinPlayerGetOkResponseAndView(): void
-    {
-
-    }
-
-    public function testJoinNotPlayerGetForbidden(): void
-    {
-
-    }
-
-    public function testJoinGuesGetLoginRedirect(): void
-    {
-
-    }
+//
+//    public function testJoinHostGetOkResponseAndView(): void
+//    {
+//
+//    }
+//
+//    public function testJoinPlayerGetOkResponseAndView(): void
+//    {
+//
+//    }
+//
+//    public function testJoinNotPlayerGetForbidden(): void
+//    {
+//
+//    }
 }
