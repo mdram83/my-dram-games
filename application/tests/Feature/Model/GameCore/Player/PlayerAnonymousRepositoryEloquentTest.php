@@ -32,10 +32,10 @@ class PlayerAnonymousRepositoryEloquentTest extends TestCase
         $this->repository->getOne('');
     }
 
-    public function testThrowExceptionWhenMissingHashProvided(): void
+    public function testReturnNullWhenMissingHashProvided(): void
     {
-        $this->expectException(PlayerAnonymousRepositoryException::class);
-        $this->repository->getOne('not-existing-hash');
+        $player = $this->repository->getOne('not-existing-hash');
+        $this->assertNull($player);
     }
 
     public function testGetOneWithProperHash(): void

@@ -4,5 +4,5 @@ namespace App\Models\GameCore\Player;
 
 class PlayerAnonymousRepositoryException extends \Exception
 {
-    public const MESSAGE_NOT_FOUND = 'Player not found';
+    public const MESSAGE_MISSING_HASH = 'Hash not provided';
 }

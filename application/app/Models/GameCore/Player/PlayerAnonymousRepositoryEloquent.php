@@ -7,11 +7,11 @@ class PlayerAnonymousRepositoryEloquent implements PlayerAnonymousRepository
     /**
      * @throws PlayerAnonymousRepositoryException
      */
-    public function getOne(string $hash): PlayerAnonymous
+    public function getOne(string $hash): ?PlayerAnonymous
     {
-        if (!$player = PlayerAnonymousEloquent::where('hash', $hash)->first()) {
-            throw new PlayerAnonymousRepositoryException(PlayerAnonymousRepositoryException::MESSAGE_NOT_FOUND);
+        if ($hash === '') {
+            throw new PlayerAnonymousRepositoryException(PlayerAnonymousRepositoryException::MESSAGE_MISSING_HASH);
         }
-        return $player;
+        return PlayerAnonymousEloquent::where('hash', $hash)->first();
     }
 }

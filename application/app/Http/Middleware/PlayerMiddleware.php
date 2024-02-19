@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\GameCore\Player\Player;
 use App\Models\GameCore\Player\PlayerAnonymousFactory;
+use App\Models\GameCore\Player\PlayerAnonymousHashGenerator;
 use App\Models\GameCore\Player\PlayerAnonymousRepository;
 use Closure;
 use Exception;
@@ -38,15 +39,20 @@ class PlayerMiddleware
         } else {
 
             try {
+
+                $repository = App::make(PlayerAnonymousRepository::class);
                 $hash = Cookie::get($cookieName);
 
-                if (isset($hash)) {
-                    $player = App::make(PlayerAnonymousRepository::class)->getOne($hash);
+                if (isset($hash) && $player = $repository->getOne($hash)) {
+
                     $player->touch();
 
                 } else {
-                    // TODO first try to load existing player in case user removed cookie manually
-                    $player = App::make(PlayerAnonymousFactory::class)->create(['key' => session()->getId()]);
+
+                    $key = session()->getId();
+                    $player =
+                        $repository->getOne(App::make(PlayerAnonymousHashGenerator::class)->generateHash($key))
+                        ?? App::make(PlayerAnonymousFactory::class)->create(['key' => $key]);
                 }
 
             } catch (Exception $e) {
