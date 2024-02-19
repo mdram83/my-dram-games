@@ -5,7 +5,7 @@ namespace Tests\Feature\Model\GameCore\Game;
 use App\Models\GameCore\Game\GameEloquent;
 use App\Models\GameCore\Game\GameException;
 use App\Models\GameCore\GameDefinition\GameDefinition;
-use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
+use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,7 +27,7 @@ class GameEloquentTest extends TestCase
 
         $this->playerOne = User::factory()->create();
         $this->gameDefinition = $this->createMock(GameDefinition::class);
-        $this->game = new GameEloquent(App::make(GameDefinitionFactory::class));
+        $this->game = new GameEloquent(App::make(GameDefinitionRepository::class));
     }
 
     protected function configureGameDefinitionMock(array $numberOfPlayers): void

@@ -3,28 +3,26 @@
 namespace App\Models\GameCore\Game;
 
 use App\Models\GameCore\GameDefinition\GameDefinition;
-use App\Models\GameCore\GameDefinition\GameDefinitionFactory;
+use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
 use App\Models\GameCore\Player\Player;
 use App\Models\GameCore\Player\PlayerAnonymous;
 use App\Models\GameCore\Player\PlayerRegistered;
-use Illuminate\Database\Eloquent\Model;
 
 class GameEloquent implements Game
 {
     protected GameEloquentModel $model;
-    protected GameDefinitionFactory $gameDefinitionFactory;
+    protected GameDefinitionRepository $gameDefinitionRepository;
     protected GameDefinition $gameDefinition;
 
-    public function __construct(GameDefinitionFactory $gameDefinitionFactory, string $id = null)
+    public function __construct(GameDefinitionRepository $gameDefinitionRepository, string $id = null)
     {
-        $this->gameDefinitionFactory = $gameDefinitionFactory;
+        $this->gameDefinitionRepository = $gameDefinitionRepository;
 
         if ($id === null) {
             $this->registerNewModel();
         } else {
             $this->loadExisingModel($id);
         }
-
     }
 
     public function getId(): string|int
@@ -132,7 +130,6 @@ class GameEloquent implements Game
         }
 
         $this->gameDefinition = $gameDefinition;
-
         $this->model->gameDefinition = $gameDefinition->getSlug();
         $this->saveModel();
     }
@@ -145,7 +142,7 @@ class GameEloquent implements Game
 
         if (!isset($this->gameDefinition)) {
             $slug = $this->model->gameDefinition;
-            $this->gameDefinition = $this->gameDefinitionFactory->create($slug);
+            $this->gameDefinition = $this->gameDefinitionRepository->getOne($slug);
         }
 
         return $this->gameDefinition;
