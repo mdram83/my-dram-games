@@ -14,12 +14,12 @@ use App\Models\GameInviteEloquentModel;
 class GameInviteEloquent implements GameInvite
 {
     protected GameInviteEloquentModel $model;
-    protected GameBoxRepository $gameDefinitionRepository;
-    protected GameBox $gameDefinition;
+    protected GameBoxRepository $gameBoxRepository;
+    protected GameBox $gameBox;
 
-    public function __construct(GameBoxRepository $gameDefinitionRepository, string $id = null)
+    public function __construct(GameBoxRepository $gameBoxRepository, string $id = null)
     {
-        $this->gameDefinitionRepository = $gameDefinitionRepository;
+        $this->gameBoxRepository = $gameBoxRepository;
 
         if ($id === null) {
             $this->registerNewModel();
@@ -100,8 +100,8 @@ class GameInviteEloquent implements GameInvite
 
     public function setNumberOfPlayers(int $numberOfPlayers): void
     {
-        if (!$this->hasGameDefinition()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_GAME_DEFINITION_NOT_SET);
+        if (!$this->hasGameBox()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_BOX_NOT_SET);
         }
 
         if (!$this->isAllowedNumberOfPlayers($numberOfPlayers)) {
@@ -124,29 +124,29 @@ class GameInviteEloquent implements GameInvite
         return $this->model->numberOfPlayers;
     }
 
-    public function setGameDefinition(GameBox $gameDefinition): void
+    public function setGameBox(GameBox $gameBox): void
     {
-        if ($this->hasGameDefinition()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_GAME_DEFINITION_WAS_SET);
+        if ($this->hasGameBox()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_BOX_ALREADY_SET);
         }
 
-        $this->gameDefinition = $gameDefinition;
-        $this->model->gameDefinition = $gameDefinition->getSlug();
+        $this->gameBox = $gameBox;
+        $this->model->gameBox = $gameBox->getSlug();
         $this->saveModel();
     }
 
-    public function getGameDefinition(): GameBox
+    public function getGameBox(): GameBox
     {
-        if (!$this->hasGameDefinition()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_GAME_DEFINITION_NOT_SET);
+        if (!$this->hasGameBox()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_BOX_NOT_SET);
         }
 
-        if (!isset($this->gameDefinition)) {
-            $slug = $this->model->gameDefinition;
-            $this->gameDefinition = $this->gameDefinitionRepository->getOne($slug);
+        if (!isset($this->gameBox)) {
+            $slug = $this->model->gameBox;
+            $this->gameBox = $this->gameBoxRepository->getOne($slug);
         }
 
-        return $this->gameDefinition;
+        return $this->gameBox;
     }
 
     public function toArray(): array
@@ -182,14 +182,14 @@ class GameInviteEloquent implements GameInvite
         return isset($this->model->hostable);
     }
 
-    protected function hasGameDefinition(): bool
+    protected function hasGameBox(): bool
     {
-        return isset($this->model->gameDefinition);
+        return isset($this->model->gameBox);
     }
 
     protected function isAllowedNumberOfPlayers(int $numberOfPlayers): bool
     {
-        return in_array($numberOfPlayers, $this->getGameDefinition()->getNumberOfPlayers());
+        return in_array($numberOfPlayers, $this->getGameBox()->getNumberOfPlayers());
     }
 
     protected function saveModel(): void

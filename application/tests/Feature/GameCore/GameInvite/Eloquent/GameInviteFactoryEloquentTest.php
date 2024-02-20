@@ -33,17 +33,17 @@ class GameInviteFactoryEloquentTest extends TestCase
     public function testGameCreatedWithUser(): void
     {
         $factory = App::make(GameInviteFactory::class);
-        $game = $factory->create($this->slug, $this->numberOfPlayers, $this->host);
+        $gameInvite = $factory->create($this->slug, $this->numberOfPlayers, $this->host);
 
-        $this->assertInstanceOf(GameInvite::class, $game);
+        $this->assertInstanceOf(GameInvite::class, $gameInvite);
     }
 
     public function testGameCreatedWithGuest(): void
     {
         $factory = App::make(GameInviteFactory::class);
         $guestPlayer = App::make(PlayerAnonymousFactory::class)->create(['key' => 'test-key']);
-        $game = $factory->create($this->slug, $this->numberOfPlayers, $guestPlayer);
+        $gameInvite = $factory->create($this->slug, $this->numberOfPlayers, $guestPlayer);
 
-        $this->assertInstanceOf(GameInvite::class, $game);
+        $this->assertInstanceOf(GameInvite::class, $gameInvite);
     }
 }

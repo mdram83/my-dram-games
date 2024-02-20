@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\GameCore\Player\Eloquent;
 
+use App\GameCore\Player\PlayerAnonymousFactory;
+use App\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\Player\PlayerAnonymousRepositoryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
@@ -10,22 +13,22 @@ class PlayerAnonymousRepositoryEloquentTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected \App\GameCore\Player\PlayerAnonymousRepository $repository;
+    protected PlayerAnonymousRepository $repository;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->repository = App::make(\App\GameCore\Player\PlayerAnonymousRepository::class);
+        $this->repository = App::make(PlayerAnonymousRepository::class);
     }
 
     public function testInstanceOfPlayerAnonymousRepository(): void
     {
-        $this->assertInstanceOf(\App\GameCore\Player\PlayerAnonymousRepository::class, $this->repository);
+        $this->assertInstanceOf(PlayerAnonymousRepository::class, $this->repository);
     }
 
     public function testThrowExceptionWhenNoHashProvided(): void
     {
-        $this->expectException(\App\GameCore\Player\PlayerAnonymousRepositoryException::class);
+        $this->expectException(PlayerAnonymousRepositoryException::class);
         $this->repository->getOne('');
     }
 
@@ -37,11 +40,9 @@ class PlayerAnonymousRepositoryEloquentTest extends TestCase
 
     public function testGetOneWithProperHash(): void
     {
-        $player = App::make(\App\GameCore\Player\PlayerAnonymousFactory::class)->create(['key' => 'test-key']);
-        $hash = $player->hash;
-        $loadedPlayer = $this->repository->getOne($hash);
+        $player = App::make(PlayerAnonymousFactory::class)->create(['key' => 'test-key']);
+        $loadedPlayer = $this->repository->getOne($player->hash);
 
         $this->assertEquals($player->getId(), $loadedPlayer->getId());
-
     }
 }

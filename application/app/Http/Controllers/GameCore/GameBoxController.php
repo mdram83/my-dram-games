@@ -17,11 +17,11 @@ class GameBoxController extends Controller
     public function show(GameBoxRepository $repository, string $slug): View|Application|Factory|ContractsApplication|Response
     {
         try {
-            $gameDefinition = $repository->getOne($slug)->toArray();
+            $gameBox = $repository->getOne($slug)->toArray();
         } catch (Exception) {
             throw new NotFoundHttpException();
         }
 
-        return view('single', ['gameDefinition' => $gameDefinition]);
+        return view('single', ['gameBox' => $gameBox]);
     }
 }

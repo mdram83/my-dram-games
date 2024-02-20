@@ -18,7 +18,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
 
     private bool $commonSetup = false;
 
-    private \App\GameCore\GameInvite\GameInviteRepository $repository;
+    private GameInviteRepository $repository;
     private GameInviteFactory $factory;
 
     private string $slug;
@@ -34,11 +34,11 @@ class GameInviteRepositoryEloquentTest extends TestCase
             $this->repository = App::make(GameInviteRepository::class);
             $this->factory = App::make(GameInviteFactory::class);
 
-            $gameDefinitionRepository = App::make(GameBoxRepository::class);
-            $gameDefinition = $gameDefinitionRepository->getAll()[0];
+            $gameBoxRepository = App::make(GameBoxRepository::class);
+            $gameBox = $gameBoxRepository->getAll()[0];
 
-            $this->slug = $gameDefinition->getSlug();
-            $this->numberOfPlayers = $gameDefinition->getNumberOfPlayers()[0];
+            $this->slug = $gameBox->getSlug();
+            $this->numberOfPlayers = $gameBox->getNumberOfPlayers()[0];
             $this->host = User::factory()->create();
 
             $this->commonSetup = true;
@@ -47,7 +47,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
 
     public function testGameRepositoryCreated(): void
     {
-        $this->assertInstanceOf(\App\GameCore\GameInvite\GameInviteRepository::class, $this->repository);
+        $this->assertInstanceOf(GameInviteRepository::class, $this->repository);
     }
 
     public function testIncorrectGameIdResultInException(): void
@@ -58,10 +58,9 @@ class GameInviteRepositoryEloquentTest extends TestCase
 
     public function testGetOne(): void
     {
-        $game = $this->factory->create($this->slug, $this->numberOfPlayers, $this->host);
-        $gameId = $game->getId();
-        $gameFromRepository = $this->repository->getOne($gameId);
+        $gameInviteId = $this->factory->create($this->slug, $this->numberOfPlayers, $this->host)->getId();
+        $gameFromRepository = $this->repository->getOne($gameInviteId);
 
-        $this->assertEquals($gameId, $gameFromRepository->getId());
+        $this->assertEquals($gameInviteId, $gameFromRepository->getId());
     }
 }

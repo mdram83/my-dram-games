@@ -12,11 +12,11 @@ class HashGeneratorMd5 implements HashGenerator
      * @return string;
      * @throws HashGeneratorException
      */
-    public function generateHash(string $sessionId): string
+    public function generateHash(string $key): string
     {
-        if ($sessionId === '') {
-            throw new HashGeneratorException(HashGeneratorException::MESSAGE_EMPTY_SESSION_ID);
+        if ($key === '') {
+            throw new HashGeneratorException(HashGeneratorException::MESSAGE_EMPTY_KEY);
         }
-        return md5($sessionId);
+        return md5($key);
     }
 }

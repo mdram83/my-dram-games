@@ -24,7 +24,7 @@ class GamePlayControllerTest extends TestCase
     protected Player $host;
     protected Player $player;
     protected Player $notPlayer;
-    protected GameInvite $game;
+    protected GameInvite $gameInvite;
 
     protected string $storeRouteName = 'ajax.gameplay.store';
     protected string $joinRouteName = 'gameplay.show';
@@ -38,13 +38,13 @@ class GamePlayControllerTest extends TestCase
             $this->player = User::factory()->create();
             $this->notPlayer = User::factory()->create();
 
-            $gameDefinition = App::make(GameBoxRepository::class)->getAll()[0];
-            $this->game = App::make(GameInviteFactory::class)->create(
-                $gameDefinition->getSlug(),
-                $gameDefinition->getNumberOfPlayers()[0],
+            $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
+            $this->gameInvite = App::make(GameInviteFactory::class)->create(
+                $gameBox->getSlug(),
+                $gameBox->getNumberOfPlayers()[0],
                 $this->host
             );
-            $this->game->addPlayer($this->player);
+            $this->gameInvite->addPlayer($this->player);
 
             $this->commonSetup = true;
         }
@@ -55,7 +55,7 @@ class GamePlayControllerTest extends TestCase
         return $this
             ->actingAs($player)
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json('POST', route($this->storeRouteName, ['gameId' => $this->game->getId()]));
+            ->json('POST', route($this->storeRouteName, ['gameInviteId' => $this->gameInvite->getId()]));
     }
 
     public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
@@ -71,7 +71,7 @@ class GamePlayControllerTest extends TestCase
         Event::fake();
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json('POST', route($this->storeRouteName, ['gameId' => $this->game->getId()]));
+            ->json('POST', route($this->storeRouteName, ['gameInviteId' => $this->gameInvite->getId()]));
         $response->assertStatus(Response::HTTP_FORBIDDEN);
         Event::assertNotDispatched(GamePlayStartedEvent::class);
     }
@@ -97,7 +97,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this
             ->actingAs($this->host)
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post(route($this->storeRouteName, ['gameId' => 'wrong-123-gg']));
+            ->post(route($this->storeRouteName, ['gameInviteId' => 'wrong-123-gg']));
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 

@@ -21,23 +21,23 @@ class GameBoxPhpConfig implements GameBox
     {
         $this->slug = $slug;
 
-        if (!$definition = Config::get('games.box.' . $this->slug)) {
-            throw new GameBoxException(GameBoxException::MESSAGE_GAME_DEFINITION_MISSING);
+        if (!$box = Config::get('games.box.' . $this->slug)) {
+            throw new GameBoxException(GameBoxException::MESSAGE_GAME_BOX_MISSING);
         }
 
         if (
-            !($this->name = $definition['name'] ?? '')
-            || !($this->numberOfPlayers = $definition['numberOfPlayers'] ?? [])
-            || !isset($definition['isActive'])
+            !($this->name = $box['name'] ?? '')
+            || !($this->numberOfPlayers = $box['numberOfPlayers'] ?? [])
+            || !isset($box['isActive'])
         ) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
         }
 
-        $this->description = $definition['description'] ?? null;
-        $this->durationInMinutes = $definition['durationInMinutes'] ?? null;
-        $this->minPlayerAge = $definition['minPlayerAge'] ?? null;
+        $this->description = $box['description'] ?? null;
+        $this->durationInMinutes = $box['durationInMinutes'] ?? null;
+        $this->minPlayerAge = $box['minPlayerAge'] ?? null;
 
-        $this->isActive = $definition['isActive'];
+        $this->isActive = $box['isActive'];
     }
 
     public function getName(): string

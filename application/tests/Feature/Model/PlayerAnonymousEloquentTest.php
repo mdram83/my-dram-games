@@ -3,6 +3,7 @@
 namespace Tests\Feature\Model;
 
 use App\GameCore\Player\Player;
+use App\GameCore\Player\PlayerAnonymous;
 use App\Models\PlayerAnonymousEloquent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class PlayerAnonymousEloquentTest extends TestCase
     public function testSaveFailWithoutId(): void
     {
         $this->expectException(\Exception::class);
-        $anonymous = new \App\Models\PlayerAnonymousEloquent();
+        $anonymous = new PlayerAnonymousEloquent();
         $anonymous->name = $this->testName;
         $anonymous->save();
     }
@@ -31,16 +32,16 @@ class PlayerAnonymousEloquentTest extends TestCase
     public function testSaveFailWithoutName(): void
     {
         $this->expectException(\Exception::class);
-        $anonymous = new \App\Models\PlayerAnonymousEloquent();
+        $anonymous = new PlayerAnonymousEloquent();
         $anonymous->id = $this->testHash;
         $anonymous->save();
     }
 
     public function testIsInstanceOfPlayer(): void
     {
-        $anonymous = new \App\Models\PlayerAnonymousEloquent();
+        $anonymous = new PlayerAnonymousEloquent();
         $this->assertInstanceOf(Player::class, $anonymous);
-        $this->assertInstanceOf(\App\GameCore\Player\PlayerAnonymous::class, $anonymous);
+        $this->assertInstanceOf(PlayerAnonymous::class, $anonymous);
     }
 
     public function testGetId(): void
@@ -56,8 +57,8 @@ class PlayerAnonymousEloquentTest extends TestCase
 
     public function testGetName(): void
     {
-        \App\Models\PlayerAnonymousEloquent::factory()->create(['hash' => $this->testHash, 'name' => $this->testName]);
-        $anonymous = \App\Models\PlayerAnonymousEloquent::where(['hash' => $this->testHash])->first();
+        PlayerAnonymousEloquent::factory()->create(['hash' => $this->testHash, 'name' => $this->testName]);
+        $anonymous = PlayerAnonymousEloquent::where(['hash' => $this->testHash])->first();
         $this->assertEquals($this->testName, $anonymous->getName());
     }
 }

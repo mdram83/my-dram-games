@@ -19,7 +19,7 @@ class GameInviteShowChannelTest extends TestCase
 
     protected User $host;
     protected User $guest;
-    protected GameInvite $game;
+    protected GameInvite $gameInvite;
     protected string $cookieName;
     protected bool $commonSetup = false;
 
@@ -33,10 +33,10 @@ class GameInviteShowChannelTest extends TestCase
             $this->host = User::factory()->create();
             $this->guest = User::factory()->create();
 
-            $gameDefinition = App::make(GameBoxRepository::class)->getAll()[0];;
-            $this->game = App::make(GameInviteFactory::class)->create(
-                $gameDefinition->getSlug(),
-                $gameDefinition->getNumberOfPlayers()[0],
+            $gameBox = App::make(GameBoxRepository::class)->getAll()[0];;
+            $this->gameInvite = App::make(GameInviteFactory::class)->create(
+                $gameBox->getSlug(),
+                $gameBox->getNumberOfPlayers()[0],
                 $this->host
             );
 
@@ -46,7 +46,7 @@ class GameInviteShowChannelTest extends TestCase
 
     public function getResponse(
         User|false|null $user = null,
-        int|string|false|null $gameId = null,
+        int|string|false|null $gameInviteId = null,
         string $playerAnonymousHash = null,
     ): TestResponse
     {
@@ -63,19 +63,19 @@ class GameInviteShowChannelTest extends TestCase
 
         return $response->post($uri, [
             'socket_id' => '1.1',
-            'channel_name' => 'game-invite.' . ($gameId === false ? '' : $gameId ?? $this->game->getId()),
+            'channel_name' => 'game-invite.' . ($gameInviteId === false ? '' : $gameInviteId ?? $this->gameInvite->getId()),
         ]);
     }
 
     public function testWrongGameIdFails(): void
     {
-        $response = $this->getResponse(gameId: 'definitely-not-existing-game-id');
+        $response = $this->getResponse(gameInviteId: 'definitely-not-existing-game-id');
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function testMissingGameIdFails(): void
     {
-        $response = $this->getResponse(gameId: false);
+        $response = $this->getResponse(gameInviteId: false);
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -91,13 +91,17 @@ class GameInviteShowChannelTest extends TestCase
         $preparationResponse = $this
             ->withCookies([session()->getName() => $sessionId])
             ->get(route('game-invites.join', [
-                'slug' => $this->game->getGameDefinition()->getSlug(),
-                'gameId' => $this->game->getId()
+                'slug' => $this->gameInvite->getGameBox()->getSlug(),
+                'gameInviteId' => $this->gameInvite->getId()
             ]));
 
         $cookies = $preparationResponse->headers->all()['set-cookie'];
         $hashCookie = current(array_filter($cookies, fn($cookie) => str_contains($cookie, $this->cookieName)));
-        $rawCookieValue = substr($hashCookie, strlen($this->cookieName) + 1, strpos($hashCookie, ';') - strlen($this->cookieName) - 1);
+        $rawCookieValue = substr(
+            $hashCookie,
+            strlen($this->cookieName) + 1,
+            strpos($hashCookie, ';') - strlen($this->cookieName) - 1
+        );
 
         $response = $this->getResponse(false, null, $rawCookieValue);
         $response->assertStatus(Response::HTTP_OK);
@@ -109,5 +113,4 @@ class GameInviteShowChannelTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSeeText($this->host->getName());
     }
-
 }

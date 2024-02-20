@@ -9,6 +9,7 @@ use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\Player\Player;
+use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -63,12 +64,15 @@ class GameInviteControllerTest extends TestCase
             $response = $response->actingAs($this->playerHost, 'web');
         }
 
-        return $response->json('POST', route($this->routeStore, [ 'slug' => $slug, 'numberOfPlayers' => $numberOfPlayers,]));
+        return $response->json('POST', route($this->routeStore, [
+            'slug' => $slug,
+            'numberOfPlayers' => $numberOfPlayers
+        ]));
     }
 
     protected function getJoinResponse(
         string $slug = null,
-        int|string $gameId = null,
+        int|string $gameInviteId = null,
         bool $nullifySlug = false,
     ): TestResponse
     {
@@ -76,15 +80,15 @@ class GameInviteControllerTest extends TestCase
             ->actingAs($this->playerJoin, 'web')
             ->get(route($this->routeJoin, [
                 'slug' => $slug ?? ($nullifySlug ? null : $this->slug),
-                'gameId' => $gameId,
+                'gameInviteId' => $gameInviteId,
             ]));
     }
 
-    protected function getGame(): GameInvite
+    protected function getGameInvite(): GameInvite
     {
         $response = $this->getStoreResponse();
         $gameRepository = App::make(GameInviteRepository::class);
-        return $gameRepository->getOne($response['game']['id']);
+        return $gameRepository->getOne($response['gameInvite']['id']);
     }
 
     public function testStoreNonAjaxRequestResponseUnauthorized(): void
@@ -142,30 +146,30 @@ class GameInviteControllerTest extends TestCase
     {
         $response = $this->getStoreResponse();
 
-        $this->assertNotNull($response['game']['id']);
-        $this->assertNotNull($response['game']['host']['name']);
-        $this->assertNotNull($response['game']['numberOfPlayers']);
-        $this->assertNotNull($response['game']['players'][0]['name']);
+        $this->assertNotNull($response['gameInvite']['id']);
+        $this->assertNotNull($response['gameInvite']['host']['name']);
+        $this->assertNotNull($response['gameInvite']['numberOfPlayers']);
+        $this->assertNotNull($response['gameInvite']['players'][0]['name']);
 
         $response
-            ->assertJsonPath('game.host.name', $this->playerHost->getName())
-            ->assertJsonPath('game.numberOfPlayers', $this->gameBox->getNumberOfPlayers()[0])
-            ->assertJsonPath('game.players.0.name', $this->playerHost->getName());
+            ->assertJsonPath('gameInvite.host.name', $this->playerHost->getName())
+            ->assertJsonPath('gameInvite.numberOfPlayers', $this->gameBox->getNumberOfPlayers()[0])
+            ->assertJsonPath('gameInvite.players.0.name', $this->playerHost->getName());
     }
 
     public function testJoinGuestReceiveOkResponse(): void
     {
-        $game = App::make(GameInviteFactoryEloquent::class)
+        $gameInvite = App::make(GameInviteFactoryEloquent::class)
             ->create($this->slug, $this->gameBox->getNumberOfPlayers()[0], $this->playerHost);
-        $gameId = $game->getId();
+        $gameInviteId = $gameInvite->getId();
 
-        $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameId' => $gameId]));
+        $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameInviteId' => $gameInviteId]));
         $response->assertStatus(Response::HTTP_OK);
     }
 
     public function testJoinUserWithCorrectSlugWrongGameIdGetErrors(): void
     {
-        $response = $this->getJoinResponse(gameId: 'whateverToTestMissingMessage');
+        $response = $this->getJoinResponse(gameInviteId: 'whateverToTestMissingMessage');
         $response->assertStatus(Response::HTTP_FOUND);
         $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
         $response->assertSessionHasErrors(['general' => GameInviteException::MESSAGE_GAME_NOT_FOUND]);
@@ -173,15 +177,15 @@ class GameInviteControllerTest extends TestCase
 
     public function testJoinGameAlreadyFullGetErrors(): void
     {
-        $game = $this->getGame();
-        $gameId = $game->getId();
+        $gameInvite = $this->getGameInvite();
+        $gameInviteId = $gameInvite->getId();
 
-        $numberOfPlayers = $game->getNumberOfPlayers();
+        $numberOfPlayers = $gameInvite->getNumberOfPlayers();
         for ($i = 0; $i < $numberOfPlayers - 1; $i++) {
-            $game->addPlayer(User::factory()->create());
+            $gameInvite->addPlayer(User::factory()->create());
         }
 
-        $response = $this->getJoinResponse(gameId: $gameId);
+        $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
         $response->assertStatus(Response::HTTP_FOUND);
         $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
         $response->assertSessionHasErrors(['general' => GameInviteException::MESSAGE_TOO_MANY_PLAYERS]);
@@ -189,28 +193,34 @@ class GameInviteControllerTest extends TestCase
 
     public function testJoinGameWithSuccess(): void
     {
-        $game = $this->getGame();
-        $gameId = $game->getId();
+        $gameInvite = $this->getGameInvite();
+        $gameInviteId = $gameInvite->getId();
 
-        $response = $this->getJoinResponse(gameId: $gameId);
+        $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewIs('single');
-        $response->assertSessionHas(['success' => \App\Http\Controllers\GameCore\GameInviteController::MESSAGE_PLAYER_JOINED]);
-        $response->assertViewHas(['game.id' => $gameId, 'game.host.name' => $game->getHost()->getName()]);
+        $response->assertSessionHas(['success' => GameInviteController::MESSAGE_PLAYER_JOINED]);
+        $response->assertViewHas([
+            'gameInvite.id' => $gameInviteId,
+            'gameInvite.host.name' => $gameInvite->getHost()->getName()
+        ]);
     }
 
     public function testJoinGameWhereUserIsAlreadyPlayerReturnSingleWithWelcomeBackMessage(): void
     {
-        $game = $this->getGame();
-        $game->addPlayer($this->playerJoin);
+        $gameInvite = $this->getGameInvite();
+        $gameInvite->addPlayer($this->playerJoin);
 
-        $gameId = $game->getId();
-        $response = $this->getJoinResponse(gameId: $gameId);
+        $gameInviteId = $gameInvite->getId();
+        $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewIs('single');
-        $response->assertSessionHas(['success' => \App\Http\Controllers\GameCore\GameInviteController::MESSAGE_PLAYER_BACK]);
-        $response->assertViewHas(['game.id' => $gameId, 'game.host.name' => $game->getHost()->getName()]);
+        $response->assertSessionHas(['success' => GameInviteController::MESSAGE_PLAYER_BACK]);
+        $response->assertViewHas([
+            'gameInvite.id' => $gameInviteId,
+            'gameInvite.host.name' => $gameInvite->getHost()->getName()
+        ]);
     }
 }

@@ -6,9 +6,9 @@ const newGameSectionElement = document.querySelector('#js-single-new-game-sectio
 
 if (newGameSectionElement) {
     const props = {
-        'gameDefinition': Object.assign({}, JSON.parse(newGameSectionElement.dataset['game.definition'])),
-        'currentGame': newGameSectionElement.dataset['current.game']
-            ? Object.assign({}, JSON.parse(newGameSectionElement.dataset['current.game']))
+        'gameBox': Object.assign({}, JSON.parse(newGameSectionElement.dataset['game.box'])),
+        'loadedGameInvite': newGameSectionElement.dataset['game.invite']
+            ? Object.assign({}, JSON.parse(newGameSectionElement.dataset['game.invite']))
             : undefined,
     }
 

@@ -12,7 +12,7 @@ class GameBoxAjaxController extends Controller
     public function index(GameBoxRepository $repository): Response
     {
         try {
-            $content = array_map(fn($gameDefinition) => $gameDefinition->toArray(), $repository->getAll());
+            $content = array_map(fn($gameBox) => $gameBox->toArray(), $repository->getAll());
             if (count($content) === 0) {
                 throw new Exception();
             }

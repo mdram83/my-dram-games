@@ -15,11 +15,11 @@ class HomeController extends Controller
     public function __invoke(GameBoxRepository $repository): View|Application|Factory|ContractsApplication
     {
         try {
-            $gameDefinitionData = array_map(fn($gameDefinition) => $gameDefinition->toArray(), $repository->getAll());
+            $responseContent = array_map(fn($gameBox) => $gameBox->toArray(), $repository->getAll());
         } catch (Exception) {
 
         }
 
-        return view('home', ['gameDefinitionData' => $gameDefinitionData ?? []]);
+        return view('home', ['gameBoxList' => $responseContent ?? []]);
     }
 }

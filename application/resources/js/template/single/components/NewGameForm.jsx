@@ -36,7 +36,7 @@ export const NewGameForm = (props) => {
                 slug: slug,
             })
             .then(response => {
-                props.onCreate(response.data.game);
+                props.onCreate(response.data.gameInvite);
             })
             .catch(error => {
                 setErrorMessage(error.response.data.message ?? 'Unexpected error');

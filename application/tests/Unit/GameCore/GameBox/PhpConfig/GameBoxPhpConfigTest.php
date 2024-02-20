@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class GameBoxPhpConfigTest extends TestCase
 {
     protected string $slug = 'test-slug';
-    protected array $definition = [
+    protected array $box = [
         'name' => 'Tic Tac Toe',
         'description' => 'Famous Tic Tac Toe game that you can now play with friends online!',
         'numberOfPlayers' => [2],
@@ -20,23 +20,23 @@ class GameBoxPhpConfigTest extends TestCase
         'isActive' => true,
     ];
 
-    protected function mockConfigFacade(?array $definition = []): void
+    protected function mockConfigFacade(?array $box = []): void
     {
-        if ($definition === []) {
-            $definition = $this->definition;
+        if ($box === []) {
+            $box = $this->box;
         }
 
         Config::shouldReceive('get')
             ->once()
             ->with('games.box.' . $this->slug )
-            ->andReturn($definition);
+            ->andReturn($box);
     }
 
     public function testGameDefinitionCreated(): void
     {
         $this->mockConfigFacade();
-        $gameConfig = new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
-        $this->assertInstanceOf(GameBox::class, $gameConfig);
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertInstanceOf(GameBox::class, $gameBox);
     }
 
     public function testThrowExceptionIfNoSlugInConfig(): void
@@ -50,22 +50,22 @@ class GameBoxPhpConfigTest extends TestCase
     {
         $this->expectException(GameBoxException::class);
 
-        $definition = $this->definition;
-        unset($definition['name']);
+        $box = $this->box;
+        unset($box['name']);
 
-        $this->mockConfigFacade($definition);
+        $this->mockConfigFacade($box);
 
-        new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
+        new GameBoxPhpConfig($this->slug);
     }
 
     public function testThrowExceptionIfNoNumberOfPlayersInConfig(): void
     {
         $this->expectException(GameBoxException::class);
 
-        $definition = $this->definition;
-        unset($definition['numberOfPlayers']);
+        $box = $this->box;
+        unset($box['numberOfPlayers']);
 
-        $this->mockConfigFacade($definition);
+        $this->mockConfigFacade($box);
 
         new GameBoxPhpConfig($this->slug);
     }
@@ -74,10 +74,10 @@ class GameBoxPhpConfigTest extends TestCase
     {
         $this->expectException(GameBoxException::class);
 
-        $definition = $this->definition;
-        unset($definition['isActive']);
+        $box = $this->box;
+        unset($box['isActive']);
 
-        $this->mockConfigFacade($definition);
+        $this->mockConfigFacade($box);
 
         new GameBoxPhpConfig($this->slug);
     }
@@ -85,82 +85,82 @@ class GameBoxPhpConfigTest extends TestCase
     public function testGetName(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['name'], $gameDefinition->getName());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['name'], $gameBox->getName());
     }
 
     public function testGetSlug(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->slug, $gameDefinition->getSlug());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->slug, $gameBox->getSlug());
     }
 
     public function testGetDescription(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['description'], $gameDefinition->getDescription());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['description'], $gameBox->getDescription());
     }
 
     public function testGetNumberOfPlayers(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['numberOfPlayers'], $gameDefinition->getNumberOfPlayers());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['numberOfPlayers'], $gameBox->getNumberOfPlayers());
     }
 
     public function testGetNumberOfPlayersDecriptionWithOneNumber(): void
     {
-        $definition = array_replace($this->definition, ['numberOfPlayers' => [2]]);
-        $this->mockConfigFacade($definition);
-        $gameDefinition = new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
-        $this->assertEquals('2', $gameDefinition->getNumberOfPlayersDescription());
+        $box = array_replace($this->box, ['numberOfPlayers' => [2]]);
+        $this->mockConfigFacade($box);
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals('2', $gameBox->getNumberOfPlayersDescription());
     }
 
     public function testGetNumberOfPlayersDecriptionWithConsecutiveNumbers(): void
     {
-        $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 3, 4]]);
-        $this->mockConfigFacade($definition);
-        $gameDefinition = new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
-        $this->assertEquals('2-4', $gameDefinition->getNumberOfPlayersDescription());
+        $box = array_replace($this->box, ['numberOfPlayers' => [2, 3, 4]]);
+        $this->mockConfigFacade($box);
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals('2-4', $gameBox->getNumberOfPlayersDescription());
     }
 
     public function testGetNumberOfPlayersDecriptionWithNonConsecutiveNumbers(): void
     {
-        $definition = array_replace($this->definition, ['numberOfPlayers' => [2, 4, 6]]);
-        $this->mockConfigFacade($definition);
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals('2, 4, 6', $gameDefinition->getNumberOfPlayersDescription());
+        $box = array_replace($this->box, ['numberOfPlayers' => [2, 4, 6]]);
+        $this->mockConfigFacade($box);
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals('2, 4, 6', $gameBox->getNumberOfPlayersDescription());
     }
 
     public function testGetDurationInMinutes(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['durationInMinutes'], $gameDefinition->getDurationInMinutes());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['durationInMinutes'], $gameBox->getDurationInMinutes());
     }
 
     public function testGetMinPlayerAge(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['minPlayerAge'], $gameDefinition->getMinPlayerAge());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['minPlayerAge'], $gameBox->getMinPlayerAge());
     }
 
     public function testGetIsActive(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new \App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig($this->slug);
-        $this->assertEquals($this->definition['isActive'], $gameDefinition->isActive());
+        $gameBox = new GameBoxPhpConfig($this->slug);
+        $this->assertEquals($this->box['isActive'], $gameBox->isActive());
     }
 
     public function testToArray(): void
     {
         $this->mockConfigFacade();
-        $gameDefinition = new GameBoxPhpConfig($this->slug);
+        $gameBox = new GameBoxPhpConfig($this->slug);
         $this->assertEquals(
-            array_merge(['slug' => $this->slug], $this->definition, ['numberOfPlayersDescription' => '2']),
-            $gameDefinition->toArray());
+            array_merge(['slug' => $this->slug], $this->box, ['numberOfPlayersDescription' => '2']),
+            $gameBox->toArray());
     }
 }

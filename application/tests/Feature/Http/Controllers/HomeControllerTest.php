@@ -20,7 +20,7 @@ class HomeControllerTest extends TestCase
 
         $repository = $this->app->make(GameBoxRepository::class);
         $gameDefinitionData = array_map(fn($gameDefinition) => $gameDefinition->toArray(), $repository->getAll());
-        $expectedData = ['gameDefinitionData' => $gameDefinitionData];
+        $expectedData = ['gameBoxList' => $gameDefinitionData];
 
         $response->assertViewHasAll($expectedData);
     }

@@ -18,6 +18,6 @@ class GameInviteException extends Exception
     public const MESSAGE_HOST_ALREADY_ADDED = 'Host already added';
     public const MESSAGE_HOST_NOT_SET = 'Host not set';
 
-    public const MESSAGE_GAME_DEFINITION_NOT_SET = 'GameInvite definition not set';
-    public const MESSAGE_GAME_DEFINITION_WAS_SET = 'GameInvite definition already set';
+    public const MESSAGE_GAME_BOX_NOT_SET = 'GameBox not set';
+    public const MESSAGE_GAME_BOX_ALREADY_SET = 'GameBox already set';
 }

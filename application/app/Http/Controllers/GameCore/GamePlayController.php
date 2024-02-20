@@ -20,14 +20,14 @@ class GamePlayController extends Controller
     public function store(Request $request, GameInviteRepository $repository, Player $player): View|Response|RedirectResponse
     {
         try {
-            $game = $repository->getOne($request->input('gameId'));
+            $gameInvite = $repository->getOne($request->input('gameInviteId'));
 
-            if (!$game->isPlayerAdded($player) || !$game->isHost($player)) {
+            if (!$gameInvite->isPlayerAdded($player) || !$gameInvite->isHost($player)) {
                 return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
             }
 
             // TODO here I will need to create proper GamePlay object
-            GamePlayStartedEvent::dispatch($game);
+            GamePlayStartedEvent::dispatch($gameInvite);
 
         } catch (GameInviteException $e) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());

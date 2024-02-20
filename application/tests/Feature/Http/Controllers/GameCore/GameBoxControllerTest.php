@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\GameCore\GameBox\GameBoxRepository;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -14,8 +15,7 @@ class GameBoxControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $gameDefinitionData = Config::get('games');
-        $this->slug = array_keys($gameDefinitionData['box'])[0];
+        $this->slug = App::make(GameBoxRepository::class)->getAll()[0]->getSlug();
     }
 
     public function testResponseOk(): void
@@ -29,8 +29,8 @@ class GameBoxControllerTest extends TestCase
         $response = $this->get(route('games.show', $this->slug));
 
         $repository = $this->app->make(GameBoxRepository::class);
-        $gameDefinition = $repository->getOne($this->slug)->toArray();
-        $expectedData = ['gameDefinition' => $gameDefinition];
+        $gameBox = $repository->getOne($this->slug)->toArray();
+        $expectedData = ['gameBox' => $gameBox];
 
         $response->assertViewHasAll($expectedData);
     }

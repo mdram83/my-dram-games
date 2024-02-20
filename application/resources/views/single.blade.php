@@ -1,5 +1,3 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
-
 <x-app-layout>
 
     <!-- Breadcrumb Begin -->
@@ -25,7 +23,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="anime__details__pic set-bg"
-                             data-setbg="{{ asset('img/game-definition/' . $gameDefinition['slug'] . '.jpg') }}"
+                             data-setbg="{{ asset('img/game-definition/' . $gameBox['slug'] . '.jpg') }}"
                         >
                             <div class="comment"><i class="fa fa-comments"></i> 11</div>
                             <div class="view"><i class="fa fa-eye"></i> 9141</div>
@@ -34,7 +32,7 @@
                     <div class="col-lg-9">
                         <div class="anime__details__text">
                             <div class="anime__details__title">
-                                <h3>{{ $gameDefinition['name'] }}</h3>
+                                <h3>{{ $gameBox['name'] }}</h3>
                                 <span>フェイト／ステイナイト, Feito／sutei naito</span>
                             </div>
                             <div class="anime__details__rating">
@@ -47,7 +45,7 @@
                                 </div>
                                 <span>1.029 Votes</span>
                             </div>
-                            <p>{{ $gameDefinition['description'] }}</p>
+                            <p>{{ $gameBox['description'] }}</p>
                             <div class="anime__details__widget">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
@@ -55,10 +53,10 @@
                                             <li><span>Type:</span> TV Series</li>
                                             <li><span>Studios:</span> Lerche</li>
                                             <li>
-                                                <span>No. players:</span> {{ $gameDefinition['numberOfPlayersDescription'] }}
+                                                <span>No. players:</span> {{ $gameBox['numberOfPlayersDescription'] }}
                                             </li>
                                             <li>
-                                                <span>Status:</span> {{ $gameDefinition['isActive'] ? 'Active' : 'Inactive' }}
+                                                <span>Status:</span> {{ $gameBox['isActive'] ? 'Active' : 'Inactive' }}
                                             </li>
                                             <li><span>Genre:</span> Action, Adventure, Fantasy, Magic</li>
                                         </ul>
@@ -68,10 +66,10 @@
                                             <li><span>Scores:</span> 7.31 / 1,515</li>
                                             <li><span>Rating:</span> 8.5 / 161 times</li>
                                             <li><span>Duration:</span>
-                                                {{ $gameDefinition['durationInMinutes'] }}
-                                                {{ $gameDefinition['durationInMinutes'] == 1 ? 'minute' : 'minutes'}}
+                                                {{ $gameBox['durationInMinutes'] }}
+                                                {{ $gameBox['durationInMinutes'] == 1 ? 'minute' : 'minutes'}}
                                             </li>
-                                            <li><span>Min. age:</span> {{ $gameDefinition['minPlayerAge'] }}</li>
+                                            <li><span>Min. age:</span> {{ $gameBox['minPlayerAge'] }}</li>
                                             <li><span>Views:</span> 131,541</li>
                                         </ul>
                                     </div>
@@ -80,15 +78,15 @@
                             <div class="anime__details__btn">
                                 {{--                                <a href="#" class="follow-btn"><i class="fa fa-heart-o"></i> Follow</a>--}}
 
-                                @if($gameDefinition['isActive'] === true)
+                                @if($gameBox['isActive'] === true)
 
                                     @push('custom-scripts')
                                         @vite('resources/js/template/single/single.jsx')
                                     @endpush
 
                                     <div id="js-single-new-game-section"
-                                         data-game.definition="{{ json_encode($gameDefinition) }}"
-                                         data-current.game="{{ isset($game) ? json_encode($game) : null }}"
+                                         data-game.box="{{ json_encode($gameBox) }}"
+                                         data-game.invite="{{ isset($gameInvite) ? json_encode($gameInvite) : null }}"
                                     ></div>
 
                                 @endif

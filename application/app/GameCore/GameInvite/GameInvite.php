@@ -15,7 +15,7 @@ interface GameInvite
     public function isHost(Player $player): bool;
     public function setNumberOfPlayers(int $numberOfPlayers): void;
     public function getNumberOfPlayers(): int;
-    public function setGameDefinition(GameBox $gameDefinition): void;
-    public function getGameDefinition(): GameBox;
+    public function setGameBox(GameBox $gameBox): void;
+    public function getGameBox(): GameBox;
     public function toArray():array;
 }

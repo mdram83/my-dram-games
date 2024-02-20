@@ -30,12 +30,12 @@ class GameInviteController extends Controller
     {
         try {
             $this->validateStoreRequest($request);
-            $game = $factory->create(
+            $gameInvite = $factory->create(
                 $request->input('slug'),
                 $request->input('numberOfPlayers'),
                 $player
             );
-            $responseContent = ['game' => $game->toArray()];
+            $responseContent = ['gameInvite' => $gameInvite->toArray()];
 
         } catch (ControllerException|GameBoxException|GameInviteException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
@@ -47,19 +47,19 @@ class GameInviteController extends Controller
         return new Response($responseContent, SymfonyResponse::HTTP_OK);
     }
 
-    public function join(GameInviteRepository $repository, Player $player, string $slug, int|string $gameId): View|Response|RedirectResponse
+    public function join(GameInviteRepository $repository, Player $player, string $slug, int|string $gameInviteId): View|Response|RedirectResponse
     {
         try {
-            $game = $repository->getOne($gameId);
+            $gameInvite = $repository->getOne($gameInviteId);
 
-            if (!$game->isPlayerAdded($player)) {
-                $game->addPlayer($player);
+            if (!$gameInvite->isPlayerAdded($player)) {
+                $gameInvite->addPlayer($player);
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
 
             $responseContent = [
-                'gameDefinition' => $game->getGameDefinition()->toArray(),
-                'game' => $game->toArray(),
+                'gameBox' => $gameInvite->getGameBox()->toArray(),
+                'gameInvite' => $gameInvite->toArray(),
             ];
 
         } catch (GameInviteException $e) {
@@ -73,6 +73,9 @@ class GameInviteController extends Controller
         return view('single', $responseContent);
     }
 
+    /**
+     * @throws ControllerException
+     */
     private function validateStoreRequest(Request $request): void
     {
         $validator = Validator::make($request->all(), [

@@ -3,6 +3,8 @@
 namespace Tests\Feature\GameCore\GameBox\PhpConfig;
 
 use App\GameCore\GameBox\GameBox;
+use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -30,29 +32,29 @@ class GameBoxRepositoryPhpConfigTest extends TestCase
 
     public function testInstanceOfGameDefinitionRepository(): void
     {
-        $this->assertInstanceOf(\App\GameCore\GameBox\GameBoxRepository::class, $this->repository);
+        $this->assertInstanceOf(GameBoxRepository::class, $this->repository);
     }
 
     public function testGetOneExisting(): void
     {
         $slug = array_keys($this->config)[0];
-        $gameDefinition = $this->repository->getOne($slug);
-        $this->assertInstanceOf(\App\GameCore\GameBox\GameBox::class, $gameDefinition);
+        $gameBox = $this->repository->getOne($slug);
+        $this->assertInstanceOf(GameBox::class, $gameBox);
     }
 
     public function testGetOneMissing(): void
     {
-        $this->expectException(\App\GameCore\GameBox\GameBoxException::class);
+        $this->expectException(GameBoxException::class);
         $slug = 'missing-slug-test-132413';
         $this->repository->getOne($slug);
     }
 
     public function testGetAll(): void
     {
-        $definitions = $this->repository->getAll();
-        $this->assertEquals(count($this->config), count($definitions));
-        foreach($definitions as $definition) {
-            $this->assertInstanceOf(GameBox::class, $definition);
+        $gameBoxList = $this->repository->getAll();
+        $this->assertEquals(count($this->config), count($gameBoxList));
+        foreach($gameBoxList as $gameBox) {
+            $this->assertInstanceOf(GameBox::class, $gameBox);
         }
     }
 }

@@ -3,18 +3,18 @@ import {SiteButton} from "../../components/SiteButton.jsx";
 import {NewGamePlayers} from "./NewGamePlayers.jsx";
 import axios from "axios";
 
-export const NewGameSummary = ({game, slug}) => {
+export const NewGameSummary = ({gameInvite, slug}) => {
 
-    const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, game.id);
+    const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
     const startGame = () => {
-        axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameId: game.id})
+        axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameInviteId: gameInvite.id})
             .then(response => { })
             .catch(error =>  console.log(error));
     }
-    const play = () => window.location.href = window.MyDramGames.routes["gameplay.show"](game.id);
+    const play = () => window.location.href = window.MyDramGames.routes["gameplay.show"](gameInvite.id);
     const joinUrlCopy = () => navigator.clipboard.writeText(joinUrl);
-    const isCurrentPlayerHost = game.host.name === window.MyDramGames.player.name;
+    const isCurrentPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
 
     const [allPlayersReady, setAllPlayersReady] = React.useState(false);
 
@@ -22,7 +22,7 @@ export const NewGameSummary = ({game, slug}) => {
         <div className="text-white">
 
             <h4 className="font-bold font-sans mb-4">Game Settings</h4>
-            <NewGamePlayers game={game} setAllPlayersReady={(ready) => setAllPlayersReady(ready)} autoStart={() => play()} />
+            <NewGamePlayers gameInvite={gameInvite} setAllPlayersReady={(ready) => setAllPlayersReady(ready)} autoStart={() => play()} />
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
                 {

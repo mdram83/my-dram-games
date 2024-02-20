@@ -3,12 +3,12 @@ import {NewGameForm} from "./NewGameForm.jsx";
 import {NewGameSummary} from "./NewGameSummary.jsx";
 import {SiteButton} from "../../components/SiteButton.jsx";
 
-export const NewGameSection = ({gameDefinition, currentGame = undefined}) => {
+export const NewGameSection = ({gameBox, loadedGameInvite = undefined}) => {
 
-    const [buttonOn, toggleButton] = React.useState(!currentGame);
+    const [buttonOn, toggleButton] = React.useState(!loadedGameInvite);
     const [formOn, toggleForm] = React.useState(false);
-    const [gameOn, toggleGame] = React.useState(!!currentGame);
-    const [game, setGame] = React.useState(currentGame);
+    const [gameOn, toggleGame] = React.useState(!!loadedGameInvite);
+    const [gameInvite, setGameInvite] = React.useState(loadedGameInvite);
 
     const enableForm = () => {
         toggleButton(false);
@@ -20,8 +20,8 @@ export const NewGameSection = ({gameDefinition, currentGame = undefined}) => {
         toggleButton(true);
     }
 
-    const showGame = (game) => {
-        setGame(game);
+    const showGame = (gameInvite) => {
+        setGameInvite(gameInvite);
         toggleButton(false);
         toggleForm(false);
         toggleGame(true);
@@ -30,8 +30,8 @@ export const NewGameSection = ({gameDefinition, currentGame = undefined}) => {
     return (
         <>
             {buttonOn && <SiteButton value="New Game" onClick={() => enableForm()} />}
-            {formOn && <NewGameForm {...gameDefinition} onCancel={() => cancelForm()} onCreate={(game) => showGame(game)} />}
-            {gameOn && <NewGameSummary game={game} slug={gameDefinition.slug} />}
+            {formOn && <NewGameForm {...gameBox} onCancel={() => cancelForm()} onCreate={(gameInvite) => showGame(gameInvite)} />}
+            {gameOn && <NewGameSummary gameInvite={gameInvite} slug={gameBox.slug} />}
         </>
     );
 }

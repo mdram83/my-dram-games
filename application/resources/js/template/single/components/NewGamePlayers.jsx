@@ -1,13 +1,13 @@
 import React from "react";
 import {useEffect} from "react";
 
-export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
+export const NewGamePlayers = ({gameInvite, setAllPlayersReady, autoStart}) => {
 
-    const {players} = game;
+    const {players} = gameInvite;
     const initialPlayersStatus = players.map((player) => {
         return {
             name: player.name,
-            host: player.name === game.host.name,
+            host: player.name === gameInvite.host.name,
             connected: player.name === false,
         }
     });
@@ -30,7 +30,7 @@ export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
             if (!existingPlayer) {
                 newPlayersStatus.push({
                     name: playerName,
-                    host: playerName === game.host.name,
+                    host: playerName === gameInvite.host.name,
                     connected: connected,
                 });
             }
@@ -40,7 +40,7 @@ export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
     }
 
     useEffect(() => {
-        Echo.join(`game-invite.${game.id}`)
+        Echo.join(`game-invite.${gameInvite.id}`)
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
@@ -52,7 +52,7 @@ export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
 
     useEffect(() => {
         setAllPlayersReady(
-            playersStatus.length === game.numberOfPlayers && playersStatus.every((player) => player.connected)
+            playersStatus.length === gameInvite.numberOfPlayers && playersStatus.every((player) => player.connected)
         );
     });
 
@@ -60,7 +60,7 @@ export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
 
         const listItems = [];
 
-        for (let i = 0; i < game.numberOfPlayers; i++ ) {
+        for (let i = 0; i < gameInvite.numberOfPlayers; i++ ) {
 
             const playerName = playersStatus[i] ? playersStatus[i].name : undefined;
             const playerHost = playersStatus[i] ? playersStatus[i].host : false;

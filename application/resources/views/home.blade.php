@@ -69,8 +69,8 @@
 
                         <!-- Index -->
                         <div class="row">
-                            @forelse($gameDefinitionData as $gameDefinition)
-                                <x-template.product-list-single :gameDefinition="$gameDefinition" />
+                            @forelse($gameBoxList as $gameBox)
+                                <x-template.product-list-single :gameBox="$gameBox" />
                             @empty
                                 <p>No Games Available</p>
                             @endforelse

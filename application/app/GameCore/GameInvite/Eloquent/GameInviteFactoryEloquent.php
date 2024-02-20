@@ -9,16 +9,16 @@ use App\GameCore\Player\Player;
 
 class GameInviteFactoryEloquent implements GameInviteFactory
 {
-    public function __construct(private readonly GameBoxRepository $gameDefinitionRepository)
+    public function __construct(private readonly GameBoxRepository $gameBoxRepository)
     {
 
     }
 
     public function create(string $slug, int $numberOfPlayers, Player $host): GameInvite
     {
-        $game = new GameInviteEloquent($this->gameDefinitionRepository);
+        $game = new GameInviteEloquent($this->gameBoxRepository);
 
-        $game->setGameDefinition($this->gameDefinitionRepository->getOne($slug));
+        $game->setGameBox($this->gameBoxRepository->getOne($slug));
         $game->setNumberOfPlayers($numberOfPlayers);
         $game->addPlayer($host, true);
 

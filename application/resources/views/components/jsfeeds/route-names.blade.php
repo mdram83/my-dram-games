@@ -6,7 +6,7 @@
             'ajax.games.index': '{{ route('ajax.games.index') }}',
             'ajax.game-invites.store': '{{ route('ajax.game-invites.store') }}',
             'ajax.gameplay.store': '{{ route('ajax.gameplay.store') }}',
-            'game-invites.join': (slug, gameId) => '{{ route('game-invites.join', ['slug' => '/', 'gameId' => '/']) }}' + `/${slug}/${gameId}`,
+            'game-invites.join': (slug, gameId) => '{{ route('game-invites.join', ['slug' => '/', 'gameInviteId' => '/']) }}' + `/${slug}/${gameId}`,
             'gameplay.show': (gameId) => '{{ route('gameplay.show', ['gameId' => '/']) }}' + `/${gameId}`,
             'login': '{{ route('login') }}',
         }
