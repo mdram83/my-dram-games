@@ -2,19 +2,19 @@
 
 namespace App\Providers;
 
-use App\Models\GameCore\Game\GameFactory;
-use App\Models\GameCore\Game\GameFactoryEloquent;
-use App\Models\GameCore\Game\GameRepository;
-use App\Models\GameCore\Game\GameRepositoryEloquent;
-use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
-use App\Models\GameCore\GameDefinition\GameDefinitionRepositoryPhpConfig;
-use App\Models\GameCore\Player\Player;
-use App\Models\GameCore\Player\PlayerAnonymousFactoryEloquent;
-use App\Models\GameCore\Player\PlayerAnonymousFactory;
-use App\Models\GameCore\Player\PlayerAnonymousHashGenerator;
-use App\Models\GameCore\Player\PlayerAnonymousHashGeneratorMd5;
-use App\Models\GameCore\Player\PlayerAnonymousRepository;
-use App\Models\GameCore\Player\PlayerAnonymousRepositoryEloquent;
+use App\GameCore\Game\Eloquent\GameFactoryEloquent;
+use App\GameCore\Game\Eloquent\GameRepositoryEloquent;
+use App\GameCore\Game\GameFactory;
+use App\GameCore\Game\GameRepository;
+use App\GameCore\GameDefinition\GameDefinitionRepository;
+use App\GameCore\GameDefinition\PhPConfig\GameDefinitionRepositoryPhpConfig;
+use App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent;
+use App\GameCore\Player\Eloquent\PlayerAnonymousRepositoryEloquent;
+use App\GameCore\Player\Player;
+use App\GameCore\Player\PlayerAnonymousFactory;
+use App\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\Services\HashGenerator\Md5\PlayerAnonymousHashGeneratorMd5;
+use App\GameCore\Services\HashGenerator\PlayerAnonymousHashGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

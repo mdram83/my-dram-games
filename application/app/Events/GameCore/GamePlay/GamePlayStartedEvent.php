@@ -2,8 +2,8 @@
 
 namespace App\Events\GameCore\GamePlay;
 
-use App\Broadcasting\GameCore\Game\GameChannel;
-use App\Models\GameCore\Game\Game;
+use App\Broadcasting\GameChannel;
+use App\GameCore\Game\Game;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;

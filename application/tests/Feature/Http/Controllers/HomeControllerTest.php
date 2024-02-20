@@ -2,9 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Models\GameCore\GameDefinition\GameDefinitionPhpConfig;
-use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
-use Illuminate\Support\Facades\Config;
+use App\GameCore\GameDefinition\GameDefinitionRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 

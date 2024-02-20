@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
+use App\GameCore\GameDefinition\GameDefinitionRepository;
 use Exception;
 use Illuminate\Contracts\Foundation\Application as ContractsApplication;
 use Illuminate\Contracts\View\Factory;

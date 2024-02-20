@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Models\GameCore\Player\PlayerAnonymousEloquent;
+use App\Models\PlayerAnonymousEloquent;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

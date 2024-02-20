@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\GameCore\Player\Player;
-use App\Models\GameCore\Player\PlayerAnonymousFactory;
-use App\Models\GameCore\Player\PlayerAnonymousHashGenerator;
-use App\Models\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\Player\Player;
+use App\GameCore\Player\PlayerAnonymousFactory;
+use App\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\Services\HashGenerator\PlayerAnonymousHashGenerator;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;

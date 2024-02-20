@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Game\GameController;
-use App\Http\Controllers\GameDefinition\GameDefinitionAjaxController;
-use App\Http\Controllers\GameDefinition\GameDefinitionController;
-use App\Http\Controllers\GamePlay\GamePlayController;
+use App\Http\Controllers\GameCore\GameController;
+use App\Http\Controllers\GameCore\GameDefinitionAjaxController;
+use App\Http\Controllers\GameCore\GameDefinitionController;
+use App\Http\Controllers\GameCore\GamePlayController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;

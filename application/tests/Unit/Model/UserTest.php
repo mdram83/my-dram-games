@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Model;
 
-use App\Models\GameCore\Player\Player;
+use App\GameCore\Player\Player;
 use App\Models\User;
 use PHPUnit\Framework\TestCase;
 

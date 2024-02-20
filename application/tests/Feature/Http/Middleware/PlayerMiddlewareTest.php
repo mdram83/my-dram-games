@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Http\Middleware;
 
-use App\Models\GameCore\GameDefinition\GameDefinitionRepository;
-use App\Models\GameCore\Player\PlayerAnonymous;
-use App\Models\GameCore\Player\PlayerAnonymousEloquent;
-use App\Models\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\GameDefinition\GameDefinitionRepository;
+use App\GameCore\Player\PlayerAnonymous;
+use App\GameCore\Player\PlayerAnonymousRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;

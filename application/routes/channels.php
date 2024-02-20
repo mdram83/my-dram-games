@@ -1,6 +1,6 @@
 <?php
 
-use App\Broadcasting\GameCore\Game\GameChannel;
+use App\Broadcasting\GameChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
