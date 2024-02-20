@@ -2,7 +2,7 @@
 
 return [
 
-    'gameDefinition' => [
+    'box' => [
 
         'tic-tac-toe' => [
             'name' => 'Tic Tac Toe',

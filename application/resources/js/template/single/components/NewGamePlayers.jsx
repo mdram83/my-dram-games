@@ -40,7 +40,7 @@ export const NewGamePlayers = ({game, setAllPlayersReady, autoStart}) => {
     }
 
     useEffect(() => {
-        Echo.join(`game.${game.id}`)
+        Echo.join(`game-invite.${game.id}`)
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))

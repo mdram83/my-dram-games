@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousRepository;
-use App\GameCore\Services\HashGenerator\PlayerAnonymousHashGenerator;
+use App\GameCore\Services\HashGenerator\HashGenerator;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
@@ -51,7 +51,7 @@ class PlayerMiddleware
 
                     $key = session()->getId();
                     $player =
-                        $repository->getOne(App::make(PlayerAnonymousHashGenerator::class)->generateHash($key))
+                        $repository->getOne(App::make(HashGenerator::class)->generateHash($key))
                         ?? App::make(PlayerAnonymousFactory::class)->create(['key' => $key]);
                 }
 

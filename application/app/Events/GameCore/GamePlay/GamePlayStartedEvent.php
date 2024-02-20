@@ -2,8 +2,8 @@
 
 namespace App\Events\GameCore\GamePlay;
 
-use App\Broadcasting\GameChannel;
-use App\GameCore\Game\Game;
+use App\Broadcasting\GameInviteShowChannel;
+use App\GameCore\GameInvite\GameInvite;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -18,7 +18,7 @@ class GamePlayStartedEvent implements ShouldBroadcast
 
     private int|string $gameId;
 
-    public function __construct(Game $game)
+    public function __construct(GameInvite $game)
     {
         $this->gameId = $game->getId();
     }
@@ -26,7 +26,7 @@ class GamePlayStartedEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PresenceChannel(GameChannel::CHANNEL_ROUTE_PREFIX . $this->gameId)
+            new PresenceChannel(GameInviteShowChannel::CHANNEL_ROUTE_PREFIX . $this->gameId)
         ];
     }
 }

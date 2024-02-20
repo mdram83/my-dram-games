@@ -65,11 +65,11 @@ class User extends Authenticatable implements PlayerRegistered
 
 //    public function games(): MorphToMany
 //    {
-//        return $this->morphToMany(GameEloquentModel::class, 'game_player');
+//        return $this->morphToMany(GameInviteEloquentModel::class, 'game_invite_player');
 //    }
 //
 //    public function hostedGames(): MorphMany
 //    {
-//        return $this->morphMany(GameEloquentModel::class, 'hostable');
+//        return $this->morphMany(GameInviteEloquentModel::class, 'hostable');
 //    }
 }

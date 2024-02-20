@@ -5,13 +5,13 @@ namespace App\GameCore\Player\Eloquent;
 use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousFactoryException;
-use App\GameCore\Services\HashGenerator\PlayerAnonymousHashGenerator;
+use App\GameCore\Services\HashGenerator\HashGenerator;
 use App\Models\PlayerAnonymousEloquent;
 
 class PlayerAnonymousFactoryEloquent implements PlayerAnonymousFactory
 {
     public function __construct(
-        protected PlayerAnonymousHashGenerator $generator
+        protected HashGenerator $generator
     )
     {
 

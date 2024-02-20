@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GameCore\GamePlay\GamePlayStartedEvent;
-use App\GameCore\Game\GameException;
-use App\GameCore\Game\GameRepository;
+use App\GameCore\GameInvite\GameInviteException;
+use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\Player\Player;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GamePlayController extends Controller
 {
-    public function store(Request $request, GameRepository $repository, Player $player): View|Response|RedirectResponse
+    public function store(Request $request, GameInviteRepository $repository, Player $player): View|Response|RedirectResponse
     {
         try {
             $game = $repository->getOne($request->input('gameId'));
@@ -29,7 +29,7 @@ class GamePlayController extends Controller
             // TODO here I will need to create proper GamePlay object
             GamePlayStartedEvent::dispatch($game);
 
-        } catch (GameException $e) {
+        } catch (GameInviteException $e) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
 
         }

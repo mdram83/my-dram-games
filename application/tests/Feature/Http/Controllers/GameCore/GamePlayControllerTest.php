@@ -3,9 +3,9 @@
 namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\Events\GameCore\GamePlay\GamePlayStartedEvent;
-use App\GameCore\Game\Game;
-use App\GameCore\Game\GameFactory;
-use App\GameCore\GameDefinition\GameDefinitionRepository;
+use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GameInvite\GameInviteFactory;
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\Player\Player;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +24,7 @@ class GamePlayControllerTest extends TestCase
     protected Player $host;
     protected Player $player;
     protected Player $notPlayer;
-    protected Game $game;
+    protected GameInvite $game;
 
     protected string $storeRouteName = 'ajax.gameplay.store';
     protected string $joinRouteName = 'gameplay.show';
@@ -38,8 +38,8 @@ class GamePlayControllerTest extends TestCase
             $this->player = User::factory()->create();
             $this->notPlayer = User::factory()->create();
 
-            $gameDefinition = App::make(GameDefinitionRepository::class)->getAll()[0];
-            $this->game = App::make(GameFactory::class)->create(
+            $gameDefinition = App::make(GameBoxRepository::class)->getAll()[0];
+            $this->game = App::make(GameInviteFactory::class)->create(
                 $gameDefinition->getSlug(),
                 $gameDefinition->getNumberOfPlayers()[0],
                 $this->host

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Middleware;
 
-use App\GameCore\GameDefinition\GameDefinitionRepository;
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\Models\User;
@@ -22,7 +22,7 @@ class PlayerMiddlewareTest extends TestCase
         parent::setUp();
         if (!$this->commonSetup) {
             $this->cookieName = Config::get('player.playerHashCookieName');
-            $this->slug = App::make(GameDefinitionRepository::class)->getAll()[0]->getSlug();
+            $this->slug = App::make(GameBoxRepository::class)->getAll()[0]->getSlug();
             $this->repository = App::make(PlayerAnonymousRepository::class);
             $this->commonSetup = true;
         }
