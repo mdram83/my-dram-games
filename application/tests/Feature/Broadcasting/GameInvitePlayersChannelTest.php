@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Broadcasting;
 
+use App\Broadcasting\GameInvitePlayersChannel;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameBox\GameBoxRepository;
@@ -13,7 +14,7 @@ use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
-class GameInviteShowChannelTest extends TestCase
+class GameInvitePlayersChannelTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -63,7 +64,9 @@ class GameInviteShowChannelTest extends TestCase
 
         return $response->post($uri, [
             'socket_id' => '1.1',
-            'channel_name' => 'game-invite.' . ($gameInviteId === false ? '' : $gameInviteId ?? $this->gameInvite->getId()),
+            'channel_name' =>
+                GameInvitePlayersChannel::CHANNEL_ROUTE_PREFIX
+                . ($gameInviteId === false ? '' : $gameInviteId ?? $this->gameInvite->getId()),
         ]);
     }
 

@@ -7,9 +7,9 @@ use App\GameCore\Player\Player;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\App;
 
-class GameInviteShowChannel
+class GameInvitePlayersChannel
 {
-    public const CHANNEL_ROUTE_PREFIX = 'game-invite.';
+    public const CHANNEL_ROUTE_PREFIX = 'game-invite-players.';
     public const CHANNEL_ROUTE_PARAM = '{gameId}';
 
     public static function getRouteName(): string
@@ -17,11 +17,11 @@ class GameInviteShowChannel
         return static::CHANNEL_ROUTE_PREFIX . static::CHANNEL_ROUTE_PARAM;
     }
 
-    public function join(Authenticatable|Player $player, int|string $gameId): array|bool
+    public function join(Authenticatable|Player $player, int|string $gameInviteId): array|bool
     {
-        $game = App::make(GameInviteRepository::class)->getOne($gameId);
+        $gameInvite = App::make(GameInviteRepository::class)->getOne($gameInviteId);
 
-        if ($game->isPlayerAdded($player)) {
+        if ($gameInvite->isPlayerAdded($player)) {
             return ['name' => $player->getName()];
         }
 

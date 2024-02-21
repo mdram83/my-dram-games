@@ -81,10 +81,10 @@
                                 @if($gameBox['isActive'] === true)
 
                                     @push('custom-scripts')
-                                        @vite('resources/js/template/single/single.jsx')
+                                        @vite('resources/js/template/single/game-invite-controls/index.jsx')
                                     @endpush
 
-                                    <div id="js-single-new-game-section"
+                                    <div id="single-game-invite-controls-root"
                                          data-game.box="{{ json_encode($gameBox) }}"
                                          data-game.invite="{{ isset($gameInvite) ? json_encode($gameInvite) : null }}"
                                     ></div>

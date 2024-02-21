@@ -1,18 +1,18 @@
 import React from "react";
 import {useEffect} from "react";
 
-export const NewGamePlayers = ({gameInvite, setAllPlayersReady, autoStart}) => {
+export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) => {
 
-    const {players} = gameInvite;
-    const initialPlayersStatus = players.map((player) => {
+    const initialPlayersStatus = gameInvite.players.map((player) => {
         return {
             name: player.name,
             host: player.name === gameInvite.host.name,
-            connected: player.name === false,
+            connected: false,
         }
     });
 
     const [playersStatus, setPlayersStatus] = React.useState(initialPlayersStatus);
+
     const updatePlayerStatus = (playerName, connected) => {
         setPlayersStatus((previousPlayersStatus) => {
 
@@ -40,18 +40,16 @@ export const NewGamePlayers = ({gameInvite, setAllPlayersReady, autoStart}) => {
     }
 
     useEffect(() => {
-        Echo.join(`game-invite.${gameInvite.id}`)
+        Echo.join(`game-invite-players.${gameInvite.id}`)
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
-            .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => {
-                autoStart();
-            })
+            .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => autoStart())
             .error((error) => console.log(error));
     }, []);
 
     useEffect(() => {
-        setAllPlayersReady(
+        setAllPlayersOnline(
             playersStatus.length === gameInvite.numberOfPlayers && playersStatus.every((player) => player.connected)
         );
     });
