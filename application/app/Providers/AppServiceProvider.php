@@ -8,6 +8,8 @@ use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
+use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
+use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
 use App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent;
 use App\GameCore\Player\Eloquent\PlayerAnonymousRepositoryEloquent;
 use App\GameCore\Player\Player;
@@ -27,12 +29,13 @@ class AppServiceProvider extends ServiceProvider
         /* Instantiated by PlayerMiddleware middleware */
         app()->bind(Player::class, fn() => null);
 
-        app()->bind(HashGenerator::class, fn() => new HashGeneratorMd5());
-        app()->bind(PlayerAnonymousRepository::class, fn() => new PlayerAnonymousRepositoryEloquent());
-        app()->bind(PlayerAnonymousFactory::class, fn() => app()->make(PlayerAnonymousFactoryEloquent::class));
-        app()->bind(GameBoxRepository::class, fn() => new GameBoxRepositoryPhpConfig());
-        app()->bind(GameInviteRepository::class, fn() => app()->make(GameInviteRepositoryEloquent::class));
-        app()->bind(GameInviteFactory::class, fn() => app()->make(GameInviteFactoryEloquent::class));
+        app()->bind(HashGenerator::class, HashGeneratorMd5::class);
+        app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
+        app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
+        app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
+        app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
+        app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
+        app()->bind(GameSetupAbsFactoryRepository::class, GameSetupAbsFactoryRepositoryPhpConfig::class);
     }
 
     /**

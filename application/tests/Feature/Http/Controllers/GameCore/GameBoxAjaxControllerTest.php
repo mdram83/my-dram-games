@@ -17,10 +17,18 @@ class GameBoxAjaxControllerTest extends TestCase
         $responseContent = [];
         $this->configData = Config::get('games');
 
-        foreach ($this->configData['box'] as $slug => $parameters) {
-            $parameters['numberOfPlayersDescription'] = (new GameBoxPhpConfig($slug))
-                ->getNumberOfPlayersDescription();
-            $responseContent[] = array_merge(['slug' => $slug], $parameters);
+        foreach ($this->configData['box'] as $slug => $data) {
+            $data['numberOfPlayersDescription'] = (new GameBoxPhpConfig($slug))->getNumberOfPlayersDescription();
+            $responseContent[] = [
+                'slug' => $slug,
+                'name' => $data['name'],
+                'description' =>  $data['description'],
+                'numberOfPlayers' =>  $data['numberOfPlayers'],
+                'numberOfPlayersDescription' =>  $data['numberOfPlayersDescription'],
+                'durationInMinutes' =>  $data['durationInMinutes'],
+                'minPlayerAge' =>  $data['minPlayerAge'],
+                'isActive' =>  $data['isActive'],
+            ];
         }
         return $responseContent;
     }

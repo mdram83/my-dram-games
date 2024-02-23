@@ -1,5 +1,8 @@
 <?php
 
+use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
+use App\Games\TicTacToe\GameSetupAbsFactoryTicTacToe;
+
 return [
 
     'box' => [
@@ -11,6 +14,7 @@ return [
             'durationInMinutes' => 1,
             'minPlayerAge' => 4,
             'isActive' => true,
+            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
         ],
 
         'turbo' => [
@@ -20,6 +24,7 @@ return [
             'durationInMinutes' => 60,
             'minPlayerAge' => 10,
             'isActive' => false,
+            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => null,
         ],
 
         'boss-monster-raise-of-the-minibosses' => [
@@ -29,6 +34,7 @@ return [
             'durationInMinutes' => 30,
             'minPlayerAge' => 13,
             'isActive' => false,
+            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => null,
         ],
 
     ],
