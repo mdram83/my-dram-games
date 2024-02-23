@@ -4,12 +4,14 @@ namespace App\GameCore\GameBox\PhpConfig;
 
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameSetup\GameSetup;
 use Illuminate\Support\Facades\Config;
 
 class GameBoxPhpConfig implements GameBox
 {
-
     private string $slug;
+    private GameSetup $gameSetup;
+
     private string $name;
     private ?string $description;
     private array $numberOfPlayers;
@@ -17,7 +19,7 @@ class GameBoxPhpConfig implements GameBox
     private ?int $minPlayerAge;
     private bool $isActive;
 
-    public function __construct(string $slug)
+    public function __construct(string $slug, GameSetup $gameSetup)
     {
         $this->slug = $slug;
 

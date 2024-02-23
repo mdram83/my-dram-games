@@ -2,6 +2,7 @@
 
 namespace App\GameCore\GameSetup\PhpConfig;
 
+use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GameSetup\GameSetupAbsFactory;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\GameSetupException;
@@ -13,9 +14,14 @@ class GameSetupAbsFactoryRepositoryPhpConfig implements GameSetupAbsFactoryRepos
 
     /**
      * @throws GameSetupException
+     * @throws GameBoxException
      */
     public function getOne(string $slug): GameSetupAbsFactory
     {
+        if (!Config::get('games.box.' . $slug)) {
+            throw new GameBoxException(GameBoxException::MESSAGE_GAME_BOX_MISSING);
+        }
+
         $className = Config::get("games.box.$slug." . self::GAME_SETUP_ABS_FACTORY_KEY);
 
         if ($this->isEntryMissing($className) || $this->isClassMissing($className) || !$this->isClassCorrectType($className)) {

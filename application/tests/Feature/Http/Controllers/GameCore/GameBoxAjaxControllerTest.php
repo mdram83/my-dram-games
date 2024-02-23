@@ -3,6 +3,8 @@
 namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig;
+use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,29 +12,6 @@ use Tests\TestCase;
 
 class GameBoxAjaxControllerTest extends TestCase
 {
-    protected array $configData;
-
-    protected function prepareExpectedResponseContent(): array
-    {
-        $responseContent = [];
-        $this->configData = Config::get('games');
-
-        foreach ($this->configData['box'] as $slug => $data) {
-            $data['numberOfPlayersDescription'] = (new GameBoxPhpConfig($slug))->getNumberOfPlayersDescription();
-            $responseContent[] = [
-                'slug' => $slug,
-                'name' => $data['name'],
-                'description' =>  $data['description'],
-                'numberOfPlayers' =>  $data['numberOfPlayers'],
-                'numberOfPlayersDescription' =>  $data['numberOfPlayersDescription'],
-                'durationInMinutes' =>  $data['durationInMinutes'],
-                'minPlayerAge' =>  $data['minPlayerAge'],
-                'isActive' =>  $data['isActive'],
-            ];
-        }
-        return $responseContent;
-    }
-
     protected function getResponse(): TestResponse
     {
         return $this
@@ -55,9 +34,10 @@ class GameBoxAjaxControllerTest extends TestCase
     public function testIndexResponseWithJson(): void
     {
         $response = $this->getResponse();
-        $expectedContent = $this->prepareExpectedResponseContent();
+        $repository = App::make(GameBoxRepositoryPhpConfig::class);
+        $expectedContent = array_map(fn ($gameBox) => $gameBox->toArray(), $repository->getAll());
 
-        $response->assertJsonCount(count($this->configData['box']));
+        $response->assertJsonCount(count($expectedContent));
         $response->assertExactJson($expectedContent);
     }
 }

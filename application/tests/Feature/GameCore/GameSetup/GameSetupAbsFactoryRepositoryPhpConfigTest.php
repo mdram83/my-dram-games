@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\GameCore\GameSetup;
 
+use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GameSetup\GameSetupAbsFactory;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\GameSetupException;
@@ -25,10 +26,9 @@ class GameSetupAbsFactoryRepositoryPhpConfigTest extends TestCase
         $this->assertInstanceOf(GameSetupAbsFactoryRepository::class, $this->repository);
     }
 
-    public function testThrowExceptionWhenFactoryNotSetUp(): void
+    public function testThrowExceptionWhenNotExistingSlug(): void
     {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_NO_ABS_FACTORY);
+        $this->expectException(GameBoxException::class);
         $this->repository->getOne('slug-that-does-not-exist');
     }
 
@@ -38,6 +38,12 @@ class GameSetupAbsFactoryRepositoryPhpConfigTest extends TestCase
         $this->expectExceptionMessage(GameSetupException::MESSAGE_NO_ABS_FACTORY);
 
         $slug = 'testing-slug';
+
+        Config::shouldReceive('get')
+            ->once()
+            ->with('games.box.' . $slug)
+            ->andReturn(true);
+
         Config::shouldReceive('get')
             ->once()
             ->with('games.box.' . $slug . '.' . GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY )
@@ -51,10 +57,17 @@ class GameSetupAbsFactoryRepositoryPhpConfigTest extends TestCase
         $this->expectExceptionMessage(GameSetupException::MESSAGE_NO_ABS_FACTORY);
 
         $slug = 'testing-slug';
+
+        Config::shouldReceive('get')
+            ->once()
+            ->with('games.box.' . $slug)
+            ->andReturn(true);
+
         Config::shouldReceive('get')
             ->once()
             ->with('games.box.' . $slug . '.' . GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY )
             ->andReturn('\Illuminate\Support\Facades\App');
+
         $this->repository->getOne($slug);
     }
 
