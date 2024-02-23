@@ -6,6 +6,7 @@ use App\GameCore\GameInvite\Eloquent\GameInviteEloquent;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,7 +33,11 @@ class GameInviteEloquentTest extends TestCase
 
     protected function configureGameDefinitionMock(array $numberOfPlayers): void
     {
-        $this->gameBox->method('getNumberOfPlayers')->willReturn($numberOfPlayers);
+        $gameSetupMock = $this->createMock(GameSetup::class);
+        $gameSetupMock->method('getNumberOfPlayers')->willReturn($numberOfPlayers);
+
+        $this->gameBox = $this->createMock(GameBox::class);
+        $this->gameBox->method('getGameSetup')->willReturn($gameSetupMock);
     }
 
     protected function configureGameForXPlayers(array $allowedNumberOfPlayers = [2], int $numberOfPlayers = 2): void
@@ -117,6 +122,7 @@ class GameInviteEloquentTest extends TestCase
 
         $this->configureGameDefinitionMock($allowedNumberOfPlayers);
         $this->gameInvite->setGameBox($this->gameBox);
+
         $this->gameInvite->setNumberOfPlayers($numberOfPlayers);
         $this->assertEquals($numberOfPlayers, $this->gameInvite->getNumberOfPlayers());
     }

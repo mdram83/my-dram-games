@@ -16,7 +16,7 @@ export const GameInviteCreate = (props) => {
         setButtonCreateIcon(on ? 'fa-angle-double-right' : 'fa-cog fa-spin');
     }
 
-    const numberOfPlayersOptions = props.numberOfPlayers.map((number, index) => {
+    const numberOfPlayersOptions = props.gameSetup.numberOfPlayers.map((number, index) => {
         const id = 'numberOfPlayers-' + number;
         return (
             <div className="mx-2 flex items-center" key={'div' + id}>

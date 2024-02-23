@@ -56,7 +56,7 @@ class GameInviteControllerTest extends TestCase
         $numberOfPlayers = $numberOfPlayers ?? (
             $nullifyNumberOfPlayers
                 ? null
-                : $this->gameBox->getNumberOfPlayers()[0]
+                : $this->gameBox->getGameSetup()->getNumberOfPlayers()[0]
         );
 
         $response = $this->withHeader('X-Requested-With', 'XMLHttpRequest');
@@ -131,7 +131,7 @@ class GameInviteControllerTest extends TestCase
 
     public function testStoreBadRequestWithInconsistentNumberOfPlayers(): void
     {
-        $maxNumberOfPlayers = max($this->gameBox->getNumberOfPlayers());
+        $maxNumberOfPlayers = max($this->gameBox->getGameSetup()->getNumberOfPlayers());
         $response = $this->getStoreResponse(numberOfPlayers: $maxNumberOfPlayers + 1);
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
@@ -153,14 +153,14 @@ class GameInviteControllerTest extends TestCase
 
         $response
             ->assertJsonPath('gameInvite.host.name', $this->playerHost->getName())
-            ->assertJsonPath('gameInvite.numberOfPlayers', $this->gameBox->getNumberOfPlayers()[0])
+            ->assertJsonPath('gameInvite.numberOfPlayers', $this->gameBox->getGameSetup()->getNumberOfPlayers()[0])
             ->assertJsonPath('gameInvite.players.0.name', $this->playerHost->getName());
     }
 
     public function testJoinGuestReceiveOkResponse(): void
     {
         $gameInvite = App::make(GameInviteFactoryEloquent::class)
-            ->create($this->slug, $this->gameBox->getNumberOfPlayers()[0], $this->playerHost);
+            ->create($this->slug, $this->gameBox->getGameSetup()->getNumberOfPlayers()[0], $this->playerHost);
         $gameInviteId = $gameInvite->getId();
 
         $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameInviteId' => $gameInviteId]));

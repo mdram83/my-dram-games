@@ -14,14 +14,17 @@ class GameBoxPhpConfig implements GameBox
 
     private string $name;
     private ?string $description;
-    private array $numberOfPlayers;
     private ?int $durationInMinutes;
     private ?int $minPlayerAge;
     private bool $isActive;
 
+    /**
+     * @throws GameBoxException
+     */
     public function __construct(string $slug, GameSetup $gameSetup)
     {
         $this->slug = $slug;
+        $this->gameSetup = $gameSetup;
 
         if (!$box = Config::get('games.box.' . $this->slug)) {
             throw new GameBoxException(GameBoxException::MESSAGE_GAME_BOX_MISSING);
@@ -29,7 +32,7 @@ class GameBoxPhpConfig implements GameBox
 
         if (
             !($this->name = $box['name'] ?? '')
-            || !($this->numberOfPlayers = $box['numberOfPlayers'] ?? [])
+            || !($gameSetup->getNumberOfPlayers() ?? [])
             || !isset($box['isActive'])
         ) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
@@ -72,22 +75,24 @@ class GameBoxPhpConfig implements GameBox
         return $this->isActive;
     }
 
-    public function getNumberOfPlayers(): array
-    {
-        return $this->numberOfPlayers;
-    }
-
     public function getNumberOfPlayersDescription(): string
     {
-        if (!$this->hasConsecutiveNumberOfPlayers()) {
-            return implode(', ', $this->numberOfPlayers);
+        $numberOfPlayers = $this->getGameSetup()->getNumberOfPlayers();
+
+        if (!$this->hasConsecutiveNumberOfPlayers($numberOfPlayers)) {
+            return implode(', ', $numberOfPlayers);
         }
 
-        if (count($this->numberOfPlayers) === 1) {
-            return $this->numberOfPlayers[0];
+        if (count($numberOfPlayers) === 1) {
+            return $numberOfPlayers[0];
         }
 
-        return min($this->numberOfPlayers) . '-' . max($this->numberOfPlayers);
+        return min($numberOfPlayers) . '-' . max($numberOfPlayers);
+    }
+
+    public function getGameSetup(): GameSetup
+    {
+        return $this->gameSetup;
     }
 
     public function toArray(): array
@@ -96,18 +101,18 @@ class GameBoxPhpConfig implements GameBox
             'slug' => $this->getSlug(),
             'name' => $this->getName(),
             'description' => $this->getDescription(),
-            'numberOfPlayers' => $this->getNumberOfPlayers(),
             'numberOfPlayersDescription' => $this->getNumberOfPlayersDescription(),
             'durationInMinutes' => $this->getDurationInMinutes(),
             'minPlayerAge' => $this->getMinPlayerAge(),
             'isActive' => $this->isActive(),
+            'gameSetup' => $this->getGameSetup()->getAllOptions(),
         ];
     }
 
-    private function hasConsecutiveNumberOfPlayers(): bool
+    private function hasConsecutiveNumberOfPlayers(array $numberOfPlayers): bool
     {
-        for ($i = 1; $i < count($this->numberOfPlayers); $i++) {
-            if ($this->numberOfPlayers[$i] - $this->numberOfPlayers[$i - 1] !== 1) {
+        for ($i = 1; $i < count($numberOfPlayers); $i++) {
+            if ($numberOfPlayers[$i] - $numberOfPlayers[$i - 1] !== 1) {
                 return false;
             }
         }

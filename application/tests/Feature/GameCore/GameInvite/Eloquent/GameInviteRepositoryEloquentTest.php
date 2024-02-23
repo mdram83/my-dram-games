@@ -38,7 +38,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
             $gameBox = $gameBoxRepository->getAll()[0];
 
             $this->slug = $gameBox->getSlug();
-            $this->numberOfPlayers = $gameBox->getNumberOfPlayers()[0];
+            $this->numberOfPlayers = $gameBox->getGameSetup()->getNumberOfPlayers()[0];
             $this->host = User::factory()->create();
 
             $this->commonSetup = true;

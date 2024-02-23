@@ -27,7 +27,7 @@ class GameInviteFactoryEloquentTest extends TestCase
         $this->host = User::factory()->create();
         $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
         $this->slug = $gameBox->getSlug();
-        $this->numberOfPlayers = $gameBox->getNumberOfPlayers()[0];
+        $this->numberOfPlayers = $gameBox->getGameSetup()->getNumberOfPlayers()[0];
     }
 
     public function testGameCreatedWithUser(): void

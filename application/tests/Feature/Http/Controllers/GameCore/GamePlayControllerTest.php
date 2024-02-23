@@ -41,7 +41,7 @@ class GamePlayControllerTest extends TestCase
             $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
             $this->gameInvite = App::make(GameInviteFactory::class)->create(
                 $gameBox->getSlug(),
-                $gameBox->getNumberOfPlayers()[0],
+                $gameBox->getGameSetup()->getNumberOfPlayers()[0],
                 $this->host
             );
             $this->gameInvite->addPlayer($this->player);

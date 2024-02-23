@@ -189,7 +189,7 @@ class GameInviteEloquent implements GameInvite
 
     protected function isAllowedNumberOfPlayers(int $numberOfPlayers): bool
     {
-        return in_array($numberOfPlayers, $this->getGameBox()->getNumberOfPlayers());
+        return in_array($numberOfPlayers, $this->getGameBox()->getGameSetup()->getNumberOfPlayers());
     }
 
     protected function saveModel(): void
