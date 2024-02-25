@@ -9,6 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 class GameSetupBaseTest extends TestCase
 {
+    protected array $options = [
+        'numberOfPlayers' => 2,
+        'autostart' => true,
+    ];
+
     public function testInstanceOfGameSetup(): void
     {
         $this->assertInstanceOf(GameSetup::class, new GameSetupBase());
@@ -23,24 +28,6 @@ class GameSetupBaseTest extends TestCase
         $this->assertEquals($expected, $setup->getOption('autostart'));
     }
 
-    public function testThrowExceptionWhenGettingUnsetNumberOfPlayersThroghDedicatedMethod(): void
-    {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_NOT_SET);
-
-        $setup = new GameSetupBase();
-        $setup->getNumberOfPlayers();
-    }
-
-    public function testThrowExceptionWhenGettingUnsetNumberOfPlayersThroghGenericMethod(): void
-    {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_NOT_SET);
-
-        $setup = new GameSetupBase();
-        $setup->getOption('numberOfPlayers');
-    }
-
     public function testThrowExceptionWhenGettingMissingOption(): void
     {
         $this->expectException(GameSetupException::class);
@@ -50,13 +37,14 @@ class GameSetupBaseTest extends TestCase
         $setup->getOption('definitely-missing-123-option');
     }
 
-    public function testThrowExceptionWhenAnyOptionIsNotAnArray(): void
+    public function testThrowExceptionWhenOptionKeyNotInDefaults(): void
     {
         $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_INCORRECT);
+        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_OUTSIDE);
 
-        new GameSetupBase(['my-option' => 'string']);
-
+        $setup = new GameSetupBase();
+        $options = array_merge($this->options, ['my-option' => 'string']);
+        $setup->setOptions($options);
     }
 
     public function testThrowExceptionWhenUsingNotStringOptionName(): void
@@ -64,7 +52,9 @@ class GameSetupBaseTest extends TestCase
         $this->expectException(GameSetupException::class);
         $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_INCORRECT);
 
-        new GameSetupBase(['string-value-deauflt-zero-key']);
+        $setup = new GameSetupBase();
+        $options = array_merge($this->options, ['string-value-deauflt-zero-key']);
+        $setup->setOptions($options);
 
     }
 
@@ -73,29 +63,39 @@ class GameSetupBaseTest extends TestCase
         $this->expectException(GameSetupException::class);
         $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_OUTSIDE);
 
-        new GameSetupBase(['autostart' => ['exceeding default']]);
+        $setup = new GameSetupBase();
+        $options = array_merge($this->options, ['autostart' => 'exceeding default']);
+        $setup->setOptions($options);
+    }
+
+    public function testThrowExceptionIfArrayProvidedInOptionsValues(): void
+    {
+        $this->expectException(GameSetupException::class);
+        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_INCORRECT);
+        $setup = new GameSetupBase();
+        $options = array_merge($this->options, ['autostart' => [true, false]]);
+        $setup->setOptions($options);
     }
 
     public function testReturnOptionWithinDefaults(): void
     {
-        $options = ['autostart' => [true]];
-        $setup = new GameSetupBase($options);
-        $this->assertSame($options['autostart'], $setup->getAutostart());
-    }
-
-    public function testReturnOptionNotRestrictedByDefaults(): void
-    {
-        $optionName = 'test-option';
-        $options = [$optionName => [1, 2, 3]];
-        $setup = new GameSetupBase($options);
-        $this->assertSame($options[$optionName], $setup->getOption($optionName));
-    }
-
-    public function testThrowExceptionIfDefaultOptionsWereNotOverwrittenAndTryingToGetAll(): void
-    {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_NOT_SET);
+        $options = array_merge($this->options, ['autostart' => true]);
         $setup = new GameSetupBase();
-        $setup->getAllOptions();
+        $setup->setOptions($options);
+        $this->assertSame([$options['autostart']], $setup->getAutostart());
+    }
+
+    public function testIsConfiguredReturnFalseIfNotAllOptionsSet(): void
+    {
+        $setup = new GameSetupBase();
+        $this->assertFalse($setup->isConfigured());
+    }
+
+    public function testIsConfiguredReturnTrueAfterSettingAllOptions(): void
+    {
+        $options = array_merge($this->options, ['autostart' => true]);
+        $setup = new GameSetupBase();
+        $setup->setOptions($options);
+        $this->assertTrue($setup->isConfigured());
     }
 }

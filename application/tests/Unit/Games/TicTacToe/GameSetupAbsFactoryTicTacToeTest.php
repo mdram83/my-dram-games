@@ -20,13 +20,4 @@ class GameSetupAbsFactoryTicTacToeTest extends TestCase
 
         $this->assertInstanceOf(GameSetupTicTacToe::class, $factory->create());
     }
-
-    public function testCreateWithExtraOption(): void
-    {
-        $options = ['extra-option' => [1]];
-        $factory = new GameSetupAbsFactoryTicTacToe();
-        $setup = $factory->create($options);
-
-        $this->assertEquals($options['extra-option'], $setup->getOption('extra-option'));
-    }
 }

@@ -17,5 +17,6 @@ interface GameInvite
     public function getNumberOfPlayers(): int;
     public function setGameBox(GameBox $gameBox): void;
     public function getGameBox(): GameBox;
+
     public function toArray():array;
 }

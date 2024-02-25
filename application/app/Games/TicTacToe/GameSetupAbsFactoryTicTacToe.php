@@ -11,8 +11,8 @@ class GameSetupAbsFactoryTicTacToe implements GameSetupAbsFactory
     /**
      * @throws GameSetupException
      */
-    public function create(array $options = []): GameSetup
+    public function create(): GameSetup
     {
-        return new GameSetupTicTacToe($options);
+        return new GameSetupTicTacToe();
     }
 }

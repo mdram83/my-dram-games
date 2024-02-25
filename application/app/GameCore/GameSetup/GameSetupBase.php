@@ -9,14 +9,9 @@ class GameSetupBase implements GameSetup
         'autostart' => [false, true],
     ];
 
-    /**
-     * @throws GameSetupException
-     */
-    final public function __construct(array $options = [])
+    final public function __construct()
     {
         $this->setDefaults();
-        $this->validateOptions($options);
-        $this->options = array_merge($this->options, $options);
     }
 
     /**
@@ -26,43 +21,9 @@ class GameSetupBase implements GameSetup
     protected function setDefaults(): void
     {
         $this->options = [
-            'numberOfPlayers' => null,
+            'numberOfPlayers' => [2],
             'autostart' => [false, true],
         ];
-    }
-
-    /**
-     * @throws GameSetupException
-     */
-    final protected function validateOptions(array $options): void
-    {
-        foreach ($options as $name => $option) {
-
-            if (!$this->hasProperFormat($name, $option)) {
-                throw new GameSetupException(GameSetupException::MESSAGE_OPTION_INCORRECT);
-            }
-
-            if ($this->exceedDefault($name, $option)) {
-                throw new GameSetupException(GameSetupException::MESSAGE_OPTION_OUTSIDE);
-            }
-        }
-    }
-
-    final protected function hasProperFormat(mixed $key, mixed $option): bool
-    {
-        return is_string($key) && is_array($option);
-    }
-
-    final protected function exceedDefault(string $key, array $option): bool
-    {
-        if (in_array($key, array_keys($this->options))) {
-            foreach ($option as $value) {
-                if (!in_array($value, $this->options[$key], true)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**
@@ -77,6 +38,9 @@ class GameSetupBase implements GameSetup
         return $this->options[$name];
     }
 
+    /**
+     * @throws GameSetupException
+     */
     final public function getAllOptions(): array
     {
         $validatedOptions = [];
@@ -84,6 +48,22 @@ class GameSetupBase implements GameSetup
             $validatedOptions[$name] = $this->getOption($name);
         }
         return $validatedOptions;
+    }
+
+    /**
+     * @throws GameSetupException
+     */
+    final public function setOptions(array $options): void
+    {
+        $this->validateOptions($options);
+        foreach ($options as $name => $value) {
+            $this->options[$name] = [$value];
+        }
+    }
+
+    final public function isConfigured(): bool
+    {
+        return count($this->options) === count(array_filter($this->options, fn($option) => count($option) === 1));
     }
 
     /**
@@ -97,8 +77,53 @@ class GameSetupBase implements GameSetup
     /**
      * @throws GameSetupException
      */
+
     final public function getAutostart(): array
     {
         return $this->getOption('autostart');
+    }
+
+    /**
+     * @throws GameSetupException
+     */
+    final protected function validateOptions(array $options): void
+    {
+        foreach ($options as $name => $value) {
+
+            if (!$this->hasProperFormat($name, $value)) {
+                throw new GameSetupException(GameSetupException::MESSAGE_OPTION_INCORRECT);
+            }
+
+            if ($this->isExceedingDefaults($name, $value)) {
+                throw new GameSetupException(GameSetupException::MESSAGE_OPTION_OUTSIDE);
+            }
+        }
+
+        if (!$this->isCoveringDefaults($options)) {
+            throw new GameSetupException(GameSetupException::MESSAGE_OPTION_NOT_SET);
+        }
+    }
+
+    final protected function hasProperFormat(mixed $key, mixed $value): bool
+    {
+        return is_string($key) && !is_array($value);
+    }
+
+    final protected function isExceedingDefaults(string $key, mixed $value): bool
+    {
+        if (!in_array($key, array_keys($this->options)) || !in_array($value, $this->options[$key], true)) {
+            return true;
+        }
+        return false;
+    }
+
+    final protected function isCoveringDefaults(array $options): bool
+    {
+        foreach(array_keys($this->options) as $key) {
+            if (!in_array($key, array_keys($options))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
