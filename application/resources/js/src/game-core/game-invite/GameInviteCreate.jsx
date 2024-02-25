@@ -30,7 +30,10 @@ export const GameInviteCreate = (props) => {
         toggleButtons(false);
         axios
             .post(window.MyDramGames.routes['ajax.game-invites.store'], {
-                numberOfPlayers: document.querySelector('input[name="numberOfPlayers"]:checked').value,
+                options: {
+                    numberOfPlayers: document.querySelector('input[name="numberOfPlayers"]:checked').value,
+                    autostart: false,
+                },
                 slug: props.slug,
             })
             .then(response => {

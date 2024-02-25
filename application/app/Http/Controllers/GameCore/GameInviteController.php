@@ -32,7 +32,7 @@ class GameInviteController extends Controller
             $this->validateStoreRequest($request);
             $gameInvite = $factory->create(
                 $request->input('slug'),
-                $request->input('numberOfPlayers'),
+                $request->input('options.numberOfPlayers'),
                 $player
             );
             $responseContent = ['gameInvite' => $gameInvite->toArray()];
@@ -80,7 +80,7 @@ class GameInviteController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'slug' => 'required|string|max:255',
-            'numberOfPlayers' => 'required|integer|min:1',
+            'options.numberOfPlayers' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {

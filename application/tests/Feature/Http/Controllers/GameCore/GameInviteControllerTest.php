@@ -66,7 +66,10 @@ class GameInviteControllerTest extends TestCase
 
         return $response->json('POST', route($this->routeStore, [
             'slug' => $slug,
-            'numberOfPlayers' => $numberOfPlayers
+            'options' => [
+                'numberOfPlayers' => $numberOfPlayers,
+                'autostart', false,
+            ],
         ]));
     }
 
