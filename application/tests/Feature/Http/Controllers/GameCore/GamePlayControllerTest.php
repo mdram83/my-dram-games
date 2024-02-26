@@ -39,9 +39,15 @@ class GamePlayControllerTest extends TestCase
             $this->notPlayer = User::factory()->create();
 
             $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
+
+            $options = [];
+            foreach ($gameBox->getGameSetup()->getAllOptions() as $name => $option) {
+                $options[$name] = $option[0];
+            }
+
             $this->gameInvite = App::make(GameInviteFactory::class)->create(
                 $gameBox->getSlug(),
-                $gameBox->getGameSetup()->getNumberOfPlayers()[0],
+                $options,
                 $this->host
             );
             $this->gameInvite->addPlayer($this->player);

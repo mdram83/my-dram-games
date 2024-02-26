@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('game_invite_eloquent_models', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
-            $table->unsignedTinyInteger('numberOfPlayers')->nullable();
             $table->string('gameBox', 255)->nullable();
+            $table->json('options')->nullable();
             $table->string('hostable_id', 255)->nullable();
             $table->string('hostable_type', 255)->nullable();
         });

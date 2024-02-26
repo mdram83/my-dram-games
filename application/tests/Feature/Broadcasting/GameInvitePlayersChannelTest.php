@@ -37,7 +37,10 @@ class GameInvitePlayersChannelTest extends TestCase
             $gameBox = App::make(GameBoxRepository::class)->getAll()[0];;
             $this->gameInvite = App::make(GameInviteFactory::class)->create(
                 $gameBox->getSlug(),
-                $gameBox->getGameSetup()->getNumberOfPlayers()[0],
+                [
+                    'numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0],
+                    'autostart' => $gameBox->getGameSetup()->getAutostart()[0],
+                ],
                 $this->host
             );
 

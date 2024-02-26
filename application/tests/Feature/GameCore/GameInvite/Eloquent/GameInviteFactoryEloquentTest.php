@@ -18,7 +18,7 @@ class GameInviteFactoryEloquentTest extends TestCase
 
     private Player $host;
     private string $slug;
-    private int $numberOfPlayers;
+    private array $options;
 
     public function setUp(): void
     {
@@ -27,13 +27,13 @@ class GameInviteFactoryEloquentTest extends TestCase
         $this->host = User::factory()->create();
         $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
         $this->slug = $gameBox->getSlug();
-        $this->numberOfPlayers = $gameBox->getGameSetup()->getNumberOfPlayers()[0];
+        $this->options = ['numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0], 'autostart' => false];
     }
 
     public function testGameCreatedWithUser(): void
     {
         $factory = App::make(GameInviteFactory::class);
-        $gameInvite = $factory->create($this->slug, $this->numberOfPlayers, $this->host);
+        $gameInvite = $factory->create($this->slug, $this->options, $this->host);
 
         $this->assertInstanceOf(GameInvite::class, $gameInvite);
     }
@@ -42,7 +42,7 @@ class GameInviteFactoryEloquentTest extends TestCase
     {
         $factory = App::make(GameInviteFactory::class);
         $guestPlayer = App::make(PlayerAnonymousFactory::class)->create(['key' => 'test-key']);
-        $gameInvite = $factory->create($this->slug, $this->numberOfPlayers, $guestPlayer);
+        $gameInvite = $factory->create($this->slug, $this->options, $guestPlayer);
 
         $this->assertInstanceOf(GameInvite::class, $gameInvite);
     }

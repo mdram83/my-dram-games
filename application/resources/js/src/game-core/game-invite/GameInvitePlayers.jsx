@@ -53,7 +53,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
     useEffect(() => {
         setAllPlayersOnline(
-            playersStatus.length === gameInvite.numberOfPlayers && playersStatus.every((player) => player.connected)
+            playersStatus.length === gameInvite.gameSetup.numberOfPlayers && playersStatus.every((player) => player.connected)
         );
     });
 
@@ -61,7 +61,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
         const listItems = [];
 
-        for (let i = 0; i < gameInvite.numberOfPlayers; i++ ) {
+        for (let i = 0; i < gameInvite.gameSetup.numberOfPlayers; i++ ) {
 
             const playerName = playersStatus[i] ? playersStatus[i].name : undefined;
             const playerHost = playersStatus[i] ? playersStatus[i].host : false;

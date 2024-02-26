@@ -22,7 +22,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
     private GameInviteFactory $factory;
 
     private string $slug;
-    private int $numberOfPlayers;
+    private array $options;
     private Player $host;
 
     public function setUp(): void
@@ -38,7 +38,10 @@ class GameInviteRepositoryEloquentTest extends TestCase
             $gameBox = $gameBoxRepository->getAll()[0];
 
             $this->slug = $gameBox->getSlug();
-            $this->numberOfPlayers = $gameBox->getGameSetup()->getNumberOfPlayers()[0];
+            $this->options = [
+                'numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0],
+                'autostart' => $gameBox->getGameSetup()->getAutostart()[0],
+            ];
             $this->host = User::factory()->create();
 
             $this->commonSetup = true;
@@ -58,7 +61,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
 
     public function testGetOne(): void
     {
-        $gameInviteId = $this->factory->create($this->slug, $this->numberOfPlayers, $this->host)->getId();
+        $gameInviteId = $this->factory->create($this->slug, $this->options /*$this->numberOfPlayers*/, $this->host)->getId();
         $gameFromRepository = $this->repository->getOne($gameInviteId);
 
         $this->assertEquals($gameInviteId, $gameFromRepository->getId());

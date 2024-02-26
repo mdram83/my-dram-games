@@ -28,6 +28,7 @@ class GameInviteControllerTest extends TestCase
     protected string $slug;
     protected Player $playerHost;
     protected GameBox $gameBox;
+    protected array $options;
 
     public function setUp(): void
     {
@@ -39,6 +40,10 @@ class GameInviteControllerTest extends TestCase
             $gameBoxRepository = App::make(GameBoxRepository::class);
             $this->slug = $gameBoxRepository->getAll()[0]->getSlug();
             $this->gameBox = $gameBoxRepository->getOne($this->slug);
+            $this->options = [
+                'numberOfPlayers' => $this->gameBox->getGameSetup()->getNumberOfPlayers()[0],
+                'autostart' => $this->gameBox->getGameSetup()->getAutostart()[0],
+            ];
 
             $this->commonSetup = true;
         }
@@ -56,7 +61,7 @@ class GameInviteControllerTest extends TestCase
         $numberOfPlayers = $numberOfPlayers ?? (
             $nullifyNumberOfPlayers
                 ? null
-                : $this->gameBox->getGameSetup()->getNumberOfPlayers()[0]
+                : $this->options['numberOfPlayers']
         );
 
         $response = $this->withHeader('X-Requested-With', 'XMLHttpRequest');
@@ -68,7 +73,7 @@ class GameInviteControllerTest extends TestCase
             'slug' => $slug,
             'options' => [
                 'numberOfPlayers' => $numberOfPlayers,
-                'autostart', false,
+                'autostart' => $this->options['autostart'],
             ],
         ]));
     }
@@ -151,19 +156,21 @@ class GameInviteControllerTest extends TestCase
 
         $this->assertNotNull($response['gameInvite']['id']);
         $this->assertNotNull($response['gameInvite']['host']['name']);
-        $this->assertNotNull($response['gameInvite']['numberOfPlayers']);
+        $this->assertNotNull($response['gameInvite']['gameSetup']['numberOfPlayers']);
+        $this->assertNotNull($response['gameInvite']['gameSetup']['autostart']);
         $this->assertNotNull($response['gameInvite']['players'][0]['name']);
 
         $response
             ->assertJsonPath('gameInvite.host.name', $this->playerHost->getName())
-            ->assertJsonPath('gameInvite.numberOfPlayers', $this->gameBox->getGameSetup()->getNumberOfPlayers()[0])
+            ->assertJsonPath('gameInvite.gameSetup.numberOfPlayers', $this->gameBox->getGameSetup()->getNumberOfPlayers()[0])
+            ->assertJsonPath('gameInvite.gameSetup.autostart', $this->gameBox->getGameSetup()->getAutostart()[0])
             ->assertJsonPath('gameInvite.players.0.name', $this->playerHost->getName());
     }
 
     public function testJoinGuestReceiveOkResponse(): void
     {
         $gameInvite = App::make(GameInviteFactoryEloquent::class)
-            ->create($this->slug, $this->gameBox->getGameSetup()->getNumberOfPlayers()[0], $this->playerHost);
+            ->create($this->slug, $this->options, $this->playerHost);
         $gameInviteId = $gameInvite->getId();
 
         $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameInviteId' => $gameInviteId]));
@@ -183,7 +190,7 @@ class GameInviteControllerTest extends TestCase
         $gameInvite = $this->getGameInvite();
         $gameInviteId = $gameInvite->getId();
 
-        $numberOfPlayers = $gameInvite->getNumberOfPlayers();
+        $numberOfPlayers = $gameInvite->getGameSetup()->getNumberOfPlayers()[0]; //getNumberOfPlayers();
         for ($i = 0; $i < $numberOfPlayers - 1; $i++) {
             $gameInvite->addPlayer(User::factory()->create());
         }

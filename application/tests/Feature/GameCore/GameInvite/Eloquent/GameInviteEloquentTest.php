@@ -21,6 +21,7 @@ class GameInviteEloquentTest extends TestCase
     protected Player $playerOne;
     protected Player $playerTwo;
     protected GameBox $gameBox;
+    protected array $options = ['numberOfPlayers' => 2, 'autostart' => false];
 
     public function setUp(): void
     {
@@ -31,7 +32,7 @@ class GameInviteEloquentTest extends TestCase
         $this->gameInvite = new GameInviteEloquent(App::make(GameBoxRepository::class));
     }
 
-    protected function configureGameDefinitionMock(array $numberOfPlayers): void
+    protected function configureMocks(array $numberOfPlayers): void
     {
         $gameSetupMock = $this->createMock(GameSetup::class);
         $gameSetupMock->method('getNumberOfPlayers')->willReturn($numberOfPlayers);
@@ -42,9 +43,8 @@ class GameInviteEloquentTest extends TestCase
 
     protected function configureGameForXPlayers(array $allowedNumberOfPlayers = [2], int $numberOfPlayers = 2): void
     {
-        $this->configureGameDefinitionMock($allowedNumberOfPlayers);
+        $this->configureMocks($allowedNumberOfPlayers);
         $this->gameInvite->setGameBox($this->gameBox);
-        $this->gameInvite->setNumberOfPlayers($numberOfPlayers);
     }
 
     protected function configurePlayerTwo(): void
@@ -85,51 +85,39 @@ class GameInviteEloquentTest extends TestCase
 
     // Setting/Getting Number Of Players
 
-    public function testThrowExceptionWhenSettingNumberOfPlayersWithoutSettingGameDefinition(): void
+    public function testThrowExceptionWhenGettingGameSetupWitoutSettingGameBox(): void
     {
         $this->expectException(GameInviteException::class);
-        $this->gameInvite->setNumberOfPlayers(2);
+        $this->gameInvite->getGameSetup();
     }
 
-    public function testThrowExceptionWhenSettingNumberOfPlayersNotMatchingGameDefinition(): void
+    public function testThrowExceptionWhenSettingOptionsWithoutSettingGameBox(): void
+    {
+        $this->expectException(GameInviteException::class);
+        $this->gameInvite->setOptions($this->options);
+    }
+
+    public function testThrowExceptionWhenSettingOptionsTwice(): void
     {
         $this->expectException(GameInviteException::class);
 
-        $this->configureGameDefinitionMock([2, 4]);
-        $this->gameInvite->setGameBox($this->gameBox);
-        $this->gameInvite->setNumberOfPlayers(3);
+        $this->configureMocks([$this->options['numberOfPlayers']]);
+        $this->configureGameForXPlayers([2, 3]);
+        $this->gameInvite->setOptions($this->options);
+        $this->gameInvite->setOptions($this->options);
     }
 
-    public function testThrowExceptionWhenGettingUnsetNumberOfPlayers(): void
+    public function testSetOptionsAndGetGameSetup(): void
     {
-        $this->expectException(GameInviteException::class);
-        $this->gameInvite->getNumberOfPlayers();
-    }
-
-    public function testThrowExceptionWhenSettingNumberOfPlayersAgain(): void
-    {
-        $this->expectException(GameInviteException::class);
-        $this->configureGameDefinitionMock([2]);
-        $this->gameInvite->setGameBox($this->gameBox);
-        $this->gameInvite->setNumberOfPlayers(2);
-        $this->gameInvite->setNumberOfPlayers(2);
-    }
-
-    public function testSetAndReturnValidNumberOfPlayers(): void
-    {
-        $allowedNumberOfPlayers = [2, 4];
-        $numberOfPlayers = 2;
-
-        $this->configureGameDefinitionMock($allowedNumberOfPlayers);
-        $this->gameInvite->setGameBox($this->gameBox);
-
-        $this->gameInvite->setNumberOfPlayers($numberOfPlayers);
-        $this->assertEquals($numberOfPlayers, $this->gameInvite->getNumberOfPlayers());
+        $this->configureMocks([$this->options['numberOfPlayers']]);
+        $this->configureGameForXPlayers([2, 3]);
+        $this->gameInvite->setOptions($this->options);
+        $this->assertInstanceOf(GameSetup::class, $this->gameInvite->getGameSetup());
     }
 
     // Setting/Getting Players
 
-    public function testThrowExceptionWhenAddingPlayerWithoutSettingNumberOfPlayers(): void
+    public function testThrowExceptionWhenAddingPlayerWithoutSettingOptions(): void
     {
         $this->expectException(GameInviteException::class);
         $this->gameInvite->addPlayer($this->playerOne);
@@ -141,6 +129,7 @@ class GameInviteEloquentTest extends TestCase
 
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
+        $this->gameInvite->setOptions($this->options);
 
         $playerThree = $this->createMock(Player::class);
         $playerThree->method('getId')->willReturn(3);
@@ -153,7 +142,9 @@ class GameInviteEloquentTest extends TestCase
     public function testThrowExceptionWhenAddingSamePlayerManyTimes(): void
     {
         $this->expectException(GameInviteException::class);
+
         $this->configureGameForXPlayers();
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne);
         $this->gameInvite->addPlayer($this->playerOne);
     }
@@ -161,9 +152,11 @@ class GameInviteEloquentTest extends TestCase
     public function testThrowExceptionWhenAddingHostMoreThenOnce(): void
     {
         $this->expectException(GameInviteException::class);
+
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
 
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
         $this->gameInvite->addPlayer($this->playerTwo, true);
     }
@@ -171,9 +164,11 @@ class GameInviteEloquentTest extends TestCase
     public function testThrowExceptionWhenAddingPlayerToGameWithoutHost(): void
     {
         $this->expectException(GameInviteException::class);
+
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
 
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne);
         $this->gameInvite->addPlayer($this->playerTwo);
     }
@@ -181,6 +176,7 @@ class GameInviteEloquentTest extends TestCase
     public function testGameHostAddedAndReturned(): void
     {
         $this->configureGameForXPlayers();
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
 
         $this->assertEquals($this->playerOne->getId(), $this->gameInvite->getHost()->getId());
@@ -189,6 +185,7 @@ class GameInviteEloquentTest extends TestCase
     public function testGameHostAddedAndBecomesAlsoOneOfPlayers(): void
     {
         $this->configureGameForXPlayers();
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
 
         $hostId = $this->playerOne->getId();
@@ -201,7 +198,7 @@ class GameInviteEloquentTest extends TestCase
     {
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
-
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
 
         $this->assertTrue($this->gameInvite->isPlayerAdded($this->playerOne));
@@ -219,6 +216,7 @@ class GameInviteEloquentTest extends TestCase
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
 
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
         $this->gameInvite->addPlayer($this->playerTwo);
 
@@ -241,6 +239,7 @@ class GameInviteEloquentTest extends TestCase
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
 
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
         $this->gameInvite->addPlayer($this->playerTwo);
 
@@ -254,18 +253,25 @@ class GameInviteEloquentTest extends TestCase
         $this->gameInvite->toArray();
     }
 
+    // TODO adjust to remove numberOfPlayers completely and replace with gameSetup object with options array
     public function testToArray(): void
     {
         $this->configureGameForXPlayers();
         $this->configurePlayerTwo();
 
+        $this->gameInvite->setOptions($this->options);
         $this->gameInvite->addPlayer($this->playerOne, true);
         $this->gameInvite->addPlayer($this->playerTwo);
+
+        $expectedGameSetup = [];
+        foreach ($this->gameInvite->getGameSetup()->getAllOptions() as $name => $value) {
+            $expectedGameSetup[$name] = $value[0];
+        }
 
         $expected = [
             'id' => $this->gameInvite->getId(),
             'host' => ['name' => $this->gameInvite->getHost()->getName()],
-            'numberOfPlayers' => $this->gameInvite->getNumberOfPlayers(),
+            'gameSetup' => $expectedGameSetup,
             'players' => array_map(fn($player) => ['name' => $player->getName()], $this->gameInvite->getPlayers()),
         ];
 

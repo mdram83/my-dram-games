@@ -6,6 +6,7 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerRegistered;
@@ -16,7 +17,11 @@ class GameInviteEloquent implements GameInvite
     protected GameInviteEloquentModel $model;
     protected GameBoxRepository $gameBoxRepository;
     protected GameBox $gameBox;
+    protected GameSetup $gameSetup;
 
+    /**
+     * @throws GameInviteException
+     */
     public function __construct(GameBoxRepository $gameBoxRepository, string $id = null)
     {
         $this->gameBoxRepository = $gameBoxRepository;
@@ -38,8 +43,8 @@ class GameInviteEloquent implements GameInvite
      */
     public function addPlayer(Player $player, bool $host = false): void
     {
-        if (!$this->hasNumberOfPlayers()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_NO_OF_PLAYERS_NOT_SET);
+        if (!$this->hasGameSetup()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_SETUP_NOT_SET);
         }
 
         if ($this->isPlayerAdded($player)) {
@@ -84,6 +89,9 @@ class GameInviteEloquent implements GameInvite
         );
     }
 
+    /**
+     * @throws GameInviteException
+     */
     public function getHost(): Player
     {
         if (!$this->hasHost()) {
@@ -93,37 +101,17 @@ class GameInviteEloquent implements GameInvite
         return $this->model->hostable;
     }
 
+    /**
+     * @throws GameInviteException
+     */
     public function isHost(Player $player): bool
     {
         return $this->getHost()->getId() === $player->getId();
     }
 
-    public function setNumberOfPlayers(int $numberOfPlayers): void
-    {
-        if (!$this->hasGameBox()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_GAME_BOX_NOT_SET);
-        }
-
-        if (!$this->isAllowedNumberOfPlayers($numberOfPlayers)) {
-            throw new GameInviteException(GameInviteException::MESSAGE_NO_OF_PLAYERS_EXCEED_DEF);
-        }
-
-        if ($this->hasNumberOfPlayers()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_NO_OF_PLAYERS_WAS_SET);
-        }
-
-        $this->model->numberOfPlayers = $numberOfPlayers;
-        $this->saveModel();
-    }
-
-    public function getNumberOfPlayers(): int
-    {
-        if (!$this->hasNumberOfPlayers()) {
-            throw new GameInviteException(GameInviteException::MESSAGE_NO_OF_PLAYERS_NOT_SET);
-        }
-        return $this->model->numberOfPlayers;
-    }
-
+    /**
+     * @throws GameInviteException
+     */
     public function setGameBox(GameBox $gameBox): void
     {
         if ($this->hasGameBox()) {
@@ -135,6 +123,9 @@ class GameInviteEloquent implements GameInvite
         $this->saveModel();
     }
 
+    /**
+     * @throws GameInviteException
+     */
     public function getGameBox(): GameBox
     {
         if (!$this->hasGameBox()) {
@@ -149,24 +140,74 @@ class GameInviteEloquent implements GameInvite
         return $this->gameBox;
     }
 
+    /**
+     * @throws GameInviteException
+     */
+    public function setOptions(array $options): void
+    {
+        if (!$this->hasGameBox()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_SETUP_NOT_SET);
+        }
+
+        if ($this->hasGameSetup()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_SETUP_ALREADY_SET);
+        }
+
+        $this->setAndConfigureGameSetup($options);
+        $this->model->options = json_encode($options);
+        $this->saveModel();
+    }
+
+    /**
+     * @throws GameInviteException
+     */
+    public function getGameSetup(): GameSetup
+    {
+        if (!$this->hasGameSetup()) {
+            throw new GameInviteException(GameInviteException::MESSAGE_GAME_SETUP_NOT_SET);
+        }
+
+        if (!isset($this->gameSetup)) {
+            $options = json_decode($this->model->options, true);
+            $this->setAndConfigureGameSetup($options);
+        }
+
+        return $this->gameSetup;
+    }
+
+    /**
+     * @throws GameInviteException
+     */
     public function toArray(): array
     {
+        $options = [];
+        foreach ($this->getGameSetup()->getAllOptions() as $name => $value) {
+            $options[$name] = $value[0];
+        }
+
         return [
             'id' => $this->getId(),
             'host' => ['name' => $this->getHost()->getName()],
-            'numberOfPlayers' => $this->getNumberOfPlayers(),
+            'gameSetup' => $options,
             'players' => array_map(fn($player) => ['name' => $player->getName()], $this->getPlayers()),
         ];
     }
 
-    protected function hasNumberOfPlayers(): bool
+    /**
+     * @throws GameInviteException
+     */
+    protected function setAndConfigureGameSetup(array $options): void
     {
-        return isset($this->model->numberOfPlayers);
+        $this->gameSetup = clone $this->getGameBox()->getGameSetup();
+        $this->gameSetup->setOptions($options);
     }
 
+    /**
+     * @throws GameInviteException
+     */
     protected function canAddMorePlayers(): bool
     {
-        return count($this->getPlayers()) < $this->getNumberOfPlayers();
+        return count($this->getPlayers()) < $this->getGameSetup()->getNumberOfPlayers()[0];
     }
 
     public function isPlayerAdded(Player $player): bool
@@ -187,9 +228,9 @@ class GameInviteEloquent implements GameInvite
         return isset($this->model->gameBox);
     }
 
-    protected function isAllowedNumberOfPlayers(int $numberOfPlayers): bool
+    protected function hasGameSetup(): bool
     {
-        return in_array($numberOfPlayers, $this->getGameBox()->getGameSetup()->getNumberOfPlayers());
+        return isset($this->model->options);
     }
 
     protected function saveModel(): void
@@ -208,6 +249,9 @@ class GameInviteEloquent implements GameInvite
         $this->saveModel();
     }
 
+    /**
+     * @throws GameInviteException
+     */
     protected function loadExisingModel(string $id): void
     {
         if (!($model = GameInviteEloquentModel::where('id', $id)->first())) {

@@ -20,4 +20,7 @@ class GameInviteException extends Exception
 
     public const MESSAGE_GAME_BOX_NOT_SET = 'GameBox not set';
     public const MESSAGE_GAME_BOX_ALREADY_SET = 'GameBox already set';
+
+    public const MESSAGE_GAME_SETUP_NOT_SET = 'Options not set';
+    public const MESSAGE_GAME_SETUP_ALREADY_SET = 'Options already set';
 }
