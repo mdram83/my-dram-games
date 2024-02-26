@@ -1,5 +1,6 @@
 import React from "react";
 import {useEffect} from "react";
+import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
 export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) => {
 
@@ -11,6 +12,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
         }
     });
 
+    const [errorMessage, setErrorMessage] = React.useState(undefined);
     const [playersStatus, setPlayersStatus] = React.useState(initialPlayersStatus);
 
     const updatePlayerStatus = (playerName, connected) => {
@@ -47,7 +49,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
             .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => autoStart())
-            .error((error) => console.log(error));
+            .error((error) => setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error'));
 
     }, []);
 
@@ -83,6 +85,8 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
     return (
         <>
+            {(errorMessage !== undefined) && <FlashMessage message={errorMessage} isError={true} />}
+
             <div className="mb-4">Players Status</div>
 
             <div className='text-white text-sm mb-6 ml-2'>

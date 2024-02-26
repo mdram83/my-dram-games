@@ -2,11 +2,13 @@ import React from "react";
 import {SiteButton} from "../../../template/components/SiteButton.jsx";
 import {GameInvitePlayers} from "./GameInvitePlayers.jsx";
 import axios from "axios";
+import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
 export const GameInviteShow = ({gameInvite, slug}) => {
 
     const isPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
     const [allPlayersOnline, setAllPlayersOnline] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(undefined);
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
     const copyJoinUrl = () => navigator.clipboard.writeText(joinUrl);
@@ -15,11 +17,13 @@ export const GameInviteShow = ({gameInvite, slug}) => {
     const storeGamePlay = () => {
         axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameInviteId: gameInvite.id})
             .then(response => { })
-            .catch(error =>  console.log(error));
+            .catch(error => setErrorMessage(error.response.data.message.message ?? 'Unexpected error'));
     }
 
     return (
         <div className="text-white">
+
+            {(errorMessage !== undefined) && <FlashMessage message={errorMessage} isError={true} />}
 
             <h4 className="font-bold font-sans mb-4">Game Settings</h4>
 

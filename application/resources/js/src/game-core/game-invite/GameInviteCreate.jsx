@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from 'react';
 import {SiteButton} from "../../../template/components/SiteButton.jsx";
-import {InputError} from "../../../template/components/InputError.jsx";
+import {FlashMessage} from "../../../template/components/FlashMessage";
 
 export const GameInviteCreate = (props) => {
 
@@ -40,7 +40,7 @@ export const GameInviteCreate = (props) => {
                 props.onStore(response.data.gameInvite);
             })
             .catch(error => {
-                setErrorMessage(error.response.data.message ?? 'Unexpected error');
+                setErrorMessage(error.response.data.message.message ?? 'Unexpected error');
                 toggleButtons(true);
             });
     }
@@ -55,7 +55,7 @@ export const GameInviteCreate = (props) => {
                 {numberOfPlayersOptions}
             </div>
 
-            {(errorMessage !== undefined) && <InputError message={errorMessage} />}
+            {(errorMessage !== undefined) && <FlashMessage message={errorMessage} isError={true} />}
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
 
