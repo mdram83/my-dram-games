@@ -22,7 +22,7 @@ services:
     container_name: mydramgames-nginx
     restart: always
     ports:
-      - "8000:80"
+      - "80:80"
     volumes:
       - ./application:/var/www
       - ./.nginx/fastcgi_params:/etc/nginx/fastcgi_params
