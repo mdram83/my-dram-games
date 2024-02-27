@@ -23,10 +23,12 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./application:/var/www
       - ./.nginx/fastcgi_params:/etc/nginx/fastcgi_params
       - ./.nginx/conf.d:/etc/nginx/conf.d
+      - ./.nginx/certs:/etc/ssl/private
 
   #database
   db:

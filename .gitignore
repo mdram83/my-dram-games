@@ -2,3 +2,4 @@
 
 #local data storage
 /.data/
+/.nginx/certs/*
