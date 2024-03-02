@@ -15,6 +15,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./application:/var/www
+      - ./.nginx/certs:/etc/ssl/private
 
   #webserver
   nginx:
