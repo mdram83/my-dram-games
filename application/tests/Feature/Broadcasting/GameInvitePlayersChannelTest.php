@@ -6,6 +6,8 @@ use App\Broadcasting\GameInvitePlayersChannel;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -34,12 +36,12 @@ class GameInvitePlayersChannelTest extends TestCase
             $this->host = User::factory()->create();
             $this->guest = User::factory()->create();
 
-            $gameBox = App::make(GameBoxRepository::class)->getAll()[0];;
+            $gameBox = App::make(GameBoxRepository::class)->getOne('tic-tac-toe');
             $this->gameInvite = App::make(GameInviteFactory::class)->create(
                 $gameBox->getSlug(),
                 [
-                    'numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0],
-                    'autostart' => $gameBox->getGameSetup()->getAutostart()[0],
+                    'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                    'autostart' => GameOptionValueAutostart::Disabled,
                 ],
                 $this->host
             );

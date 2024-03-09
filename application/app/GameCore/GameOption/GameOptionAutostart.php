@@ -11,8 +11,9 @@ class GameOptionAutostart extends GameOptionBase
     protected const KEY = 'autostart';
     protected const NAME = 'Autostart';
     protected const DESCRIPTION = 'Start game automatically when all players are ready';
+    protected const GAME_OPTION_VALUE_CLASS = GameOptionValueAutostart::class;
+
     protected GameOptionType $type = GameOptionTypeEnum::Checkbox;
-    protected string $gameOptionValueClass = GameOptionValueAutostart::class;
 
     /**
      * @throws GameOptionException

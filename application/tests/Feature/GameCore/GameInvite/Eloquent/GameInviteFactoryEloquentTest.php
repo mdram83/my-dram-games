@@ -5,6 +5,8 @@ namespace Tests\Feature\GameCore\GameInvite\Eloquent;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\Models\User;
@@ -25,9 +27,12 @@ class GameInviteFactoryEloquentTest extends TestCase
         parent::setUp();
 
         $this->host = User::factory()->create();
-        $gameBox = App::make(GameBoxRepository::class)->getAll()[0];
+        $gameBox = App::make(GameBoxRepository::class)->getOne('tic-tac-toe');
         $this->slug = $gameBox->getSlug();
-        $this->options = ['numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0], 'autostart' => false];
+        $this->options = [
+            'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+            'autostart' => GameOptionValueAutostart::Disabled,
+        ];
     }
 
     public function testGameCreatedWithUser(): void

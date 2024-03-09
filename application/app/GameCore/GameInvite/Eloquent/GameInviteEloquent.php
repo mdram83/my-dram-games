@@ -8,8 +8,6 @@ use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
-use App\GameCore\Player\PlayerAnonymous;
-use App\GameCore\Player\PlayerRegistered;
 use App\Models\GameInviteEloquentModel;
 
 class GameInviteEloquent implements GameInvite
@@ -154,7 +152,7 @@ class GameInviteEloquent implements GameInvite
         }
 
         $this->setAndConfigureGameSetup($options);
-        $this->model->options = json_encode($options);
+        $this->model->options = $this->encodeOptions($options);
         $this->saveModel();
     }
 
@@ -168,7 +166,7 @@ class GameInviteEloquent implements GameInvite
         }
 
         if (!isset($this->gameSetup)) {
-            $options = json_decode($this->model->options, true);
+            $options = $this->decodeOptions($this->model->options);
             $this->setAndConfigureGameSetup($options);
         }
 
@@ -180,15 +178,10 @@ class GameInviteEloquent implements GameInvite
      */
     public function toArray(): array
     {
-        $options = [];
-        foreach ($this->getGameSetup()->getAllOptions() as $name => $value) {
-            $options[$name] = $value[0];
-        }
-
         return [
             'id' => $this->getId(),
             'host' => ['name' => $this->getHost()->getName()],
-            'gameSetup' => $options,
+            'options' => array_map(fn($option) => $option->getConfiguredValue(), $this->getGameSetup()->getAllOptions()),
             'players' => array_map(fn($player) => ['name' => $player->getName()], $this->getPlayers()),
         ];
     }
@@ -199,7 +192,19 @@ class GameInviteEloquent implements GameInvite
     protected function setAndConfigureGameSetup(array $options): void
     {
         $this->gameSetup = clone $this->getGameBox()->getGameSetup();
-        $this->gameSetup->setOptions($options);
+        $this->gameSetup->configureOptions($options);
+    }
+
+    protected function encodeOptions(array $options): string
+    {
+        $serialized = array_map(fn($option) => serialize($option), $options);
+        return json_encode($serialized);
+    }
+
+    protected function decodeOptions(string $options): array
+    {
+        $decoded = json_decode($options, true);
+        return array_map(fn($option) => unserialize($option), $decoded);
     }
 
     /**
@@ -207,7 +212,7 @@ class GameInviteEloquent implements GameInvite
      */
     protected function canAddMorePlayers(): bool
     {
-        return count($this->getPlayers()) < $this->getGameSetup()->getNumberOfPlayers()[0];
+        return count($this->getPlayers()) < $this->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value;
     }
 
     public function isPlayerAdded(Player $player): bool

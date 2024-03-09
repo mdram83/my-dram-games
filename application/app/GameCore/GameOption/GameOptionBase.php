@@ -14,8 +14,9 @@ abstract class GameOptionBase implements GameOption
     protected const KEY = null;
     protected const NAME = null;
     protected const DESCRIPTION = null;
+    protected const GAME_OPTION_VALUE_CLASS = null;
+
     protected GameOptionType $type;
-    protected string $gameOptionValueClass;
 
     final public function getKey(): string
     {
@@ -35,6 +36,16 @@ abstract class GameOptionBase implements GameOption
     final public function getType(): GameOptionType
     {
         return $this->type;
+    }
+
+    final public static function getOptionValueClass(): string
+    {
+        return static::GAME_OPTION_VALUE_CLASS;
+    }
+
+    final public function getDefaultValue(): GameOptionValue
+    {
+        return $this->defaultValue;
     }
 
     final public function getAvailableValues(): array
@@ -76,7 +87,7 @@ abstract class GameOptionBase implements GameOption
         }
 
         foreach ($values as $value) {
-            if (!is_a($value, $this->gameOptionValueClass)) {
+            if (!is_a($value, $this->getOptionValueClass())) {
                 return false;
             }
         }

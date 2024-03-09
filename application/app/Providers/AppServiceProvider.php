@@ -8,6 +8,10 @@ use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
+use App\GameCore\GameOption\GameOptionClassRepository;
+use App\GameCore\GameOption\PhpConfig\GameOptionClassClassRepositoryPhpConfig;
+use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\GameCore\GameOptionValue\GameOptionValueConverterEnum;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
 use App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent;
@@ -36,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
         app()->bind(GameSetupAbsFactoryRepository::class, GameSetupAbsFactoryRepositoryPhpConfig::class);
+        app()->bind(GameOptionClassRepository::class, GameOptionClassClassRepositoryPhpConfig::class);
+        app()->bind(GameOptionValueConverter::class, GameOptionValueConverterEnum::class);
     }
 
     /**

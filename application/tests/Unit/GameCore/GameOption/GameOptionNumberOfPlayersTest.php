@@ -55,6 +55,11 @@ class GameOptionNumberOfPlayersTest extends TestCase
         $this->assertInstanceOf(GameOptionType::class, $this->option->getType());
     }
 
+    public function testGetOptionValueClass(): void
+    {
+        $this->assertEquals(GameOptionValueNumberOfPlayers::class, $this->option->getOptionValueClass());
+    }
+
     public function testThrowExceptionWhenAvailableValuesAreNotAutostart(): void
     {
         $this->expectException(GameOptionException::class);

@@ -8,12 +8,14 @@ use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -25,7 +27,7 @@ class GameInviteControllerTest extends TestCase
     protected bool $commonSetup = false;
     protected string $routeStore = 'ajax.game-invites.store';
     protected string $routeJoin = 'game-invites.join';
-    protected string $slug;
+    protected string $slug = 'tic-tac-toe';
     protected Player $playerHost;
     protected GameBox $gameBox;
     protected array $options;
@@ -34,16 +36,12 @@ class GameInviteControllerTest extends TestCase
     {
         parent::setUp();
         if ($this->commonSetup === false) {
+
             $this->playerHost = User::factory()->create();
             $this->playerJoin = User::factory()->create();
 
-            $gameBoxRepository = App::make(GameBoxRepository::class);
-            $this->slug = $gameBoxRepository->getAll()[0]->getSlug();
-            $this->gameBox = $gameBoxRepository->getOne($this->slug);
-            $this->options = [
-                'numberOfPlayers' => $this->gameBox->getGameSetup()->getNumberOfPlayers()[0],
-                'autostart' => $this->gameBox->getGameSetup()->getAutostart()[0],
-            ];
+            $this->gameBox = App::make(GameBoxRepository::class)->getOne($this->slug);
+            $this->options = ['numberOfPlayers' => 2, 'autostart' => 0];
 
             $this->commonSetup = true;
         }
@@ -139,8 +137,12 @@ class GameInviteControllerTest extends TestCase
 
     public function testStoreBadRequestWithInconsistentNumberOfPlayers(): void
     {
-        $maxNumberOfPlayers = max($this->gameBox->getGameSetup()->getNumberOfPlayers());
+        $maxNumberOfPlayers = max(array_map(
+            fn($optionValue) => $optionValue->value,
+            $this->gameBox->getGameSetup()->getNumberOfPlayers()->getAvailableValues()
+        ));
         $response = $this->getStoreResponse(numberOfPlayers: $maxNumberOfPlayers + 1);
+
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
@@ -156,24 +158,30 @@ class GameInviteControllerTest extends TestCase
 
         $this->assertNotNull($response['gameInvite']['id']);
         $this->assertNotNull($response['gameInvite']['host']['name']);
-        $this->assertNotNull($response['gameInvite']['gameSetup']['numberOfPlayers']);
-        $this->assertNotNull($response['gameInvite']['gameSetup']['autostart']);
+        $this->assertNotNull($response['gameInvite']['options']['numberOfPlayers']);
+        $this->assertNotNull($response['gameInvite']['options']['autostart']);
         $this->assertNotNull($response['gameInvite']['players'][0]['name']);
 
         $response
             ->assertJsonPath('gameInvite.host.name', $this->playerHost->getName())
-            ->assertJsonPath('gameInvite.gameSetup.numberOfPlayers', $this->gameBox->getGameSetup()->getNumberOfPlayers()[0])
-            ->assertJsonPath('gameInvite.gameSetup.autostart', $this->gameBox->getGameSetup()->getAutostart()[0])
+            ->assertJsonPath('gameInvite.options.numberOfPlayers', $this->options['numberOfPlayers'])
+            ->assertJsonPath('gameInvite.options.autostart', $this->options['autostart'])
             ->assertJsonPath('gameInvite.players.0.name', $this->playerHost->getName());
     }
 
     public function testJoinGuestReceiveOkResponse(): void
     {
+        $options = [];
+        foreach ($this->options as $key => $value) {
+            $options[$key] = App::make(GameOptionValueConverter::class)->convert($value, $key);
+        }
+
         $gameInvite = App::make(GameInviteFactoryEloquent::class)
-            ->create($this->slug, $this->options, $this->playerHost);
+            ->create($this->slug, $options, $this->playerHost);
         $gameInviteId = $gameInvite->getId();
 
         $response = $this->get(route($this->routeJoin, ['slug' => $this->slug, 'gameInviteId' => $gameInviteId]));
+
         $response->assertStatus(Response::HTTP_OK);
     }
 
@@ -190,12 +198,13 @@ class GameInviteControllerTest extends TestCase
         $gameInvite = $this->getGameInvite();
         $gameInviteId = $gameInvite->getId();
 
-        $numberOfPlayers = $gameInvite->getGameSetup()->getNumberOfPlayers()[0]; //getNumberOfPlayers();
+        $numberOfPlayers = $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value;
         for ($i = 0; $i < $numberOfPlayers - 1; $i++) {
             $gameInvite->addPlayer(User::factory()->create());
         }
 
         $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
+
         $response->assertStatus(Response::HTTP_FOUND);
         $response->assertRedirectToRoute('games.show', ['slug' => $this->slug]);
         $response->assertSessionHasErrors(['general' => GameInviteException::MESSAGE_TOO_MANY_PLAYERS]);

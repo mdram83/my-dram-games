@@ -11,6 +11,8 @@ interface GameOption
     public function getName(): string;
     public function getDescription(): string;
     public function getType(): GameOptionType;
+    public static function getOptionValueClass(): string;
+    public function getDefaultValue(): GameOptionValue;
     public function getAvailableValues(): array;
     public function getConfiguredValue(): GameOptionValue;
     public function setConfiguredValue(GameOptionValue $value): void;

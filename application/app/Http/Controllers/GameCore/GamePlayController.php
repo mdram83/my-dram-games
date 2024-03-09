@@ -32,8 +32,7 @@ class GamePlayController extends Controller
         } catch (GameInviteException $e) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
 
-        }
-        catch (Exception) {
+        } catch (Exception) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
 

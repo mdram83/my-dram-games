@@ -6,6 +6,8 @@ use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,12 +37,12 @@ class GameInviteRepositoryEloquentTest extends TestCase
             $this->factory = App::make(GameInviteFactory::class);
 
             $gameBoxRepository = App::make(GameBoxRepository::class);
-            $gameBox = $gameBoxRepository->getAll()[0];
+            $gameBox = $gameBoxRepository->getOne('tic-tac-toe');
 
             $this->slug = $gameBox->getSlug();
             $this->options = [
-                'numberOfPlayers' => $gameBox->getGameSetup()->getNumberOfPlayers()[0],
-                'autostart' => $gameBox->getGameSetup()->getAutostart()[0],
+                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                'autostart' => GameOptionValueAutostart::Disabled,
             ];
             $this->host = User::factory()->create();
 
@@ -61,7 +63,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
 
     public function testGetOne(): void
     {
-        $gameInviteId = $this->factory->create($this->slug, $this->options /*$this->numberOfPlayers*/, $this->host)->getId();
+        $gameInviteId = $this->factory->create($this->slug, $this->options, $this->host)->getId();
         $gameFromRepository = $this->repository->getOne($gameInviteId);
 
         $this->assertEquals($gameInviteId, $gameFromRepository->getId());

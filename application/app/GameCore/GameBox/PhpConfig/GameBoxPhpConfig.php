@@ -77,17 +77,18 @@ class GameBoxPhpConfig implements GameBox
 
     public function getNumberOfPlayersDescription(): string
     {
-        $numberOfPlayers = $this->getGameSetup()->getNumberOfPlayers();
+        $option = $this->getGameSetup()->getNumberOfPlayers();
+        $values = array_map(fn($value) => $value->value , $option->getAvailableValues());
 
-        if (!$this->hasConsecutiveNumberOfPlayers($numberOfPlayers)) {
-            return implode(', ', $numberOfPlayers);
+        if (!$this->hasConsecutiveNumberOfPlayers($values)) {
+            return implode(', ', $values);
         }
 
-        if (count($numberOfPlayers) === 1) {
-            return $numberOfPlayers[0];
+        if (count($values) === 1) {
+            return $values[0];
         }
 
-        return min($numberOfPlayers) . '-' . max($numberOfPlayers);
+        return min($values) . '-' . max($values);
     }
 
     public function getGameSetup(): GameSetup
@@ -105,7 +106,12 @@ class GameBoxPhpConfig implements GameBox
             'durationInMinutes' => $this->getDurationInMinutes(),
             'minPlayerAge' => $this->getMinPlayerAge(),
             'isActive' => $this->isActive(),
-            'gameSetup' => $this->getGameSetup()->getAllOptions(),
+
+            'options' => array_map(fn($option) => [
+                'availableValues' => array_map(fn($value) => $value->value, $option->getAvailableValues()),
+                'defaultValue' => $option->getDefaultValue()->value,
+            ], $this->getGameSetup()->getAllOptions()),
+
         ];
     }
 

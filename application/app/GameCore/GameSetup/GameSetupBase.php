@@ -2,13 +2,21 @@
 
 namespace App\GameCore\GameSetup;
 
+use App\GameCore\GameOption\GameOption;
+use App\GameCore\GameOption\GameOptionAutostart;
+use App\GameCore\GameOption\GameOptionException;
+use App\GameCore\GameOption\GameOptionNumberOfPlayers;
+use App\GameCore\GameOptionValue\GameOptionValue;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
+
 class GameSetupBase implements GameSetup
 {
-    protected array $options = [
-        'numberOfPlayers' => null,
-        'autostart' => [false, true],
-    ];
+    protected array $options;
 
+    /**
+     * @throws GameOptionException
+     */
     final public function __construct()
     {
         $this->setDefaults();
@@ -17,25 +25,36 @@ class GameSetupBase implements GameSetup
     /**
      * This is only method that must be overwritten in concrete per GameBox implementations extending GameSetupBase
      * @return void
+     * @throws GameOptionException
      */
     protected function setDefaults(): void
     {
+        $numberOfPlayers = new GameOptionNumberOfPlayers(
+            [GameOptionValueNumberOfPlayers::Players002],
+            GameOptionValueNumberOfPlayers::Players002
+        );
+
+        $autostart = new GameOptionAutostart(
+            [GameOptionValueAutostart::Enabled, GameOptionValueAutostart::Disabled],
+            GameOptionValueAutostart::Enabled
+        );
+
         $this->options = [
-            'numberOfPlayers' => [2],
-            'autostart' => [false, true],
+            $numberOfPlayers->getKey() => $numberOfPlayers,
+            $autostart->getKey() => $autostart,
         ];
     }
 
     /**
      * @throws GameSetupException
      */
-    final public function getOption(string $name): array
+    final public function getOption(string $key): GameOption
     {
-        if (!isset($this->options[$name])) {
+        if (!isset($this->options[$key])) {
             throw new GameSetupException(GameSetupException::MESSAGE_OPTION_NOT_SET);
         }
 
-        return $this->options[$name];
+        return $this->options[$key];
     }
 
     /**
@@ -53,23 +72,23 @@ class GameSetupBase implements GameSetup
     /**
      * @throws GameSetupException
      */
-    final public function setOptions(array $options): void
+    final public function configureOptions(array $options): void
     {
         $this->validateOptions($options);
-        foreach ($options as $name => $value) {
-            $this->options[$name] = [$value];
+        foreach ($options as $key => $value) {
+            $this->getOption($key)->setConfiguredValue($value);
         }
     }
 
     final public function isConfigured(): bool
     {
-        return count($this->options) === count(array_filter($this->options, fn($option) => count($option) === 1));
+        return count($this->options) === count(array_filter($this->options, fn($option) => $option->isConfigured()));
     }
 
     /**
      * @throws GameSetupException
      */
-    final public function getNumberOfPlayers(): array
+    final public function getNumberOfPlayers(): GameOption
     {
         return $this->getOption('numberOfPlayers');
     }
@@ -78,7 +97,7 @@ class GameSetupBase implements GameSetup
      * @throws GameSetupException
      */
 
-    final public function getAutostart(): array
+    final public function getAutostart(): GameOption
     {
         return $this->getOption('autostart');
     }
@@ -88,13 +107,13 @@ class GameSetupBase implements GameSetup
      */
     final protected function validateOptions(array $options): void
     {
-        foreach ($options as $name => $value) {
+        foreach ($options as $key => $option) {
 
-            if (!$this->hasProperFormat($name, $value)) {
+            if (!$this->hasProperFormat($key, $option)) {
                 throw new GameSetupException(GameSetupException::MESSAGE_OPTION_INCORRECT);
             }
 
-            if ($this->isExceedingDefaults($name, $value)) {
+            if ($this->isExceedingDefaults($key, $option)) {
                 throw new GameSetupException(GameSetupException::MESSAGE_OPTION_OUTSIDE);
             }
         }
@@ -106,14 +125,19 @@ class GameSetupBase implements GameSetup
 
     final protected function hasProperFormat(mixed $key, mixed $value): bool
     {
-        return is_string($key) && !is_array($value);
+        return is_string($key) && is_a($value, GameOptionValue::class);
     }
 
     final protected function isExceedingDefaults(string $key, mixed $value): bool
     {
-        if (!in_array($key, array_keys($this->options)) || !in_array($value, $this->options[$key], true)) {
+        if (!in_array($key, array_keys($this->options))) {
             return true;
         }
+
+        if (!in_array($value, $this->options[$key]->getAvailableValues(), true)) {
+            return true;
+        }
+
         return false;
     }
 

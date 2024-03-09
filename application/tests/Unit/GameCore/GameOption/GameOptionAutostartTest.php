@@ -51,6 +51,11 @@ class GameOptionAutostartTest extends TestCase
         $this->assertInstanceOf(GameOptionType::class, $this->option->getType());
     }
 
+    public function testGetOptionValueClass(): void
+    {
+        $this->assertEquals(GameOptionValueAutostart::class, $this->option->getOptionValueClass());
+    }
+
     public function testThrowExceptionWhenAvailableValuesAreNotAutostart(): void
     {
         $this->expectException(GameOptionException::class);
@@ -63,6 +68,11 @@ class GameOptionAutostartTest extends TestCase
         $this->expectException(GameOptionException::class);
         $this->expectExceptionMessage(GameOptionException::MESSAGE_INCORRECT_AVAILABLE);
         new GameOptionAutostart([], $this->default);
+    }
+
+    public function testGetDefaultValue(): void
+    {
+        $this->assertEquals(GameOptionValueAutostart::Disabled, $this->option->getDefaultValue());
     }
 
     public function testGetAvailableValues(): void

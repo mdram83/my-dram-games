@@ -6,6 +6,8 @@ use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\GameCore\GameOptionValue\GameOptionValueException;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
 use App\Http\Controllers\Controller;
@@ -29,10 +31,15 @@ class GameInviteController extends Controller
     public const MESSAGE_PLAYER_BACK = 'Welcome back!';
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
-    public function store(Request $request, GameInviteFactory $factory, Player $player): Response
+    // TODO consider moving all except Request to constructor
+    public function store(
+        Request $request,
+        GameInviteFactory $factory,
+        Player $player,
+        GameOptionValueConverter $converter): Response
     {
         try {
-            $inputs = $this->getValidatedCastedStoreInputs($request);
+            $inputs = $this->getValidatedCastedStoreInputs($request, $converter);
 
             DB::beginTransaction();;
             $gameInvite = $factory->create($inputs['slug'], $inputs['options'], $player);
@@ -83,7 +90,7 @@ class GameInviteController extends Controller
     /**
      * @throws ControllerException|ValidationException
      */
-    private function getValidatedCastedStoreInputs(Request $request): array
+    private function getValidatedCastedStoreInputs(Request $request, GameOptionValueConverter $converter): array
     {
         $validator = Validator::make($request->all(), [
             'slug' => 'required|string|max:255',
@@ -97,8 +104,18 @@ class GameInviteController extends Controller
         }
 
         $inputs = $validator->validated();
-        $inputs['options']['numberOfPlayers'] = (int) $inputs['options']['numberOfPlayers'];
-        $inputs['options']['autostart'] = (bool) $inputs['options']['autostart'];
+
+        try {
+            foreach ($inputs['options'] as $key => $value) {
+                $inputs['options'][$key] = $converter->convert($value, $key);
+            }
+        } catch (GameOptionValueException $e) {
+            throw new ControllerException(json_encode(['message' => $e->getMessage()]));
+        }
+
+
+//        $inputs['options']['numberOfPlayers'] = (int) $inputs['options']['numberOfPlayers'];
+//        $inputs['options']['autostart'] = (bool) $inputs['options']['autostart'];
 
         return $inputs;
     }
