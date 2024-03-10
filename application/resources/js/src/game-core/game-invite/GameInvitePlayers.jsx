@@ -4,8 +4,6 @@ import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
 export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) => {
 
-    console.log(gameInvite);
-
     const initialPlayersStatus = gameInvite.players.map((player) => {
         return {
             name: player.name,
