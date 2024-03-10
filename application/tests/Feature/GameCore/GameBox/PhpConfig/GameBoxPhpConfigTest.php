@@ -6,6 +6,7 @@ use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
+use App\GameCore\GameOptionType\GameOptionTypeEnum;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetup;
 use App\Games\TicTacToe\GameSetupTicTacToe;
@@ -161,10 +162,12 @@ class GameBoxPhpConfigTest extends TestCase
                     'numberOfPlayers' => [
                         'availableValues' => [2],
                         'defaultValue' => 2,
+                        'type' => GameOptionTypeEnum::Radio,
                     ],
                     'autostart' => [
                         'availableValues' => [1, 0],
                         'defaultValue' => 0,
+                        'type' => GameOptionTypeEnum::Checkbox,
                     ],
                 ],
             ],
