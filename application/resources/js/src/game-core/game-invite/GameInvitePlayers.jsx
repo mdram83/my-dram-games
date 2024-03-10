@@ -4,6 +4,8 @@ import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
 export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) => {
 
+    console.log(gameInvite);
+
     const initialPlayersStatus = gameInvite.players.map((player) => {
         return {
             name: player.name,
@@ -55,7 +57,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
     useEffect(() => {
         setAllPlayersOnline(
-            playersStatus.length === gameInvite.gameSetup.numberOfPlayers && playersStatus.every((player) => player.connected)
+            playersStatus.length === gameInvite.options.numberOfPlayers && playersStatus.every((player) => player.connected)
         );
     });
 
@@ -63,7 +65,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
         const listItems = [];
 
-        for (let i = 0; i < gameInvite.gameSetup.numberOfPlayers; i++ ) {
+        for (let i = 0; i < gameInvite.options.numberOfPlayers; i++ ) {
 
             const playerName = playersStatus[i] ? playersStatus[i].name : undefined;
             const playerHost = playersStatus[i] ? playersStatus[i].host : false;
