@@ -2,6 +2,7 @@ import axios from "axios";
 import React from 'react';
 import {SiteButton} from "../../../template/components/SiteButton.jsx";
 import {FlashMessage} from "../../../template/components/FlashMessage";
+import {GameInviteOptionsHandler} from "./GameInviteOptionsHandler.jsx";
 
 export const GameInviteCreate = (props) => {
 
@@ -16,24 +17,13 @@ export const GameInviteCreate = (props) => {
         setButtonCreateIcon(on ? 'fa-angle-double-right' : 'fa-cog fa-spin');
     }
 
-    const numberOfPlayersOptions = props.options.numberOfPlayers.availableValues.map((number, index) => {
-        const id = 'numberOfPlayers-' + number;
-        return (
-            <div className="mx-2 flex items-center" key={'div' + id}>
-                <input type="radio" id={id} name="numberOfPlayers" value={number} required defaultChecked={index === 0} />
-                <label className="text-white font-medium font-semibold px-2 mb-0" htmlFor={id}>{number} players</label>
-            </div>
-        );
-    });
+    const optionsHandler = new GameInviteOptionsHandler(props.options);
 
     const submit = () => {
         toggleButtons(false);
         axios
             .post(window.MyDramGames.routes['ajax.game-invites.store'], {
-                options: {
-                    numberOfPlayers: document.querySelector('input[name="numberOfPlayers"]:checked').value,
-                    autostart: false,
-                },
+                options: optionsHandler.getOptionsValues(),
                 slug: props.slug,
             })
             .then(response => {
@@ -50,10 +40,7 @@ export const GameInviteCreate = (props) => {
 
             <h4 className="font-bold text-white font-sans mb-4">Game Settings</h4>
 
-            <div className="flex items-center mb-4">
-                <i className="fa fa-users text-white mr-2 content-center"></i>
-                {numberOfPlayersOptions}
-            </div>
+            {optionsHandler.getRenderedOptions()}
 
             {(errorMessage !== undefined) && <FlashMessage message={errorMessage} isError={true} />}
 

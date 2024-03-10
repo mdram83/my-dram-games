@@ -111,6 +111,8 @@ class GameBoxPhpConfig implements GameBox
                 'availableValues' => array_map(fn($value) => $value->value, $option->getAvailableValues()),
                 'defaultValue' => $option->getDefaultValue()->value,
                 'type' => $option->getType(),
+                'name' => $option->getName(),
+                'description' => $option->getDescription(),
             ], $this->getGameSetup()->getAllOptions()),
 
         ];
