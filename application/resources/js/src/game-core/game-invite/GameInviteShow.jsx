@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
+import axios from "axios";
 import {SiteButton} from "../../../template/components/SiteButton.jsx";
 import {GameInvitePlayers} from "./GameInvitePlayers.jsx";
-import axios from "axios";
 import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
 export const GameInviteShow = ({gameInvite, slug}) => {
 
     const isPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
-    const [allPlayersOnline, setAllPlayersOnline] = React.useState(false);
+    const [allPlayersOnline, setAllPlayersOnline] = React.useState(false); // TODO for autostart probably some hook on change of this state
     const [errorMessage, setErrorMessage] = React.useState(undefined);
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
@@ -19,6 +19,13 @@ export const GameInviteShow = ({gameInvite, slug}) => {
             .then(response => { })
             .catch(error => setErrorMessage(error.response.data.message.message ?? 'Unexpected error'));
     }
+
+    useEffect(() => {
+        const autostartOption = gameInvite.options.autostart ?? 0;
+        if (autostartOption && allPlayersOnline) {
+            storeGamePlay();
+        }
+    }, [allPlayersOnline]);
 
     return (
         <div className="text-white">
@@ -41,11 +48,6 @@ export const GameInviteShow = ({gameInvite, slug}) => {
                 />}
                 <SiteButton value='Copy Link' onClick={() => copyJoinUrl()} faClassName='fa-link' />
 
-            </div>
-
-            {/*TEMP SECTION*/}
-            <div className="w-full sm:w-auto flex justify-center sm:justify-start mt-4">
-                <SiteButton value='Tmp Join Link' onClick={() => window.location.href = joinUrl} className='mr-2' />
             </div>
 
         </div>
