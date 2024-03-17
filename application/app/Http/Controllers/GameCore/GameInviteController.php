@@ -113,10 +113,6 @@ class GameInviteController extends Controller
             throw new ControllerException(json_encode(['message' => $e->getMessage()]));
         }
 
-
-//        $inputs['options']['numberOfPlayers'] = (int) $inputs['options']['numberOfPlayers'];
-//        $inputs['options']['autostart'] = (bool) $inputs['options']['autostart'];
-
         return $inputs;
     }
 }
