@@ -95,6 +95,33 @@ class CollectionLaravelTest extends TestCase
         $this->assertTrue($updated);
     }
 
+    public function testAssignKeys(): void
+    {
+        $this->collection->assignKeys(fn($item, $key) => $item * 2);
+        $this->assertEquals([2 => 1, 4 => 2, 6 => 3], $this->collection->toArray());
+    }
+
+    public function testReset(): void
+    {
+        $newElements = [4, 5];
+        $this->assertEquals($newElements, $this->collection->reset($newElements)->toArray());
+        $this->assertEquals([], $this->collection->reset([])->toArray());
+    }
+
+    public function testThrowExceptionWhenOverwritingSingleElementWithKey(): void
+    {
+        $this->expectException(CollectionException::class);
+        $this->expectExceptionMessage(CollectionException::MESSAGE_DUPLICATE);
+
+        $this->collection->add(1, 0);
+    }
+
+    public function testAddWithKey(): void
+    {
+        $this->assertTrue($this->collection->add(4, 3)->exist(3));
+        $this->assertEquals([1, 2, 3, 4, 5], $this->collection->add(5)->toArray());
+    }
+
     public function testGetOneThrowExceptionWithMissingKey(): void
     {
         $this->expectException(CollectionException::class);

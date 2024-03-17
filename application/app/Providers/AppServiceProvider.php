@@ -19,6 +19,8 @@ use App\GameCore\Player\Eloquent\PlayerAnonymousRepositoryEloquent;
 use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousRepository;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\Laravel\CollectionLaravel;
 use App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5;
 use App\GameCore\Services\HashGenerator\HashGenerator;
 use Illuminate\Support\ServiceProvider;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(Player::class, fn() => null);
 
         app()->bind(HashGenerator::class, HashGeneratorMd5::class);
+        app()->bind(Collection::class, CollectionLaravel::class);
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
         app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
         app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);

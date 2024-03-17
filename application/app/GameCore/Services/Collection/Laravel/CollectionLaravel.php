@@ -52,6 +52,36 @@ class CollectionLaravel implements Collection
         return $this->collection->random();
     }
 
+    public function assignKeys(callable $callback): static
+    {
+        $this->collection = $this->collection->keyBy($callback);
+        return $this;
+    }
+
+    public function reset(array $elements = []): static
+    {
+        $this->collection = new IlluminateCollection($elements);
+        return $this;
+    }
+
+    /**
+     * @throws CollectionException
+     */
+    public function add(mixed $element, mixed $key = null): static
+    {
+        if ($this->exist($key)) {
+            throw new CollectionException(CollectionException::MESSAGE_DUPLICATE);
+        }
+
+        if (isset($key)) {
+            $this->collection->put($key, $element);
+        } else {
+            $this->collection->push($element);
+        }
+
+        return $this;
+    }
+
     /**
      * @throws CollectionException
      */
