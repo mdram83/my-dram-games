@@ -41,6 +41,12 @@ class CollectionLaravel implements Collection
         return $this;
     }
 
+    public function filter(callable $callback): static
+    {
+        $collection = $this->collection->filter($callback);
+        return new static($collection->all());
+    }
+
     public function shuffle(): static
     {
         $this->collection = $this->collection->shuffle();

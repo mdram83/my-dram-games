@@ -6,11 +6,17 @@ use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GameSetup\GameSetupAbsFactory;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\GameSetupException;
+use App\GameCore\Services\Collection\Collection;
 use Illuminate\Support\Facades\Config;
 
 class GameSetupAbsFactoryRepositoryPhpConfig implements GameSetupAbsFactoryRepository
 {
     public const GAME_SETUP_ABS_FACTORY_KEY = 'GameSetupAbsFactory';
+
+    public function __construct(protected Collection $collectionHandler)
+    {
+
+    }
 
     /**
      * @throws GameSetupException
@@ -28,7 +34,7 @@ class GameSetupAbsFactoryRepositoryPhpConfig implements GameSetupAbsFactoryRepos
             throw new GameSetupException(GameSetupException::MESSAGE_NO_ABS_FACTORY);
         }
 
-        return new $className();
+        return new $className(clone $this->collectionHandler);
     }
 
     private function isEntryMissing(?string $className): bool

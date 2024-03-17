@@ -1,13 +1,15 @@
 <?php
 
-namespace Tests\Unit\Games\TicTacToe;
+namespace Tests\Feature\Games\TicTacToe;
 
 use App\GameCore\GameOption\GameOptionAutostart;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
+use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameSetupTicTacToe;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Support\Facades\App;
+use Tests\TestCase;
 
 class GameSetupTicTacToeTest extends TestCase
 {
@@ -36,7 +38,7 @@ class GameSetupTicTacToeTest extends TestCase
 
     public function testSetDefaults(): void
     {
-        $setup = new GameSetupTicTacToe();
+        $setup = new GameSetupTicTacToe(App::make(Collection::class));
         $this->assertEquals(array_keys($this->defaults), array_keys($setup->getAllOptions()));
         $this->assertEquals(GameOptionValueAutostart::Disabled, $setup->getAutostart()->getDefaultValue());
         $this->assertEquals(GameOptionValueNumberOfPlayers::Players002, $setup->getNumberOfPlayers()->getDefaultValue());

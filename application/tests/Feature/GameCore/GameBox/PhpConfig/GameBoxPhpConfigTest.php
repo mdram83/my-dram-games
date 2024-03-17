@@ -9,7 +9,9 @@ use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionType\GameOptionTypeEnum;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetup;
+use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameSetupTicTacToe;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
@@ -24,7 +26,7 @@ class GameBoxPhpConfigTest extends TestCase
     {
         parent::setUp();
         $this->box = Config::get('games.box.' . $this->slug);
-        $this->setup = new GameSetupTicTacToe();
+        $this->setup = new GameSetupTicTacToe(App::make(Collection::class));
         $this->gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
     }
 

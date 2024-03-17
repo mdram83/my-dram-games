@@ -2,7 +2,7 @@
 
 namespace App\GameCore\Services\Collection;
 
-abstract class CollectionBase implements Collection
+class CollectionBase implements Collection
 {
     public const TYPE_CLASS = null;
     public const TYPE_PRIMITIVE = null;
@@ -90,6 +90,15 @@ abstract class CollectionBase implements Collection
     {
         $this->collectionHandler = $this->collectionHandler->each($callback);
         return $this;
+    }
+
+    final public function filter(callable $callback): static
+    {
+        $elements = $this->collectionHandler->filter($callback)->toArray();
+        $handler = clone $this->collectionHandler;
+        $handler->reset();
+
+        return new static($handler, $elements);
     }
 
     final public function shuffle(): static

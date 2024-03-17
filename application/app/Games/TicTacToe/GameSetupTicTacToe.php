@@ -7,10 +7,12 @@ use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetupBase;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOption;
 
 class GameSetupTicTacToe extends GameSetupBase
 {
-    protected function setDefaults(): void
+    protected function setDefaults(Collection $optionsHandler): void
     {
         $numberOfPlayers = new GameOptionNumberOfPlayers(
             [GameOptionValueNumberOfPlayers::Players002],
@@ -22,9 +24,6 @@ class GameSetupTicTacToe extends GameSetupBase
             GameOptionValueAutostart::Disabled
         );
 
-        $this->options = [
-            $numberOfPlayers->getKey() => $numberOfPlayers,
-            $autostart->getKey() => $autostart,
-        ];
+        $this->options = new CollectionGameOption($optionsHandler, [$numberOfPlayers, $autostart]);
     }
 }

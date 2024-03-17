@@ -63,6 +63,13 @@ class CollectionLaravelTest extends TestCase
         );
     }
 
+    public function testFilter(): void
+    {
+        $this->assertEquals([1 => 2, 2 => 3], $this->collection->filter(fn($element) => $element > 1)->toArray());
+        $this->assertEquals([0 => 1, 2 => 3], $this->collection->filter(fn($element) => $element !== 2)->toArray());
+        $this->assertEquals(['a' => 1, 'b' => 2], $this->keyCollection->filter(fn($element) => $element < 3)->toArray());
+    }
+
     public function testShuffle(): void
     {
         $original = clone $this->collection;

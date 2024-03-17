@@ -10,6 +10,7 @@ interface Collection
     public function toArray(): array;
 
     public function each(callable $callback): static;
+    public function filter(callable $callback): static;
     public function shuffle(): static;
     public function random(): mixed;
     public function assignKeys(callable $callback): static;

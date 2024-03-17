@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\GameCore\GameSetup;
+namespace Tests\Feature\GameCore\GameSetup;
 
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionAutostart;
@@ -11,7 +11,9 @@ use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\GameSetup\GameSetupBase;
 use App\GameCore\GameSetup\GameSetupException;
-use PHPUnit\Framework\TestCase;
+use App\GameCore\Services\Collection\Collection;
+use Illuminate\Support\Facades\App;
+use Tests\TestCase;
 
 class GameSetupBaseTest extends TestCase
 {
@@ -22,7 +24,7 @@ class GameSetupBaseTest extends TestCase
     {
         parent::setUp();
 
-        $this->setup = new GameSetupBase();
+        $this->setup = new GameSetupBase(App::make(Collection::class));
 
         $numberOfPlayers = new GameOptionNumberOfPlayers(
             [GameOptionValueNumberOfPlayers::Players002],
@@ -42,7 +44,7 @@ class GameSetupBaseTest extends TestCase
 
     public function testInstanceOfGameSetup(): void
     {
-        $this->assertInstanceOf(GameSetup::class, new GameSetupBase());
+        $this->assertInstanceOf(GameSetup::class, $this->setup);
     }
 
     public function testGetAutostartTwoWays(): void
@@ -109,7 +111,7 @@ class GameSetupBaseTest extends TestCase
 
     public function testIsConfiguredReturnFalseIfNotAllOptionsSet(): void
     {
-        $setup = new GameSetupBase();
+        $setup = new GameSetupBase(App::make(Collection::class));
         $this->assertFalse($setup->isConfigured());
     }
 
