@@ -12,13 +12,14 @@ use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\GameSetup\GameSetupBase;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class GameSetupBaseTest extends TestCase
 {
     protected GameSetupBase $setup;
-    protected array $values;
+    protected CollectionGameOptionValueInput $options;
 
     public function setUp(): void
     {
@@ -36,10 +37,13 @@ class GameSetupBaseTest extends TestCase
             GameOptionValueAutostart::Enabled
         );
 
-        $this->values = [
-            $numberOfPlayers->getKey() => GameOptionValueNumberOfPlayers::Players002,
-            $autostart->getKey() => GameOptionValueAutostart::Disabled,
-        ];
+        $this->options = new CollectionGameOptionValueInput(
+            App::make(Collection::class),
+            [
+                $numberOfPlayers->getKey() => GameOptionValueNumberOfPlayers::Players002,
+                $autostart->getKey() => GameOptionValueAutostart::Disabled,
+            ]
+        );
     }
 
     public function testInstanceOfGameSetup(): void
@@ -70,18 +74,7 @@ class GameSetupBaseTest extends TestCase
         $optionMock->method('getKey')->willReturn('test-option-123');
         $valueMock = $this->createMock(GameOptionValue::class);
 
-        $this->setup->configureOptions(array_merge($this->values, [$optionMock->getKey() => $valueMock]));
-    }
-
-    public function testThrowExceptionWhenUsingNotStringOptionName(): void
-    {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_INCORRECT);
-
-        $valueMock = $this->createMock(GameOptionValue::class);
-
-        $this->setup->configureOptions(array_merge($this->values, [3 => $valueMock]));
-
+        $this->setup->configureOptions($this->options->add($valueMock, $optionMock->getKey()));
     }
 
     public function testThrowExceptionWhenExceedingDefaults(): void
@@ -89,24 +82,22 @@ class GameSetupBaseTest extends TestCase
         $this->expectException(GameSetupException::class);
         $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_OUTSIDE);
 
-        $options = array_merge($this->values, ['numberOfPlayers' => GameOptionValueNumberOfPlayers::Players009]);
+        $options = $this->options->reset([
+            'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players009,
+            'autostart' => GameOptionValueAutostart::Disabled,
+        ]);
         $this->setup->configureOptions($options);
     }
 
-    public function testThrowExceptionIfClassProvidedInOptionsValues(): void
+    public function testReturnOptionConfiguredWithinDefaults(): void
     {
-        $this->expectException(GameSetupException::class);
-        $this->expectExceptionMessage(GameSetupException::MESSAGE_OPTION_INCORRECT);
-
-        $options = array_merge($this->values, ['autostart' => GameOptionValueAutostart::class]);
-        $this->setup->configureOptions($options);
-    }
-
-    public function testReturnOptionWithinDefaults(): void
-    {
-        $options = array_merge($this->values, ['autostart' => GameOptionValueAutostart::Enabled]);
-        $this->setup->configureOptions($options);
-        $this->assertSame($options['autostart'], $this->setup->getAutostart()->getConfiguredValue());
+        $newValues = [
+            'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+            'autostart' => GameOptionValueAutostart::Enabled,
+        ];
+        $this->options->reset($newValues)->toArray();
+        $this->setup->configureOptions($this->options);
+        $this->assertSame($this->options->getOne('autostart'), $this->setup->getAutostart()->getConfiguredValue());
     }
 
     public function testIsConfiguredReturnFalseIfNotAllOptionsSet(): void
@@ -117,7 +108,7 @@ class GameSetupBaseTest extends TestCase
 
     public function testIsConfiguredReturnTrueAfterSettingAllOptions(): void
     {
-        $this->setup->configureOptions($this->values);
+        $this->setup->configureOptions($this->options);
         $this->assertTrue($this->setup->isConfigured());
     }
 }

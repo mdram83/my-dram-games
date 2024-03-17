@@ -10,6 +10,9 @@ use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueException;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionException;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use Exception;
@@ -17,6 +20,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -31,7 +35,6 @@ class GameInviteController extends Controller
     public const MESSAGE_PLAYER_BACK = 'Welcome back!';
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
-    // TODO consider moving all except Request to constructor
     public function store(
         Request $request,
         GameInviteFactory $factory,
@@ -104,14 +107,17 @@ class GameInviteController extends Controller
         }
 
         $inputs = $validator->validated();
+        $options = new CollectionGameOptionValueInput(App::make(Collection::class));
 
         try {
             foreach ($inputs['options'] as $key => $value) {
-                $inputs['options'][$key] = $converter->convert($value, $key);
+                $options->add($converter->convert($value, $key), $key);
             }
-        } catch (GameOptionValueException $e) {
+        } catch (GameOptionValueException|CollectionException $e) {
             throw new ControllerException(json_encode(['message' => $e->getMessage()]));
         }
+
+        $inputs['options'] = $options;
 
         return $inputs;
     }

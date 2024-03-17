@@ -7,10 +7,15 @@ use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 
 class GameInviteFactoryEloquent implements GameInviteFactory
 {
-    public function __construct(private readonly GameBoxRepository $gameBoxRepository)
+    public function __construct(
+        private readonly GameBoxRepository $gameBoxRepository,
+        private readonly Collection $optionsHandler,
+    )
     {
 
     }
@@ -18,9 +23,9 @@ class GameInviteFactoryEloquent implements GameInviteFactory
     /**
      * @throws GameInviteException
      */
-    public function create(string $slug, array $options, Player $host): GameInvite
+    public function create(string $slug, CollectionGameOptionValueInput $options, Player $host): GameInvite
     {
-        $game = new GameInviteEloquent($this->gameBoxRepository);
+        $game = new GameInviteEloquent($this->gameBoxRepository, $this->optionsHandler);
 
         $game->setGameBox($this->gameBoxRepository->getOne($slug));
         $game->setOptions($options);

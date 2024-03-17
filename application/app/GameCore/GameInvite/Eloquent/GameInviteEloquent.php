@@ -8,21 +8,25 @@ use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\GameInviteEloquentModel;
 
 class GameInviteEloquent implements GameInvite
 {
     protected GameInviteEloquentModel $model;
     protected GameBoxRepository $gameBoxRepository;
+    protected Collection $optionsHandler;
     protected GameBox $gameBox;
     protected GameSetup $gameSetup;
 
     /**
      * @throws GameInviteException
      */
-    public function __construct(GameBoxRepository $gameBoxRepository, string $id = null)
+    public function __construct(GameBoxRepository $gameBoxRepository, Collection $optionsHandler, string $id = null)
     {
         $this->gameBoxRepository = $gameBoxRepository;
+        $this->optionsHandler = $optionsHandler;
 
         if ($id === null) {
             $this->registerNewModel();
@@ -141,7 +145,8 @@ class GameInviteEloquent implements GameInvite
     /**
      * @throws GameInviteException
      */
-    public function setOptions(array $options): void
+//    public function setOptions(array $options): void
+    public function setOptions(CollectionGameOptionValueInput $options): void
     {
         if (!$this->hasGameBox()) {
             throw new GameInviteException(GameInviteException::MESSAGE_GAME_SETUP_NOT_SET);
@@ -152,7 +157,7 @@ class GameInviteEloquent implements GameInvite
         }
 
         $this->setAndConfigureGameSetup($options);
-        $this->model->options = $this->encodeOptions($options);
+        $this->model->options = $this->encodeOptions($options->toArray());
         $this->saveModel();
     }
 
@@ -166,7 +171,12 @@ class GameInviteEloquent implements GameInvite
         }
 
         if (!isset($this->gameSetup)) {
-            $options = $this->decodeOptions($this->model->options);
+
+            $options = new CollectionGameOptionValueInput(
+                clone $this->optionsHandler,
+                $this->decodeOptions($this->model->options)
+            );
+
             $this->setAndConfigureGameSetup($options);
         }
 
@@ -189,7 +199,7 @@ class GameInviteEloquent implements GameInvite
     /**
      * @throws GameInviteException
      */
-    protected function setAndConfigureGameSetup(array $options): void
+    protected function setAndConfigureGameSetup(CollectionGameOptionValueInput $options): void
     {
         $this->gameSetup = clone $this->getGameBox()->getGameSetup();
         $this->gameSetup->configureOptions($options);

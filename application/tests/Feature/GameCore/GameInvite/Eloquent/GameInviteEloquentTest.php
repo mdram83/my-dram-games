@@ -6,16 +6,16 @@ use App\GameCore\GameInvite\Eloquent\GameInviteEloquent;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
-use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
-use Tests\Unit\GameCore\GameOptionValue\GameOptionValueNumberOfPlayersTest;
 
 class GameInviteEloquentTest extends TestCase
 {
@@ -25,10 +25,7 @@ class GameInviteEloquentTest extends TestCase
     protected Player $playerOne;
     protected Player $playerTwo;
     protected GameBox $gameBox;
-    protected array $options = [
-        'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-        'autostart' => GameOptionValueAutostart::Disabled,
-    ];
+    protected CollectionGameOptionValueInput $options;
 
     public function setUp(): void
     {
@@ -36,8 +33,20 @@ class GameInviteEloquentTest extends TestCase
 
         $this->playerOne = User::factory()->create();
         $this->playerTwo = User::factory()->create();
+
+        $this->options = new CollectionGameOptionValueInput( // added
+            App::make(Collection::class),
+            [
+                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                'autostart' => GameOptionValueAutostart::Disabled,
+            ]
+        );
+
         $this->gameBox = App::make(GameBoxRepository::class)->getOne('tic-tac-toe');
-        $this->gameInvite = new GameInviteEloquent(App::make(GameBoxRepository::class));
+        $this->gameInvite = new GameInviteEloquent(
+            App::make(GameBoxRepository::class),
+            App::make(Collection::class)
+        );
     }
 
     protected function fullConfig(): void
@@ -104,6 +113,19 @@ class GameInviteEloquentTest extends TestCase
     {
         $this->fullConfig();
         $this->assertInstanceOf(GameSetup::class, $this->gameInvite->getGameSetup());
+    }
+
+    public function testGetGameSetupFromLoadedObject(): void
+    {
+        $this->fullConfig();
+        $id = $this->gameInvite->getId();
+
+        $invite = new GameInviteEloquent(
+            App::make(GameBoxRepository::class),
+            App::make(Collection::class),
+            $id
+        );
+        $this->assertInstanceOf(GameSetup::class, $invite->getGameSetup());
     }
 
     // Setting/Getting Players

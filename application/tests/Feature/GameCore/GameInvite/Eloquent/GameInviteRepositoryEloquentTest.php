@@ -9,6 +9,9 @@ use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionException;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -24,7 +27,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
     private GameInviteFactory $factory;
 
     private string $slug;
-    private array $options;
+    private CollectionGameOptionValueInput $options;
     private Player $host;
 
     public function setUp(): void
@@ -40,10 +43,13 @@ class GameInviteRepositoryEloquentTest extends TestCase
             $gameBox = $gameBoxRepository->getOne('tic-tac-toe');
 
             $this->slug = $gameBox->getSlug();
-            $this->options = [
-                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-                'autostart' => GameOptionValueAutostart::Disabled,
-            ];
+            $this->options = new CollectionGameOptionValueInput(
+                App::make(Collection::class),
+                [
+                    'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                    'autostart' => GameOptionValueAutostart::Disabled,
+                ]
+            );
             $this->host = User::factory()->create();
 
             $this->commonSetup = true;
