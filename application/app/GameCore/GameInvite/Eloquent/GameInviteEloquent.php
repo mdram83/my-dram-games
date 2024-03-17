@@ -145,7 +145,6 @@ class GameInviteEloquent implements GameInvite
     /**
      * @throws GameInviteException
      */
-//    public function setOptions(array $options): void
     public function setOptions(CollectionGameOptionValueInput $options): void
     {
         if (!$this->hasGameBox()) {
