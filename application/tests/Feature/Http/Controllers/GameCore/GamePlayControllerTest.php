@@ -9,6 +9,8 @@ use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -42,10 +44,13 @@ class GamePlayControllerTest extends TestCase
 
             $gameBox = App::make(GameBoxRepository::class)->getOne('tic-tac-toe');
 
-            $options = [
-                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-                'autostart' => GameOptionValueAutostart::Disabled,
-            ];
+            $options = new CollectionGameOptionValueInput(
+                App::make(Collection::class),
+                [
+                    'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                    'autostart' => GameOptionValueAutostart::Disabled,
+                ]
+            );
 
             $this->gameInvite = App::make(GameInviteFactory::class)->create(
                 $gameBox->getSlug(),
