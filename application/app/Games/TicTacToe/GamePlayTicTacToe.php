@@ -11,36 +11,105 @@ use App\GameCore\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {
-//    protected Player $activePlayer; // TODO update and save in storage when handling move
-//    protected CollectionGameCharacterTicTacToe $characters;
-//    protected GameBoardTicTacToe $board;
+    protected Player $activePlayer;
+    protected CollectionGameCharacterTicTacToe $characters;
+    protected GameBoardTicTacToe $board;
 
     public function handleMove(Player $player, GameMove $move): void
     {
         // TODO: Implement handleMove() method.
+        // check if valid move
+        // update board
+        // check win
+        // update active player
+        // save data
     }
 
-    public function getSituation(Player $player): GameSituation
+    public function getSituation(Player $player): array
     {
-        // TODO: Implement getStatus() method.
+        return [
+            'gameInvite' => [
+                'name' => $this->storage->getGameInvite()->getGameBox()->getName(),
+                'slug' => $this->storage->getGameInvite()->getGameBox()->getSlug(),
+                'host' => $this->storage->getGameInvite()->getHost()->getName(),
+            ],
+            'gamePlayId' => $this->getId(),
+            'players' => [
+                $this->storage->getGameInvite()->getPlayers()[0]->getName(),
+                $this->storage->getGameInvite()->getPlayers()[1]->getName(),
+            ],
+            'activePlayer' => $this->activePlayer->getName(),
+            'characters' => [
+                'x' => $this->characters->getOne('x')->getPlayer()->getName(),
+                'o' => $this->characters->getOne('o')->getPlayer()->getName(),
+            ],
+            'board' => json_decode($this->board->toJson(), true),
+        ];
     }
 
     /**
      * @throws \App\GameCore\GameElements\GameCharacter\GameCharacterException
      */
-    protected function setupGame(): void
+    protected function initialize(): void
     {
-//        $players = $this->storage->getGameInvite()->getPlayers();
+        $players = $this->storage->getGameInvite()->getPlayers();
 
-//        $this->activePlayer = $players[0];
-//        $this->storage->setActivePlayer($this->activePlayer); // TODO add method to storage (consider one field for "meta")
+        $this->setActivePlayer($players[0]);
+        $this->setCharacters($players[0], $players[1]);
+        $this->setBoard();
 
-//        $this->characters = new CollectionGameCharacterTicTacToe(
-//            (clone $this->collectionPlayersHandler)->reset(),
-//            [new GameCharacterTicTacToe('x', $players[0]), new GameCharacterTicTacToe('0', $players[1])],
-//        );
-//        $this->storage->setCharacters($this->characters); // TODO add method to storage (consider one field for "meta")
+        $this->saveData();
+    }
 
-        $this->storage->setSetup();
+    protected function saveData(): void
+    {
+        $this->storage->setGameData([
+            'activePlayerId' => $this->activePlayer->getId(),
+            'characters' => [
+                'x' => $this->characters->getOne('x')->getPlayer()->getId(),
+                'o' => $this->characters->getOne('o')->getPlayer()->getId(),
+            ],
+            'board' => $this->board->toJson(),
+        ]);
+    }
+
+    /**
+     * @throws GameCharacterException
+     */
+    protected function loadData(): void
+    {
+        $data = $this->storage->getGameData();
+
+        $this->setActivePlayer($this->players->getOne($data['activePlayerId']));
+        $this->setCharacters(
+            $this->players->getOne($data['characters']['x']),
+            $this->players->getOne($data['characters']['o'])
+        );
+        $this->setBoard($data['board']);
+    }
+
+    private function setActivePlayer(Player $player): void
+    {
+        $this->activePlayer = $player;
+    }
+
+    /**
+     * @throws GameCharacterException
+     */
+    private function setCharacters(Player $playerX, Player $playerO): void
+    {
+        $this->characters = new CollectionGameCharacterTicTacToe(
+            (clone $this->collectionPlayersHandler)->reset(),
+            [new GameCharacterTicTacToe('x', $playerX), new GameCharacterTicTacToe('o', $playerO)],
+        );
+    }
+
+    private function setBoard(?string $json = null): void
+    {
+        $this->board = new GameBoardTicTacToe();
+
+        if (isset($json)) {
+            $this->board->setFromJson($json);
+        }
     }
 }

@@ -14,6 +14,7 @@ use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\TicTacToe\GameBoardTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,23 +54,14 @@ class GamePlayTicTacToeTest extends TestCase
         return $invite;
     }
 
-    protected function prepareGamePlayStorage(int|string $id = null/*, bool $withBoard = true*/): GamePlayStorage
+    protected function prepareGamePlayStorage(int|string $id = null): GamePlayStorage
     {
-        $inviteRepository = App::make(GameInviteRepository::class);
-//        $board = new GameBoardTicTacToe();
-
-        $storage = new GamePlayStorageEloquent($inviteRepository, $id);
-
-//        if ($withBoard) {
-//            $storage->setBoardJson($board->toJson());
-//        }
-
-        return $storage;
+        return new GamePlayStorageEloquent(App::make(GameInviteRepository::class), $id);
     }
 
-    protected function prepareGamePlayTicTacToe(int|string $id = null, bool $allPlayers = true/*, bool $withBoard = true*/): GamePlayTicTacToe
+    protected function prepareGamePlayTicTacToe(int|string $id = null, bool $allPlayers = true): GamePlayTicTacToe
     {
-        $storage = $this->prepareGamePlayStorage($id/*, $withBoard*/);
+        $storage = $this->prepareGamePlayStorage($id);
         $storage->setGameInvite($this->prepareGameInvite($allPlayers));
 
         return new GamePlayTicTacToe(
@@ -117,5 +109,21 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertTrue($players->exist($this->players[1]->getId()));
     }
 
+    public function testGetSituation(): void
+    {
+        $expected = [
+            'gameInvite' => ['name' => 'Tic Tac Toe', 'slug' => 'tic-tac-toe', 'host' => $this->players[0]->getName()],
+            'gamePlayId' => $this->play->getId(),
+            'players' => [$this->players[0]->getName(), $this->players[1]->getName()],
+            'activePlayer' => $this->players[0]->getName(),
+            'characters' => ['x' => $this->players[0]->getName(), 'o' => $this->players[1]->getName()],
+            'board' => json_decode((new GameBoardTicTacToe())->toJson(), true),
+        ];
+
+        $this->assertEquals($expected, $this->play->getSituation($this->players[0]));
+        $this->assertEquals($expected, $this->play->getSituation($this->players[1]));
+    }
+
+    // add get situation test also after making move (when move functionality is ready)
 
 }

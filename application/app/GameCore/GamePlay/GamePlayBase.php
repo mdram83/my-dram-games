@@ -26,13 +26,19 @@ abstract class GamePlayBase implements GamePlay
         $this->setPlayers();
 
         if (!$this->storage->getSetup()) {
-            $this->setupGame();
+            $this->initialize();
+            $this->storage->setSetup();
+        } else {
+            $this->loadData();
         }
     }
 
     abstract public function handleMove(Player $player, GameMove $move): void;
-    abstract public function getSituation(Player $player): GameSituation;
-    abstract protected function setupGame(): void;
+    abstract public function getSituation(Player $player): array;
+
+    abstract protected function initialize(): void;
+    abstract protected function saveData(): void;
+    abstract protected function loadData(): void;
 
     final public function getId(): int|string
     {
