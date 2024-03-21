@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\GameCore\Services\Collection;
+namespace Tests\Feature\GameCore\GameOption;
 
+use App\GameCore\GameOption\CollectionGameOption;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
-use App\GameCore\Services\Collection\CollectionGameOption;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
@@ -45,7 +45,7 @@ class CollectionGameOptionTest extends TestCase
     {
         $this->assertInstanceOf(Collection::class, $this->collection);
         $this->assertInstanceOf(CollectionBase::class, $this->collection);
-        $this->assertInstanceOf(CollectionGameOption::class, $this->collection);
+        $this->assertInstanceOf(\App\GameCore\GameOption\CollectionGameOption::class, $this->collection);
     }
 
     public function testFilter(): void

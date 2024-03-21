@@ -1,18 +1,18 @@
 <?php
 
-namespace Tests\Feature\GameCore\GamePlay\Eloquent;
+namespace Tests\Feature\GameCore\GamePlayStorage\Eloquent;
 
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\GamePlay\Eloquent\GamePlayStorageEloquent;
-use App\GameCore\GamePlay\GamePlayStorage;
-use App\GameCore\GamePlay\GamePlayStorageException;
+use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
+use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -22,7 +22,7 @@ class GamePlayStorageEloquentTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected GamePlayStorageEloquent $storage;
+    protected \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent $storage;
 
     protected Player $playerOne;
     protected Player $playerTwo;
@@ -63,12 +63,12 @@ class GamePlayStorageEloquentTest extends TestCase
         return $invite;
     }
 
-    protected function constructStorageWithId(int|string $id): GamePlayStorageEloquent
+    protected function constructStorageWithId(int|string $id): \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent
     {
-        return new GamePlayStorageEloquent($this->inviteRepository, $id);
+        return new \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent($this->inviteRepository, $id);
     }
 
-    protected function constructStorageWithoutId(): GamePlayStorageEloquent
+    protected function constructStorageWithoutId(): \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent
     {
         return new GamePlayStorageEloquent($this->inviteRepository);
     }

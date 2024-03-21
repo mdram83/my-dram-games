@@ -1,12 +1,12 @@
 <?php
 
-namespace App\GameCore\GamePlay\Eloquent;
+namespace App\GameCore\GamePlayStorage\Eloquent;
 
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GamePlay\GamePlayStorage;
-use App\GameCore\GamePlay\GamePlayStorageException;
+use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\Models\GamePlayStorageEloquentModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -19,7 +19,7 @@ class GamePlayStorageEloquent implements GamePlayStorage
     protected GameInvite $gameInvite;
 
     /**
-     * @throws GamePlayStorageException
+     * @throws \App\GameCore\GamePlayStorage\GamePlayStorageException
      */
     public function __construct(GameInviteRepository $gameInviteRepository, int|string $id = null)
     {

@@ -5,7 +5,6 @@ namespace Tests\Feature\GameCore\Services\Collection;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
-use App\GameCore\Services\Collection\CollectionGameOption;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
@@ -151,7 +150,7 @@ class CollectionBaseTest extends TestCase
     {
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_NO_ELEMENTS);
-        $collection = new CollectionGameOption($this->handler);
+        $collection = new \App\GameCore\GameOption\CollectionGameOption($this->handler);
 
         $collection->pullFirst();
     }

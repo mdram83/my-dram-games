@@ -1,8 +1,12 @@
 <?php
 
-namespace App\GameCore\Services\Collection;
+namespace App\GameCore\GameOption;
 
-use App\GameCore\GameOption\GameOption;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionBase;
+use App\GameCore\Services\Collection\CollectionException;
+use App\GameCore\Services\Collection\CollectionTraitResetByAddingWithoutDirectKeyUse;
+use App\GameCore\Services\Collection\CollectionTraitUniqueKey;
 
 class CollectionGameOption extends CollectionBase implements Collection
 {

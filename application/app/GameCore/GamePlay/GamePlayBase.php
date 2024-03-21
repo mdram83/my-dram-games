@@ -2,11 +2,13 @@
 
 namespace App\GameCore\GamePlay;
 
-use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GameElements\GameMove\GameMove;
+use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
+use App\GameCore\GameElements\GameSituation\GameSituation;
+use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
-use App\Games\TicTacToe\GameBoardTicTacToe;
 
 abstract class GamePlayBase implements GamePlay
 {

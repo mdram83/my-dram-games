@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GamePlay;
+namespace App\GameCore\GameElements\GameBoard;
 
 interface GameBoard
 {

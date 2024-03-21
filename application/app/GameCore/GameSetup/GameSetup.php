@@ -3,7 +3,7 @@
 namespace App\GameCore\GameSetup;
 
 use App\GameCore\GameOption\GameOption;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 
 interface GameSetup
 {

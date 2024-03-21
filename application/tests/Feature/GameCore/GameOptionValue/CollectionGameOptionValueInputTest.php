@@ -1,15 +1,11 @@
 <?php
 
-namespace Tests\Feature\GameCore\Services\Collection;
+namespace Tests\Feature\GameCore\GameOptionValue;
 
-use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOptionValue\GameOptionValue;
-use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
-use App\GameCore\Services\Collection\CollectionGameOption;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
@@ -30,7 +26,7 @@ class CollectionGameOptionValueInputTest extends TestCase
             'B' => $this->createMock(GameOptionValue::class),
         ];
 
-        $this->collection = new CollectionGameOptionValueInput($this->handler, $this->options);
+        $this->collection = new \App\GameCore\GameOptionValue\CollectionGameOptionValueInput($this->handler, $this->options);
     }
 
     protected function getExpectedToArray(): array
@@ -42,7 +38,7 @@ class CollectionGameOptionValueInputTest extends TestCase
     {
         $this->assertInstanceOf(Collection::class, $this->collection);
         $this->assertInstanceOf(CollectionBase::class, $this->collection);
-        $this->assertInstanceOf(CollectionGameOptionValueInput::class, $this->collection);
+        $this->assertInstanceOf(\App\GameCore\GameOptionValue\CollectionGameOptionValueInput::class, $this->collection);
     }
 
     public function testThrowExceptionWhenResetWithIncompatibleTypes(): void
@@ -69,7 +65,7 @@ class CollectionGameOptionValueInputTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_INCOMPATIBLE);
 
-        new CollectionGameOption($this->handler, ['incompatible-1', 'incompatible-2']);
+        new \App\GameCore\GameOption\CollectionGameOption($this->handler, ['incompatible-1', 'incompatible-2']);
     }
 
     public function testThrowExceptionWhenAddingIncompatibleType(): void

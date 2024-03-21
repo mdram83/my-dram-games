@@ -2,8 +2,10 @@
 
 namespace App\GameCore\GamePlay;
 
+use App\GameCore\GameElements\GameMove\GameMove;
+use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
+use App\GameCore\GameElements\GameSituation\GameSituation;
 use App\GameCore\Player\Player;
-use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
 
 interface GamePlay
 {

@@ -5,6 +5,7 @@ namespace Tests\Feature\GameCore\GameSetup;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionAutostart;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
@@ -12,7 +13,6 @@ use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\GameSetup\GameSetupBase;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 

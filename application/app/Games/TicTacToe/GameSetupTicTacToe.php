@@ -2,13 +2,13 @@
 
 namespace App\Games\TicTacToe;
 
+use App\GameCore\GameOption\CollectionGameOption;
 use App\GameCore\GameOption\GameOptionAutostart;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetupBase;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOption;
 
 class GameSetupTicTacToe extends GameSetupBase
 {

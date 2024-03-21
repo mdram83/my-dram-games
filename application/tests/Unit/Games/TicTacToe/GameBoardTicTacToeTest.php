@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Games\TicTacToe;
 
-use App\GameCore\GamePlay\GameBoard;
-use App\GameCore\GamePlay\GameBoardException;
+use App\GameCore\GameElements\GameBoard\GameBoard;
+use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\Games\TicTacToe\GameBoardTicTacToe;
 use PHPUnit\Framework\TestCase;
 

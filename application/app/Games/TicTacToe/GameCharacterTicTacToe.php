@@ -2,10 +2,10 @@
 
 namespace App\Games\TicTacToe;
 
-use App\GameCore\GamePlay\GameCharacterException;
+use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\Player\Player;
 
-class GameCharacterTicTacToe implements \App\GameCore\GamePlay\GameCharacter
+class GameCharacterTicTacToe implements \App\GameCore\GameElements\GameCharacter\GameCharacter
 {
     /**
      * @throws GameCharacterException

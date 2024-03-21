@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\GameCore\Services\Collection;
+namespace Tests\Feature\GameCore\GameElements\GamePlayPlayers;
 
+use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
-use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -50,13 +50,13 @@ class CollectionGamePlayPlayersTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_INCOMPATIBLE);
 
-        $collection = new CollectionGamePlayPlayers($this->handler);
+        $collection = new \App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers($this->handler);
         $collection->add(1);
     }
 
     public function testCreateWithPlayersArray(): void
     {
-        $collection = new CollectionGamePlayPlayers($this->handler, [$this->playerOne, $this->playerTwo]);
+        $collection = new \App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers($this->handler, [$this->playerOne, $this->playerTwo]);
         $this->assertEquals(2, $collection->count());
     }
 

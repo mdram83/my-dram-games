@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\GameCore;
 
+use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueException;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use Exception;

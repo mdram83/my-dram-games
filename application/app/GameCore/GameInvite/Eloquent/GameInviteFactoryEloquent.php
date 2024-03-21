@@ -2,13 +2,13 @@
 
 namespace App\GameCore\GameInvite\Eloquent;
 
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
-use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 
 class GameInviteFactoryEloquent implements GameInviteFactory
 {

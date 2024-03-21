@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('game_play_storage_eloquent_models', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('gameInviteId')->unique()->nullable();
-            $table->json('boardJson')->nullable();
             $table->json('gameData')->nullable();
             $table->boolean('setup')->default(false);
             $table->timestamps();

@@ -2,20 +2,18 @@
 
 namespace Tests\Feature\Games\TicTacToe;
 
-use App\GameCore\GameInvite\Eloquent\GameInviteEloquent;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\GamePlay\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
-use App\GameCore\GamePlay\GamePlayStorage;
+use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
+use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
-use App\Games\TicTacToe\GameBoardTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GamePlay;
+namespace App\GameCore\GamePlayStorage;
 
 use App\GameCore\GameInvite\GameInvite;
 

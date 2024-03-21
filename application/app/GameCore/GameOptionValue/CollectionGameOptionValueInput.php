@@ -1,8 +1,11 @@
 <?php
 
-namespace App\GameCore\Services\Collection;
+namespace App\GameCore\GameOptionValue;
 
-use App\GameCore\GameOptionValue\GameOptionValue;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionBase;
+use App\GameCore\Services\Collection\CollectionException;
+use App\GameCore\Services\Collection\CollectionTraitUniqueKey;
 
 class CollectionGameOptionValueInput extends CollectionBase implements Collection
 {

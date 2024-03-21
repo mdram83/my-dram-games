@@ -2,14 +2,14 @@
 
 namespace App\GameCore\GameInvite\Eloquent;
 
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameBox\GameBoxRepository;
+use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GameInvite\GameInviteException;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Models\GameInviteEloquentModel;
 
 class GameInviteEloquent implements GameInvite

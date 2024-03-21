@@ -2,8 +2,8 @@
 
 namespace App\Games\TicTacToe;
 
-use App\GameCore\GamePlay\GameBoard;
-use App\GameCore\GamePlay\GameBoardException;
+use App\GameCore\GameElements\GameBoard\GameBoard;
+use App\GameCore\GameElements\GameBoard\GameBoardException;
 
 class GameBoardTicTacToe implements GameBoard
 {
@@ -26,7 +26,7 @@ class GameBoardTicTacToe implements GameBoard
     }
 
     /**
-     * @throws GameBoardException
+     * @throws \App\GameCore\GameElements\GameBoard\GameBoardException
      */
     public function setFieldValue(string $fieldId, string $value): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GamePlay;
+namespace App\GameCore\GameElements\GameCharacter;
 
 use App\GameCore\Player\Player;
 

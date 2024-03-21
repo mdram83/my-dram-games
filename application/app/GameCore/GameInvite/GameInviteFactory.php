@@ -2,8 +2,8 @@
 
 namespace App\GameCore\GameInvite;
 
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\Player\Player;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 
 interface GameInviteFactory
 {

@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
+use App\GameCore\GameBox\GameBox;
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameInvite\Eloquent\GameInviteFactoryEloquent;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GameBox\GameBox;
-use App\GameCore\GameBox\GameBoxRepository;
-use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

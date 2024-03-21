@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Games\TicTacToe;
 
-use App\GameCore\GamePlay\GameCharacterException;
+use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\Player\Player;
 use App\Games\TicTacToe\GameCharacterTicTacToe;
 use App\Models\User;

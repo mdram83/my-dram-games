@@ -2,12 +2,11 @@
 
 namespace App\Games\TicTacToe;
 
-use App\GameCore\GamePlay\GameBoard;
-use App\GameCore\GamePlay\GameCharacterException;
-use App\GameCore\GamePlay\GameMove;
+use App\GameCore\GameElements\GameCharacter\GameCharacterException;
+use App\GameCore\GameElements\GameMove\GameMove;
+use App\GameCore\GameElements\GameSituation\GameSituation;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
-use App\GameCore\GamePlay\GameSituation;
 use App\GameCore\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
@@ -27,7 +26,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     }
 
     /**
-     * @throws GameCharacterException
+     * @throws \App\GameCore\GameElements\GameCharacter\GameCharacterException
      */
     protected function setupGame(): void
     {

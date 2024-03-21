@@ -1,9 +1,10 @@
 <?php
 
-namespace App\GameCore\GamePlay;
+namespace App\GameCore\GameElements\GameSituation;
 
+use App\GameCore\GameElements\GameBoard\GameBoard;
+use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\Player\Player;
-use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
 
 interface GameSituation
 {

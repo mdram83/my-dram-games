@@ -2,15 +2,15 @@
 
 namespace App\GameCore\GameSetup;
 
+use App\GameCore\GameOption\CollectionGameOption;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionAutostart;
 use App\GameCore\GameOption\GameOptionException;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionGameOption;
-use App\GameCore\Services\Collection\CollectionGameOptionValueInput;
 
 class GameSetupBase implements GameSetup
 {
