@@ -2,18 +2,35 @@
 
 namespace App\GameCore\GamePlay;
 
+use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
+use App\Games\TicTacToe\GameBoardTicTacToe;
 
 abstract class GamePlayBase implements GamePlay
 {
-    public function __construct(protected GamePlayStorage $storage)
-    {
+    protected CollectionGamePlayPlayers $players;
 
+    /**
+     * @throws GamePlayException
+     */
+    final public function __construct(
+        protected GamePlayStorage $storage,
+        protected Collection $collectionPlayersHandler
+    )
+    {
+        $this->validateStorage();
+        $this->setPlayers();
+
+        if (!$this->storage->getSetup()) {
+            $this->setupGame();
+        }
     }
 
-    abstract public function handleMove(GameMove $move): void;
-    abstract public function getStatus(Player $player): GameStatus;
+    abstract public function handleMove(Player $player, GameMove $move): void;
+    abstract public function getSituation(Player $player): GameSituation;
+    abstract protected function setupGame(): void;
 
     final public function getId(): int|string
     {
@@ -22,6 +39,35 @@ abstract class GamePlayBase implements GamePlay
 
     final public function getPlayers(): CollectionGamePlayPlayers
     {
-        return $this->storage->getPlayers();
+        return $this->players;
+    }
+
+    final protected function setPlayers(): void
+    {
+        if (!isset($this->players)) {
+            $this->players = new CollectionGamePlayPlayers(
+                $this->collectionPlayersHandler,
+                $this->storage->getGameInvite()->getPlayers()
+            );
+        }
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    final protected function validateStorage(): void
+    {
+        try {
+            $gameInvite = $this->storage->getGameInvite();
+        } catch (GamePlayStorageException) {
+            throw new GamePlayException(GamePlayException::MESSAGE_STORAGE_INCORRECT);
+        }
+
+        if (
+            $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value
+            !== count($gameInvite->getPlayers())
+        ) {
+            throw new GamePlayException(GamePlayException::MESSAGE_MISSING_PLAYERS);
+        }
     }
 }

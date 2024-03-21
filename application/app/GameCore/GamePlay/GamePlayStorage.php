@@ -2,13 +2,15 @@
 
 namespace App\GameCore\GamePlay;
 
-use App\GameCore\Services\Collection\CollectionGamePlayPlayers;
+use App\GameCore\GameInvite\GameInvite;
 
 interface GamePlayStorage
 {
     public function getId(): int|string;
-    public function setPlayers(CollectionGamePlayPlayers $players): void;
-    public function getPlayers(): CollectionGamePlayPlayers;
-    public function setBoard(GameBoard $board): void;
-    public function getBoard(): GameBoard;
+    public function setGameInvite(GameInvite $invite): void;
+    public function getGameInvite(): GameInvite;
+    public function setGameData(array $data): void;
+    public function getGameData(): array;
+    public function setSetup(): void;
+    public function getSetup(): bool;
 }
