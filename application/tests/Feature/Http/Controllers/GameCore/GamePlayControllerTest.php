@@ -9,6 +9,7 @@ use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
+use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -30,7 +31,7 @@ class GamePlayControllerTest extends TestCase
     protected GameInvite $invite;
 
     protected string $storeRouteName = 'ajax.gameplay.store';
-    protected string $joinRouteName = 'gameplay.show';
+    protected string $showRouteName = 'gameplay.show';
 
     public function setUp(): void
     {
@@ -62,12 +63,24 @@ class GamePlayControllerTest extends TestCase
         return $invite;
     }
 
+    public function createGamePlay(GameInvite $invite): GamePlay
+    {
+        return App::make(GamePlayAbsFactoryRepository::class)->getOne('tic-tac-toe')->create($invite);
+    }
+
     public function getStoreResponse(Player $player, GameInvite $invite): TestResponse
     {
         return $this
             ->actingAs($player)
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
             ->json('POST', route($this->storeRouteName, ['gameInviteId' => $invite->getId()]));
+    }
+
+    public function getShowResponse(Player $player, int|string $gamePlayId): TestResponse
+    {
+        return $this
+            ->actingAs($player)
+            ->get(route($this->showRouteName, ['gamePlayId' => $gamePlayId]));
     }
 
     public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
@@ -120,7 +133,7 @@ class GamePlayControllerTest extends TestCase
     public function testStoreDuplicatedInviteResultInError(): void
     {
         Event::fake();
-        App::make(GamePlayAbsFactoryRepository::class)->getOne('tic-tac-toe')->create($this->invite);
+        $this->createGamePlay($this->invite);
         $response = $this->getStoreResponse($this->host, $this->invite);
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -136,8 +149,29 @@ class GamePlayControllerTest extends TestCase
         Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
-    // testJoinHostGetOkResponseAndView(): void
-    // testJoinPlayerGetOkResponseAndView(): void
-    // testJoinNotPlayerGetForbidden(): void
-    // test wrong gameplayid get error
+    public function testShowIncorrectIdResultInError(): void
+    {
+        $response = $this->getShowResponse($this->host, 'missing-id-123');
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testShowNotPlayerGetForbidden(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getShowResponse($this->notPlayer, $play->getId());
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testShowGetOkResponseAndContent(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getShowResponse($this->player, $play->getId());
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertViewIs('play');
+        $response->assertViewHas(['situation' => $play->getSituation($this->player)]);
+    }
+
+    // NEXT TESTS FOR MOVES
 }

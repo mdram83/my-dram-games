@@ -3,27 +3,27 @@
 namespace Tests\Feature\GameCore\GamePlay\PhpConfig;
 
 use App\GameCore\GameBox\GameBoxException;
-use App\GameCore\GamePlay\GamePlayAbsFactory;
-use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
+use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayException;
-use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
+use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
+use App\Games\TicTacToe\GamePlayTicTacToe;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
-class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
+class GamePlayAbsRepositoryPhpConfigTest extends TestCase
 {
-    protected GamePlayAbsFactoryRepositoryPhpConfig $repository;
+    protected GamePlayAbsRepositoryPhpConfig $repository;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->repository = App::make(GamePlayAbsFactoryRepository::class);
+        $this->repository = App::make(GamePlayAbsRepository::class);
     }
 
     public function testInstance(): void
     {
-        $this->assertInstanceOf(GamePlayAbsFactoryRepository::class, $this->repository);
+        $this->assertInstanceOf(GamePlayAbsRepository::class, $this->repository);
     }
 
     public function testThrowExceptionWhenNotExistingSlug(): void
@@ -35,7 +35,7 @@ class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
     public function testThrowExceptionWhenFactoryClassIsNotExisting(): void
     {
         $this->expectException(GamePlayException::class);
-        $this->expectExceptionMessage(GamePlayException::MESSAGE_NO_ABS_FACTORY);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NO_ABS_CLASS);
 
         $slug = 'testing-slug';
 
@@ -46,7 +46,7 @@ class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
 
         Config::shouldReceive('get')
             ->once()
-            ->with('games.box.' . $slug . '.' . GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY )
+            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
             ->andReturn('NotExistingClassName');
         $this->repository->getOne($slug);
     }
@@ -54,7 +54,7 @@ class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
     public function testThrowExceptionWhenFactoryClassIsNotProperInterface(): void
     {
         $this->expectException(GamePlayException::class);
-        $this->expectExceptionMessage(GamePlayException::MESSAGE_NO_ABS_FACTORY);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NO_ABS_CLASS);
 
         $slug = 'testing-slug';
 
@@ -65,7 +65,7 @@ class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
 
         Config::shouldReceive('get')
             ->once()
-            ->with('games.box.' . $slug . '.' . GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY )
+            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
             ->andReturn('\Illuminate\Support\Facades\App');
 
         $this->repository->getOne($slug);
@@ -74,6 +74,6 @@ class GamePlayAbsFactoryRepositoryPhpConfigTest extends TestCase
     public function testGetOneWithProperSlugAndConfiguration(): void
     {
         $slug = 'tic-tac-toe';
-        $this->assertInstanceOf(GamePlayAbsFactory::class, $this->repository->getOne($slug));
+        $this->assertEquals(GamePlayTicTacToe::class, $this->repository->getOne($slug));
     }
 }

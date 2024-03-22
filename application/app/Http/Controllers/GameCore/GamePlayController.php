@@ -6,6 +6,8 @@ use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
+use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\Player\Player;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -34,6 +36,7 @@ class GamePlayController extends Controller
             }
 
             $factory = $gamePlayAbsFactoryRepository->getOne($gameInvite->getGameBox()->getSlug());
+
             DB::beginTransaction();
             $gamePlay = $factory->create($gameInvite);
             DB::commit();
@@ -52,9 +55,30 @@ class GamePlayController extends Controller
         }
     }
 
-    public function show(): Response
+    public function show(GamePlayRepository $repository, Player $player, int|string $gamePlayId): Response|View
     {
-        // TODO temp, needs validation, auth, player etc, GamePlay object created etc.
-        return new Response('temp response', 200);
+        try {
+
+            $gamePlay = $repository->getOne($gamePlayId);
+
+            if (!$gamePlay->getPlayers()->exist($player->getId())) {
+                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            return view('play', ['situation' => $gamePlay->getSituation($player)]);
+
+        } catch (GamePlayStorageException $e) {
+            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
+        }
     }
+
+    // TODO temp, needs validation, auth, player etc, GamePlay object created etc.
+    // TODO what do I really need here:
+
+    // 1. Dedicated view Layout, ideally without template and bootstrap css so I can model it with tailwind
+    // 2. On Frontend side I need a lot of JS and React, also with some Store. On first Show initial state is enough
+
+
+    // 3. LATER (for Moves) I need dedicated Events
+    // 4. LATER (for Moves) I need dedicated GamePlay Move handling
 }

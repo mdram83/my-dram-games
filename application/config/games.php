@@ -1,8 +1,10 @@
 <?php
 
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
+use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
 use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
+use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Games\TicTacToe\GameSetupAbsFactoryTicTacToe;
 
 if (config('app.env') === 'production') {
@@ -20,6 +22,7 @@ if (config('app.env') === 'production') {
                 'isActive' => true,
                 GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
                 GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
+                GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
             ],
         ],
     ];
@@ -38,6 +41,7 @@ return [
             'isActive' => true,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
+            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
         ],
 
         'turbo' => [
@@ -48,6 +52,7 @@ return [
             'isActive' => false,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
+            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
         ],
 
         'boss-monster-raise-of-the-minibosses' => [
@@ -58,6 +63,7 @@ return [
             'isActive' => false,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
+            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
         ],
 
     ],
