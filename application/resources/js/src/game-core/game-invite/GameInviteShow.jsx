@@ -7,12 +7,13 @@ import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 export const GameInviteShow = ({gameInvite, slug}) => {
 
     const isPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
-    const [allPlayersOnline, setAllPlayersOnline] = React.useState(false); // TODO for autostart probably some hook on change of this state
+    const [allPlayersOnline, setAllPlayersOnline] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(undefined);
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
     const copyJoinUrl = () => navigator.clipboard.writeText(joinUrl);
-    const showGamePlay = () => window.location.href = window.MyDramGames.routes["gameplay.show"](gameInvite.id);
+    // TODO adjust to use gamePlayId from event payload instead of gameInvite.id
+    const showGamePlay = (gamePlayId) => window.location.href = window.MyDramGames.routes["gameplay.show"](gamePlayId);
 
     const storeGamePlay = () => {
         axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameInviteId: gameInvite.id})
@@ -36,7 +37,7 @@ export const GameInviteShow = ({gameInvite, slug}) => {
 
             <GameInvitePlayers gameInvite={gameInvite}
                                setAllPlayersOnline={(ready) => setAllPlayersOnline(ready)}
-                               autoStart={() => showGamePlay()}
+                               autoStart={(gamePlayId) => showGamePlay(gamePlayId)}
             />
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">

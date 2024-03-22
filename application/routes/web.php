@@ -13,7 +13,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::middleware('player')->group(function() {
     Route::get('/games/{slug}', [GameBoxController::class, 'show'])->name('games.show');
     Route::get('/games/{slug}/{gameInviteId}', [GameInviteController::class, 'join'])->name('game-invites.join');
-    Route::get('/play/{gameId}', [GamePlayController::class, 'show'])->name('gameplay.show');
+    Route::get('/play/{gamePlayId}', [GamePlayController::class, 'show'])->name('gameplay.show');
 });
 
 Route::middleware(['ajax', 'player'])->group(function() {
