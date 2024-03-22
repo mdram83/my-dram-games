@@ -48,7 +48,7 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
             .leaving((user) => updatePlayerStatus(user.name, false))
-            .listen('GameCore\\GamePlay\\GamePlayStartedEvent', (e) => autoStart(e.gamePlayId))
+            .listen('GameCore\\GamePlay\\GamePlayStoredEvent', (e) => autoStart(e.gamePlayId))
             .error((error) => setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error'));
 
     }, []);

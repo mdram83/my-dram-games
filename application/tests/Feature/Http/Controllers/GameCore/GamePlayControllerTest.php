@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayStartedEvent;
+use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
@@ -76,7 +76,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this->getStoreResponse($this->notPlayer, $this->invite);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
     public function testStoreGuestPlayerGetForbiddenResponseWithNoEvent(): void
@@ -87,7 +87,7 @@ class GamePlayControllerTest extends TestCase
             ->json('POST', route($this->storeRouteName, ['gameInviteId' => $this->invite->getId()]));
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
     public function testStorePlayerGetForbiddenResponseWithNoEvent(): void
@@ -96,7 +96,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this->getStoreResponse($this->player, $this->invite);
 
         $response->assertStatus(Response::HTTP_FORBIDDEN);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
     public function testStoreHostGetOkResponseAndStartGenerateEvent(): void
@@ -105,7 +105,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this->getStoreResponse($this->host, $this->invite);
 
         $response->assertStatus(Response::HTTP_OK);
-        Event::assertDispatched(GamePlayStartedEvent::class);
+        Event::assertDispatched(GamePlayStoredEvent::class);
     }
 
     public function testStoreWithWrongGameIdResultInError(): void
@@ -124,7 +124,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this->getStoreResponse($this->host, $this->invite);
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
     public function testStoreIncompleteInviteResultInError(): void
@@ -133,7 +133,7 @@ class GamePlayControllerTest extends TestCase
         $response = $this->getStoreResponse($this->host, $this->prepareGameInvite(false));
 
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
-        Event::assertNotDispatched(GamePlayStartedEvent::class);
+        Event::assertNotDispatched(GamePlayStoredEvent::class);
     }
 
     // testJoinHostGetOkResponseAndView(): void

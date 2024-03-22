@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GamePlayStartedEvent implements ShouldBroadcast
+class GamePlayStoredEvent implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;

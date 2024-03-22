@@ -12,7 +12,6 @@ export const GameInviteShow = ({gameInvite, slug}) => {
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
     const copyJoinUrl = () => navigator.clipboard.writeText(joinUrl);
-    // TODO adjust to use gamePlayId from event payload instead of gameInvite.id
     const showGamePlay = (gamePlayId) => window.location.href = window.MyDramGames.routes["gameplay.show"](gamePlayId);
 
     const storeGamePlay = () => {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayStartedEvent;
+use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
@@ -38,7 +38,7 @@ class GamePlayController extends Controller
             $gamePlay = $factory->create($gameInvite);
             DB::commit();
 
-            GamePlayStartedEvent::dispatch($gameInvite, $gamePlay);
+            GamePlayStoredEvent::dispatch($gameInvite, $gamePlay);
 
             return new Response([], 200);
 
