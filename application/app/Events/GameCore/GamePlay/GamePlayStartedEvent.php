@@ -4,6 +4,7 @@ namespace App\Events\GameCore\GamePlay;
 
 use App\Broadcasting\GameInvitePlayersChannel;
 use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GamePlay\GamePlay;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -17,10 +18,17 @@ class GamePlayStartedEvent implements ShouldBroadcast
     use SerializesModels;
 
     private int|string $gameInviteId;
+    private int|string $gamePlayId;
 
-    public function __construct(GameInvite $gameInvite)
+    public function __construct(GameInvite $gameInvite, GamePlay $gamePlay)
     {
         $this->gameInviteId = $gameInvite->getId();
+        $this->gamePlayId = $gamePlay->getId();
+    }
+
+    public function broadcastWith(): array
+    {
+        return ['gamePlayId' => $this->gamePlayId];
     }
 
     public function broadcastOn(): array
