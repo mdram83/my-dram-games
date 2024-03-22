@@ -7,11 +7,14 @@ use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageRepositoryEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class GamePlayStorageRepositoryEloquentTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected GamePlayStorageRepositoryEloquent $repository;
 
     public function setUp(): void

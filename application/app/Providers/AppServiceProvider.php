@@ -13,8 +13,10 @@ use App\GameCore\GameOption\PhpConfig\GameOptionClassClassRepositoryPhpConfig;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueConverterEnum;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
+use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageFactoryEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageRepositoryEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
@@ -41,16 +43,23 @@ class AppServiceProvider extends ServiceProvider
 
         app()->bind(HashGenerator::class, HashGeneratorMd5::class);
         app()->bind(Collection::class, CollectionLaravel::class);
+
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
         app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
+
         app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
+
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
+
         app()->bind(GameSetupAbsFactoryRepository::class, GameSetupAbsFactoryRepositoryPhpConfig::class);
+
         app()->bind(GameOptionClassRepository::class, GameOptionClassClassRepositoryPhpConfig::class);
         app()->bind(GameOptionValueConverter::class, GameOptionValueConverterEnum::class);
+
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class);
         app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);
+        app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class);
     }
 
     /**
