@@ -1,6 +1,8 @@
 <?php
 
+use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
+use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GameSetupAbsFactoryTicTacToe;
 
 if (config('app.env') === 'production') {
@@ -17,6 +19,7 @@ if (config('app.env') === 'production') {
                 'minPlayerAge' => 4,
                 'isActive' => true,
                 GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+                GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
             ],
         ],
     ];
@@ -34,6 +37,7 @@ return [
             'minPlayerAge' => 4,
             'isActive' => true,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
         ],
 
         'turbo' => [
@@ -43,6 +47,7 @@ return [
             'minPlayerAge' => 10,
             'isActive' => false,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
         ],
 
         'boss-monster-raise-of-the-minibosses' => [
@@ -52,6 +57,7 @@ return [
             'minPlayerAge' => 13,
             'isActive' => false,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
         ],
 
     ],
