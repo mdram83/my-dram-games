@@ -65,7 +65,15 @@ class GamePlayController extends Controller
                 return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            return view('play', ['situation' => $gamePlay->getSituation($player)]);
+            return view('play', [
+                'gamePlayId' => $gamePlayId,
+                'gameInvite' => [
+                    'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
+                    'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
+                    'host' => $gamePlay->getGameInvite()->getHost()->getName(),
+                ],
+                'situation' => $gamePlay->getSituation($player)],
+            );
 
         } catch (GamePlayStorageException $e) {
             return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);

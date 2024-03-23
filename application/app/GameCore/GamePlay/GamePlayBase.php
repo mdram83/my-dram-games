@@ -4,7 +4,7 @@ namespace App\GameCore\GamePlay;
 
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
-use App\GameCore\GameElements\GameSituation\GameSituation;
+use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\Player\Player;
@@ -48,6 +48,11 @@ abstract class GamePlayBase implements GamePlay
     final public function getPlayers(): CollectionGamePlayPlayers
     {
         return $this->players;
+    }
+
+    final public function getGameInvite(): GameInvite
+    {
+        return $this->storage->getGameInvite();
     }
 
     final protected function setPlayers(): void

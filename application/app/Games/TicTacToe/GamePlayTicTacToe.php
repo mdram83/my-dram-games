@@ -4,7 +4,6 @@ namespace App\Games\TicTacToe;
 
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\GameElements\GameMove\GameMove;
-use App\GameCore\GameElements\GameSituation\GameSituation;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\Player\Player;
@@ -28,12 +27,6 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     public function getSituation(Player $player): array
     {
         return [
-            'gameInvite' => [
-                'name' => $this->storage->getGameInvite()->getGameBox()->getName(),
-                'slug' => $this->storage->getGameInvite()->getGameBox()->getSlug(),
-                'host' => $this->storage->getGameInvite()->getHost()->getName(),
-            ],
-            'gamePlayId' => $this->getId(),
             'players' => [
                 $this->storage->getGameInvite()->getPlayers()[0]->getName(),
                 $this->storage->getGameInvite()->getPlayers()[1]->getName(),
@@ -48,7 +41,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     }
 
     /**
-     * @throws \App\GameCore\GameElements\GameCharacter\GameCharacterException
+     * @throws GameCharacterException
      */
     protected function initialize(): void
     {

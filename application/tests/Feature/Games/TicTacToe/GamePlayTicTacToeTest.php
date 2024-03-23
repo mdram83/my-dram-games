@@ -27,6 +27,7 @@ class GamePlayTicTacToeTest extends TestCase
 
     protected GamePlayTicTacToe $play;
     protected array $players;
+    protected GameInvite $currentInvite;
 
     public function setUp(): void
     {
@@ -50,6 +51,8 @@ class GamePlayTicTacToeTest extends TestCase
         if ($allPlayers) {
             $invite->addPlayer($this->players[1]);
         }
+
+        $this->currentInvite = $invite;
 
         return $invite;
     }
@@ -109,11 +112,14 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertTrue($players->exist($this->players[1]->getId()));
     }
 
+    public function testGetGameInvite(): void
+    {
+        $this->assertSame($this->currentInvite, $this->play->getGameInvite());
+    }
+
     public function testGetSituation(): void
     {
         $expected = [
-            'gameInvite' => ['name' => 'Tic Tac Toe', 'slug' => 'tic-tac-toe', 'host' => $this->players[0]->getName()],
-            'gamePlayId' => $this->play->getId(),
             'players' => [$this->players[0]->getName(), $this->players[1]->getName()],
             'activePlayer' => $this->players[0]->getName(),
             'characters' => ['x' => $this->players[0]->getName(), 'o' => $this->players[1]->getName()],
@@ -123,7 +129,5 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertEquals($expected, $this->play->getSituation($this->players[0]));
         $this->assertEquals($expected, $this->play->getSituation($this->players[1]));
     }
-
-    // add get situation test also after making move (when move functionality is ready)
 
 }
