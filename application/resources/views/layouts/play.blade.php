@@ -15,8 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Css Styles -->
-
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -24,7 +22,6 @@
 <body>
 
 <!-- Page Loading... -->
-
 @push('custom-scripts')
     @vite('resources/js/template/play/loading.js')
 @endpush
@@ -36,25 +33,12 @@
     </div>
 </div>
 
-<!-- Header Section -->
-{{--@include('layouts.navigation')--}}
-
 
 {{ $slot }}
 
 
-<!-- Footer Section Begin -->
-<footer class="">
-
-</footer>
-<!-- Footer Section End -->
-
-
 <!-- Flash Message -->
 <x-flash/>
-
-
-<!-- Js Plugins -->
 
 
 <x-jsfeeds.route-names />
