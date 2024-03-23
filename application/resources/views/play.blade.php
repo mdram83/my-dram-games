@@ -1,19 +1,14 @@
 <x-play-layout>
 
-    <div>
-        GamePlayId:<br>
-        {{ $gamePlayId }}
-    </div>
 
-    <div>
-        Invite:<br>
-        @php(print_r($gameInvite))
-    </div>
+    @push('custom-scripts')
+        @vite('resources/js/src/games/' . $gameInvite['slug'] . '/index.jsx')
+    @endpush
 
-    <div>
-        Situation:<br>
-        @php(print_r($situation))
-    </div>
-
+    <div id="game-play-root" class="fixed w-full h-full m-0 p-0"
+         data-game.id="{{ $gamePlayId }}"
+         data-game.invite="{{ json_encode($gameInvite) }}"
+         data-game.situation="{{ json_encode($situation) }}"
+    ></div>
 
 </x-play-layout>

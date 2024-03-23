@@ -19,11 +19,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body>
+<body class="m-0 p-0 bg-gray-200">
 
 <!-- Page Loading... -->
 @push('custom-scripts')
-    @vite('resources/js/template/play/loading.js')
+    @vite('resources/js/template/play/loading.jsx')
 @endpush
 <div id="loading" class="fixed w-full h-full inset-y-0 inset-x-0 z-[999999] bg-gray-800">
     <div class="flex justify-center items-center w-full h-full">
