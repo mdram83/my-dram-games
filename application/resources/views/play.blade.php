@@ -1,7 +1,19 @@
 <x-play-layout>
 
-temp show view
+    <div>
+        GamePlayId:<br>
+        {{ $gamePlayId }}
+    </div>
 
-@php(print_r($situation))
+    <div>
+        Invite:<br>
+        @php(print_r($gameInvite))
+    </div>
+
+    <div>
+        Situation:<br>
+        @php(print_r($situation))
+    </div>
+
 
 </x-play-layout>

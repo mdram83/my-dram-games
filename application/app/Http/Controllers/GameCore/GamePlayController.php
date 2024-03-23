@@ -68,6 +68,7 @@ class GamePlayController extends Controller
             return view('play', [
                 'gamePlayId' => $gamePlayId,
                 'gameInvite' => [
+                    'gameInviteId' => $gamePlay->getGameInvite()->getId(),
                     'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
                     'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
                     'host' => $gamePlay->getGameInvite()->getHost()->getName(),

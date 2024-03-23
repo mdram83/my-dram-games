@@ -172,6 +172,7 @@ class GamePlayControllerTest extends TestCase
         $response->assertViewIs('play');
         $response->assertViewHas(['gamePlayId' => $play->getId()]);
         $response->assertViewHas(['gameInvite' => [
+            'gameInviteId' => $play->getGameInvite()->getId(),
             'slug' => $play->getGameInvite()->getGameBox()->getSlug(),
             'name' => $play->getGameInvite()->getGameBox()->getName(),
             'host' => $play->getGameInvite()->getHost()->getName(),
