@@ -15,6 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}" type="text/css">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -25,7 +28,7 @@
 @push('custom-scripts')
     @vite('resources/js/template/play/loading.jsx')
 @endpush
-<div id="loading" class="fixed w-full h-full inset-y-0 inset-x-0 z-[999999] bg-gray-800">
+<div id="loading" class="fixed w-full h-full inset-0 z-[999999] bg-gray-800">
     <div class="flex justify-center items-center w-full h-full">
         <div class="font-['Oswald'] text-6xl sm:text-8xl text-neutral-300 animate-pulse">
             Loading...
