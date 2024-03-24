@@ -2,7 +2,7 @@ import React from "react";
 
 export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
-    const fieldBaseClass = ' w-[17.5vh] h-[17.5vh] flex justify-center items-center font-semibold text-[8vh] text-neutral-700';
+    const fieldBaseClass = ' w-[16vh] sm:w-[17.5vh] h-[16vh] sm:h-[17.5vh] flex justify-center items-center font-semibold text-[8vh] text-neutral-700';
     const borderBaseClass = ' border-solid border-neutral-500 ';
 
     const borderCombinedClass = (key) => {

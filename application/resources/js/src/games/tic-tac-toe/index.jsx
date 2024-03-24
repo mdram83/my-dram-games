@@ -12,32 +12,28 @@ const situation = Object.assign({}, JSON.parse(rootElement.dataset['game.situati
 
 // console.log(gamePlayId, gameInvite, situation);
 
-// TODO adjust styling (cover scenario when someone flip the mobile...
-
 createRoot(rootElement).render(
 
     <div className="relative w-full h-full">
 
         {/*--- Menu ---*/}
-        <div className="fixed top-0 w-full h-16 sm:h-24 bg-gray-800 z-10">
+        <div className="fixed top-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800 z-10">
             <Menu gameInvite={gameInvite} />
         </div>
 
 
         {/*--- Board ---*/}
 
-        {/*Alternative div positioning options*/}
-
         {/*Scrollable*/}
-        {/*<div className="relative mt-16 sm:mt-24 w-full">*/}
+        {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
 
         {/*Fixed*/}
-        <div className="fixed mt-16 sm:mt-24 w-full h-[74%] sm:h-[77%]">
+        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[74vh]">
             <BoardTicTacToe board={situation.board} />
         </div>
 
         {/*--- Status Bar ---*/}
-        <div className="fixed bottom-0 w-full h-max px-4 sm:px-1 py-2 sm:py-4 bg-gray-800">
+        <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[2%] py-[2vh] bg-gray-800">
             <StatusBarTicTacToe activePlayer={situation.activePlayer} characters={situation.characters} />
         </div>
 

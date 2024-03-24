@@ -5,7 +5,7 @@ import {configTicTacToe} from "./configTicTacToe.jsx";
 export const StatusBarTicTacToe = ({activePlayer, characters}) => {
 
     const getAvatarElement = (characterName) => {
-        return <span className="text-gray-800 text-lg sm:text-2xl">{configTicTacToe[characterName].avatar}</span>;
+        return <span className="text-gray-800 text-[2.8vh] sm:text-[3.2vh]">{configTicTacToe[characterName].avatar}</span>;
     }
 
     const renderCharacters = (characters) => {
@@ -23,8 +23,8 @@ export const StatusBarTicTacToe = ({activePlayer, characters}) => {
     }
 
     return (
-        <div className="text-gray-200 font-sans font-semibold text-sm sm:text-xl">
-            <div className="grid grid-cols-2">
+        <div className="w-[96%] h-full text-gray-200 font-sans font-semibold text-[2.2vh] sm:text-[2.6vh]">
+            <div className="grid grid-cols-2 h-full">
 
                 {renderCharacters(characters)}
 

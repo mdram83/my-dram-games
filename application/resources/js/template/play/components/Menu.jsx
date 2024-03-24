@@ -2,6 +2,8 @@ import React from "react";
 
 export const Menu = ({gameInvite}) => {
 
+    const quitLink = () => window.MyDramGames.routes["game-invites.join"](gameInvite.slug, gameInvite.gameInviteId);
+
     const renderTitle = (title) => {
         if (title.length === 1) {
             return title;
@@ -23,24 +25,12 @@ export const Menu = ({gameInvite}) => {
 
     return (
 
-        <div className="flex justify-between items-center w-full h-full text-gray-200 font-sans font-semibold text-2xl sm:text-4xl">
+        <div className="flex justify-between items-center w-full h-full text-gray-200 font-sans font-semibold text-[4vh] sm:text-[6vh]">
 
-            <div className="ml-6 sm:ml-12">{renderTitle(gameInvite.name)}</div>
+            <div className="ml-[3vh] sm:ml-[8vh]">{renderTitle(gameInvite.name)}</div>
 
-            <div className="mr-6 sm:mr-12">
-
-                <a className="text-gray-200"
-                   href={window.MyDramGames.routes["game-invites.join"](gameInvite.slug, gameInvite.gameInviteId)}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-                         className="feather feather-power"
-                    >
-                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                        <line x1="12" y1="2" x2="12" y2="12"></line>
-                    </svg>
-                </a>
-
+            <div className="mr-[3vh] sm:mr-[8vh]">
+                <a className="text-gray-200" href={quitLink()}><i className="fa fa-power-off"></i></a>
             </div>
 
         </div>
