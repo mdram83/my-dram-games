@@ -2,6 +2,7 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Menu} from "../../../template/play/components/Menu.jsx";
 import {StatusBarTicTacToe} from "./StatusBarTicTacToe.jsx";
+import {BoardTicTacToe} from "./BoardTicTacToe";
 
 const rootElement = document.querySelector('#game-play-root');
 
@@ -10,7 +11,8 @@ const gameInvite = Object.assign({}, JSON.parse(rootElement.dataset['game.invite
 const situation = Object.assign({}, JSON.parse(rootElement.dataset['game.situation']));
 
 // console.log(gamePlayId, gameInvite, situation);
-console.log(situation);
+
+// TODO adjust styling (cover scenario when someone flip the mobile...
 
 createRoot(rootElement).render(
 
@@ -21,14 +23,17 @@ createRoot(rootElement).render(
             <Menu gameInvite={gameInvite} />
         </div>
 
+
         {/*--- Board ---*/}
 
         {/*Alternative div positioning options*/}
+
+        {/*Scrollable*/}
         {/*<div className="relative mt-16 sm:mt-24 w-full">*/}
-        <div className="fixed mt-16 sm:mt-24 w-full h-[74%] sm:h-[77%] border-4 border-solid border-red-500">
 
-            {/*TODO Board to play goes here*/}
-
+        {/*Fixed*/}
+        <div className="fixed mt-16 sm:mt-24 w-full h-[74%] sm:h-[77%]">
+            <BoardTicTacToe board={situation.board} />
         </div>
 
         {/*--- Status Bar ---*/}
