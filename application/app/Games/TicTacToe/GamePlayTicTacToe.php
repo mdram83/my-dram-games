@@ -14,9 +14,11 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     protected CollectionGameCharacterTicTacToe $characters;
     protected GameBoardTicTacToe $board;
 
-    public function handleMove(Player $player, GameMove $move): void
+    public function handleMove(GameMove $move): void
     {
         // TODO: Implement handleMove() method.
+        // check if valid player (or handle through exception)
+        // check if current player (see above)
         // check if valid move
         // update board
         // check win
