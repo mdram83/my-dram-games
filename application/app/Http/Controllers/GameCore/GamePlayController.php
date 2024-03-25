@@ -81,13 +81,11 @@ class GamePlayController extends Controller
         }
     }
 
-    // TODO temp, needs validation, auth, player etc, GamePlay object created etc.
-    // TODO what do I really need here:
+    public function move(Player $player, Request $request): Response
+    {
+        return new Response([], 200);
 
-    // 1. Dedicated view Layout, ideally without template and bootstrap css so I can model it with tailwind
-    // 2. On Frontend side I need a lot of JS and React, also with some Store. On first Show initial state is enough
-
-
-    // 3. LATER (for Moves) I need dedicated Events
-    // 4. LATER (for Moves) I need dedicated GamePlay Move handling
+        // 3. LATER (for Moves) I need dedicated Events
+        // 4. LATER (for Moves) I need dedicated GamePlay Move handling
+    }
 }
