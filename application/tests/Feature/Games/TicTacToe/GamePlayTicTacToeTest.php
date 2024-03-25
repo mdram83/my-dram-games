@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Games\TicTacToe;
 
+use App\GameCore\GameElements\GameBoard\GameBoardException;
+use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
@@ -13,8 +15,10 @@ use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameBoardTicTacToe;
+use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -71,6 +75,11 @@ class GamePlayTicTacToeTest extends TestCase
             $storage,
             App::make(Collection::class),
         );
+    }
+
+    protected function prepareMove(?Player $overwritePlayer = null, int $fieldKey = 1): GameMoveTicTacToe
+    {
+        return new GameMoveTicTacToe($overwritePlayer ?? $this->players[0], $fieldKey);
     }
 
     public function testClassInstance(): void
@@ -130,4 +139,66 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertEquals($expected, $this->play->getSituation($this->players[1]));
     }
 
+    public function testThrowExceptionWhenHandlingMoveNotFromGame(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $move = $this->createMock(GameMove::class);
+        $move->method('getPlayer')->willReturn($this->players[0]);
+        $move->method('getDetails')->willReturn(['fieldKey' => 1]);
+
+        $this->play->handleMove($move);
+    }
+
+    public function testThrowExceptionWhenHandlingMoveOfNotCurrentPlayer(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
+
+        $move = $this->prepareMove($this->players[1]);
+        $this->play->handleMove($move);
+    }
+
+    public function testThrowExceptionWhenHandlingMoveOfNotGamePlayer(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
+
+        $move = $this->prepareMove(User::factory()->create());
+        $this->play->handleMove($move);
+    }
+
+    public function testHandleMoveBoardAndActivePlayerUpdated(): void
+    {
+        $this->play->handleMove($this->prepareMove());
+        $situation = $this->play->getSituation($this->players[0]);
+
+        $this->assertEquals($this->players[1]->getName(), $situation['activePlayer']);
+        $this->assertNotNull($situation['board'][1]);
+        $this->assertNull($situation['board'][2]);
+    }
+
+    public function testThrowExceptionWhenSettingSameFieldTwice(): void
+    {
+        $this->expectException(GameBoardException::class);
+        $this->expectExceptionMessage(GameBoardException::MESSAGE_FIELD_ALREADY_SET);
+
+        $move = $this->prepareMove();
+        $this->play->handleMove($move);
+        $move = $this->prepareMove($this->players[1]);
+        $this->play->handleMove($move);
+    }
+
+    public function testGetSituationAfterMoveFromLoadedObject(): void
+    {
+        $move = $this->prepareMove();
+        $this->play->handleMove($move);
+        $play = $this->prepareGamePlayTicTacToe($this->play->getId());
+        $situation = $play->getSituation($this->players[0]);
+
+        $this->assertEquals($this->players[1]->getName(), $situation['activePlayer']);
+        $this->assertNotNull($situation['board'][1]);
+        $this->assertNull($situation['board'][2]);
+    }
 }

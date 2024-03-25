@@ -2,10 +2,12 @@
 
 namespace App\Games\TicTacToe;
 
+use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
+use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
@@ -14,16 +16,19 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     protected CollectionGameCharacterTicTacToe $characters;
     protected GameBoardTicTacToe $board;
 
+    /**
+     * @throws GamePlayException
+     * @throws GameBoardException
+     */
     public function handleMove(GameMove $move): void
     {
-        // TODO: Implement handleMove() method.
-        // check if valid player (or handle through exception)
-        // check if current player (see above)
-        // check if valid move
-        // update board
-        // check win
-        // update active player
-        // save data
+        $this->validateMove($move);
+
+        $this->board->setFieldValue($move->getDetails()['fieldKey'], $this->getPlayerCharacterName($move->getPlayer()));
+        $this->setActivePlayer($this->getNextPlayer($move->getPlayer()));
+        $this->saveData();
+
+        // check win later
     }
 
     public function getSituation(Player $player): array
@@ -106,5 +111,35 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
         if (isset($json)) {
             $this->board->setFromJson($json);
         }
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    private function validateMove(GameMove $move): void
+    {
+        if (!is_a($move, GameMoveTicTacToe::class)) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        if ($move->getPlayer()->getId() !== $this->activePlayer->getId()) {
+            throw new GamePlayException(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
+        }
+    }
+
+    private function getPlayerCharacterName(Player $player): string
+    {
+        return $this->characters
+            ->filter(fn($value, $key) => $value->getPlayer()->getId() === $player->getId())
+            ->pullFirst()
+            ->getName();
+    }
+
+    private function getNextPlayer(Player $currentPlayer): Player
+    {
+        return $this->characters
+            ->filter(fn($value, $key) => $value->getPlayer()->getId() !== $currentPlayer->getId())
+            ->pullFirst()
+            ->getPlayer();
     }
 }
