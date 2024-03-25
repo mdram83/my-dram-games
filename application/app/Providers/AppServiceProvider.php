@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
+use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GameInvite\Eloquent\GameInviteFactoryEloquent;
 use App\GameCore\GameInvite\Eloquent\GameInviteRepositoryEloquent;
 use App\GameCore\GameInvite\GameInviteFactory;
@@ -69,6 +71,8 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GamePlayAbsFactoryRepository::class, GamePlayAbsFactoryRepositoryPhpConfig::class);
         app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
         app()->bind(GamePlayAbsRepository::class, GamePlayAbsRepositoryPhpConfig::class);
+
+        app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
     }
 
     /**
