@@ -19,6 +19,7 @@ Route::middleware('player')->group(function() {
 Route::middleware(['ajax', 'player'])->group(function() {
     Route::post('/ajax/game-invites', [GameInviteController::class, 'store'])->name('ajax.game-invites.store');
     Route::post('/ajax/gameplay', [GamePlayController::class, 'store'])->name('ajax.gameplay.store');
+    Route::post('/ajax/gameplay/{gamePlayId}', [GamePlayController::class, 'move'])->name('ajax.gameplay.move');
 });
 
 Route::middleware('ajax')->group(function() {

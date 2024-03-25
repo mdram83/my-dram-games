@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
+use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
@@ -81,7 +82,7 @@ class GamePlayController extends Controller
         }
     }
 
-    public function move(Player $player, Request $request): Response
+    public function move(Player $player, Request $request, GameMoveAbsFactoryRepository $moveFactoryRepository): Response
     {
         return new Response([], 200);
 

@@ -32,6 +32,7 @@ class GamePlayControllerTest extends TestCase
 
     protected string $storeRouteName = 'ajax.gameplay.store';
     protected string $showRouteName = 'gameplay.show';
+    protected string $moveRouteName = 'ajax.gameplay.move';
 
     public function setUp(): void
     {
@@ -181,4 +182,13 @@ class GamePlayControllerTest extends TestCase
     }
 
     // NEXT TESTS FOR MOVES
+    // not player forbidden no event
+    // wrong game id is error
+    // missing payload input is error
+    // wrong payload input is error (validation)
+    // wrong move is error
+    // wrong (not your turn) player is error
+    // move done and events fired (all players)
+
+    // LATER HANDLE WIN SITUATION AND FOLLOWING MOVES (BASICALLY FORBIDDEN)
 }
