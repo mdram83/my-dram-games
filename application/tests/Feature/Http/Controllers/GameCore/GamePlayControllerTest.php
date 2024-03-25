@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
+use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameInvite\GameInvite;
@@ -13,6 +14,7 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -64,12 +66,12 @@ class GamePlayControllerTest extends TestCase
         return $invite;
     }
 
-    public function createGamePlay(GameInvite $invite): GamePlay
+    protected function createGamePlay(GameInvite $invite): GamePlay
     {
         return App::make(GamePlayAbsFactoryRepository::class)->getOne('tic-tac-toe')->create($invite);
     }
 
-    public function getStoreResponse(Player $player, GameInvite $invite): TestResponse
+    protected function getStoreResponse(Player $player, GameInvite $invite): TestResponse
     {
         return $this
             ->actingAs($player)
@@ -77,11 +79,23 @@ class GamePlayControllerTest extends TestCase
             ->json('POST', route($this->storeRouteName, ['gameInviteId' => $invite->getId()]));
     }
 
-    public function getShowResponse(Player $player, int|string $gamePlayId): TestResponse
+    protected function getShowResponse(Player $player, int|string $gamePlayId): TestResponse
     {
         return $this
             ->actingAs($player)
             ->get(route($this->showRouteName, ['gamePlayId' => $gamePlayId]));
+    }
+
+    protected function getMoveResponse(Player $player, int|string $gamePlayId, int $fieldKey = 1, bool|array $payload = true): TestResponse
+    {
+        return $this
+            ->actingAs($player)
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->json(
+                'POST',
+                route($this->moveRouteName, ['gamePlayId' => $gamePlayId]),
+                $payload === true ? ['move' => ['fieldKey' => $fieldKey]] : $payload
+            );
     }
 
     public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
@@ -181,14 +195,75 @@ class GamePlayControllerTest extends TestCase
         $response->assertViewHas(['situation' => $play->getSituation($this->player)]);
     }
 
-    // NEXT TESTS FOR MOVES
-    // not player forbidden no event
-    // wrong game id is error
-    // missing payload input is error
-    // wrong payload input is error (validation)
-    // wrong move is error
-    // wrong (not your turn) player is error
-    // move done and events fired (all players)
+    public function testMoveNotPlayerGetForbidden(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getMoveResponse($this->notPlayer, $play->getId());
 
-    // LATER HANDLE WIN SITUATION AND FOLLOWING MOVES (BASICALLY FORBIDDEN)
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveIncorrectIdResultInErrorNoEvent(): void
+    {
+        Event::fake();
+        $response = $this->getMoveResponse($this->notPlayer, 'some-wrong-id-123T');
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveMissingPayloadResultInErrorNoEvent(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getMoveResponse($this->host, $play->getId(), 1, []);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveWrongPayloadResultInErrorNoEvent(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getMoveResponse($this->host, $play->getId(), 1, ['move' => ['wrong' => null]]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveIllegalMoveResultInErrorNoEvent(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $play->handleMove(new GameMoveTicTacToe($this->host, 1));
+        $response = $this->getMoveResponse($this->player, $play->getId());
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveNotPlayerTurnResultInErrorNoEvent(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getMoveResponse($this->player, $play->getId());
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testMoveDoneAndEventFired(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getMoveResponse($this->host, $play->getId());
+
+        $response->assertStatus(Response::HTTP_OK);
+        Event::assertDispatched(GamePlayMovedEvent::class);
+    }
+
+    // LATER HANDLE WIN SITUATION AND MOVES FOLLOWING GAME FINISH (BASICALLY FORBIDDEN)
 }
