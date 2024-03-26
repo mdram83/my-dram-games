@@ -18,7 +18,7 @@ unstable_batchedUpdates(() => {
     useTicTacToeStore.getState().setGamePlayId(gamePlayId);
     useTicTacToeStore.getState().setActivePlayer(situation.activePlayer);
     useTicTacToeStore.getState().setBoard(situation.board);
-})
+});
 
 // TODO add presence channel to hear for player connection status
 

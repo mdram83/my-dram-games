@@ -1,10 +1,13 @@
 import {create} from "zustand";
 
-export const useTicTacToeStore = create((set) => ({
+export const useTicTacToeStore = create((set, get) => ({
 
     gamePlayId: undefined,
-    // TODO adjust below method so it is not getting overwritten (can only be set once)
-    setGamePlayId: (gamePlayId) => set((state) => ({ gamePlayId: gamePlayId })),
+    setGamePlayId: (gamePlayId) => {
+        if (get().gamePlayId === undefined) {
+            set((state) => ({gamePlayId: gamePlayId}));
+        }
+    },
 
     activePlayer: undefined,
     setActivePlayer: (playerName) => set((state) => ({ activePlayer: playerName })),
