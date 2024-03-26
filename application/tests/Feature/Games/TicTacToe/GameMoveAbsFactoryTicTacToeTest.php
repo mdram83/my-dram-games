@@ -44,12 +44,10 @@ class GameMoveAbsFactoryTicTacToeTest extends TestCase
         $this->factory->create($this->player, ['fieldKey' => null]);
     }
 
-    public function testThrowExceptionIfParamsFieldKeyValueIsNotInteger(): void
+    public function testCreateConvertStringValueToInt(): void
     {
-        $this->expectException(GameMoveException::class);
-        $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
-
-        $this->factory->create($this->player, ['fieldKey' => '1']);
+        $move = $this->factory->create($this->player, ['fieldKey' => '1']);
+        $this->assertInstanceOf(GameMoveTicTacToe::class, $move);
     }
 
     public function testCreate(): void

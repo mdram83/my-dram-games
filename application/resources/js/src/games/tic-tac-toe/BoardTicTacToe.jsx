@@ -4,7 +4,6 @@ import {configTicTacToe} from "./configTicTacToe.jsx";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
 export const BoardTicTacToe = () => {
-    /*{board}*/
 
     // TODO move to Field so that I don't rerender whole grid with every update
     const board = useTicTacToeStore((state) => state.board);
@@ -14,7 +13,7 @@ export const BoardTicTacToe = () => {
         for (const [fieldKey, fieldValue] of Object.entries(board)) {
             fields.push(
                 <FieldTicTacToe fieldKey={fieldKey}
-                                fieldValue={fieldValue !== null ? configTicTacToe[fieldValue].avatar : ''}
+                                fieldValue={fieldValue === null ? fieldValue : configTicTacToe[fieldValue].avatar}
                                 key={fieldKey} />
             );
         }

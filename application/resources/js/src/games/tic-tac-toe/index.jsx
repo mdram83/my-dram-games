@@ -15,10 +15,23 @@ const situation = Object.assign({}, JSON.parse(rootElement.dataset['game.situati
 console.log(gamePlayId, gameInvite, situation);
 
 unstable_batchedUpdates(() => {
+    useTicTacToeStore.getState().setGamePlayId(gamePlayId);
     useTicTacToeStore.getState().setActivePlayer(situation.activePlayer);
     useTicTacToeStore.getState().setBoard(situation.board);
 })
 
+// TODO add presence channel to hear for player connection status
+
+Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
+    .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) => {
+        unstable_batchedUpdates(() => {
+            useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
+            useTicTacToeStore.getState().setBoard(e.situation.board);
+        })
+    })
+
+    // TODO add errors handling (message/reconnect twice etc, refresh page, etc.)
+    // .error((error) => setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error'));
 
 createRoot(rootElement).render(
 
@@ -38,13 +51,11 @@ createRoot(rootElement).render(
         {/*Fixed*/}
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[74vh]">
             <BoardTicTacToe  />
-            {/*board={situation.board}*/}
         </div>
 
         {/*--- Status Bar ---*/}
         <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[2%] py-[2vh] bg-gray-800">
             <StatusBarTicTacToe  characters={situation.characters} />
-            {/*activePlayer={situation.activePlayer}*/}
         </div>
 
     </div>

@@ -14,7 +14,7 @@ class GameMoveAbsFactoryTicTacToe implements GameMoveAbsFactory
      */
     public function create(Player $player, array $inputs): GameMove
     {
-        $fieldKey = $inputs['fieldKey'] ?? null;
+        $fieldKey = isset($inputs['fieldKey']) ? (int) $inputs['fieldKey'] : null;
         $this->validateFieldKey($fieldKey);
 
         return new GameMoveTicTacToe($player, $fieldKey);
@@ -25,7 +25,7 @@ class GameMoveAbsFactoryTicTacToe implements GameMoveAbsFactory
      */
     private function validateFieldKey(mixed $fieldKey): void
     {
-        if (!isset($fieldKey) || !is_int($fieldKey)) {
+        if (!isset($fieldKey)) {
             throw new GameMoveException(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
         }
     }

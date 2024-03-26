@@ -4,7 +4,6 @@ import {configTicTacToe} from "./configTicTacToe.jsx";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
 export const StatusBarTicTacToe = ({characters}) => {
-    /*activePlayer,*/
 
     // TODO move to PlayerStatus so that I don't rerender whole grid with every update
     const activePlayer = useTicTacToeStore((state) => state.activePlayer);

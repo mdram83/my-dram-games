@@ -26,7 +26,7 @@ class GameBoardTicTacToe implements GameBoard
     }
 
     /**
-     * @throws \App\GameCore\GameElements\GameBoard\GameBoardException
+     * @throws GameBoardException
      */
     public function setFieldValue(string $fieldId, string $value): void
     {
