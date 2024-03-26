@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
@@ -8,6 +8,12 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
     const moving = useTicTacToeStore((state) => state.moving);
     const setMoving = useTicTacToeStore((state) => state.setMoving);
     const setErrorMessage = useTicTacToeStore((state) => state.setErrorMessage);
+    const [localMove, setLocalMove] = useState(false);
+
+    const setMove = (status) => {
+        setMoving(status);
+        setLocalMove(status);
+    }
 
     const fieldBaseClass =
         ' w-[16vh] sm:w-[17.5vh] h-[16vh] sm:h-[17.5vh] flex justify-center items-center font-semibold text-[8vh] text-neutral-700 '
@@ -22,16 +28,20 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
     const makeMove = () => {
         if (fieldValue === null) {
             if (moving) return;
-            setMoving(true);
+            setMove(true);
             axios
                 .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {move: {fieldKey: fieldKey}})
-                .then(response => setMoving(false))
+                .then(() => setMove(false))
                 .catch(error => {
                     setErrorMessage(error.response.data.message ?? 'Unexpected error');
-                    setMoving(false);
+                    setMove(false);
                 });
         }
     }
 
-    return <div className={fieldBaseClass + borderCombinedClass(fieldKey)} onClick={makeMove}>{fieldValue ?? ''}</div>;
+    return (
+        <div className={fieldBaseClass + borderCombinedClass(fieldKey)} onClick={makeMove}>
+            {localMove ? <i className="fa fa-puzzle-piece animate-ping text-[3vh] text-neutral-400"></i> : (fieldValue ?? '')}
+        </div>
+    );
 }
