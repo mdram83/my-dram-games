@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
-import {unstable_batchedUpdates} from "react-dom";
 
 export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
     const gamePlayId = useTicTacToeStore((state) => state.gamePlayId);
+    const moving = useTicTacToeStore((state) => state.moving);
+    const setMoving = useTicTacToeStore((state) => state.setMoving);
+    const setErrorMessage = useTicTacToeStore((state) => state.setErrorMessage);
 
     const fieldBaseClass =
         ' w-[16vh] sm:w-[17.5vh] h-[16vh] sm:h-[17.5vh] flex justify-center items-center font-semibold text-[8vh] text-neutral-700 '
@@ -19,21 +21,17 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
     const makeMove = () => {
         if (fieldValue === null) {
-            // TODO handle double clicking so you only send move once (some flag, state or else)
+            if (moving) return;
+            setMoving(true);
             axios
                 .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {move: {fieldKey: fieldKey}})
-                .then(response => {})
+                .then(response => setMoving(false))
                 .catch(error => {
-                    unstable_batchedUpdates(() => {
-                        useTicTacToeStore.getState().setErrorMessage(error.response.data.message ?? 'Unexpected error');
-                    });
+                    setErrorMessage(error.response.data.message ?? 'Unexpected error');
+                    setMoving(false);
                 });
         }
     }
 
-    return (
-        <div className={fieldBaseClass + borderCombinedClass(fieldKey)} onClick={makeMove}>
-            {fieldValue ?? ''}
-        </div>
-    );
+    return <div className={fieldBaseClass + borderCombinedClass(fieldKey)} onClick={makeMove}>{fieldValue ?? ''}</div>;
 }

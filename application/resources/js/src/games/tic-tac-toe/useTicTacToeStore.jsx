@@ -15,6 +15,9 @@ export const useTicTacToeStore = create((set, get) => ({
     board: undefined,
     setBoard: (board) => set((state) => ({ board: board })),
 
+    moving: false,
+    setMoving: (moving) => set((state) => ({ moving: moving })),
+
     errorMessage: undefined,
     setErrorMessage: (message) => set((state) => ({ errorMessage: message})),
 

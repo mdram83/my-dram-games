@@ -51,7 +51,6 @@ createRoot(rootElement).render(
 
         {/*Scrollable*/}
         {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
-
         {/*Fixed*/}
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[74vh]">
             <BoardTicTacToe  />
