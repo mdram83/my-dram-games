@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
+import {unstable_batchedUpdates} from "react-dom";
 
 export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
@@ -21,13 +22,11 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
             // TODO handle double clicking so you only send move once (some flag, state or else)
             axios
                 .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {move: {fieldKey: fieldKey}})
-                .then(response => {
-                    console.log(response);
-                })
+                .then(response => {})
                 .catch(error => {
-                    console.log(error.response.data.message);
-                    // TODO handle error messages
-                    // setErrorMessage(error.response.data.message.message ?? 'Unexpected error');
+                    unstable_batchedUpdates(() => {
+                        useTicTacToeStore.getState().setErrorMessage(error.response.data.message ?? 'Unexpected error');
+                    });
                 });
         }
     }

@@ -15,6 +15,9 @@ export const useTicTacToeStore = create((set, get) => ({
     board: undefined,
     setBoard: (board) => set((state) => ({ board: board })),
 
+    errorMessage: undefined,
+    setErrorMessage: (message) => set((state) => ({ errorMessage: message})),
+
     // TODO add connection status of both players (starting false)
 
 }));

@@ -5,6 +5,7 @@ import {StatusBarTicTacToe} from "./StatusBarTicTacToe.jsx";
 import {BoardTicTacToe} from "./BoardTicTacToe";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 import {unstable_batchedUpdates} from "react-dom";
+import {ErrorMessageTicTacToe} from "./ErrorMessageTicTacToe";
 
 const rootElement = document.querySelector('#game-play-root');
 
@@ -29,9 +30,12 @@ Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
             useTicTacToeStore.getState().setBoard(e.situation.board);
         })
     })
+    .error((error) => {
+        unstable_batchedUpdates(() => {
+            useTicTacToeStore.getState().setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error');
+        })
+    });
 
-    // TODO add errors handling (message/reconnect twice etc, refresh page, etc.)
-    // .error((error) => setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error'));
 
 createRoot(rootElement).render(
 
@@ -57,6 +61,9 @@ createRoot(rootElement).render(
         <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[2%] py-[2vh] bg-gray-800">
             <StatusBarTicTacToe  characters={situation.characters} />
         </div>
+
+        {/*--- Error Message ---*/}
+        <ErrorMessageTicTacToe />
 
     </div>
 );
