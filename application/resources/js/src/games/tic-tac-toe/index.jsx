@@ -6,6 +6,7 @@ import {BoardTicTacToe} from "./BoardTicTacToe";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 import {unstable_batchedUpdates} from "react-dom";
 import {ErrorMessageTicTacToe} from "./ErrorMessageTicTacToe";
+import {usePlayersStatusStore} from "../../../template/play/components/usePlayersStatusStore.jsx";
 
 const rootElement = document.querySelector('#game-play-root');
 
@@ -13,12 +14,11 @@ const gamePlayId = rootElement.dataset['game.id'];
 const gameInvite = Object.assign({}, JSON.parse(rootElement.dataset['game.invite']));
 const situation = Object.assign({}, JSON.parse(rootElement.dataset['game.situation']));
 
-console.log(gamePlayId, gameInvite, situation);
-
 unstable_batchedUpdates(() => {
     useTicTacToeStore.getState().setGamePlayId(gamePlayId);
     useTicTacToeStore.getState().setActivePlayer(situation.activePlayer);
     useTicTacToeStore.getState().setBoard(situation.board);
+    situation.players.forEach((playerName) => usePlayersStatusStore.getState().setPlayer(playerName, false));
 });
 
 // TODO add presence channel to hear for player connection status

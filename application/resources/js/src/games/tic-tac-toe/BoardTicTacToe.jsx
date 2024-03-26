@@ -5,7 +5,6 @@ import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
 export const BoardTicTacToe = () => {
 
-    // TODO move to Field so that I don't rerender whole grid with every update
     const board = useTicTacToeStore((state) => state.board);
 
     const renderFields = (board) => {

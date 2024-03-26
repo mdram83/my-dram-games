@@ -5,22 +5,20 @@ export const useTicTacToeStore = create((set, get) => ({
     gamePlayId: undefined,
     setGamePlayId: (gamePlayId) => {
         if (get().gamePlayId === undefined) {
-            set((state) => ({gamePlayId: gamePlayId}));
+            set(() => ({gamePlayId: gamePlayId}));
         }
     },
 
     activePlayer: undefined,
-    setActivePlayer: (playerName) => set((state) => ({ activePlayer: playerName })),
+    setActivePlayer: (playerName) => set(() => ({ activePlayer: playerName })),
 
     board: undefined,
-    setBoard: (board) => set((state) => ({ board: board })),
+    setBoard: (board) => set(() => ({ board: board })),
 
     moving: false,
-    setMoving: (moving) => set((state) => ({ moving: moving })),
+    setMoving: (moving) => set(() => ({ moving: moving })),
 
     errorMessage: undefined,
-    setErrorMessage: (message) => set((state) => ({ errorMessage: message})),
-
-    // TODO add connection status of both players (starting false)
+    setErrorMessage: (message) => set(() => ({ errorMessage: message})),
 
 }));

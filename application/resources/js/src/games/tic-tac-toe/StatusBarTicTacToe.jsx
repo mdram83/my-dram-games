@@ -5,7 +5,6 @@ import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
 export const StatusBarTicTacToe = ({characters}) => {
 
-    // TODO move to PlayerStatus so that I don't rerender whole grid with every update
     const activePlayer = useTicTacToeStore((state) => state.activePlayer);
 
     const getAvatarElement = (characterName) => {
