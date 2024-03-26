@@ -3,6 +3,8 @@ import {createRoot} from 'react-dom/client';
 import {Menu} from "../../../template/play/components/Menu.jsx";
 import {StatusBarTicTacToe} from "./StatusBarTicTacToe.jsx";
 import {BoardTicTacToe} from "./BoardTicTacToe";
+import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
+import {unstable_batchedUpdates} from "react-dom";
 
 const rootElement = document.querySelector('#game-play-root');
 
@@ -10,7 +12,13 @@ const gamePlayId = rootElement.dataset['game.id'];
 const gameInvite = Object.assign({}, JSON.parse(rootElement.dataset['game.invite']));
 const situation = Object.assign({}, JSON.parse(rootElement.dataset['game.situation']));
 
-// console.log(gamePlayId, gameInvite, situation);
+console.log(gamePlayId, gameInvite, situation);
+
+unstable_batchedUpdates(() => {
+    useTicTacToeStore.getState().setActivePlayer(situation.activePlayer);
+    useTicTacToeStore.getState().setBoard(situation.board);
+})
+
 
 createRoot(rootElement).render(
 
@@ -29,12 +37,14 @@ createRoot(rootElement).render(
 
         {/*Fixed*/}
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[74vh]">
-            <BoardTicTacToe board={situation.board} />
+            <BoardTicTacToe  />
+            {/*board={situation.board}*/}
         </div>
 
         {/*--- Status Bar ---*/}
         <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[2%] py-[2vh] bg-gray-800">
-            <StatusBarTicTacToe activePlayer={situation.activePlayer} characters={situation.characters} />
+            <StatusBarTicTacToe  characters={situation.characters} />
+            {/*activePlayer={situation.activePlayer}*/}
         </div>
 
     </div>

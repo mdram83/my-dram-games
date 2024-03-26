@@ -1,8 +1,13 @@
 import React from "react";
 import {FieldTicTacToe} from "./FieldTicTacToe";
 import {configTicTacToe} from "./configTicTacToe.jsx";
+import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
-export const BoardTicTacToe = ({board}) => {
+export const BoardTicTacToe = () => {
+    /*{board}*/
+
+    // TODO move to Field so that I don't rerender whole grid with every update
+    const board = useTicTacToeStore((state) => state.board);
 
     const renderFields = (board) => {
         const fields = [];

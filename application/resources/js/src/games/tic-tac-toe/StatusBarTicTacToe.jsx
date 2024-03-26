@@ -1,8 +1,13 @@
 import React from "react";
 import {PlayerStatus} from "../../../template/play/components/PlayerStatus.jsx";
 import {configTicTacToe} from "./configTicTacToe.jsx";
+import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 
-export const StatusBarTicTacToe = ({activePlayer, characters}) => {
+export const StatusBarTicTacToe = ({characters}) => {
+    /*activePlayer,*/
+
+    // TODO move to PlayerStatus so that I don't rerender whole grid with every update
+    const activePlayer = useTicTacToeStore((state) => state.activePlayer);
 
     const getAvatarElement = (characterName) => {
         return <span className="text-gray-800 text-[2.8vh] sm:text-[3.2vh]">{configTicTacToe[characterName].avatar}</span>;
