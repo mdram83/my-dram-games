@@ -21,34 +21,38 @@ unstable_batchedUpdates(() => {
     situation.players.forEach((playerName) => usePlayersStatusStore.getState().setPlayer(playerName, false));
 });
 
-// TODO add presence channel to hear for player connection status
+Echo.join(`game-invite-players.${gameInvite.gameInviteId}`)
+    .here((users) => unstable_batchedUpdates(() =>
+        users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true))
+    ))
+    .joining((user) => unstable_batchedUpdates(() =>
+        usePlayersStatusStore.getState().setPlayer(user.name, true)
+    ))
+    .leaving((user) => unstable_batchedUpdates(() =>
+        usePlayersStatusStore.getState().setPlayer(user.name, false)
+    ))
+    // .listen('GameCore\\GamePlay\\GamePlayStoredEvent', (e) => console.log('event:', e)) // Consider game win here
+    .error(() => {});
 
 Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
-    .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) => {
-        unstable_batchedUpdates(() => {
-            useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
-            useTicTacToeStore.getState().setBoard(e.situation.board);
-        })
-    })
-    .error((error) => {
-        unstable_batchedUpdates(() => {
-            useTicTacToeStore.getState().setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error');
-        })
-    });
+    .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) => unstable_batchedUpdates(() => {
+        useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
+        useTicTacToeStore.getState().setBoard(e.situation.board);
+    }))
+    .error((error) => unstable_batchedUpdates(() => {
+        useTicTacToeStore.getState().setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error');
+    }));
 
 
 createRoot(rootElement).render(
 
     <div className="relative w-full h-full">
 
-        {/*--- Menu ---*/}
         <div className="fixed top-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800 z-10">
             <Menu gameInvite={gameInvite} />
         </div>
 
-
         {/*--- Board ---*/}
-
         {/*Scrollable*/}
         {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
         {/*Fixed*/}
@@ -56,12 +60,10 @@ createRoot(rootElement).render(
             <BoardTicTacToe  />
         </div>
 
-        {/*--- Status Bar ---*/}
         <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[2%] py-[2vh] bg-gray-800">
             <StatusBarTicTacToe  characters={situation.characters} />
         </div>
 
-        {/*--- Error Message ---*/}
         <ErrorMessageTicTacToe />
 
     </div>

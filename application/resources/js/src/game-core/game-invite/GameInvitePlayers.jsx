@@ -43,7 +43,6 @@ export const GameInvitePlayers = ({gameInvite, setAllPlayersOnline, autoStart}) 
 
     useEffect(() => {
 
-        // Consider moving below to dedicated component/class/function when used in more places.
         Echo.join(`game-invite-players.${gameInvite.id}`)
             .here((users) => users.forEach((user) => updatePlayerStatus(user.name, true)))
             .joining((user) => updatePlayerStatus(user.name, true))
