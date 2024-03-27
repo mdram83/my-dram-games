@@ -5,7 +5,7 @@ import {StatusBarTicTacToe} from "./StatusBarTicTacToe.jsx";
 import {BoardTicTacToe} from "./BoardTicTacToe";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 import {unstable_batchedUpdates} from "react-dom";
-import {ErrorMessageTicTacToe} from "./ErrorMessageTicTacToe";
+import {FlashMessageTicTacToe} from "./FlashMessageTicTacToe.jsx";
 import {usePlayersStatusStore} from "../../../template/play/components/usePlayersStatusStore.jsx";
 
 const rootElement = document.querySelector('#game-play-root');
@@ -25,12 +25,14 @@ Echo.join(`game-invite-players.${gameInvite.gameInviteId}`)
     .here((users) => unstable_batchedUpdates(() =>
         users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true))
     ))
-    .joining((user) => unstable_batchedUpdates(() =>
-        usePlayersStatusStore.getState().setPlayer(user.name, true)
-    ))
-    .leaving((user) => unstable_batchedUpdates(() =>
-        usePlayersStatusStore.getState().setPlayer(user.name, false)
-    ))
+    .joining((user) => unstable_batchedUpdates(() => {
+        usePlayersStatusStore.getState().setPlayer(user.name, true);
+        useTicTacToeStore.getState().setMessage(user.name + ' connected.', false, 1);
+    }))
+    .leaving((user) => unstable_batchedUpdates(() => {
+        usePlayersStatusStore.getState().setPlayer(user.name, false);
+        useTicTacToeStore.getState().setMessage(user.name + ' disconnected.', true, 2);
+    }))
     // .listen('GameCore\\GamePlay\\GamePlayStoredEvent', (e) => console.log('event:', e)) // Consider game win here
     .error(() => {});
 
@@ -38,9 +40,15 @@ Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
     .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) => unstable_batchedUpdates(() => {
         useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
         useTicTacToeStore.getState().setBoard(e.situation.board);
+        if (e.situation.activePlayer === window.MyDramGames.player.name) {
+            useTicTacToeStore.getState().setMessage('Your turn', false, 0.5);
+        }
     }))
     .error((error) => unstable_batchedUpdates(() => {
-        useTicTacToeStore.getState().setErrorMessage(error.status === 403 ? 'Authentication error' : 'Unexpected error');
+        useTicTacToeStore.getState().setMessage(
+            error.status === 403 ? 'Authentication error' : 'Unexpected error',
+            true
+        );
     }));
 
 
@@ -64,7 +72,7 @@ createRoot(rootElement).render(
             <StatusBarTicTacToe  characters={situation.characters} />
         </div>
 
-        <ErrorMessageTicTacToe />
+        <FlashMessageTicTacToe />
 
     </div>
 );

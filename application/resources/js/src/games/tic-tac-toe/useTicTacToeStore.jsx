@@ -18,7 +18,15 @@ export const useTicTacToeStore = create((set, get) => ({
     moving: false,
     setMoving: (moving) => set(() => ({ moving: moving })),
 
-    errorMessage: undefined,
-    setErrorMessage: (message) => set(() => ({ errorMessage: message})),
+    message: {
+        content: null,
+        isError: false,
+        timeout: 3
+    },
+    setMessage: (content, isError = false, timeout = 3) => set(() => ({ message: {
+        content: content,
+        isError: isError,
+        timeout: timeout,
+    }})),
 
 }));

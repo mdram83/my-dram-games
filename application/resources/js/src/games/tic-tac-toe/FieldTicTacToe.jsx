@@ -7,7 +7,7 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
     const gamePlayId = useTicTacToeStore((state) => state.gamePlayId);
     const moving = useTicTacToeStore((state) => state.moving);
     const setMoving = useTicTacToeStore((state) => state.setMoving);
-    const setErrorMessage = useTicTacToeStore((state) => state.setErrorMessage);
+    const setMessage = useTicTacToeStore((state) => state.setMessage);
     const [localMove, setLocalMove] = useState(false);
 
     const setMove = (status) => {
@@ -33,7 +33,7 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
                 .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {move: {fieldKey: fieldKey}})
                 .then(() => setMove(false))
                 .catch(error => {
-                    setErrorMessage(error.response.data.message ?? 'Unexpected error');
+                    setMessage(error.response.data.message ?? 'Unexpected error', true);
                     setMove(false);
                 });
         }
