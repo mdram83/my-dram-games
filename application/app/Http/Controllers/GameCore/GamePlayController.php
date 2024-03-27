@@ -27,7 +27,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
 {
@@ -70,28 +72,33 @@ class GamePlayController extends Controller
     public function show(GamePlayRepository $repository, Player $player, int|string $gamePlayId): Response|View
     {
         try {
-
             $gamePlay = $repository->getOne($gamePlayId);
 
             if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
+                throw new AccessDeniedHttpException(static::MESSAGE_FORBIDDEN);
             }
 
-            return view('play', [
-                'gamePlayId' => $gamePlayId,
-                'gameInvite' => [
-                    'gameInviteId' => $gamePlay->getGameInvite()->getId(),
-                    'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
-                    'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
-                    'host' => $gamePlay->getGameInvite()->getHost()->getName(),
+            return view(
+                'play',
+                [
+                    'gamePlayId' => $gamePlayId,
+                    'gameInvite' => [
+                        'gameInviteId' => $gamePlay->getGameInvite()->getId(),
+                        'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
+                        'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
+                        'host' => $gamePlay->getGameInvite()->getHost()->getName(),
+                    ],
+                    'situation' => $gamePlay->getSituation($player)
                 ],
-                'situation' => $gamePlay->getSituation($player)],
             );
 
-        } catch (GamePlayStorageException $e) {
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
+        } catch (AccessDeniedHttpException $e) {
+            return response()->view('errors.403', ['exception' => $e], 403);
 
-        } catch (Exception) {
+        } catch (GamePlayStorageException $e) {
+            throw new NotFoundHttpException(static::MESSAGE_NOT_FOUND);
+
+        } catch (Exception $e) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
     }
