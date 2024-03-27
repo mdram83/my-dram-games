@@ -4,7 +4,7 @@ import {SiteButton} from "../../../template/components/SiteButton.jsx";
 import {GameInvitePlayers} from "./GameInvitePlayers.jsx";
 import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
-export const GameInviteShow = ({gameInvite, slug}) => {
+export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined}) => {
 
     const isPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
     const [allPlayersOnline, setAllPlayersOnline] = React.useState(false);
@@ -16,13 +16,13 @@ export const GameInviteShow = ({gameInvite, slug}) => {
 
     const storeGamePlay = () => {
         axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameInviteId: gameInvite.id})
-            .then(response => { })
+            .then(() => { })
             .catch(error => setErrorMessage(error.response.data.message.message ?? 'Unexpected error'));
     }
 
     useEffect(() => {
         const autostartOption = gameInvite.options.autostart ?? 0;
-        if (autostartOption && allPlayersOnline) {
+        if (autostartOption && allPlayersOnline && !gamePlayId) {
             storeGamePlay();
         }
     }, [allPlayersOnline]);
@@ -41,11 +41,18 @@ export const GameInviteShow = ({gameInvite, slug}) => {
 
             <div className="w-full sm:w-auto flex justify-center sm:justify-start">
 
-                {isPlayerHost && allPlayersOnline && <SiteButton value='Start'
-                                                                 onClick={() => storeGamePlay()}
-                                                                 className='mr-2'
-                                                                 faClassName='fa-play'
-                />}
+                {isPlayerHost && allPlayersOnline && !gamePlayId && <SiteButton value='Start'
+                                                                                onClick={() => storeGamePlay()}
+                                                                                className='mr-2'
+                                                                                faClassName='fa-play'/>
+                }
+
+                {gamePlayId && <SiteButton value='Resume'
+                                                    onClick={() => showGamePlay(gamePlayId)}
+                                                    className='mr-2'
+                                                    faClassName='fa-play'/>
+                }
+
                 <SiteButton value='Copy Link' onClick={() => copyJoinUrl()} faClassName='fa-link' />
 
             </div>

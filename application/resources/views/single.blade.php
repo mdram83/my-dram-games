@@ -87,6 +87,7 @@
                                     <div id="single-game-invite-controls-root"
                                          data-game.box="{{ json_encode($gameBox) }}"
                                          data-game.invite="{{ isset($gameInvite) ? json_encode($gameInvite) : null }}"
+                                         data-game.playid="{{ $gamePlayId ?? null }}"
                                     ></div>
 
                                 @endif

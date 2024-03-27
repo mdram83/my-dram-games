@@ -9,6 +9,7 @@ use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueException;
+use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -64,7 +65,13 @@ class GameInviteController extends Controller
         }
     }
 
-    public function join(GameInviteRepository $repository, Player $player, string $slug, int|string $gameInviteId): View|Response|RedirectResponse
+    public function join(
+        GameInviteRepository $repository,
+        GamePlayRepository $gamePlayRepository,
+        Player $player,
+        string $slug,
+        int|string $gameInviteId
+    ): View|Response|RedirectResponse
     {
         try {
             $gameInvite = $repository->getOne($gameInviteId);
@@ -77,6 +84,7 @@ class GameInviteController extends Controller
             $responseContent = [
                 'gameBox' => $gameInvite->getGameBox()->toArray(),
                 'gameInvite' => $gameInvite->toArray(),
+                'gamePlayId' => $gamePlayRepository->getOneByGameInvite($gameInvite)?->getId(),
             ];
 
         } catch (GameInviteException $e) {

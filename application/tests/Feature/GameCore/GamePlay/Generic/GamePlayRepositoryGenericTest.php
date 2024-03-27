@@ -76,4 +76,14 @@ class GamePlayRepositoryGenericTest extends TestCase
         $this->assertInstanceOf(GamePlay::class, $loaded);
         $this->assertEquals($id, $loaded->getId());
     }
+
+    public function testGetOneByGameInvite(): void
+    {
+        $game = $this->prepareGamePlay();
+        $assignedInvite = $game->getGameInvite();
+        $orphanInvite = $this->prepareGameInvite();
+
+        $this->assertNull($this->repository->getOneByGameInvite($orphanInvite));
+        $this->assertEquals($game->getId(), $this->repository->getOneByGameInvite($assignedInvite)->getId());
+    }
 }

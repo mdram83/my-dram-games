@@ -3,7 +3,7 @@ import {GameInviteCreate} from "./GameInviteCreate.jsx";
 import {GameInviteShow} from "./GameInviteShow.jsx";
 import {SiteButton} from "../../../template/components/SiteButton.jsx";
 
-export const GameInviteControls = ({gameBox, loadedGameInvite = undefined}) => {
+export const GameInviteControls = ({gameBox, loadedGameInvite = undefined, gamePlayId = undefined}) => {
 
     const [buttonCreateOn, setButtonCreateOn] = React.useState(!loadedGameInvite);
     const [formCreateOn, setFormCreateOn] = React.useState(false);
@@ -36,7 +36,7 @@ export const GameInviteControls = ({gameBox, loadedGameInvite = undefined}) => {
                                                onStore={(gameInvite) => showGameInvite(gameInvite)}
             />}
 
-            {gameInviteShowOn && <GameInviteShow gameInvite={gameInvite} slug={gameBox.slug} />}
+            {gameInviteShowOn && <GameInviteShow gameInvite={gameInvite} slug={gameBox.slug} gamePlayId={gamePlayId} />}
         </>
     );
 }

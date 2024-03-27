@@ -2,6 +2,7 @@
 
 namespace App\GameCore\GamePlay\Generic;
 
+use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
@@ -26,5 +27,13 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
         $className = $this->gamePlayAbsRepository->getOne($slug);
 
         return new $className($storage, $this->collectionHandler);
+    }
+
+    public function getOneByGameInvite(GameInvite $gameInvite): ?GamePlay
+    {
+        if ($storage = $this->storageRepository->getOneByGameInvite($gameInvite)) {
+            return $this->getOne($storage->getId());
+        }
+        return null;
     }
 }

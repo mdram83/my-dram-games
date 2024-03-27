@@ -10,6 +10,7 @@ if (rootElement) {
         'loadedGameInvite': rootElement.dataset['game.invite']
             ? Object.assign({}, JSON.parse(rootElement.dataset['game.invite']))
             : undefined,
+        'gamePlayId': rootElement.dataset['game.playid'] ?? undefined,
     }
 
     createRoot(rootElement).render(<GameInviteControls {...props} />);
