@@ -66,10 +66,13 @@ class GamePlayTicTacToeTest extends TestCase
         return new GamePlayStorageEloquent(App::make(GameInviteRepository::class), $id);
     }
 
-    protected function prepareGamePlayTicTacToe(int|string $id = null, bool $allPlayers = true): GamePlayTicTacToe
+    protected function prepareGamePlayTicTacToe(int|string $id = null, bool $allPlayers = true, bool $finished = false): GamePlayTicTacToe
     {
         $storage = $this->prepareGamePlayStorage($id);
         $storage->setGameInvite($this->prepareGameInvite($allPlayers));
+        if ($finished) {
+            $storage->setFinished();
+        }
 
         return new GamePlayTicTacToe(
             $storage,
@@ -207,5 +210,13 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertFalse($this->play->isFinished());
     }
 
-    // exception when handling move of finished game
+    public function testThrowExceptionWhenHandlingMoveOnFinishedGame(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+
+        $play = $this->prepareGamePlayTicTacToe(finished: true);
+        $move = $this->prepareMove();
+        $play->handleMove($move);
+    }
 }

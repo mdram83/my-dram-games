@@ -11,4 +11,5 @@ class GamePlayException extends \Exception
 
     public const MESSAGE_NOT_CURRENT_PLAYER = 'It is not Player move now';
     public const MESSAGE_INCOMPATIBLE_MOVE = 'Move configuration incompatible with game';
+    public const MESSAGE_MOVE_ON_FINISHED_GAME = 'Can not make move on finished game';
 }

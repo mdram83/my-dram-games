@@ -22,6 +22,10 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
      */
     public function handleMove(GameMove $move): void
     {
+        if ($this->isFinished()) {
+            throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+        }
+
         $this->validateMove($move);
 
         $this->board->setFieldValue($move->getDetails()['fieldKey'], $this->getPlayerCharacterName($move->getPlayer()));
