@@ -103,6 +103,17 @@ class GamePlayStorageEloquent implements GamePlayStorage
         return (bool) $this->model->setup;
     }
 
+    public function setFinished(): void
+    {
+        $this->model->finished = true;
+        $this->model->save();
+    }
+
+    public function getFinished(): bool
+    {
+        return (bool) $this->model->finished;
+    }
+
     private function registerNewModel()
     {
         $this->model = new GamePlayStorageEloquentModel();

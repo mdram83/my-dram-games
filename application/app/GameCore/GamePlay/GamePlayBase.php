@@ -55,6 +55,11 @@ abstract class GamePlayBase implements GamePlay
         return $this->storage->getGameInvite();
     }
 
+    final public function isFinished(): bool
+    {
+        return $this->storage->getFinished();
+    }
+
     final protected function setPlayers(): void
     {
         if (!isset($this->players)) {

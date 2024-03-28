@@ -14,4 +14,5 @@ interface GamePlay
     public function getGameInvite(): GameInvite;
     public function handleMove(GameMove $move): void;
     public function getSituation(Player $player): array;
+    public function isFinished(): bool;
 }

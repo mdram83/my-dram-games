@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('gameInviteId')->unique()->nullable();
             $table->json('gameData')->nullable();
             $table->boolean('setup')->default(false);
+            $table->boolean('finished')->default(false);
             $table->timestamps();
         });
     }

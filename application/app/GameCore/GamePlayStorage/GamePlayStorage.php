@@ -13,4 +13,6 @@ interface GamePlayStorage
     public function getGameData(): array;
     public function setSetup(): void;
     public function getSetup(): bool;
+    public function setFinished(): void;
+    public function getFinished(): bool;
 }

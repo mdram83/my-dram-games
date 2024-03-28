@@ -201,4 +201,11 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertNotNull($situation['board'][1]);
         $this->assertNull($situation['board'][2]);
     }
+
+    public function testGetFinishedReturnFalsePriorToAnyMove(): void
+    {
+        $this->assertFalse($this->play->isFinished());
+    }
+
+    // exception when handling move of finished game
 }

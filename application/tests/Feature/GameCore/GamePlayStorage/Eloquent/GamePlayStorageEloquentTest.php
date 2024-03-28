@@ -22,7 +22,7 @@ class GamePlayStorageEloquentTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent $storage;
+    protected GamePlayStorageEloquent $storage;
 
     protected Player $playerOne;
     protected Player $playerTwo;
@@ -65,10 +65,10 @@ class GamePlayStorageEloquentTest extends TestCase
 
     protected function constructStorageWithId(int|string $id): \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent
     {
-        return new \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent($this->inviteRepository, $id);
+        return new GamePlayStorageEloquent($this->inviteRepository, $id);
     }
 
-    protected function constructStorageWithoutId(): \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent
+    protected function constructStorageWithoutId(): GamePlayStorageEloquent
     {
         return new GamePlayStorageEloquent($this->inviteRepository);
     }
@@ -164,6 +164,25 @@ class GamePlayStorageEloquentTest extends TestCase
         $loaded = $this->constructStorageWithId($this->storage->getId());
 
         $this->assertTrue($loaded->getSetup());
+    }
+
+    public function testGetFinishedReturnFalseBeforeSetting(): void
+    {
+        $this->assertFalse($this->storage->getFinished());
+    }
+
+    public function testGetFinishedAfterSettingUp(): void
+    {
+        $this->storage->setFinished();
+        $this->assertTrue($this->storage->getFinished());
+    }
+
+    public function testGetFinishedFromLoadedObject(): void
+    {
+        $this->storage->setFinished();
+        $loaded = $this->constructStorageWithId($this->storage->getId());
+
+        $this->assertTrue($loaded->getFinished());
     }
 
     public function testSetAndGetGameData(): void
