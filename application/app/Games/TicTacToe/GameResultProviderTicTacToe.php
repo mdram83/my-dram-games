@@ -7,7 +7,6 @@ use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
-use App\Games\GameResultTicTacToe;
 
 class GameResultProviderTicTacToe implements GameResultProvider
 {

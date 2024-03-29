@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Games;
+namespace App\Games\TicTacToe;
 
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;

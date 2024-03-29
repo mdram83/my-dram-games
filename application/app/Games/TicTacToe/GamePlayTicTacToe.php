@@ -9,7 +9,6 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\Player\Player;
-use App\Games\GameResultTicTacToe;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {

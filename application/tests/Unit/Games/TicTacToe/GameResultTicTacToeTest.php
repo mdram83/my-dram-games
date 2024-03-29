@@ -4,7 +4,7 @@ namespace Tests\Unit\Games\TicTacToe;
 
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
-use App\Games\GameResultTicTacToe;
+use App\Games\TicTacToe\GameResultTicTacToe;
 use PHPUnit\Framework\TestCase;
 
 class GameResultTicTacToeTest extends TestCase
