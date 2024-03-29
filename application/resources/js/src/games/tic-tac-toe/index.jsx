@@ -33,16 +33,28 @@ Echo.join(`game-invite-players.${gameInvite.gameInviteId}`)
         usePlayersStatusStore.getState().setPlayer(user.name, false);
         useTicTacToeStore.getState().setMessage(user.name + ' disconnected.', true, 2);
     }))
-    // .listen('GameCore\\GamePlay\\GamePlayStoredEvent', (e) => console.log('event:', e)) // Consider game win here
     .error(() => {});
 
 Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
     .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) => unstable_batchedUpdates(() => {
-        useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
+
         useTicTacToeStore.getState().setBoard(e.situation.board);
-        if (e.situation.activePlayer === window.MyDramGames.player.name) {
-            useTicTacToeStore.getState().setMessage('Your turn', false, 0.5);
+
+        if (e.situation.isFinished) {
+
+            useTicTacToeStore.getState().setFinished();
+            useTicTacToeStore.getState().setWinningFields(e.situation.result.details.winningFields);
+            useTicTacToeStore.getState().setMessage(e.situation.result.message, false, 10);
+
+        } else {
+
+            useTicTacToeStore.getState().setActivePlayer(e.situation.activePlayer);
+
+            if (e.situation.activePlayer === window.MyDramGames.player.name) {
+                useTicTacToeStore.getState().setMessage('Your turn', false, 0.5);
+            }
         }
+
     }))
     .error((error) => unstable_batchedUpdates(() => {
         useTicTacToeStore.getState().setMessage(

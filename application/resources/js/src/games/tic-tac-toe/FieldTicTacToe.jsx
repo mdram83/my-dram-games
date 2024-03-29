@@ -5,6 +5,8 @@ import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
     const gamePlayId = useTicTacToeStore((state) => state.gamePlayId);
+    const isFinished = useTicTacToeStore((state) => state.isFinished);
+    const winningFields = useTicTacToeStore((state) => state.winningFields);
     const moving = useTicTacToeStore((state) => state.moving);
     const setMoving = useTicTacToeStore((state) => state.setMoving);
     const setMessage = useTicTacToeStore((state) => state.setMessage);
@@ -15,9 +17,12 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
         setLocalMove(status);
     }
 
+    // TODO continue here to adjust color; possibly winningFields has strings while fieldKey I dont know. Maybe not a problem.
+    const fieldColor = winningFields.includes(fieldKey) ? ' text-red-600 ' : ' text-neutral-700 ';
+
     const fieldBaseClass =
         ' w-[16vh] sm:w-[17.5vh] h-[16vh] sm:h-[17.5vh] flex justify-center items-center font-semibold text-[8vh] text-neutral-700 '
-        + (fieldValue === null ? ' hover:cursor-pointer ' : ' hover:cursor-default ');
+        + ((fieldValue === null && !isFinished) ? ' hover:cursor-pointer ' : ' hover:cursor-default ');
 
     const borderCombinedClass = (key) => {
         const horizontalBorder = ((key <= 6) ? ' border-b-[0.75vh] ' : ' border-b-0 ') + ' border-t-0 ';
@@ -26,6 +31,11 @@ export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
     }
 
     const makeMove = () => {
+
+        if (isFinished) {
+            return;
+        }
+
         if (fieldValue === null) {
             if (moving) return;
             setMove(true);

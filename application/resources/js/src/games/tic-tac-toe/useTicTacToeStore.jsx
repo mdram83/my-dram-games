@@ -29,4 +29,10 @@ export const useTicTacToeStore = create((set, get) => ({
         timeout: timeout,
     }})),
 
+    isFinished: false,
+    setFinished: () => set(() => ({isFinished: true, activePlayer: undefined})),
+
+    winningFields: [],
+    setWinningFields: (fields) => set(() => ({winningFields: fields})),
+
 }));
