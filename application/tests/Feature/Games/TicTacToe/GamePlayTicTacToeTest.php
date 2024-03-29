@@ -17,6 +17,7 @@ use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\GameResultTicTacToe;
 use App\Games\TicTacToe\GameBoardTicTacToe;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
@@ -136,6 +137,7 @@ class GamePlayTicTacToeTest extends TestCase
             'activePlayer' => $this->players[0]->getName(),
             'characters' => ['x' => $this->players[0]->getName(), 'o' => $this->players[1]->getName()],
             'board' => json_decode((new GameBoardTicTacToe())->toJson(), true),
+            'isFinished' => false,
         ];
 
         $this->assertEquals($expected, $this->play->getSituation($this->players[0]));
@@ -219,4 +221,44 @@ class GamePlayTicTacToeTest extends TestCase
         $move = $this->prepareMove();
         $play->handleMove($move);
     }
+
+    public function testGetFinishedReturnTrueAfterLastMove(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleMove($this->prepareMove(null, 1));
+        $play->handleMove($this->prepareMove($this->players[1], 5));
+        $play->handleMove($this->prepareMove(null, 2));
+        $play->handleMove($this->prepareMove($this->players[1], 9));
+        $play->handleMove($this->prepareMove(null, 3));
+
+        $this->assertTrue($play->isFinished());
+    }
+
+    public function testGetSituationContainResultAfterLastMove(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleMove($this->prepareMove(null, 1));
+        $play->handleMove($this->prepareMove($this->players[1], 5));
+        $play->handleMove($this->prepareMove(null, 2));
+        $play->handleMove($this->prepareMove($this->players[1], 9));
+        $play->handleMove($this->prepareMove(null, 3));
+
+        $expectedResult = new GameResultTicTacToe($this->players[0]->getName(), [1, 2, 3]);
+        $expected = [
+            'players' => [$this->players[0]->getName(), $this->players[1]->getName()],
+            'activePlayer' => $this->players[1]->getName(),
+            'characters' => ['x' => $this->players[0]->getName(), 'o' => $this->players[1]->getName()],
+            'board' => [1 => 'x', 2 => 'x', 3 => 'x', 4 => null, 5 => 'o', 6 => null, 7 => null, 8 => null, 9 => 'o'],
+            'isFinished' => true,
+            'result' => [
+                'details' => $expectedResult->getDetails(),
+                'message' => $expectedResult->getMessage(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $play->getSituation($this->players[0]));
+        $this->assertEquals($expected, $play->getSituation($this->players[1]));
+    }
+
+
 }

@@ -7,8 +7,8 @@ use App\GameCore\GameResult\GameResultException;
 
 class GameResultTicTacToe implements GameResult
 {
-    private const MESSAGE_WIN = ' won the Game!';
-    private const MESSAGE_DRAW = 'Draw!';
+    public const MESSAGE_WIN = 'won the Game!';
+    public const MESSAGE_DRAW = 'Draw!';
 
     /**
      * @throws GameResultException

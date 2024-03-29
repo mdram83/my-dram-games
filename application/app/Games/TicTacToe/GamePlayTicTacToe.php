@@ -9,12 +9,14 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\Player\Player;
+use App\Games\GameResultTicTacToe;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {
     protected Player $activePlayer;
     protected CollectionGameCharacterTicTacToe $characters;
     protected GameBoardTicTacToe $board;
+    protected ?GameResultTicTacToe $result = null;
 
     /**
      * @throws GamePlayException
@@ -32,23 +34,38 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
         $this->setActivePlayer($this->getNextPlayer($move->getPlayer()));
         $this->saveData();
 
-        // check win later
+        $resultProvider = new GameResultProviderTicTacToe();
+        if ($this->result = $resultProvider->getResult([
+            'board' => $this->board,
+            'characters' => $this->characters,
+            'nextMoveCharacterName' => $this->getPlayerCharacterName($this->activePlayer),
+        ])) {
+            $this->storage->setFinished();
+        }
     }
 
     public function getSituation(Player $player): array
     {
-        return [
-            'players' => [
-                $this->storage->getGameInvite()->getPlayers()[0]->getName(),
-                $this->storage->getGameInvite()->getPlayers()[1]->getName(),
+        $resultArray = isset($this->result)
+            ? ['result' => ['details' => $this->result->getDetails(), 'message' => $this->result->getMessage()]]
+            : [];
+
+        return array_merge(
+            [
+                'players' => [
+                    $this->storage->getGameInvite()->getPlayers()[0]->getName(),
+                    $this->storage->getGameInvite()->getPlayers()[1]->getName(),
+                ],
+                'activePlayer' => $this->activePlayer->getName(),
+                'characters' => [
+                    'x' => $this->characters->getOne('x')->getPlayer()->getName(),
+                    'o' => $this->characters->getOne('o')->getPlayer()->getName(),
+                ],
+                'board' => json_decode($this->board->toJson(), true),
+                'isFinished' => $this->isFinished(),
             ],
-            'activePlayer' => $this->activePlayer->getName(),
-            'characters' => [
-                'x' => $this->characters->getOne('x')->getPlayer()->getName(),
-                'o' => $this->characters->getOne('o')->getPlayer()->getName(),
-            ],
-            'board' => json_decode($this->board->toJson(), true),
-        ];
+            $resultArray
+        );
     }
 
     /**
