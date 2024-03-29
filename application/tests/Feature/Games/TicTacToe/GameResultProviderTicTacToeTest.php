@@ -48,14 +48,35 @@ class GameResultProviderTicTacToeTest extends TestCase
         }
     }
 
-    protected function getData(): array
+    protected function getData(string $nextMoveCharacterName = 'x'): array
     {
-        return ['board' => $this->board, 'characters' => $this->characters];
+        return [
+            'board' => $this->board,
+            'characters' => $this->characters,
+            'nextMoveCharacterName' => $nextMoveCharacterName,
+        ];
     }
 
     public function testInterfaceImplemented(): void
     {
         $this->assertInstanceOf(GameResultProvider::class, $this->provider);
+    }
+
+    public function testThrowExceptionIfMissingNextCharacterName(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+
+        $data = ['characters' => $this->characters, 'board' => $this->board];
+        $this->provider->getResult($data);
+    }
+
+    public function testThrowExceptionIfIncorrectNextCharacterName(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+
+        $this->provider->getResult($this->getData('a'));
     }
 
     public function testThrowExceptionIfDataMissBoard(): void
@@ -174,21 +195,82 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->assertEquals($this->players[0]->getName(), $result->toArray()['winnerName']);
     }
 
-    public function testGetDrawCombinationOne(): void
+    public function testGetDrawCombinationOneEnsuringNoMutationToPassedData(): void
     {
         $this->setupBoard([
             1 => 'o', 2 => 'x', 3 => 'o',
             4 => 'o', 5 => 'x', 6 => 'x',
             7 => null, 8 => 'o', 9 => 'x',
         ]);
+        $originalBoardJson = $this->board->toJson();
+        $originalCharacters = $this->characters->toArray();
 
         $result = $this->provider->getResult($this->getData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals([], $result->toArray()['winningFields']);
         $this->assertNull($result->toArray()['winnerName']);
-
+        $this->assertJsonStringEqualsJsonString($originalBoardJson, $this->board->toJson());
+        $this->assertEquals($originalCharacters, $this->characters->toArray());
     }
+
+    public function testGetDrawCombinationTwo(): void
+    {
+        $this->setupBoard([
+            1 => 'o', 2 => 'x', 3 => null,
+            4 => 'x', 5 => 'o', 6 => null,
+            7 => 'x', 8 => 'o', 9 => 'x',
+        ]);
+
+        $result = $this->provider->getResult($this->getData('o'));
+
+        $this->assertInstanceOf(GameResultTicTacToe::class, $result);
+        $this->assertEquals([], $result->toArray()['winningFields']);
+        $this->assertNull($result->toArray()['winnerName']);
+    }
+
+    public function testGetResultWithoutWinOrDrawOne(): void
+    {
+        $this->setupBoard([
+            1 => null, 2 => 'o', 3 => null,
+            4 => null, 5 => 'x', 6 => null,
+            7 => null, 8 => null, 9 => null,
+        ]);
+
+        $result = $this->provider->getResult($this->getData());
+        $this->assertNull($result);
+    }
+
+    public function testGetResultWithoutWinOrDrawTwo(): void
+    {
+        $this->setupBoard([
+            1 => null, 2 => 'o', 3 => 'x',
+            4 => 'x', 5 => 'x', 6 => 'o',
+            7 => 'o', 8 => null, 9 => 'x',
+        ]);
+
+        $result = $this->provider->getResult($this->getData('o'));
+        $this->assertNull($result);
+    }
+
+    public function testGetResultWithoutWinOrDrawThree(): void
+    {
+        $this->setupBoard([
+            1 => null, 2 => 'o', 3 => 'x',
+            4 => 'x', 5 => 'x', 6 => 'o',
+            7 => 'o', 8 => 'o', 9 => 'x',
+        ]);
+
+        $result = $this->provider->getResult($this->getData());
+        $this->assertNull($result);
+    }
+
+
+//$this->setupBoard([
+//1 => null, 2 => null, 3 => null,
+//4 => null, 5 => null, 6 => null,
+//7 => null, 8 => null, 9 => null,
+//]);
 
     // buildDrawResultDifferentCombinations
     // returnNullIfNoResultCanBeBuildYet
