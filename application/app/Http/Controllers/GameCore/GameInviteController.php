@@ -81,6 +81,8 @@ class GameInviteController extends Controller
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
 
+            // TODO do something different for finished game here
+
             $responseContent = [
                 'gameBox' => $gameInvite->getGameBox()->toArray(),
                 'gameInvite' => $gameInvite->toArray(),

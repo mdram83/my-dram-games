@@ -266,4 +266,7 @@ class GameInviteControllerTest extends TestCase
             'gamePlayId' => $play->getId(),
         ]);
     }
+
+    // joining finished game >> show results for Player
+
 }
