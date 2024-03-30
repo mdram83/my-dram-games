@@ -24,6 +24,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -69,13 +70,21 @@ class GamePlayController extends Controller
         }
     }
 
-    public function show(GamePlayRepository $repository, Player $player, int|string $gamePlayId): Response|View
+    public function show(GamePlayRepository $repository, Player $player, int|string $gamePlayId): Response|View|RedirectResponse
     {
         try {
             $gamePlay = $repository->getOne($gamePlayId);
 
             if (!$gamePlay->getPlayers()->exist($player->getId())) {
                 throw new AccessDeniedHttpException(static::MESSAGE_FORBIDDEN);
+            }
+
+            if ($gamePlay->isFinished()) {
+
+                return Redirect::route('game-invites.join', [
+                    'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
+                    'gameInviteId' => $gamePlay->getGameInvite()->getId(),
+                ]);
             }
 
             return view(

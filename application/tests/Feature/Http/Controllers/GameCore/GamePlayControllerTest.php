@@ -265,5 +265,35 @@ class GamePlayControllerTest extends TestCase
         Event::assertDispatched(GamePlayMovedEvent::class);
     }
 
-    // LATER HANDLE WIN SITUATION AND MOVES FOLLOWING GAME FINISH (BASICALLY FORBIDDEN)
+    public function testMoveIllegalAfterGameFinish(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $play->handleMove(new GameMoveTicTacToe($this->host, 1));
+        $play->handleMove(new GameMoveTicTacToe($this->player, 4));
+        $play->handleMove(new GameMoveTicTacToe($this->host, 2));
+        $play->handleMove(new GameMoveTicTacToe($this->player, 5));
+        $play->handleMove(new GameMoveTicTacToe($this->host, 3));
+
+        $response = $this->getMoveResponse($this->player, $play->getId(), 6);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
+
+    public function testShowIllegalAfterGameFinish(): void
+    {
+        Event::fake();
+        $play = $this->createGamePlay($this->invite);
+        $play->handleMove(new GameMoveTicTacToe($this->host, 1));
+        $play->handleMove(new GameMoveTicTacToe($this->player, 4));
+        $play->handleMove(new GameMoveTicTacToe($this->host, 2));
+        $play->handleMove(new GameMoveTicTacToe($this->player, 5));
+        $play->handleMove(new GameMoveTicTacToe($this->host, 3));
+
+        $response = $this->getShowResponse($this->player, $play->getId());
+
+        $response->assertStatus(Response::HTTP_FOUND);
+        Event::assertNotDispatched(GamePlayMovedEvent::class);
+    }
 }
