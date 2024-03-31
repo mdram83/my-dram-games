@@ -33,7 +33,7 @@ class CollectionBase implements Collection
     }
 
     /**
-     * Adjust this function in specific implementation to utilize validateUnique if required
+     * Adjust this function in specific implementation to utilize validateUnique and validateType if required
      */
     public function reset(array $elements = []): static
     {

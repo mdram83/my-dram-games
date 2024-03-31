@@ -265,6 +265,14 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testThrowExceptionWhenCreatingRecordWithoutResult(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RESULT_NOT_SET);
+
+
+    }
+
 
 //$this->setupBoard([
 //1 => null, 2 => null, 3 => null,
