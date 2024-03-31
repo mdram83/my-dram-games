@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('game_record_eloquent_models', function (Blueprint $table) {
             $table->id();
 
-            $table->json('score')->nullable();
+            $table->json('score');
             $table->boolean('winnerFlag')->default(false);
 
             $table->foreignUuid('game_invite_id')
@@ -24,10 +24,12 @@ return new class extends Migration
                 ->references('id')
                 ->on('game_invite_eloquent_models');
 
-            $table->string('playerable_id', 255)->nullable();
-            $table->string('playerable_type', 255)->nullable();
+            $table->string('playerable_id', 255);
+            $table->string('playerable_type', 255);
 
             $table->timestamps();
+
+            $table->unique(['game_invite_id', 'playerable_id']);
         });
     }
 
