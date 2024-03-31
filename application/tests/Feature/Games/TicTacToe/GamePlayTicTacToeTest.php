@@ -15,6 +15,8 @@ use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
+use App\GameCore\GameRecord\GameRecordFactory;
+use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameBoardTicTacToe;
@@ -78,6 +80,7 @@ class GamePlayTicTacToeTest extends TestCase
         return new GamePlayTicTacToe(
             $storage,
             App::make(Collection::class),
+            App::make(GameRecordFactory::class),
         );
     }
 
@@ -258,6 +261,19 @@ class GamePlayTicTacToeTest extends TestCase
 
         $this->assertEquals($expected, $play->getSituation($this->players[0]));
         $this->assertEquals($expected, $play->getSituation($this->players[1]));
+    }
+
+    public function testGameRecordsCreatedAfterLastMove(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleMove($this->prepareMove(null, 1));
+        $play->handleMove($this->prepareMove($this->players[1], 5));
+        $play->handleMove($this->prepareMove(null, 2));
+        $play->handleMove($this->prepareMove($this->players[1], 9));
+        $play->handleMove($this->prepareMove(null, 3));
+        $records = App::make(GameRecordRepository::class)->getByGameInvite($play->getGameInvite());
+
+        $this->assertEquals(2, $records->count());
     }
 
 

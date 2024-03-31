@@ -2,6 +2,14 @@
 
 namespace Tests\Feature\Games\TicTacToe;
 
+use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GameInvite\GameInviteFactory;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
+use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
+use App\GameCore\GameRecord\CollectionGameRecord;
+use App\GameCore\GameRecord\GameRecordFactory;
+use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
@@ -27,8 +35,15 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->provider = new GameResultProviderTicTacToe();
+
+        $this->provider = new GameResultProviderTicTacToe(
+            App::make(Collection::class),
+            App::make(GameRecordFactory::class)
+        );
+
+        $this->board = new GameBoardTicTacToe();
         $this->players = [User::factory()->create(), User::factory()->create()];
+
         $this->characters = new CollectionGameCharacterTicTacToe(
             App::make(Collection::class),
             [
@@ -36,7 +51,6 @@ class GameResultProviderTicTacToeTest extends TestCase
                 new GameCharacterTicTacToe('o', $this->players[1]),
             ],
         );
-        $this->board = new GameBoardTicTacToe();
     }
 
     protected function setupBoard(array $fields): void
@@ -55,6 +69,22 @@ class GameResultProviderTicTacToeTest extends TestCase
             'characters' => $this->characters,
             'nextMoveCharacterName' => $nextMoveCharacterName,
         ];
+    }
+
+    protected function getGameInvite(): GameInvite
+    {
+        $options = new CollectionGameOptionValueInput(
+            App::make(Collection::class),
+            [
+                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                'autostart' => GameOptionValueAutostart::Disabled,
+            ]
+        );
+
+        $invite = App::make(GameInviteFactory::class)->create('tic-tac-toe', $options, $this->players[0]);
+        $invite->addPlayer($this->players[1]);
+
+        return $invite;
     }
 
     public function testInterfaceImplemented(): void
@@ -265,21 +295,79 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testThrowExceptionIfResultAlreadyProvided(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RESULTS_ALREADY_SET);
+
+        $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
+        $this->provider->getResult($this->getData());
+        $this->provider->getResult($this->getData());
+    }
+
     public function testThrowExceptionWhenCreatingRecordWithoutResult(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RESULT_NOT_SET);
 
-
+        $this->provider->createGameRecords($this->getGameInvite());
     }
 
+    public function testThrowExceptionWhenCreatingRecordAlreadyCreated(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RECORD_ALREADY_SET);
 
-//$this->setupBoard([
-//1 => null, 2 => null, 3 => null,
-//4 => null, 5 => null, 6 => null,
-//7 => null, 8 => null, 9 => null,
-//]);
+        $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
+        $this->provider->getResult($this->getData());
+        $invite = $this->getGameInvite();
+        $this->provider->createGameRecords($invite);
+        $this->provider->createGameRecords($invite);
+    }
 
-    // buildDrawResultDifferentCombinations
-    // returnNullIfNoResultCanBeBuildYet
+    public function testCreateGameRecords(): void
+    {
+        $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
+        $this->provider->getResult($this->getData());
+        $invite = $this->getGameInvite();
+        $recordsFromProvider = $this->provider->createGameRecords($invite);
+        $recordsFromRepository = App::make(GameRecordRepository::class)->getByGameInvite($invite);
+
+        $providedWinnerRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner()));
+        $providedLooserRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner() === false));
+
+        $repositoryWinnerRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner()));
+        $repositoryLooserRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner() === false));
+
+        $this->assertInstanceOf(CollectionGameRecord::class, $recordsFromProvider);
+        $this->assertEquals(['character' => 'x'], $providedWinnerRecord->getScore());
+        $this->assertEquals(2, $recordsFromProvider->count());
+        $this->assertEquals(2, $recordsFromRepository->count());
+        $this->assertEquals(
+            [
+                'winner' => [
+                    $repositoryWinnerRecord->getPlayer()->getId(),
+                    $repositoryWinnerRecord->isWinner(),
+                    $repositoryWinnerRecord->getScore(),
+                ],
+                'looser' => [
+                    $repositoryLooserRecord->getPlayer()->getId(),
+                    $repositoryLooserRecord->isWinner(),
+                    $repositoryLooserRecord->getScore(),
+                ],
+            ],
+            [
+                'winner' => [
+                    $providedWinnerRecord->getPlayer()->getId(),
+                    $providedWinnerRecord->isWinner(),
+                    $providedWinnerRecord->getScore(),
+                ],
+                'looser' => [
+                    $providedLooserRecord->getPlayer()->getId(),
+                    $providedLooserRecord->isWinner(),
+                    $providedLooserRecord->getScore(),
+                ],
+            ],
+        );
+    }
 }

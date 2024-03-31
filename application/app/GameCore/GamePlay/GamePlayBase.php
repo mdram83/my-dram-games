@@ -7,6 +7,7 @@ use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 
@@ -19,7 +20,8 @@ abstract class GamePlayBase implements GamePlay
      */
     final public function __construct(
         protected GamePlayStorage $storage,
-        protected Collection $collectionPlayersHandler
+        protected Collection $collectionHandler,
+        protected GameRecordFactory $gameRecordFactory,
     )
     {
         $this->validateStorage();
@@ -64,7 +66,7 @@ abstract class GamePlayBase implements GamePlay
     {
         if (!isset($this->players)) {
             $this->players = new CollectionGamePlayPlayers(
-                $this->collectionPlayersHandler,
+                clone $this->collectionHandler,
                 $this->storage->getGameInvite()->getPlayers()
             );
         }

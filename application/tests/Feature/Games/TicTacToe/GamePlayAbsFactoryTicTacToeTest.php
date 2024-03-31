@@ -12,6 +12,7 @@ use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
@@ -27,7 +28,8 @@ class GamePlayAbsFactoryTicTacToeTest extends TestCase
         parent::setUp();
         $this->factory = new GamePlayAbsFactoryTicTacToe(
             App::make(GamePlayStorageFactory::class),
-            App::make(Collection::class)
+            App::make(Collection::class),
+            App::make(GameRecordFactory::class),
         );
     }
 

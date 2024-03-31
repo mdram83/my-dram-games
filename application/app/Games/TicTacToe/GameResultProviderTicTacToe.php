@@ -3,39 +3,95 @@
 namespace App\Games\TicTacToe;
 
 use App\GameCore\GameElements\GameBoard\GameBoardException;
+use App\GameCore\GameInvite\GameInvite;
+use App\GameCore\GameRecord\CollectionGameRecord;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionException;
+use Illuminate\Support\Facades\App;
 
 class GameResultProviderTicTacToe implements GameResultProvider
 {
     private const MOVES_PREDICTION = 2;
 
+    readonly private GameRecordFactory $recordFactory;
+    readonly private Collection $handler;
+    private CollectionGameCharacterTicTacToe $characters;
     private array $winningFields = [];
     private ?string $winningValue = null;
+
+    private bool $resultProvided = false;
+    private bool $recordsCreated = false;
+
+    public function __construct(Collection $handler, GameRecordFactory $recordFactory)
+    {
+        $this->handler = $handler;
+        $this->recordFactory = $recordFactory;
+    }
 
     /**
      * @throws GameResultProviderException|GameResultException|GameBoardException
      */
     public function getResult(mixed $data): ?GameResult
     {
+        if ($this->resultProvided) {
+            throw new GameResultProviderException(GameResultProviderException::MESSAGE_RESULTS_ALREADY_SET);
+        }
+
         $this->validateData($data);
 
+        $this->characters = $data['characters'];
         $board = $data['board'];
 
         if ($this->checkWin($board)) {
+            $this->resultProvided = true;
             return new GameResultTicTacToe(
-                $data['characters']->getOne($this->winningValue)->getPlayer()->getName(),
+                $this->characters->getOne($this->winningValue)->getPlayer()->getName(),
                 $this->winningFields
             );
         }
 
         if ($this->checkDraw(clone $board, $data['nextMoveCharacterName'])) {
+            $this->resultProvided = true;
             return new GameResultTicTacToe();
         }
 
         return null;
+    }
+
+    /**
+     * @throws GameResultProviderException
+     * @throws CollectionException
+     */
+    public function createGameRecords(GameInvite $gameInvite): CollectionGameRecord
+    {
+        if (!$this->resultProvided) {
+            throw new GameResultProviderException(GameResultProviderException::MESSAGE_RESULT_NOT_SET);
+        }
+
+        if ($this->recordsCreated) {
+            throw new GameResultProviderException(GameResultProviderException::MESSAGE_RECORD_ALREADY_SET);
+        }
+
+        $recordsCollection = new CollectionGameRecord(clone $this->handler, []);
+
+        foreach (['x', 'o'] as $characterName) {
+            $record = $this->recordFactory->create(
+                $gameInvite,
+                $this->characters->getOne($characterName)->getPlayer(),
+                $this->winningValue === $characterName,
+                ['character' => $characterName]
+            );
+            $recordsCollection->add($record);
+        }
+
+        $this->recordsCreated = true;
+
+        return $recordsCollection;
     }
 
     /**
@@ -129,5 +185,4 @@ class GameResultProviderTicTacToe implements GameResultProvider
     {
         return $currentCharacterName === 'x' ? 'o' : 'x';
     }
-
 }

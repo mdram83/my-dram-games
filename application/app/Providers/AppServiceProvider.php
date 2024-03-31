@@ -27,7 +27,9 @@ use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
 use App\GameCore\GameRecord\Eloquent\GameRecordFactoryEloquent;
+use App\GameCore\GameRecord\Eloquent\GameRecordRepositoryEloquent;
 use App\GameCore\GameRecord\GameRecordFactory;
+use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
 use App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent;
@@ -77,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
 
         app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
+        app()->bind(GameRecordRepository::class, GameRecordRepositoryEloquent::class);
     }
 
     /**

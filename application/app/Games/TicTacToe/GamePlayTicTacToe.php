@@ -33,12 +33,14 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
         $this->setActivePlayer($this->getNextPlayer($move->getPlayer()));
         $this->saveData();
 
-        $resultProvider = new GameResultProviderTicTacToe();
+        $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
+
         if ($this->result = $resultProvider->getResult([
             'board' => $this->board,
             'characters' => $this->characters,
             'nextMoveCharacterName' => $this->getPlayerCharacterName($this->activePlayer),
         ])) {
+            $resultProvider->createGameRecords($this->getGameInvite());
             $this->storage->setFinished();
         }
     }
@@ -119,7 +121,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     private function setCharacters(Player $playerX, Player $playerO): void
     {
         $this->characters = new CollectionGameCharacterTicTacToe(
-            (clone $this->collectionPlayersHandler)->reset(),
+            (clone $this->collectionHandler)->reset(),
             [new GameCharacterTicTacToe('x', $playerX), new GameCharacterTicTacToe('o', $playerO)],
         );
     }

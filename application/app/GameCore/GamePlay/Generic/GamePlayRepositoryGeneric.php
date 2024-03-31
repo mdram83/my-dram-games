@@ -7,6 +7,7 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
 
 class GamePlayRepositoryGeneric implements GamePlayRepository
@@ -15,6 +16,7 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
         readonly private GamePlayStorageRepository $storageRepository,
         readonly private GamePlayAbsRepository $gamePlayAbsRepository,
         readonly private Collection $collectionHandler,
+        readonly private GameRecordFactory $gameRecordFactory,
     )
     {
 
@@ -26,7 +28,7 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
         $slug = $storage->getGameInvite()->getGameBox()->getSlug();
         $className = $this->gamePlayAbsRepository->getOne($slug);
 
-        return new $className($storage, $this->collectionHandler);
+        return new $className($storage, $this->collectionHandler, $this->gameRecordFactory);
     }
 
     public function getOneByGameInvite(GameInvite $gameInvite): ?GamePlay

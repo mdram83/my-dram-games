@@ -7,6 +7,7 @@ use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
 use Illuminate\Support\Facades\Config;
 
@@ -16,7 +17,8 @@ class GamePlayAbsFactoryRepositoryPhpConfig implements GamePlayAbsFactoryReposit
 
     public function __construct(
         readonly private GamePlayStorageFactory $storageFactory,
-        readonly private Collection $collectionHandler
+        readonly private Collection $collectionHandler,
+        readonly private GameRecordFactory $gameRecordFactory,
     )
     {
 
@@ -38,7 +40,7 @@ class GamePlayAbsFactoryRepositoryPhpConfig implements GamePlayAbsFactoryReposit
             throw new GamePlayException(GamePlayException::MESSAGE_NO_ABS_FACTORY);
         }
 
-        return new $className($this->storageFactory, clone $this->collectionHandler);
+        return new $className($this->storageFactory, clone $this->collectionHandler, $this->gameRecordFactory);
     }
 
     private function isEntryMissing(?string $className): bool
