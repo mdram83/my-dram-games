@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
@@ -10,6 +11,7 @@ use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueException;
 use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -68,6 +70,7 @@ class GameInviteController extends Controller
     public function join(
         GameInviteRepository $repository,
         GamePlayRepository $gamePlayRepository,
+        GameRecordRepository $gameRecordRepository,
         Player $player,
         string $slug,
         int|string $gameInviteId
@@ -81,13 +84,11 @@ class GameInviteController extends Controller
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
 
-            // TODO do something different for finished game here
+            $responseContent = $this->getJoinResponseContent($gameInvite, $gamePlayRepository, $gameRecordRepository);
 
-            $responseContent = [
-                'gameBox' => $gameInvite->getGameBox()->toArray(),
-                'gameInvite' => $gameInvite->toArray(),
-                'gamePlayId' => $gamePlayRepository->getOneByGameInvite($gameInvite)?->getId(),
-            ];
+            Session::flash('success', ($message ?? static::MESSAGE_PLAYER_BACK));
+
+            return view('single', $responseContent);
 
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
@@ -95,9 +96,6 @@ class GameInviteController extends Controller
         } catch (Exception) {
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
-
-        Session::flash('success', ($message ?? static::MESSAGE_PLAYER_BACK));
-        return view('single', $responseContent);
     }
 
     /**
@@ -130,5 +128,33 @@ class GameInviteController extends Controller
         $inputs['options'] = $options;
 
         return $inputs;
+    }
+
+    private function getJoinResponseContent(
+        GameInvite $gameInvite,
+        GamePlayRepository $gamePlayRepository,
+        GameRecordRepository $gameRecordRepository,
+    ): array
+    {
+        $gamePlay = $gamePlayRepository->getOneByGameInvite($gameInvite);
+
+        $responseContent = [
+            'gameBox' => $gameInvite->getGameBox()->toArray(),
+            'gameInvite' => $gameInvite->toArray(),
+            'gamePlayId' => $gamePlay?->getId(),
+        ];
+
+        if ($gamePlay?->isFinished()) {
+            $responseContent['gameRecords'] = array_map(fn($record) =>
+                [
+                    'player' => $record->getPlayer()->getName(),
+                    'score' => $record->getScore(),
+                    'isWinner' => $record->isWinner(),
+                ],
+                $gameRecordRepository->getByGameInvite($gameInvite)->toArray()
+            );
+        }
+
+        return $responseContent;
     }
 }

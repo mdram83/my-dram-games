@@ -14,6 +14,7 @@ use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -267,6 +268,29 @@ class GameInviteControllerTest extends TestCase
         ]);
     }
 
-    // joining finished game >> show results for Player
+    public function testJoinFinishedGameForPlayerResultInExposingGameRecords(): void
+    {
+        $gameInvite = $this->getGameInvite();
+        $gameInvite->addPlayer($this->playerJoin);
+        $factory = App::make(GamePlayAbsFactoryRepository::class)->getOne($gameInvite->getGameBox()->getSlug());
+        $play = $factory->create($gameInvite);
+        $play->handleMove(new GameMoveTicTacToe($this->playerHost, 1));
+        $play->handleMove(new GameMoveTicTacToe($this->playerJoin, 4));
+        $play->handleMove(new GameMoveTicTacToe($this->playerHost, 2));
+        $play->handleMove(new GameMoveTicTacToe($this->playerJoin, 5));
+        $play->handleMove(new GameMoveTicTacToe($this->playerHost, 3));
 
+        $gameInviteId = $gameInvite->getId();
+        $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertViewIs('single');
+        $response->assertSessionHas(['success' => GameInviteController::MESSAGE_PLAYER_BACK]);
+        $response->assertViewHas([
+            'gameInvite.id' => $gameInviteId,
+            'gameInvite.host.name' => $gameInvite->getHost()->getName(),
+            'gamePlayId' => $play->getId(),
+        ]);
+        $response->assertViewHas(['gameRecords']);
+    }
 }
