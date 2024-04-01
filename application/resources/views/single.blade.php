@@ -88,6 +88,7 @@
                                          data-game.box="{{ json_encode($gameBox) }}"
                                          data-game.invite="{{ isset($gameInvite) ? json_encode($gameInvite) : null }}"
                                          data-game.playid="{{ $gamePlayId ?? null }}"
+                                         data-game.records="{{ isset($gameRecords) ? json_encode($gameRecords) : null }}"
                                     ></div>
 
                                 @endif

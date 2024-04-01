@@ -4,11 +4,13 @@ import {SiteButton} from "../../../template/components/SiteButton.jsx";
 import {GameInvitePlayers} from "./GameInvitePlayers.jsx";
 import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
 
-export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined}) => {
+export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined, gameRecords = undefined}) => {
 
     const isPlayerHost = gameInvite.host.name === window.MyDramGames.player.name;
     const [allPlayersOnline, setAllPlayersOnline] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(undefined);
+    const [recordsModule, setRecordsModule] = React.useState(undefined);
+
     const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
 
     const copyJoinUrl = () => navigator.clipboard.writeText(joinUrl);
@@ -19,6 +21,12 @@ export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined}) => {
             .then(() => { })
             .catch(error => setErrorMessage(error.response.data.message.message ?? 'Unexpected error'));
     }
+
+    useEffect(() => {
+        if (gameRecords) {
+            import(`../../games/${slug}/GameRecords.jsx`).then((module) => setRecordsModule(module.default(gameRecords)));
+        }
+    }, [])
 
     useEffect(() => {
         const autostartOption = gameInvite.options.autostart ?? 0;
@@ -47,15 +55,22 @@ export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined}) => {
                                                                                 faClassName='fa-play'/>
                 }
 
-                {gamePlayId && <SiteButton value='Resume'
-                                                    onClick={() => showGamePlay(gamePlayId)}
-                                                    className='mr-2'
-                                                    faClassName='fa-play'/>
+                {gamePlayId && !gameRecords && <SiteButton value='Resume'
+                                                           onClick={() => showGamePlay(gamePlayId)}
+                                                           className='mr-2'
+                                                           faClassName='fa-play' />
                 }
 
                 <SiteButton value='Copy Link' onClick={() => copyJoinUrl()} faClassName='fa-link' />
 
             </div>
+
+            {recordsModule &&
+                <div>
+                    <h4 className="font-bold font-sans my-4">Game Records</h4>
+                    {recordsModule}
+                </div>
+            }
 
         </div>
     );
