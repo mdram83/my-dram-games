@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Games\TicTacToe;
+namespace Tests\Feature\Games\TicTacToe\Elements;
 
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\Player\Player;
-use App\Games\TicTacToe\GameCharacterTicTacToe;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

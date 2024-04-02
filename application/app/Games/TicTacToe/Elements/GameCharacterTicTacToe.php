@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Games\TicTacToe;
+namespace App\Games\TicTacToe\Elements;
 
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\Player\Player;

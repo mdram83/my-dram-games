@@ -12,7 +12,8 @@ use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
-use Illuminate\Support\Facades\App;
+use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
+use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 
 class GameResultProviderTicTacToe implements GameResultProvider
 {

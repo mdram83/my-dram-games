@@ -1,15 +1,14 @@
 <?php
 
-namespace Tests\Unit\Games\TicTacToe;
+namespace Tests\Unit\Games\TicTacToe\Elements;
 
 use App\GameCore\GameElements\GameBoard\GameBoard;
 use App\GameCore\GameElements\GameBoard\GameBoardException;
-use App\Games\TicTacToe\GameBoardTicTacToe;
 use PHPUnit\Framework\TestCase;
 
 class GameBoardTicTacToeTest extends TestCase
 {
-    protected GameBoardTicTacToe $board;
+    protected \App\Games\TicTacToe\Elements\GameBoardTicTacToe $board;
     protected array $fieldsToTest = [
         '1' => null, '2' => 'o', '3' => 'x',
         '4' => null, '5' => 'x', '6' => null,
@@ -19,7 +18,7 @@ class GameBoardTicTacToeTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->board = new GameBoardTicTacToe();
+        $this->board = new \App\Games\TicTacToe\Elements\GameBoardTicTacToe();
     }
 
     public function testClassInstance(): void

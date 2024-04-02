@@ -19,7 +19,7 @@ use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GameBoardTicTacToe;
+use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Games\TicTacToe\GameResultTicTacToe;

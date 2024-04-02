@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\Games\TicTacToe;
+namespace Tests\Feature\Games\TicTacToe\Elements;
 
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
-use App\Games\TicTacToe\CollectionGameCharacterTicTacToe;
-use App\Games\TicTacToe\GameCharacterTicTacToe;
+use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
@@ -45,7 +45,7 @@ class CollectionGameCharacterTicTacToeTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_DUPLICATE);
 
-        $collection = new CollectionGameCharacterTicTacToe($this->handler);
+        $collection = new \App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe($this->handler);
         $collection->add(new GameCharacterTicTacToe('x', $this->players[0]));
         $collection->add(new GameCharacterTicTacToe('o', $this->players[0]));
     }
