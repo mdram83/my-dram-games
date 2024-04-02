@@ -6,6 +6,7 @@ use App\Http\Controllers\GameCore\GameBoxController;
 use App\Http\Controllers\GameCore\GamePlayController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RefreshCsrfTokenController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -24,6 +25,7 @@ Route::middleware(['ajax', 'player'])->group(function() {
 
 Route::middleware('ajax')->group(function() {
     Route::get('/ajax/games', [GameBoxAjaxController::class, 'index'])->name('ajax.games.index');
+    Route::get('/ajax/csrf-token', RefreshCsrfTokenController::class)->name('ajax.csrf.token');
 });
 
 Route::middleware('auth')->group(function () {
