@@ -1,5 +1,5 @@
 import React from "react";
-import {PlayerStatus} from "../../../template/play/components/PlayerStatus.jsx";
+import {PlayerStatus} from "../../../../template/play/components/PlayerStatus.jsx";
 import {configTicTacToe} from "./configTicTacToe.jsx";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {FieldTicTacToe} from "./FieldTicTacToe";
+import {FieldTicTacToe} from "./FieldTicTacToe.jsx";
 import {configTicTacToe} from "./configTicTacToe.jsx";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
 

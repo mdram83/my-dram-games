@@ -1,6 +1,6 @@
 import React from "react";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
-import {FlashMessage} from "../../../template/components/FlashMessage.jsx";
+import {FlashMessage} from "../../../../template/components/FlashMessage.jsx";
 import {unstable_batchedUpdates} from "react-dom";
 
 export const FlashMessageTicTacToe = () => {

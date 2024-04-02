@@ -1,5 +1,5 @@
 import React from "react";
-import {configTicTacToe} from "./configTicTacToe.jsx";
+import {configTicTacToe} from "./elements/configTicTacToe.jsx";
 
 const GameRecords = (gameRecords) => {
 

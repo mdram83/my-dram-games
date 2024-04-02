@@ -1,11 +1,11 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Menu} from "../../../template/play/components/Menu.jsx";
-import {StatusBarTicTacToe} from "./StatusBarTicTacToe.jsx";
-import {BoardTicTacToe} from "./BoardTicTacToe";
-import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
+import {StatusBarTicTacToe} from "./elements/StatusBarTicTacToe.jsx";
+import {BoardTicTacToe} from "./elements/BoardTicTacToe.jsx";
+import {useTicTacToeStore} from "./elements/useTicTacToeStore.jsx";
 import {unstable_batchedUpdates} from "react-dom";
-import {FlashMessageTicTacToe} from "./FlashMessageTicTacToe.jsx";
+import {FlashMessageTicTacToe} from "./elements/FlashMessageTicTacToe.jsx";
 import {usePlayersStatusStore} from "../../../template/play/components/usePlayersStatusStore.jsx";
 
 const rootElement = document.querySelector('#game-play-root');
