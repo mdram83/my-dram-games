@@ -46,8 +46,20 @@ class GameResultProviderTicTacToe implements GameResultProvider
         $this->validateData($data);
 
         $this->characters = $data['characters'];
-        $board = $data['board'];
 
+        if (isset($data['forfeitCharacter'])) {
+            return $this->getForfeitResult($data['forfeitCharacter']);
+        } else {
+            return $this->getWinResult($data['board'], $data['nextMoveCharacterName']);
+        }
+    }
+
+    /**
+     * @throws GameResultException
+     * @throws GameBoardException
+     */
+    private function getWinResult(GameBoardTicTacToe $board, string $nextMoveCharacterName): ?GameResult
+    {
         if ($this->checkWin($board)) {
             $this->resultProvided = true;
             return new GameResultTicTacToe(
@@ -56,12 +68,22 @@ class GameResultProviderTicTacToe implements GameResultProvider
             );
         }
 
-        if ($this->checkDraw(clone $board, $data['nextMoveCharacterName'])) {
+        if ($this->checkDraw(clone $board, $nextMoveCharacterName)) {
             $this->resultProvided = true;
             return new GameResultTicTacToe();
         }
 
         return null;
+    }
+
+    private function getForfeitResult(string $forfeitCharacterName): GameResult
+    {
+        $this->resultProvided = true;
+        $winningCharacterName = $this->getNextCharacterName($forfeitCharacterName);
+        $this->winningValue = $winningCharacterName;
+        $winningPlayerName = $this->characters->getOne($winningCharacterName)->getPlayer()->getName();
+
+        return new GameResultTicTacToe($winningPlayerName, [], true);
     }
 
     /**
@@ -100,6 +122,18 @@ class GameResultProviderTicTacToe implements GameResultProvider
      */
     private function validateData(mixed $data): void
     {
+        if (isset($data['forfeitCharacter'])) {
+            $this->validateForfeitData($data);
+        } else {
+            $this->validateMoveData($data);
+        }
+    }
+
+    /**
+     * @throws GameResultProviderException
+     */
+    private function validateMoveData(mixed $data): void
+    {
         if (
             !isset($data['board'])
             || !($data['board'] instanceof GameBoardTicTacToe)
@@ -107,6 +141,21 @@ class GameResultProviderTicTacToe implements GameResultProvider
             || !($data['characters'] instanceof CollectionGameCharacterTicTacToe)
             || !isset($data['nextMoveCharacterName'])
             || !in_array($data['nextMoveCharacterName'], ['x', 'o'])
+        ) {
+            throw new GameResultProviderException(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+        }
+    }
+
+    /**
+     * @throws GameResultProviderException
+     */
+    private function validateForfeitData(mixed $data): void
+    {
+        if (
+            !isset($data['characters'])
+            || !($data['characters'] instanceof CollectionGameCharacterTicTacToe)
+            || !isset($data['forfeitCharacter'])
+            || !in_array($data['forfeitCharacter'], ['x', 'o'])
         ) {
             throw new GameResultProviderException(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
         }

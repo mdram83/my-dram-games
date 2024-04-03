@@ -14,6 +14,7 @@ use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use App\Games\TicTacToe\GameResultProviderTicTacToe;
@@ -29,7 +30,7 @@ class GameResultProviderTicTacToeTest extends TestCase
 
     protected GameResultProviderTicTacToe $provider;
     protected array $players;
-    protected \App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe $characters;
+    protected CollectionGameCharacterTicTacToe $characters;
     protected GameBoardTicTacToe $board;
 
     public function setUp(): void
@@ -41,14 +42,14 @@ class GameResultProviderTicTacToeTest extends TestCase
             App::make(GameRecordFactory::class)
         );
 
-        $this->board = new \App\Games\TicTacToe\Elements\GameBoardTicTacToe();
+        $this->board = new GameBoardTicTacToe();
         $this->players = [User::factory()->create(), User::factory()->create()];
 
-        $this->characters = new \App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe(
+        $this->characters = new CollectionGameCharacterTicTacToe(
             App::make(Collection::class),
             [
                 new GameCharacterTicTacToe('x', $this->players[0]),
-                new \App\Games\TicTacToe\Elements\GameCharacterTicTacToe('o', $this->players[1]),
+                new GameCharacterTicTacToe('o', $this->players[1]),
             ],
         );
     }
@@ -62,12 +63,20 @@ class GameResultProviderTicTacToeTest extends TestCase
         }
     }
 
-    protected function getData(string $nextMoveCharacterName = 'x'): array
+    protected function getMoveData(string $nextMoveCharacterName = 'x'): array
     {
         return [
             'board' => $this->board,
             'characters' => $this->characters,
             'nextMoveCharacterName' => $nextMoveCharacterName,
+        ];
+    }
+
+    protected function getForfeitData(string $forfeitCharacterName = 'o'): array
+    {
+        return [
+            'forfeitCharacter' => $forfeitCharacterName,
+            'characters' => $this->characters,
         ];
     }
 
@@ -93,7 +102,7 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->assertInstanceOf(GameResultProvider::class, $this->provider);
     }
 
-    public function testThrowExceptionIfMissingNextCharacterName(): void
+    public function testThrowExceptionIfMissingNextCharacterNameMove(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
@@ -102,15 +111,33 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->provider->getResult($data);
     }
 
-    public function testThrowExceptionIfIncorrectNextCharacterName(): void
+    public function testThrowExceptionIfMissingCharactersForfeit(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
 
-        $this->provider->getResult($this->getData('a'));
+        $data = ['forfeitCharacter' => 'x'];
+        $this->provider->getResult($data);
     }
 
-    public function testThrowExceptionIfDataMissBoard(): void
+    public function testThrowExceptionIfIncorrectForfeitCharacterName(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+
+        $data = ['characters' => $this->characters, 'forfeitCharacter' => 'sthWrongHere'];
+        $this->provider->getResult($data);
+    }
+
+    public function testThrowExceptionIfIncorrectNextCharacterNameMove(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+
+        $this->provider->getResult($this->getMoveData('a'));
+    }
+
+    public function testThrowExceptionIfMoveDataMissBoard(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
@@ -119,7 +146,7 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->provider->getResult($data);
     }
 
-    public function testThrowExceptionIfDataHasWrongBoard(): void
+    public function testThrowExceptionIfMoveDataHasWrongBoard(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
@@ -128,7 +155,7 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->provider->getResult($data);
     }
 
-    public function testThrowExceptionIfDataMissCharacters(): void
+    public function testThrowExceptionIfMoveDataMissCharacters(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
@@ -137,7 +164,7 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->provider->getResult($data);
     }
 
-    public function testThrowExceptionIfDataHasWrongCharacters(): void
+    public function testThrowExceptionIfMoveDataHasWrongCharacters(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
@@ -146,20 +173,32 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->provider->getResult($data);
     }
 
+    public function testGetResultFromForfeit(): void
+    {
+        $this->setupBoard([1 => 'x', 2 => 'x', 3 => 'o', 4 => 'o']);
+        $result = $this->provider->getResult($this->getForfeitData());
+
+        $this->assertInstanceOf(GameResultTicTacToe::class, $result);
+        $this->assertEquals([], $result->toArray()['winningFields']);
+        $this->assertEquals($this->players[0]->getName(), $result->toArray()['winnerName']);
+        $this->assertTrue($result->toArray()['forfeit']);
+    }
+
     public function testGetResultFromWinningRowOne(): void
     {
         $this->setupBoard([1 => 'x', 2 => 'x', 3 => 'x', 4 => 'o', 5 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['1', '2', '3'], $result->toArray()['winningFields']);
         $this->assertEquals($this->players[0]->getName(), $result->toArray()['winnerName']);
+        $this->assertFalse($result->toArray()['forfeit']);
     }
 
     public function testGetResultFromWinningRowTwo(): void
     {
         $this->setupBoard([1 => 'x', 2 => 'o', 3 => 'x', 4 => 'o', 5 => 'o', 6 => 'o', 7 => 'x', 8 => 'x']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['4', '5', '6'], $result->toArray()['winningFields']);
@@ -169,7 +208,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningRowThree(): void
     {
         $this->setupBoard([7 => 'x', 8 => 'x', 9 => 'x', 1 => 'o', 2 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['7', '8', '9'], $result->toArray()['winningFields']);
@@ -179,7 +218,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningColumnOne(): void
     {
         $this->setupBoard([1 => 'x', 4 => 'x', 7 => 'x', 5 => 'o', 6 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['1', '4', '7'], $result->toArray()['winningFields']);
@@ -189,7 +228,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningColumnTwo(): void
     {
         $this->setupBoard([2 => 'x', 5 => 'x', 8 => 'x', 1 => 'o', 6 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['2', '5', '8'], $result->toArray()['winningFields']);
@@ -199,7 +238,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningColumnThree(): void
     {
         $this->setupBoard([3 => 'x', 6 => 'x', 9 => 'x', 1 => 'o', 2 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['3', '6', '9'], $result->toArray()['winningFields']);
@@ -209,7 +248,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningDiagonalLeftRight(): void
     {
         $this->setupBoard([1 => 'x', 5 => 'x', 9 => 'x', 2 => 'o', 6 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['1', '5', '9'], $result->toArray()['winningFields']);
@@ -219,7 +258,7 @@ class GameResultProviderTicTacToeTest extends TestCase
     public function testGetResultFromWinningDiagonalRightLeft(): void
     {
         $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals(['3', '5', '7'], $result->toArray()['winningFields']);
@@ -236,7 +275,7 @@ class GameResultProviderTicTacToeTest extends TestCase
         $originalBoardJson = $this->board->toJson();
         $originalCharacters = $this->characters->toArray();
 
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals([], $result->toArray()['winningFields']);
@@ -253,14 +292,14 @@ class GameResultProviderTicTacToeTest extends TestCase
             7 => 'x', 8 => 'o', 9 => 'x',
         ]);
 
-        $result = $this->provider->getResult($this->getData('o'));
+        $result = $this->provider->getResult($this->getMoveData('o'));
 
         $this->assertInstanceOf(GameResultTicTacToe::class, $result);
         $this->assertEquals([], $result->toArray()['winningFields']);
         $this->assertNull($result->toArray()['winnerName']);
     }
 
-    public function testGetResultWithoutWinOrDrawOne(): void
+    public function testGetResultMoveWithoutWinOrDrawOne(): void
     {
         $this->setupBoard([
             1 => null, 2 => 'o', 3 => null,
@@ -268,11 +307,11 @@ class GameResultProviderTicTacToeTest extends TestCase
             7 => null, 8 => null, 9 => null,
         ]);
 
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
         $this->assertNull($result);
     }
 
-    public function testGetResultWithoutWinOrDrawTwo(): void
+    public function testGetResultMoveWithoutWinOrDrawTwo(): void
     {
         $this->setupBoard([
             1 => null, 2 => 'o', 3 => 'x',
@@ -280,11 +319,11 @@ class GameResultProviderTicTacToeTest extends TestCase
             7 => 'o', 8 => null, 9 => 'x',
         ]);
 
-        $result = $this->provider->getResult($this->getData('o'));
+        $result = $this->provider->getResult($this->getMoveData('o'));
         $this->assertNull($result);
     }
 
-    public function testGetResultWithoutWinOrDrawThree(): void
+    public function testGetResultMoveWithoutWinOrDrawThree(): void
     {
         $this->setupBoard([
             1 => null, 2 => 'o', 3 => 'x',
@@ -292,11 +331,11 @@ class GameResultProviderTicTacToeTest extends TestCase
             7 => 'o', 8 => 'o', 9 => 'x',
         ]);
 
-        $result = $this->provider->getResult($this->getData());
+        $result = $this->provider->getResult($this->getMoveData());
         $this->assertNull($result);
     }
 
-    public function testGetResultWithoutWinOrDrawFour(): void
+    public function testGetResultMoveWithoutWinOrDrawFour(): void
     {
         $this->setupBoard([
             1 => 'x', 2 => 'x', 3 => 'o',
@@ -304,18 +343,27 @@ class GameResultProviderTicTacToeTest extends TestCase
             7 => null, 8 => null, 9 => 'o',
         ]);
 
-        $result = $this->provider->getResult($this->getData('o'));
+        $result = $this->provider->getResult($this->getMoveData('o'));
         $this->assertNull($result);
     }
 
-    public function testThrowExceptionIfResultAlreadyProvided(): void
+    public function testThrowExceptionIfMoveResultAlreadyProvided(): void
     {
         $this->expectException(GameResultProviderException::class);
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RESULTS_ALREADY_SET);
 
         $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
-        $this->provider->getResult($this->getData());
-        $this->provider->getResult($this->getData());
+        $this->provider->getResult($this->getMoveData());
+        $this->provider->getResult($this->getMoveData());
+    }
+
+    public function testThrowExceptionIfForfeitResultAlreadyProvided(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RESULTS_ALREADY_SET);
+
+        $this->provider->getResult($this->getForfeitData());
+        $this->provider->getResult($this->getForfeitData());
     }
 
     public function testThrowExceptionWhenCreatingRecordWithoutResult(): void
@@ -332,16 +380,62 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->expectExceptionMessage(GameResultProviderException::MESSAGE_RECORD_ALREADY_SET);
 
         $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
-        $this->provider->getResult($this->getData());
+        $this->provider->getResult($this->getMoveData());
         $invite = $this->getGameInvite();
         $this->provider->createGameRecords($invite);
         $this->provider->createGameRecords($invite);
     }
 
-    public function testCreateGameRecords(): void
+    public function testCreateGameRecordsMove(): void
     {
         $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'x', 1 => 'o', 2 => 'o']);
-        $this->provider->getResult($this->getData());
+        $this->provider->getResult($this->getMoveData());
+        $invite = $this->getGameInvite();
+        $recordsFromProvider = $this->provider->createGameRecords($invite);
+        $recordsFromRepository = App::make(GameRecordRepository::class)->getByGameInvite($invite);
+
+        $providedWinnerRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner()));
+        $providedLooserRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner() === false));
+
+        $repositoryWinnerRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner()));
+        $repositoryLooserRecord = current(array_filter($recordsFromProvider->toArray(), fn($element) => $element->isWinner() === false));
+
+        $this->assertInstanceOf(CollectionGameRecord::class, $recordsFromProvider);
+        $this->assertEquals(['character' => 'x'], $providedWinnerRecord->getScore());
+        $this->assertEquals(2, $recordsFromProvider->count());
+        $this->assertEquals(2, $recordsFromRepository->count());
+        $this->assertEquals(
+            [
+                'winner' => [
+                    $repositoryWinnerRecord->getPlayer()->getId(),
+                    $repositoryWinnerRecord->isWinner(),
+                    $repositoryWinnerRecord->getScore(),
+                ],
+                'looser' => [
+                    $repositoryLooserRecord->getPlayer()->getId(),
+                    $repositoryLooserRecord->isWinner(),
+                    $repositoryLooserRecord->getScore(),
+                ],
+            ],
+            [
+                'winner' => [
+                    $providedWinnerRecord->getPlayer()->getId(),
+                    $providedWinnerRecord->isWinner(),
+                    $providedWinnerRecord->getScore(),
+                ],
+                'looser' => [
+                    $providedLooserRecord->getPlayer()->getId(),
+                    $providedLooserRecord->isWinner(),
+                    $providedLooserRecord->getScore(),
+                ],
+            ],
+        );
+    }
+
+    public function testCreateGameRecordsForfeit(): void
+    {
+        $this->setupBoard([3 => 'x', 5 => 'x', 7 => 'o', 1 => 'o']);
+        $this->provider->getResult($this->getForfeitData());
         $invite = $this->getGameInvite();
         $recordsFromProvider = $this->provider->createGameRecords($invite);
         $recordsFromRepository = App::make(GameRecordRepository::class)->getByGameInvite($invite);
