@@ -2,6 +2,7 @@
 
 use App\Broadcasting\GameInvitePlayersChannel;
 use App\Broadcasting\GamePlayPlayerChannel;
+use App\Broadcasting\GamePlayPlayersChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -21,3 +22,4 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel(GameInvitePlayersChannel::getRouteName(), GameInvitePlayersChannel::class);
 Broadcast::channel(GamePlayPlayerChannel::getRouteName(), GamePlayPlayerChannel::class);
+Broadcast::channel(GamePlayPlayersChannel::getRouteName(), GamePlayPlayersChannel::class);

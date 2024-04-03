@@ -21,7 +21,7 @@ unstable_batchedUpdates(() => {
     situation.players.forEach((playerName) => usePlayersStatusStore.getState().setPlayer(playerName, false));
 });
 
-Echo.join(`game-invite-players.${gameInvite.gameInviteId}`)
+Echo.join(`game-play-players.${gamePlayId}`)
     .here((users) => unstable_batchedUpdates(() =>
         users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true))
     ))
