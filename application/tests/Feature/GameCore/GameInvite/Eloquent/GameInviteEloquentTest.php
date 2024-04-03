@@ -8,6 +8,7 @@ use App\GameCore\GameInvite\Eloquent\GameInviteEloquent;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\Player\Player;
@@ -39,6 +40,7 @@ class GameInviteEloquentTest extends TestCase
             [
                 'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
                 'autostart' => GameOptionValueAutostart::Disabled,
+                'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
             ]
         );
 

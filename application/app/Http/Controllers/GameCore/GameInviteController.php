@@ -114,7 +114,12 @@ class GameInviteController extends Controller
             throw new ControllerException($message);
         }
 
-        $inputs = $validator->validated();
+        $validated = $validator->validated();
+        $inputs = [
+            'slug' => $validated['slug'],
+            'options' => array_merge($request->get('options'), $validated['options']),
+        ];
+
         $options = new CollectionGameOptionValueInput(App::make(Collection::class));
 
         try {

@@ -10,6 +10,7 @@ export class GameInviteOptionsHandler
         this.optionKeyIcons = {
             numberOfPlayers: 'fa fa-users',
             autostart: 'fa fa-refresh',
+            forfeitAfter: 'fa fa-hourglass',
         }
     }
 

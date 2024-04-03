@@ -3,8 +3,10 @@
 namespace Tests\Feature\Games\TicTacToe;
 
 use App\GameCore\GameOption\GameOptionAutostart;
+use App\GameCore\GameOption\GameOptionForfeitAfter;
 use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameSetupTicTacToe;
@@ -29,9 +31,15 @@ class GameSetupTicTacToeTest extends TestCase
             GameOptionValueAutostart::Disabled
         );
 
+        $forfeitAfter = new GameOptionForfeitAfter(
+            [GameOptionValueForfeitAfter::Disabled, GameOptionValueForfeitAfter::Minute],
+            GameOptionValueForfeitAfter::Disabled
+        );
+
         $this->defaults = [
             $numberOfPlayers->getKey() => $numberOfPlayers,
             $autostart->getKey() => $autostart,
+            $forfeitAfter->getKey() => $forfeitAfter,
         ];
 
     }

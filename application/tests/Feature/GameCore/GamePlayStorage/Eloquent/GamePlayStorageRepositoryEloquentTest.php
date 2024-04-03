@@ -8,6 +8,7 @@ use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageRepositoryEloquent;
@@ -64,6 +65,7 @@ class GamePlayStorageRepositoryEloquentTest extends TestCase
                 [
                     'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
                     'autostart' => GameOptionValueAutostart::Disabled,
+                    'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
                 ]
             ),
             User::factory()->create()

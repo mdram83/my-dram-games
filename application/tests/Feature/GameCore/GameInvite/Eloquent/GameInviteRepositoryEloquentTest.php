@@ -8,6 +8,7 @@ use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -47,6 +48,7 @@ class GameInviteRepositoryEloquentTest extends TestCase
                 [
                     'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
                     'autostart' => GameOptionValueAutostart::Disabled,
+                    'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
                 ]
             );
             $this->host = User::factory()->create();

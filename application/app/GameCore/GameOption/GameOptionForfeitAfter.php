@@ -10,7 +10,7 @@ class GameOptionForfeitAfter extends GameOptionBase
 {
     protected const KEY = 'forfeitAfter';
     protected const NAME = 'Forfeit After Disconnection';
-    protected const DESCRIPTION = 'Forfeit the game specific time after player disconnect during play.';
+    protected const DESCRIPTION = 'Forfeit the game specific time after player disconnects during game play.';
     protected const GAME_OPTION_VALUE_CLASS = GameOptionValueForfeitAfter::class;
 
     protected GameOptionType $type = GameOptionTypeEnum::Radio;

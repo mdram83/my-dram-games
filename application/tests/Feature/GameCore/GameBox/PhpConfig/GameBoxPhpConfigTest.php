@@ -175,6 +175,13 @@ class GameBoxPhpConfigTest extends TestCase
                         'name' => $this->gameBox->getGameSetup()->getOption('autostart')->getName(),
                         'description' => $this->gameBox->getGameSetup()->getOption('autostart')->getDescription(),
                     ],
+                    'forfeitAfter' => [
+                        'availableValues' => [0, 60],
+                        'defaultValue' => 0,
+                        'type' => GameOptionTypeEnum::Radio,
+                        'name' => $this->gameBox->getGameSetup()->getOption('forfeitAfter')->getName(),
+                        'description' => $this->gameBox->getGameSetup()->getOption('forfeitAfter')->getDescription(),
+                    ],
                 ],
             ],
         );

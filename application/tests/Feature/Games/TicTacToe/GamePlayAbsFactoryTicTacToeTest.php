@@ -6,6 +6,7 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
+use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayException;
@@ -40,6 +41,7 @@ class GamePlayAbsFactoryTicTacToeTest extends TestCase
             [
                 'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
                 'autostart' => GameOptionValueAutostart::Disabled,
+                'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
             ]
         );
 

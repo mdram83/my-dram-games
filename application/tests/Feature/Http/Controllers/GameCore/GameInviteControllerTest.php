@@ -44,7 +44,7 @@ class GameInviteControllerTest extends TestCase
             $this->playerJoin = User::factory()->create();
 
             $this->gameBox = App::make(GameBoxRepository::class)->getOne($this->slug);
-            $this->options = ['numberOfPlayers' => 2, 'autostart' => 0];
+            $this->options = ['numberOfPlayers' => 2, 'autostart' => 0, 'forfeitAfter' => 0];
 
             $this->commonSetup = true;
         }
@@ -75,6 +75,7 @@ class GameInviteControllerTest extends TestCase
             'options' => [
                 'numberOfPlayers' => $numberOfPlayers,
                 'autostart' => $this->options['autostart'],
+                'forfeitAfter' => '0',
             ],
         ]));
     }
