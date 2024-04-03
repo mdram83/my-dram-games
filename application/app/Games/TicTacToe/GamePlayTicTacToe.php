@@ -8,7 +8,10 @@ use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
+use App\GameCore\GameResult\GameResultException;
+use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
@@ -46,6 +49,28 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
             $resultProvider->createGameRecords($this->getGameInvite());
             $this->storage->setFinished();
         }
+    }
+
+    /**
+     * @throws GamePlayException|GameResultProviderException|GameResultException|GameBoardException|CollectionException
+     */
+    public function handleForfeit(Player $player): void
+    {
+        if (!$this->getPlayers()->exist($player->getId())) {
+            throw new GamePlayException(GamePlayException::MESSAGE_NOT_PLAYER);
+        }
+
+        if ($this->isFinished()) {
+            throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+        }
+
+        $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
+
+        $this->result = $resultProvider->getResult(
+            ['forfeitCharacter' => $this->getPlayerCharacterName($player), 'characters' => $this->characters]
+        );
+        $resultProvider->createGameRecords($this->getGameInvite());
+        $this->storage->setFinished();
     }
 
     public function getSituation(Player $player): array

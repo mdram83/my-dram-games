@@ -36,6 +36,7 @@ abstract class GamePlayBase implements GamePlay
     }
 
     abstract public function handleMove(GameMove $move): void;
+    abstract public function handleForfeit(Player $player): void;
     abstract public function getSituation(Player $player): array;
 
     abstract protected function initialize(): void;

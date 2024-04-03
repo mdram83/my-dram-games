@@ -13,6 +13,7 @@ interface GamePlay
     public function getPlayers(): CollectionGamePlayPlayers;
     public function getGameInvite(): GameInvite;
     public function handleMove(GameMove $move): void;
+    public function handleForfeit(Player $player): void;
     public function getSituation(Player $player): array;
     public function isFinished(): bool;
 }

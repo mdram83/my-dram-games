@@ -278,5 +278,77 @@ class GamePlayTicTacToeTest extends TestCase
         $this->assertEquals(2, $records->count());
     }
 
+    public function testThrowExceptionIfForfeitNotPlayer(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
+
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleForfeit(User::factory()->create());
+    }
+
+    public function testThrowExceptionWhenForfeitOnFinishedGame(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleMove($this->prepareMove(null, 1));
+        $play->handleMove($this->prepareMove($this->players[1], 5));
+        $play->handleMove($this->prepareMove(null, 2));
+        $play->handleMove($this->prepareMove($this->players[1], 9));
+        $play->handleMove($this->prepareMove(null, 3));
+        $play->handleForfeit($this->players[0]);
+    }
+
+    public function testThrowExceptionWhenForfeitTwice(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleForfeit($this->players[0]);
+        $play->handleForfeit($this->players[0]);
+    }
+
+    public function testGameRecordCreatedAfterForfeit(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleForfeit($this->players[0]);
+        $records = App::make(GameRecordRepository::class)->getByGameInvite($play->getGameInvite());
+
+        $this->assertEquals(2, $records->count());
+    }
+
+    public function testGetSituationAfterForfeit(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleForfeit($this->players[1]);
+
+        $expectedResult = new GameResultTicTacToe($this->players[0]->getName(), [], true);
+        $expected = [
+            'players' => [$this->players[0]->getName(), $this->players[1]->getName()],
+            'activePlayer' => $this->players[0]->getName(),
+            'characters' => ['x' => $this->players[0]->getName(), 'o' => $this->players[1]->getName()],
+            'board' => [1 => null, 2 => null, 3 => null, 4 => null, 5 => null, 6 => null, 7 => null, 8 => null, 9 => null],
+            'isFinished' => true,
+            'result' => [
+                'details' => $expectedResult->getDetails(),
+                'message' => $expectedResult->getMessage(),
+            ],
+        ];
+
+        $this->assertEquals($expected, $play->getSituation($this->players[0]));
+        $this->assertEquals($expected, $play->getSituation($this->players[1]));
+    }
+
+    public function testIsFinishedAfterForfeit(): void
+    {
+        $play = $this->prepareGamePlayTicTacToe();
+        $play->handleForfeit($this->players[1]);
+
+        $this->assertTrue($play->isFinished());
+    }
+
 
 }
