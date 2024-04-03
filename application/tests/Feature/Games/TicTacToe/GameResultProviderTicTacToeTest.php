@@ -294,6 +294,18 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testGetResultWithoutWinOrDrawFour(): void
+    {
+        $this->setupBoard([
+            1 => 'x', 2 => 'x', 3 => 'o',
+            4 => 'o', 5 => 'x', 6 => 'x',
+            7 => null, 8 => null, 9 => 'o',
+        ]);
+
+        $result = $this->provider->getResult($this->getData('o'));
+        $this->assertNull($result);
+    }
+
     public function testThrowExceptionIfResultAlreadyProvided(): void
     {
         $this->expectException(GameResultProviderException::class);

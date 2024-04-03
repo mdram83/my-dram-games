@@ -163,8 +163,6 @@ class GameResultProviderTicTacToe implements GameResultProvider
             return false;
         }
 
-        $hasWin = false;
-
         foreach ($remainingKeys as $fieldKey) {
 
             $updatedBoard = clone $board;
@@ -176,10 +174,12 @@ class GameResultProviderTicTacToe implements GameResultProvider
                 return false;
             }
 
-            $hasWin = !$this->checkDraw(clone $updatedBoard, $this->getNextCharacterName($nextCharacterName));
+            if (!$this->checkDraw(clone $updatedBoard, $this->getNextCharacterName($nextCharacterName))) {
+                return false;
+            }
         }
 
-        return !$hasWin;
+        return true;
     }
 
     private function getNextCharacterName(string $currentCharacterName): string
