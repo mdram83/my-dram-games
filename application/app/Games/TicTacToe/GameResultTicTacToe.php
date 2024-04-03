@@ -9,6 +9,7 @@ class GameResultTicTacToe implements GameResult
 {
     public const MESSAGE_WIN = 'won the Game!';
     public const MESSAGE_DRAW = 'Draw!';
+    public const MESSAGE_FORFEIT = 'won the Game by forfeit!';
 
     /**
      * @throws GameResultException
@@ -16,6 +17,7 @@ class GameResultTicTacToe implements GameResult
     public function __construct(
         readonly private ?string $winner = null,
         readonly array $winningFields = [],
+        readonly bool $forfeit = false,
     )
     {
         $this->validateInputs();
@@ -24,7 +26,7 @@ class GameResultTicTacToe implements GameResult
     public function getMessage(): string
     {
         if (isset($this->winner)) {
-            return $this->winner . ' ' . $this::MESSAGE_WIN;
+            return $this->winner . ' ' . ($this->forfeit ? $this::MESSAGE_FORFEIT : $this::MESSAGE_WIN);
         }
         return $this::MESSAGE_DRAW;
     }
@@ -34,6 +36,7 @@ class GameResultTicTacToe implements GameResult
         return [
             'winnerName' => $this->winner,
             'winningFields' => array_map(fn($field) => (string) $field, $this->winningFields),
+            'forfeit' => $this->forfeit,
         ];
     }
 
@@ -48,8 +51,10 @@ class GameResultTicTacToe implements GameResult
     private function validateInputs(): void
     {
         if (
-            (isset($this->winner) && $this->winningFields === [])
+            (isset($this->winner) && ($this->winningFields === [] && !$this->forfeit))
             || ($this->winningFields !== [] && !isset($this->winner))
+            || ($this->forfeit && !isset($this->winner))
+            || ($this->forfeit && $this->winningFields !== [])
             || ($this->winningFields !== [] && count($this->winningFields) !== 3)
         ) {
             throw new GameResultException(GameResultException::MESSAGE_INCORRECT_PARAMETER);

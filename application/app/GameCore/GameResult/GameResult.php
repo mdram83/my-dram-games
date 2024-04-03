@@ -2,8 +2,6 @@
 
 namespace App\GameCore\GameResult;
 
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
-
 interface GameResult
 {
     public function getMessage(): string;

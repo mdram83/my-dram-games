@@ -34,6 +34,22 @@ class GameResultTicTacToeTest extends TestCase
         new GameResultTicTacToe(null, $this->winningFields);
     }
 
+    public function testThrowExceptionIfForfeitWithoutWinner(): void
+    {
+        $this->expectException(GameResultException::class);
+        $this->expectExceptionMessage(GameResultException::MESSAGE_INCORRECT_PARAMETER);
+
+        new GameResultTicTacToe(null, [], true);
+    }
+
+    public function testThrowExceptionIfForefeitWithFields(): void
+    {
+        $this->expectException(GameResultException::class);
+        $this->expectExceptionMessage(GameResultException::MESSAGE_INCORRECT_PARAMETER);
+
+        new GameResultTicTacToe($this->winnerName, $this->winningFields, true);
+    }
+
     public function testThrowExceptionIfWinFieldsAreNotThreeArrayElements(): void
     {
         $this->expectException(GameResultException::class);
@@ -54,12 +70,31 @@ class GameResultTicTacToeTest extends TestCase
         $this->assertStringNotContainsString($this->winnerName, $result->getMessage());
     }
 
+    public function testForfeitMessage(): void
+    {
+        $result = new GameResultTicTacToe($this->winnerName, [], true);
+        $this->assertStringContainsString($this->winnerName, $result->getMessage());
+    }
+
     public function testWinDetails(): void
     {
         $result = new GameResultTicTacToe($this->winnerName, $this->winningFields);
         $expected = [
             'winnerName' => $this->winnerName,
             'winningFields' => array_map(fn($field) => (string) $field, $this->winningFields),
+            'forfeit' => false,
+        ];
+
+        $this->assertEquals($expected, $result->getDetails());
+    }
+
+    public function testForfeitDetails(): void
+    {
+        $result = new GameResultTicTacToe($this->winnerName, [], true);
+        $expected = [
+            'winnerName' => $this->winnerName,
+            'winningFields' => [],
+            'forfeit' => true,
         ];
 
         $this->assertEquals($expected, $result->getDetails());
@@ -71,7 +106,9 @@ class GameResultTicTacToeTest extends TestCase
         $expected = [
             'winnerName' => null,
             'winningFields' => [],
+            'forfeit' => false,
         ];
+
         $this->assertEquals($expected, $result->getDetails());
     }
 
@@ -84,6 +121,12 @@ class GameResultTicTacToeTest extends TestCase
     public function testDrawToArray(): void
     {
         $result = new GameResultTicTacToe();
+        $this->assertEquals($result->getDetails(), $result->toArray());
+    }
+
+    public function testForfeitToArray(): void
+    {
+        $result = new GameResultTicTacToe($this->winnerName, [], true);
         $this->assertEquals($result->getDetails(), $result->toArray());
     }
 }
