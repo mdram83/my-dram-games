@@ -20,6 +20,8 @@ use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GamePlay\Generic\GamePlayRepositoryGeneric;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
+use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
+use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageFactoryEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageRepositoryEloquent;
@@ -80,6 +82,8 @@ class AppServiceProvider extends ServiceProvider
 
         app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
         app()->bind(GameRecordRepository::class, GameRecordRepositoryEloquent::class);
+
+        app()->bind(GamePlayDisconnectionFactory::class, GamePlayDisconnectionFactoryEloquent::class);
     }
 
     /**
