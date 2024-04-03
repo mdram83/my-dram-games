@@ -7,5 +7,5 @@ use App\GameCore\Player\Player;
 
 interface GamePlayDisconnectionRepository
 {
-    public function getOneByGamePlayAndPlayer(GamePlay $gamePlay, Player $player): GamePlayDisconnection;
+    public function getOneByGamePlayAndPlayer(GamePlay $gamePlay, Player $player): ?GamePlayDisconnection;
 }
