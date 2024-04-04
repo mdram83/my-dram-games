@@ -39,6 +39,7 @@ class GamePlayControllerTest extends TestCase
     protected string $showRouteName = 'gameplay.show';
     protected string $moveRouteName = 'ajax.gameplay.move';
     protected string $disconnectRouteName = 'ajax.gameplay.disconnect';
+    protected string $connectRouteName = 'ajax.gameplay.connect';
 
     public function setUp(): void
     {
@@ -114,6 +115,14 @@ class GamePlayControllerTest extends TestCase
                 route($this->disconnectRouteName, ['gamePlayId' => $gamePlayId]),
                 $payload === true ? ['disconnected' => $disconnected->getName()] : $payload
             );
+    }
+
+    protected function getConnectResponse(Player $player, int|string $gamePlayId): TestResponse
+    {
+        return $this
+            ->actingAs($player)
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->json('GET', route($this->connectRouteName, ['gamePlayId' => $gamePlayId]));
     }
 
     public function testStoreNotPlayerGetForbiddenResponseWithNoEvent(): void
@@ -405,5 +414,51 @@ class GamePlayControllerTest extends TestCase
         $this->assertEquals($disconnection->id, $nextDisconnection->id);
         $this->assertNotEquals($disconnection->disconnected_at, $nextDisconnection->disconnected_at);
         Event::assertDispatchedTimes(GamePlayDisconnectedEvent::class, 2);
+    }
+
+    public function testConnectWrongGameIdError(): void
+    {
+        $response = $this->getConnectResponse($this->host, 'some-wrong-id-123T');
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testConnectNotPlayerError(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getConnectResponse($this->notPlayer, $play->getId());
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testConnectFinishedGameError(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $play->handleForfeit($this->player);
+        $response = $this->getConnectResponse($this->host, $play->getId());
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function testConnectAfterDisconnection(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
+        $disconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
+        $response = $this->getConnectResponse($this->player, $play->getId());
+        $refreshedDisconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertNotNull($disconnection);
+        $this->assertNull($refreshedDisconnection);
+    }
+
+    public function testConnectWIthoutDisconnection(): void
+    {
+        $play = $this->createGamePlay($this->invite);
+        $response = $this->getConnectResponse($this->player, $play->getId());
+        $disconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertNull($disconnection);
     }
 }

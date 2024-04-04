@@ -214,6 +214,43 @@ class GamePlayController extends Controller
         }
     }
 
+    public function connect(
+        Player $player,
+        GamePlayRepository $gamePlayRepository,
+        GamePlayDisconnectionRepository $disconnectionRepository,
+        int|string $gamePlayId
+    ): Response
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $gamePlay = $gamePlayRepository->getOne($gamePlayId);
+
+            if (!$gamePlay->getPlayers()->exist($player->getId())) {
+                DB::rollBack();
+                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            if ($gamePlay->isFinished()) {
+                DB::rollBack();
+                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
+            }
+
+            $disconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $player)?->remove();
+
+            DB::commit();
+            return new Response([], 200);
+
+        } catch (GamePlayStorageException) {
+            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+        }
+    }
+
     /**
      * @throws ControllerException
      * @throws ValidationException

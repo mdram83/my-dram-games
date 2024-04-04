@@ -22,6 +22,7 @@ Route::middleware(['ajax', 'player'])->group(function() {
     Route::post('/ajax/gameplay', [GamePlayController::class, 'store'])->name('ajax.gameplay.store');
     Route::post('/ajax/gameplay/{gamePlayId}', [GamePlayController::class, 'move'])->name('ajax.gameplay.move');
     Route::post('/ajax/gameplay/disconnect/{gamePlayId}', [GamePlayController::class, 'disconnect'])->name('ajax.gameplay.disconnect');
+    Route::get('/ajax/gameplay/connect/{gamePlayId}', [GamePlayController::class, 'connect'])->name('ajax.gameplay.connect');
 });
 
 Route::middleware('ajax')->group(function() {
