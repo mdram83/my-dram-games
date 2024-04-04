@@ -23,7 +23,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
-class GamePlayDisconnectEloquentModelTest extends TestCase
+class GamePlayDisconnectionEloquentModelTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -170,11 +170,11 @@ class GamePlayDisconnectEloquentModelTest extends TestCase
         $this->disconnect->setGamePlay($this->play);
         $this->disconnect->setPlayer($this->user);
         $this->disconnect->setDisconnectedAt();
-        $expired = new DateTimeImmutable((new DateTimeImmutable())->modify('-5 minutes')->format('Y-m-d H:i:s'));
-        $notExpired = new DateTimeImmutable((new DateTimeImmutable())->modify('+5 minutes')->format('Y-m-d H:i:s'));
 
-        $this->assertTrue($this->disconnect->hasExpired($expired));
-        $this->assertFalse($this->disconnect->hasExpired($notExpired));
+        sleep(1);
+
+        $this->assertTrue($this->disconnect->hasExpired(0));
+        $this->assertFalse($this->disconnect->hasExpired(5));
     }
 
     public function testThrowExceptionWhenRemovingBeforeSave(): void

@@ -51,13 +51,16 @@ class GamePlayDisconnectionEloquentModel extends Model implements GamePlayDiscon
     /**
      * @throws GamePlayDisconnectException
      */
-    public function hasExpired(DateTimeImmutable $expiredAt): bool
+    public function hasExpired(DateTimeImmutable|int $expirationTimeInSeconds): bool
     {
         if (!isset($this->disconnected_at)) {
             throw new GamePlayDisconnectException(GamePlayDisconnectException::MESSAGE_TIMESTAMP_NOT_SET);
         }
 
-        return $expiredAt < $this->disconnected_at;
+        $expirationTimestamp = $this->disconnected_at->modify("+$expirationTimeInSeconds seconds");
+        $actualTimestamp = new DateTimeImmutable();
+
+        return $expirationTimestamp < $actualTimestamp;
     }
 
     /**
