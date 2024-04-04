@@ -170,11 +170,16 @@ class GamePlayDisconnectionEloquentModelTest extends TestCase
         $this->disconnect->setGamePlay($this->play);
         $this->disconnect->setPlayer($this->user);
         $this->disconnect->setDisconnectedAt();
+        $this->disconnect->save();
+
+        $loaded = GamePlayDisconnectionEloquentModel::where('id', '=', $this->disconnect->id)->first();
 
         sleep(1);
 
         $this->assertTrue($this->disconnect->hasExpired(0));
-        $this->assertFalse($this->disconnect->hasExpired(5));
+        $this->assertFalse($this->disconnect->hasExpired(60));
+        $this->assertTrue($loaded->hasExpired(0));
+        $this->assertFalse($loaded->hasExpired(60));
     }
 
     public function testThrowExceptionWhenRemovingBeforeSave(): void

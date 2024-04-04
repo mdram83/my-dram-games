@@ -7,6 +7,7 @@ use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
 use App\GameCore\Player\Player;
 use DateTimeImmutable;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,6 +51,7 @@ class GamePlayDisconnectionEloquentModel extends Model implements GamePlayDiscon
 
     /**
      * @throws GamePlayDisconnectException
+     * @throws Exception
      */
     public function hasExpired(DateTimeImmutable|int $expirationTimeInSeconds): bool
     {
@@ -57,7 +59,11 @@ class GamePlayDisconnectionEloquentModel extends Model implements GamePlayDiscon
             throw new GamePlayDisconnectException(GamePlayDisconnectException::MESSAGE_TIMESTAMP_NOT_SET);
         }
 
-        $expirationTimestamp = $this->disconnected_at->modify("+$expirationTimeInSeconds seconds");
+        $dateTimeBase = is_string($this->disconnected_at)
+            ? (new DateTimeImmutable($this->disconnected_at))
+            : $this->disconnected_at;
+
+        $expirationTimestamp = $dateTimeBase->modify("+$expirationTimeInSeconds seconds");
         $actualTimestamp = new DateTimeImmutable();
 
         return $expirationTimestamp < $actualTimestamp;

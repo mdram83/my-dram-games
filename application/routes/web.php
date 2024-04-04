@@ -18,11 +18,24 @@ Route::middleware('player')->group(function() {
 });
 
 Route::middleware(['ajax', 'player'])->group(function() {
-    Route::post('/ajax/game-invites', [GameInviteController::class, 'store'])->name('ajax.game-invites.store');
-    Route::post('/ajax/gameplay', [GamePlayController::class, 'store'])->name('ajax.gameplay.store');
-    Route::post('/ajax/gameplay/{gamePlayId}', [GamePlayController::class, 'move'])->name('ajax.gameplay.move');
-    Route::post('/ajax/gameplay/disconnect/{gamePlayId}', [GamePlayController::class, 'disconnect'])->name('ajax.gameplay.disconnect');
-    Route::get('/ajax/gameplay/connect/{gamePlayId}', [GamePlayController::class, 'connect'])->name('ajax.gameplay.connect');
+
+    Route::post('/ajax/game-invites', [GameInviteController::class, 'store'])
+        ->name('ajax.game-invites.store');
+
+    Route::post('/ajax/gameplay', [GamePlayController::class, 'store'])
+        ->name('ajax.gameplay.store');
+
+    Route::post('/ajax/gameplay/{gamePlayId}', [GamePlayController::class, 'move'])
+        ->name('ajax.gameplay.move');
+
+    Route::post('/ajax/gameplay/disconnect/{gamePlayId}', [GamePlayController::class, 'disconnect'])
+        ->name('ajax.gameplay.disconnect');
+
+    Route::get('/ajax/gameplay/connect/{gamePlayId}', [GamePlayController::class, 'connect'])
+        ->name('ajax.gameplay.connect');
+
+    Route::post('/ajax/gameplay/disconnect-forfeit/{gamePlayId}', [GamePlayController::class, 'forfeitAfterDisconnection'])
+        ->name('ajax.gameplay.disconnect-forfeit');
 });
 
 Route::middleware('ajax')->group(function() {
