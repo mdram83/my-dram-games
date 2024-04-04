@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
+use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
 use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GameElements\GameBoard\GameBoardException;
@@ -14,6 +15,9 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
+use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
+use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\Player\Player;
 use App\Http\Controllers\Controller;
@@ -35,6 +39,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class GamePlayController extends Controller
 {
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
+    public const MESSAGE_FINISHED = 'Gameplay already finished';
 
     public function store(
         Request $request,
@@ -131,7 +136,7 @@ class GamePlayController extends Controller
                 return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            $validatedInputs = $this->getValidatedInputs($request);
+            $validatedInputs = $this->getValidatedMoveInputs($request);
             $move = $this->getMove($player, $gamePlay, $gameMoveAbsFactoryRepository, $validatedInputs);
 
             $gamePlay->handleMove($move);
@@ -156,11 +161,64 @@ class GamePlayController extends Controller
         }
     }
 
+    public function disconnect(
+        Player $player,
+        Request $request,
+        GamePlayRepository $gamePlayRepository,
+        GamePlayDisconnectionRepository $disconnectionRepository,
+        GamePlayDisconnectionFactory $disconnectionFactory,
+        int|string $gamePlayId
+    ): Response
+    {
+        try {
+            DB::beginTransaction();
+
+            $gamePlay = $gamePlayRepository->getOne($gamePlayId);
+
+            if (!$gamePlay->getPlayers()->exist($player->getId())) {
+                DB::rollBack();
+                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
+            }
+
+            if ($gamePlay->isFinished()) {
+                DB::rollBack();
+                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
+            }
+
+            $disconnectedPlayer = $this->getValidatedDisconnectPlayer($request, $gamePlay);
+
+            if (!$disconnection = $disconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer)) {
+                $disconnectionFactory->create($gamePlay, $disconnectedPlayer);
+            } else {
+                $disconnection->setDisconnectedAt();
+                $disconnection->save();
+            }
+
+            GamePlayDisconnectedEvent::dispatch($gamePlay, $disconnectedPlayer);
+
+            DB::commit();
+
+            return new Response([], 200);
+
+        } catch (GamePlayStorageException|GamePlayDisconnectException) {
+            DB::rollBack();
+            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
+
+        } catch (ControllerException $e) {
+            DB::rollBack();
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+        }
+    }
+
     /**
      * @throws ControllerException
      * @throws ValidationException
      */
-    private function getValidatedInputs(Request $request): array
+    private function getValidatedMoveInputs(Request $request): array
     {
         $validator = Validator::make($request->all(), ['move' => 'required|array']);
 
@@ -182,6 +240,22 @@ class GamePlayController extends Controller
         return $repository
             ->getOne($gamePlay->getGameInvite()->getGameBox()->getSlug())
             ->create($player, $inputs);
+    }
+
+    /**
+     * @throws ControllerException
+     */
+    private function getValidatedDisconnectPlayer(Request $request, GamePlay $gamePlay): Player
+    {
+        $singlePlayerCollection = $gamePlay
+            ->getPlayers()
+            ->filter(fn($item, $key) => $item->getName() === $request->get('disconnected'));
+
+        if ($singlePlayerCollection->count() === 0) {
+            throw new ControllerException(static::MESSAGE_INCORRECT_INPUTS);
+        }
+
+        return $singlePlayerCollection->pullFirst();
     }
 
     private function dispatchGamePlayMovedEvent(GamePlay $gamePlay): void
