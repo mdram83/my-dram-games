@@ -7,6 +7,9 @@ import {useTicTacToeStore} from "./elements/useTicTacToeStore.jsx";
 import {unstable_batchedUpdates} from "react-dom";
 import {FlashMessageTicTacToe} from "./elements/FlashMessageTicTacToe.jsx";
 import {usePlayersStatusStore} from "../../../template/play/components/usePlayersStatusStore.jsx";
+import {disconnect} from "../../game-core/game-play/disconnect.jsx";
+import {connectBack} from "../../game-core/game-play/connectBack.jsx";
+import {confirmConnection} from "../../game-core/game-play/confirmConnection.jsx";
 
 const rootElement = document.querySelector('#game-play-root');
 
@@ -21,18 +24,34 @@ unstable_batchedUpdates(() => {
     situation.players.forEach((playerName) => usePlayersStatusStore.getState().setPlayer(playerName, false));
 });
 
+const forfeitAfterTimeout = 0;
+
 Echo.join(`game-play-players.${gamePlayId}`)
-    .here((users) => unstable_batchedUpdates(() =>
-        users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true))
-    ))
-    .joining((user) => unstable_batchedUpdates(() => {
-        usePlayersStatusStore.getState().setPlayer(user.name, true);
-        useTicTacToeStore.getState().setMessage(user.name + ' connected.', false, 1);
-    }))
-    .leaving((user) => unstable_batchedUpdates(() => {
-        usePlayersStatusStore.getState().setPlayer(user.name, false);
-        useTicTacToeStore.getState().setMessage(user.name + ' disconnected.', true, 2);
-    }))
+    .here((users) => {
+        unstable_batchedUpdates(() => {
+            users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true));
+            for (const [playerName, status] of Object.entries(usePlayersStatusStore.getState().players)) {
+                if (!status) {
+                    disconnect({name: playerName}, gamePlayId, forfeitAfterTimeout);
+                }
+            }
+        });
+        setTimeout(() => confirmConnection(gamePlayId), 2000);
+    })
+    .joining((user) => {
+        unstable_batchedUpdates(() => {
+            usePlayersStatusStore.getState().setPlayer(user.name, true);
+            useTicTacToeStore.getState().setMessage(user.name + ' connected.', false, 1);
+        });
+        connectBack(user);
+    })
+    .leaving((user) => {
+        unstable_batchedUpdates(() => {
+            usePlayersStatusStore.getState().setPlayer(user.name, false);
+            useTicTacToeStore.getState().setMessage(user.name + ' disconnected.', true, 2);
+        });
+        disconnect(user, gamePlayId, forfeitAfterTimeout);
+    })
     .error(() => {});
 
 Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
@@ -56,6 +75,7 @@ Echo.private(`game-play-player.${gamePlayId}.${window.MyDramGames.player.id}`)
         }
 
     }))
+    .listen('GameCore\\GamePlay\\GamePlayDisconnectedEvent', () => confirmConnection(gamePlayId))
     .error((error) => unstable_batchedUpdates(() => {
         useTicTacToeStore.getState().setMessage(
             error.status === 403 ? 'Authentication error' : 'Unexpected error',

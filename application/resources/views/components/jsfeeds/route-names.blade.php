@@ -12,6 +12,9 @@
             'ajax.gameplay.store': '{{ route('ajax.gameplay.store') }}',
             'gameplay.show': (gamePlayId) => '{{ route('gameplay.show', ['gamePlayId' => '/']) }}' + `/${gamePlayId}`,
             'ajax.gameplay.move': (gamePlayId) => '{{ route('ajax.gameplay.move', ['gamePlayId' => '/']) }}' + `/${gamePlayId}`,
+            'ajax.gameplay.disconnect': (gamePlayId) => '{{ route('ajax.gameplay.disconnect', ['gamePlayId' => '/']) }}' + `/${gamePlayId}`,
+            'ajax.gameplay.connect': (gamePlayId) => '{{ route('ajax.gameplay.connect', ['gamePlayId' => '/']) }}' + `/${gamePlayId}`,
+            'ajax.gameplay.disconnect-forfeit': (gamePlayId) => '{{ route('ajax.gameplay.disconnect-forfeit', ['gamePlayId' => '/']) }}' + `/${gamePlayId}`,
 
             'login': '{{ route('login') }}',
         }
