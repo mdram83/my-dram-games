@@ -24,15 +24,13 @@ unstable_batchedUpdates(() => {
     situation.players.forEach((playerName) => usePlayersStatusStore.getState().setPlayer(playerName, false));
 });
 
-const forfeitAfterTimeout = 0;
-
 Echo.join(`game-play-players.${gamePlayId}`)
     .here((users) => {
         unstable_batchedUpdates(() => {
             users.forEach((user) => usePlayersStatusStore.getState().setPlayer(user.name, true));
             for (const [playerName, status] of Object.entries(usePlayersStatusStore.getState().players)) {
                 if (!status) {
-                    disconnect({name: playerName}, gamePlayId, forfeitAfterTimeout);
+                    disconnect({name: playerName}, gamePlayId, gameInvite.options.forfeitAfter);
                 }
             }
         });
@@ -50,7 +48,7 @@ Echo.join(`game-play-players.${gamePlayId}`)
             usePlayersStatusStore.getState().setPlayer(user.name, false);
             useTicTacToeStore.getState().setMessage(user.name + ' disconnected.', true, 2);
         });
-        disconnect(user, gamePlayId, forfeitAfterTimeout);
+        disconnect(user, gamePlayId, gameInvite.options.forfeitAfter);
     })
     .error(() => {});
 

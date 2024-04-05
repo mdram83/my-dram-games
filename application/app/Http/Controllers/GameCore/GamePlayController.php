@@ -22,6 +22,8 @@ use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
+use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\Collection\CollectionBase;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use Exception;
@@ -52,6 +54,7 @@ class GamePlayController extends Controller
         readonly private GamePlayDisconnectionFactory $gamePlayDisconnectionFactory,
         readonly private GameInviteRepository $gameInviteRepository,
         readonly private GamePlayAbsFactoryRepository $gamePlayAbsFactoryRepository,
+        readonly private Collection $collectionHandler,
     )
     {
 
@@ -105,6 +108,11 @@ class GamePlayController extends Controller
                 ]);
             }
 
+            $options = $this->collectionHandler
+                ->reset($gamePlay->getGameInvite()->getGameSetup()->getAllOptions())
+                ->each(fn($item, $key) => $item->getConfiguredValue())
+                ->toArray();
+
             return view('play', [
                 'gamePlayId' => $gamePlayId,
                 'gameInvite' => [
@@ -112,6 +120,7 @@ class GamePlayController extends Controller
                     'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
                     'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
                     'host' => $gamePlay->getGameInvite()->getHost()->getName(),
+                    'options' => $options, // TODO adjust tests
                 ],
                 'situation' => $gamePlay->getSituation($player)
             ]);

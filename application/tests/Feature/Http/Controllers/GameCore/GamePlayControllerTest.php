@@ -235,6 +235,10 @@ class GamePlayControllerTest extends TestCase
             'slug' => $play->getGameInvite()->getGameBox()->getSlug(),
             'name' => $play->getGameInvite()->getGameBox()->getName(),
             'host' => $play->getGameInvite()->getHost()->getName(),
+            'options' => App::make(Collection::class)
+                ->reset($play->getGameInvite()->getGameSetup()->getAllOptions())
+                ->each(fn($item, $key) => $item->getConfiguredValue())
+                ->toArray(),
         ]]);
         $response->assertViewHas(['situation' => $play->getSituation($this->player)]);
     }
