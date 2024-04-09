@@ -8,6 +8,8 @@
       <sourceFolder url="file://$MODULE_DIR$/application/tests" isTestSource="true" packagePrefix="Tests\" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/application/tests/Unit" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/laravel/breeze" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/psr/clock" />

@@ -49,6 +49,18 @@ return [
             GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
         ],
 
+        'thousand' => [
+            'name' => 'Thousand',
+            'description' => 'Another classic, a Thousand Schnapsen playing card game.',
+            'durationInMinutes' => 1,
+            'minPlayerAge' => 10,
+            'isActive' => true,
+            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
+            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
+            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
+        ],
+
         'turbo' => [
             'name' => 'Turbo',
             'description' => 'Take part in exciting car races.',
