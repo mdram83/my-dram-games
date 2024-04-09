@@ -73,17 +73,5 @@ return [
             GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
         ],
 
-        'boss-monster-raise-of-the-minibosses' => [
-            'name' => 'Boss Monster - Rise Of The Minibosses',
-            'description' => 'Become a villain, build a dungeon, lure in adventurers, and destroy them!',
-            'durationInMinutes' => 30,
-            'minPlayerAge' => 13,
-            'isActive' => false,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
-            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
-            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
-        ],
-
     ],
 ];
