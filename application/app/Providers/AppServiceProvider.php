@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardDeckProviderPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardFactoryPhpEnum;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardFactory;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
 use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhpConfig;
@@ -91,6 +93,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GamePlayDisconnectionRepository::class, GamePlayDisconnectionRepositoryEloquent::class);
 
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
+        app()->bind(PlayingCardDeckProvider::class, PlayingCardDeckProviderPhpEnum::class);
     }
 
     /**
