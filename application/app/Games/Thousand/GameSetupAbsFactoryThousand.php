@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Games\TicTacToe;
+namespace App\Games\Thousand;
 
 use App\GameCore\GameOption\GameOptionException;
 use App\GameCore\GameSetup\GameSetup;
 use App\GameCore\GameSetup\GameSetupAbsFactory;
 use App\GameCore\GameSetup\GameSetupAbsFactoryBase;
-use App\GameCore\Services\Collection\Collection;
 
-class GameSetupAbsFactoryTicTacToe extends GameSetupAbsFactoryBase implements GameSetupAbsFactory
+class GameSetupAbsFactoryThousand extends GameSetupAbsFactoryBase implements GameSetupAbsFactory
 {
     /**
      * @throws GameOptionException
      */
     public function create(): GameSetup
     {
-        return new GameSetupTicTacToe($this->collectionHandler);
+        return new GameSetupThousand(clone $this->collectionHandler);
     }
 }

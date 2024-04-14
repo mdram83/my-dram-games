@@ -4,6 +4,7 @@ use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhp
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
+use App\Games\Thousand\GameSetupAbsFactoryThousand;
 use App\Games\TicTacToe\GameMoveAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
@@ -55,7 +56,7 @@ return [
             'durationInMinutes' => 1,
             'minPlayerAge' => 10,
             'isActive' => true,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
+            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
             GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
             GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
