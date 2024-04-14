@@ -25,4 +25,16 @@ class PlayingCardRankPhpEnumTest extends TestCase
         $rank = PlayingCardRankPhpEnum::Ace;
         $this->assertEquals($rank->name, $rank->getName());
     }
+
+    public function testIsJokerTrue(): void
+    {
+        $rank = PlayingCardRankPhpEnum::Joker;
+        $this->assertTrue($rank->isJoker());
+    }
+
+    public function testIsJokerFalse(): void
+    {
+        $rank = PlayingCardRankPhpEnum::Ace;
+        $this->assertFalse($rank->isJoker());
+    }
 }

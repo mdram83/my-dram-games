@@ -31,4 +31,9 @@ enum PlayingCardRankPhpEnum: string implements PlayingCardRank
     {
         return $this->name;
     }
+
+    public function isJoker(): bool
+    {
+        return $this->value === 'Joker';
+    }
 }

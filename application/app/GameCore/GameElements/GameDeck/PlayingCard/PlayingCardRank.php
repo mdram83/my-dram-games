@@ -6,4 +6,5 @@ interface PlayingCardRank
 {
     public function getKey(): string;
     public function getName(): string;
+    public function isJoker(): bool;
 }
