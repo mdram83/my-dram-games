@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Games\TicTacToe;
+namespace Games\Thousand;
 
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
@@ -11,29 +11,23 @@ use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
-use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
-use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
-use App\Games\TicTacToe\GamePlayTicTacToe;
+use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
+use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
+use App\Games\Thousand\GameOptionValueThousandReDealConditions;
+use App\Games\Thousand\GamePlayAbsFactoryThousand;
+use App\Games\Thousand\GamePlayThousand;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
-class GamePlayAbsFactoryTicTacToeTest extends TestCase
+class GamePlayAbsFactoryThousandTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected GamePlayAbsFactoryTicTacToe $factory;
+    protected GamePlayAbsFactoryThousand $factory;
 
     public function setUp(): void{
         parent::setUp();
-        $this->factory = new GamePlayAbsFactoryTicTacToe(
-            App::make(GamePlayStorageFactory::class),
-            App::make(Collection::class),
-            App::make(GameRecordFactory::class),
-        );
+        $this->factory = App::make(GamePlayAbsFactoryThousand::class);
     }
 
     protected function prepareGameInvite(bool $completeSetup = true): GameInvite
@@ -41,16 +35,20 @@ class GamePlayAbsFactoryTicTacToeTest extends TestCase
         $options = new CollectionGameOptionValueInput(
             App::make(Collection::class),
             [
-                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
+                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players003,
                 'autostart' => GameOptionValueAutostart::Disabled,
                 'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
+                'thousand-barrel-points' => GameOptionValueThousandBarrelPoints::EightHundred,
+                'thousand-number-of-bombs' => GameOptionValueThousandNumberOfBombs::One,
+                'thousand-re-deal-conditions' => GameOptionValueThousandReDealConditions::Disabled,
             ]
         );
 
         $factory = App::make(GameInviteFactory::class);
-        $invite = $factory->create('tic-tac-toe', $options, User::factory()->create());
+        $invite = $factory->create('thousand', $options, User::factory()->create());
 
         if ($completeSetup) {
+            $invite->addPlayer(User::factory()->create());
             $invite->addPlayer(User::factory()->create());
         }
 
@@ -83,6 +81,6 @@ class GamePlayAbsFactoryTicTacToeTest extends TestCase
     public function testCreate(): void
     {
         $play = $this->factory->create($this->prepareGameInvite());
-        $this->assertInstanceOf(GamePlayTicTacToe::class, $play);
+        $this->assertInstanceOf(GamePlayThousand::class, $play);
     }
 }

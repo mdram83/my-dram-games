@@ -5,11 +5,14 @@ namespace Games\Thousand;
 use App\GameCore\GameSetup\GameSetupAbsFactory;
 use App\Games\Thousand\GameSetupAbsFactoryThousand;
 use App\Games\Thousand\GameSetupThousand;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class GameSetupAbsFactoryThousandTest extends TestCase
 {
+    use RefreshDatabase;
+
     private GameSetupAbsFactoryThousand $factory;
 
     public function setUp(): void
