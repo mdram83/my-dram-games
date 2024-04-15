@@ -20,12 +20,6 @@ class GameOptionNumberOfPlayers extends GameOptionBase
      */
     public function __construct(array $availableGameOptionValues, GameOptionValueNumberOfPlayers $defaultValue)
     {
-        if (!$this->hasValidGameOptionValues($availableGameOptionValues)) {
-            throw new GameOptionException(GameOptionException::MESSAGE_INCORRECT_AVAILABLE);
-        }
-        $this->availableValues = $availableGameOptionValues;
-        $this->defaultValue = $defaultValue;
+        parent::__construct($availableGameOptionValues, $defaultValue);
     }
-
-
 }

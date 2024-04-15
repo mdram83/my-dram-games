@@ -18,6 +18,23 @@ abstract class GameOptionBase implements GameOption
 
     protected GameOptionType $type;
 
+    /**
+     * @throws GameOptionException
+     */
+    public function __construct(array $availableGameOptionValues, GameOptionValue $defaultValue)
+    {
+        if (!$this->hasValidGameOptionValues($availableGameOptionValues)) {
+            throw new GameOptionException(GameOptionException::MESSAGE_INCORRECT_AVAILABLE);
+        }
+
+        if (!$this->hasValidGameOptionValues([$defaultValue])) {
+            throw new GameOptionException(GameOptionException::MESSAGE_INCORRECT_DEFAULT);
+        }
+
+        $this->availableValues = $availableGameOptionValues;
+        $this->defaultValue = $defaultValue;
+    }
+
     final public function getKey(): string
     {
         return $this::KEY;
