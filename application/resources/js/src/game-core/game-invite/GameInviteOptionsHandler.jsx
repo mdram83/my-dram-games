@@ -11,6 +11,7 @@ export class GameInviteOptionsHandler
             numberOfPlayers: 'fa fa-users',
             autostart: 'fa fa-refresh',
             forfeitAfter: 'fa fa-hourglass',
+            default: 'fa fa-gear',
         }
     }
 
@@ -83,12 +84,13 @@ export class GameInviteOptionsHandler
 
     #getRenderedRadio(key)
     {
-        const radioOptions = this.options[key].availableValues.map((number) => {
+        const radioOptions = this.options[key].availableValues.map((optionValue) => {
+            const number = optionValue.value;
             const id = key + '-' + number;
             return (
                 <div className="mx-2 flex items-center" key={'div' + id}>
                     <input type="radio" id={id} name={this.#getElementName(key)} value={number} required defaultChecked={number === this.#getOptionDefault(key)} />
-                    <label className="text-white font-medium font-semibold px-2 mb-0" htmlFor={id}>{number}</label>
+                    <label className="text-white font-medium font-semibold px-2 mb-0" htmlFor={id}>{optionValue.label}</label>
                 </div>
             );
         });
@@ -155,7 +157,7 @@ export class GameInviteOptionsHandler
 
     #getOptionIcon(key)
     {
-        return this.optionKeyIcons[key] ?? '';
+        return this.optionKeyIcons[key] ?? this.optionKeyIcons.default;
     }
 
     #getOptionName(key)

@@ -162,21 +162,21 @@ class GameBoxPhpConfigTest extends TestCase
             ['options' =>
                 [
                     'numberOfPlayers' => [
-                        'availableValues' => [2],
+                        'availableValues' => [['label' => '2 Players', 'value' => 2]],
                         'defaultValue' => 2,
                         'type' => GameOptionTypeEnum::Radio,
                         'name' => $this->gameBox->getGameSetup()->getOption('numberOfPlayers')->getName(),
                         'description' => $this->gameBox->getGameSetup()->getOption('numberOfPlayers')->getDescription(),
                     ],
                     'autostart' => [
-                        'availableValues' => [1, 0],
+                        'availableValues' => [['label' => 'Enabled', 'value' => 1], ['label' => 'Disabled', 'value' => 0]],
                         'defaultValue' => 0,
                         'type' => GameOptionTypeEnum::Checkbox,
                         'name' => $this->gameBox->getGameSetup()->getOption('autostart')->getName(),
                         'description' => $this->gameBox->getGameSetup()->getOption('autostart')->getDescription(),
                     ],
                     'forfeitAfter' => [
-                        'availableValues' => [0, 60],
+                        'availableValues' => [['label' => 'Disabled', 'value' => 0], ['label' => '1 Minute', 'value' => 60]],
                         'defaultValue' => 0,
                         'type' => GameOptionTypeEnum::Radio,
                         'name' => $this->gameBox->getGameSetup()->getOption('forfeitAfter')->getName(),
