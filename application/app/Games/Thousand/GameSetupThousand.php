@@ -27,10 +27,44 @@ class GameSetupThousand extends GameSetupBase
         );
 
         $forfeitAfter = new GameOptionForfeitAfter(
-            [GameOptionValueForfeitAfter::Disabled, GameOptionValueForfeitAfter::Minutes5],
+            [
+                GameOptionValueForfeitAfter::Disabled,
+                GameOptionValueForfeitAfter::Minutes10,
+                GameOptionValueForfeitAfter::Hour,
+            ],
             GameOptionValueForfeitAfter::Disabled
         );
 
-        $this->options = new CollectionGameOption($optionsHandler, [$numberOfPlayers, $autostart, $forfeitAfter]);
+        $barrelPoints = new GameOptionThousandBarrelPoints(
+            [
+                GameOptionValueThousandBarrelPoints::EightHundred,
+                GameOptionValueThousandBarrelPoints::NineHundred,
+                GameOptionValueThousandBarrelPoints::Disabled,
+            ],
+            GameOptionValueThousandBarrelPoints::EightHundred
+        );
+
+        $numberOfBombs = new GameOptionThousandNumberOfBombs(
+            [
+                GameOptionValueThousandNumberOfBombs::One,
+                GameOptionValueThousandNumberOfBombs::Two,
+                GameOptionValueThousandNumberOfBombs::Disabled,
+            ],
+            GameOptionValueThousandNumberOfBombs::One
+        );
+
+        $reDealConditions = new GameOptionThousandReDealConditions(
+            [
+                GameOptionValueThousandReDealConditions::Disabled,
+                GameOptionValueThousandReDealConditions::FourNines,
+                GameOptionValueThousandReDealConditions::TenPoints,
+            ],
+            GameOptionValueThousandReDealConditions::Disabled
+        );
+
+        $this->options = new CollectionGameOption(
+            $optionsHandler,
+            [$numberOfPlayers, $autostart, $forfeitAfter, $barrelPoints, $numberOfBombs, $reDealConditions]
+        );
     }
 }
