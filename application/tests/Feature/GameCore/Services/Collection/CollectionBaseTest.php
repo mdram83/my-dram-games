@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\GameCore\Services\Collection;
 
+use App\GameCore\GameOption\CollectionGameOption;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
@@ -108,7 +109,7 @@ class CollectionBaseTest extends TestCase
         $newElements = [3, 4];
 
         $this->assertEquals($newElements, $this->collection->reset($newElements)->toArray());
-        $this->assertEquals([], $this->collection->reset([])->toArray());
+        $this->assertEquals([], $this->collection->reset()->toArray());
     }
 
     public function testGetOneThrowExceptionWithMissingKey(): void
@@ -150,7 +151,7 @@ class CollectionBaseTest extends TestCase
     {
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_NO_ELEMENTS);
-        $collection = new \App\GameCore\GameOption\CollectionGameOption($this->handler);
+        $collection = new CollectionGameOption($this->handler);
 
         $collection->pullFirst();
     }

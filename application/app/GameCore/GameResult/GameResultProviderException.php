@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GameResult;
 
-class GameResultProviderException extends \Exception
+use Exception;
+
+class GameResultProviderException extends Exception
 {
     public const MESSAGE_INCORRECT_DATA_PARAMETER = 'Incorrect data parameter';
     public const MESSAGE_RESULTS_ALREADY_SET = 'Result already provided';

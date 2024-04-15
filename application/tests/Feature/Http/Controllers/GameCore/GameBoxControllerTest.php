@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\GameCore\GameBox\GameBoxRepository;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 

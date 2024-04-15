@@ -8,12 +8,6 @@ use Tests\TestCase;
 
 class RefreshCsrfTokenControllerTest extends TestCase
 {
-    protected function getResponse(bool $withHeader = true): TestResponse
-    {
-        return $this
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->get(route('ajax.csrf.token'));
-    }
 
     public function testNonAjaxRequestFails(): void
     {

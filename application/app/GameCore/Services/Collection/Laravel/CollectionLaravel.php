@@ -129,6 +129,9 @@ class CollectionLaravel implements Collection
         return $this->collection->shift();
     }
 
+    /**
+     * @throws CollectionException
+     */
     public function pullLast(): mixed
     {
         if ($this->isEmpty()) {

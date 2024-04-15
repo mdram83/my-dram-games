@@ -35,7 +35,7 @@ class GameMoveTicTacToeTest extends TestCase
         $this->assertInstanceOf(GameMove::class, $this->move);
     }
 
-    public function testThrowExceptionWithInvalidFIeldKey(): void
+    public function testThrowExceptionWithInvalidFieldKey(): void
     {
         $this->expectException(GameMoveException::class);
         $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
@@ -48,7 +48,7 @@ class GameMoveTicTacToeTest extends TestCase
         $this->assertSame($this->player, $this->move->getPlayer());
     }
 
-    public function testGetDevails(): void
+    public function testGetDetails(): void
     {
         $expected = ['fieldKey' => $this->fieldKey];
         $this->assertEquals($expected, $this->move->getDetails());

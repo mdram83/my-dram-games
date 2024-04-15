@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GamePlayStorage;
 
-class GamePlayStorageException extends \Exception
+use Exception;
+
+class GamePlayStorageException extends Exception
 {
     public const MESSAGE_NOT_FOUND = 'GamePlay not found';
     public const MESSAGE_INVALID_INVITE = 'GameInvite invalid';

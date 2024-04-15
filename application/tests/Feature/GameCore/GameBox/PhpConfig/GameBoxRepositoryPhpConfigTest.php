@@ -52,7 +52,7 @@ class GameBoxRepositoryPhpConfigTest extends TestCase
     public function testGetAll(): void
     {
         $gameBoxList = $this->repository->getAll();
-        $this->assertEquals(count($this->config), count($gameBoxList));
+        $this->assertSameSize($this->config, $gameBoxList);
         foreach($gameBoxList as $gameBox) {
             $this->assertInstanceOf(GameBox::class, $gameBox);
         }

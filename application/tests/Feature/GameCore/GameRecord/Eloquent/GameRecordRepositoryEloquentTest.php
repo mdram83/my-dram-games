@@ -10,7 +10,6 @@ use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameRecord\Eloquent\GameRecordFactoryEloquent;
 use App\GameCore\GameRecord\Eloquent\GameRecordRepositoryEloquent;
-use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;

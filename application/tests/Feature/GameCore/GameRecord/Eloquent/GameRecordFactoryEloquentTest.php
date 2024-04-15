@@ -61,7 +61,7 @@ class GameRecordFactoryEloquentTest extends TestCase
         $this->assertInstanceOf(GameRecordFactory::class, $this->factory);
     }
 
-    public function testThrowExceptionIfCantFindIntiveInDb(): void
+    public function testThrowExceptionIfCantFindInviteInDb(): void
     {
         $this->expectException(GameRecordException::class);
         $this->expectExceptionMessage(GameRecordException::MESSAGE_MISSING_INVITE);
@@ -96,7 +96,7 @@ class GameRecordFactoryEloquentTest extends TestCase
         $record = $this->factory->create($this->invite, $this->host, true, []);
 
         $this->assertInstanceOf(GameRecord::class, $record);
-        $this->assertEquals(true, $record->isWinner());
+        $this->assertTrue($record->isWinner());
         $this->assertEquals([], $record->getScore());
     }
 

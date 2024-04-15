@@ -42,7 +42,7 @@ class GameResultTicTacToeTest extends TestCase
         new GameResultTicTacToe(null, [], true);
     }
 
-    public function testThrowExceptionIfForefeitWithFields(): void
+    public function testThrowExceptionIfForfeitWithFields(): void
     {
         $this->expectException(GameResultException::class);
         $this->expectExceptionMessage(GameResultException::MESSAGE_INCORRECT_PARAMETER);

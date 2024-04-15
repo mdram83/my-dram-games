@@ -4,7 +4,6 @@ namespace Tests\Feature\GameCore\GamePlayStorage\Eloquent;
 
 use App\GameCore\GameInvite\Eloquent\GameInviteFactoryEloquent;
 use App\GameCore\GameInvite\Eloquent\GameInviteRepositoryEloquent;
-use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;

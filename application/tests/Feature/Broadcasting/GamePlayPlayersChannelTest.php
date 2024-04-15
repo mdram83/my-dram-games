@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Broadcasting;
 
-use App\Broadcasting\GamePlayPlayerChannel;
 use App\Broadcasting\GamePlayPlayersChannel;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;

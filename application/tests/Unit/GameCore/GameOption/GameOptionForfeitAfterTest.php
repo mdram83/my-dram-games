@@ -5,11 +5,9 @@ namespace Tests\Unit\GameCore\GameOption;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionException;
 use App\GameCore\GameOption\GameOptionForfeitAfter;
-use App\GameCore\GameOption\GameOptionNumberOfPlayers;
 use App\GameCore\GameOptionType\GameOptionType;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
-use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use PHPUnit\Framework\TestCase;
 
 class GameOptionForfeitAfterTest extends TestCase

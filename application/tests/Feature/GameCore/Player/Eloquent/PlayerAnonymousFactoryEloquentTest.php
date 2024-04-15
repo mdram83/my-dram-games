@@ -5,6 +5,7 @@ namespace Tests\Feature\GameCore\Player\Eloquent;
 use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousFactoryException;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
@@ -51,7 +52,7 @@ class PlayerAnonymousFactoryEloquentTest extends TestCase
 
     public function testCreateThrowsExceptionIfSameHashUsedSecondTime(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->factory->create(['key' => $this->userKey]);
         $this->factory->create(['key' => $this->userKey]);
     }

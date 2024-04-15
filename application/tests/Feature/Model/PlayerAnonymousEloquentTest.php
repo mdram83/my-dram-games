@@ -5,6 +5,7 @@ namespace Tests\Feature\Model;
 use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymous;
 use App\Models\PlayerAnonymousEloquent;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -23,7 +24,7 @@ class PlayerAnonymousEloquentTest extends TestCase
 
     public function testSaveFailWithoutId(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $anonymous = new PlayerAnonymousEloquent();
         $anonymous->name = $this->testName;
         $anonymous->save();
@@ -31,7 +32,7 @@ class PlayerAnonymousEloquentTest extends TestCase
 
     public function testSaveFailWithoutName(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $anonymous = new PlayerAnonymousEloquent();
         $anonymous->id = $this->testHash;
         $anonymous->save();

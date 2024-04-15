@@ -5,12 +5,13 @@ namespace Tests\Unit\GameCore\GameOptionValue;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class GameOptionValueAutostartTest extends TestCase
 {
     public function testInstanceOfGameOptions(): void
     {
-        $reflection = new \ReflectionClass(GameOptionValueAutostart::class);
+        $reflection = new ReflectionClass(GameOptionValueAutostart::class);
         $this->assertTrue($reflection->implementsInterface(GameOptionValue::class));
     }
 

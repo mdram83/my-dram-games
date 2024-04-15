@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\GameCore\GameBox\PhpConfig\GameBoxPhpConfig;
 use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;

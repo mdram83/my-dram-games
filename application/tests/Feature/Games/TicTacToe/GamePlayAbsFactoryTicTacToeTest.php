@@ -10,7 +10,6 @@ use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayException;
-use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GamePlayStorage\GamePlayStorageFactory;
 use App\GameCore\GameRecord\GameRecordFactory;

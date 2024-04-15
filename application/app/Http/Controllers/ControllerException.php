@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-class ControllerException extends \Exception
+use Exception;
+
+class ControllerException extends Exception
 {
 
 }

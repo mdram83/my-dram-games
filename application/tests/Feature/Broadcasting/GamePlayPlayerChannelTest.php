@@ -103,7 +103,7 @@ class GamePlayPlayerChannelTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testPlayerHackingHostFaild(): void
+    public function testPlayerHackingHostFailed(): void
     {
         $response = $this->getResponse(playerHackHost: true);
         $response->assertStatus(Response::HTTP_FORBIDDEN);

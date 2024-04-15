@@ -50,13 +50,13 @@ class CollectionGamePlayPlayersTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_INCOMPATIBLE);
 
-        $collection = new \App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers($this->handler);
+        $collection = new CollectionGamePlayPlayers($this->handler);
         $collection->add(1);
     }
 
     public function testCreateWithPlayersArray(): void
     {
-        $collection = new \App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers($this->handler, [$this->playerOne, $this->playerTwo]);
+        $collection = new CollectionGamePlayPlayers($this->handler, [$this->playerOne, $this->playerTwo]);
         $this->assertEquals(2, $collection->count());
     }
 

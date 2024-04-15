@@ -5,9 +5,7 @@ namespace Games\Thousand;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionException;
 use App\GameCore\GameOptionValue\GameOptionValue;
-use App\Games\Thousand\GameOptionThousandBarrelPoints;
 use App\Games\Thousand\GameOptionThousandNumberOfBombs;
-use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
 use PHPUnit\Framework\TestCase;
 

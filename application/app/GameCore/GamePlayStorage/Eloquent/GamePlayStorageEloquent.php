@@ -19,7 +19,7 @@ class GamePlayStorageEloquent implements GamePlayStorage
     protected GameInvite $gameInvite;
 
     /**
-     * @throws \App\GameCore\GamePlayStorage\GamePlayStorageException
+     * @throws GamePlayStorageException
      */
     public function __construct(GameInviteRepository $gameInviteRepository, int|string $id = null)
     {
@@ -114,7 +114,7 @@ class GamePlayStorageEloquent implements GamePlayStorage
         return (bool) $this->model->finished;
     }
 
-    private function registerNewModel()
+    private function registerNewModel(): void
     {
         $this->model = new GamePlayStorageEloquentModel();
         $this->model->save();
@@ -123,7 +123,7 @@ class GamePlayStorageEloquent implements GamePlayStorage
     /**
      * @throws GamePlayStorageException
      */
-    private function loadExisingModel(int|string $id)
+    private function loadExisingModel(int|string $id): void
     {
         if (!($model = GamePlayStorageEloquentModel::where('id', $id)->first())) {
             throw new GamePlayStorageException(GamePlayStorageException::MESSAGE_NOT_FOUND);

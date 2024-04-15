@@ -2,17 +2,18 @@
 
 namespace App\Games\TicTacToe\Elements;
 
+use App\GameCore\GameElements\GameCharacter\GameCharacter;
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\Player\Player;
 
-class GameCharacterTicTacToe implements \App\GameCore\GameElements\GameCharacter\GameCharacter
+class GameCharacterTicTacToe implements GameCharacter
 {
     /**
      * @throws GameCharacterException
      */
     public function __construct(
         private readonly string $name,
-        private Player $player
+        private readonly Player $player
     )
     {
         if (!in_array($this->name, ['x', 'o'])) {

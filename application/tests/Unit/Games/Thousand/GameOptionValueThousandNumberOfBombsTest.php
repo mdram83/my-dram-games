@@ -5,12 +5,13 @@ namespace Games\Thousand;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class GameOptionValueThousandNumberOfBombsTest extends TestCase
 {
     public function testInstanceOfGameOptions(): void
     {
-        $reflection = new \ReflectionClass(GameOptionValueThousandNumberOfBombs::class);
+        $reflection = new ReflectionClass(GameOptionValueThousandNumberOfBombs::class);
         $this->assertTrue($reflection->implementsInterface(GameOptionValue::class));
     }
 

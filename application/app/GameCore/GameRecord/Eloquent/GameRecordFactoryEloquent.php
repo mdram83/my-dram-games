@@ -5,12 +5,13 @@ namespace App\GameCore\GameRecord\Eloquent;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\GameRecord;
 use App\GameCore\GameRecord\GameRecordException;
+use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Player\Player;
 use App\Models\GameInviteEloquentModel;
 use App\Models\GameRecordEloquentModel;
 use Illuminate\Database\UniqueConstraintViolationException;
 
-class GameRecordFactoryEloquent implements \App\GameCore\GameRecord\GameRecordFactory
+class GameRecordFactoryEloquent implements GameRecordFactory
 {
     /**
      * @throws GameRecordException

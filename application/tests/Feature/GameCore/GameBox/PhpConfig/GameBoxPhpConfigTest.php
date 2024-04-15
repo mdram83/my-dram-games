@@ -98,12 +98,12 @@ class GameBoxPhpConfigTest extends TestCase
         $this->assertEquals($this->box['description'], $this->gameBox->getDescription());
     }
 
-    public function testGetNumberOfPlayersDecriptionWithOneNumber(): void
+    public function testGetNumberOfPlayersDescriptionWithOneNumber(): void
     {
         $this->assertEquals('2', $this->gameBox->getNumberOfPlayersDescription());
     }
 
-    public function testGetNumberOfPlayersDecriptionWithConsecutiveNumbers(): void
+    public function testGetNumberOfPlayersDescriptionWithConsecutiveNumbers(): void
     {
         $setup = $this->getMockGameSetup([
             GameOptionValueNumberOfPlayers::Players002,
@@ -115,7 +115,7 @@ class GameBoxPhpConfigTest extends TestCase
         $this->assertEquals('2-4', $gameBox->getNumberOfPlayersDescription());
     }
 
-    public function testGetNumberOfPlayersDecriptionWithNonConsecutiveNumbers(): void
+    public function testGetNumberOfPlayersDescriptionWithNonConsecutiveNumbers(): void
     {
         $setup = $this->getMockGameSetup([
             GameOptionValueNumberOfPlayers::Players002,

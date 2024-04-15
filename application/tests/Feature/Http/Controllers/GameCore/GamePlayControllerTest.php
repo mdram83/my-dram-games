@@ -20,6 +20,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Models\User;
+use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
@@ -582,7 +583,7 @@ class GamePlayControllerTest extends TestCase
 
         $disconnection = App::make(GamePlayDisconnectionRepositoryEloquent::class)
             ->getOneByGamePlayAndPlayer($play, $this->player);
-        $disconnection->disconnected_at = (new \DateTimeImmutable())->modify('-2 minutes');
+        $disconnection->disconnected_at = (new DateTimeImmutable())->modify('-2 minutes');
         $disconnection->save();
 
         $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);

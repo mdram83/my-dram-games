@@ -221,7 +221,7 @@ class GameInviteEloquent implements GameInvite
      */
     protected function canAddMorePlayers(): bool
     {
-        return count($this->getPlayers()) < $this->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value;
+        return count($this->getPlayers()) < $this->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->getValue();
     }
 
     public function isPlayerAdded(Player $player): bool

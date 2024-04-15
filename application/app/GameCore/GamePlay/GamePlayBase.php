@@ -85,7 +85,7 @@ abstract class GamePlayBase implements GamePlay
         }
 
         if (
-            $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value
+            $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->getValue()
             !== count($gameInvite->getPlayers())
         ) {
             throw new GamePlayException(GamePlayException::MESSAGE_MISSING_PLAYERS);

@@ -10,7 +10,6 @@ use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GamePlay\GamePlayAbsFactory;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -202,7 +201,7 @@ class GameInviteControllerTest extends TestCase
         $gameInvite = $this->getGameInvite();
         $gameInviteId = $gameInvite->getId();
 
-        $numberOfPlayers = $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->value;
+        $numberOfPlayers = $gameInvite->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->getValue();
         for ($i = 0; $i < $numberOfPlayers - 1; $i++) {
             $gameInvite->addPlayer(User::factory()->create());
         }

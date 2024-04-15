@@ -7,7 +7,6 @@ use App\GameCore\GameElements\GameMove\GameMoveException;
 use App\GameCore\Player\Player;
 use App\Games\TicTacToe\GameMoveAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GameMoveTicTacToe;
-use App\Models\User;
 use Tests\TestCase;
 
 class GameMoveAbsFactoryTicTacToeTest extends TestCase

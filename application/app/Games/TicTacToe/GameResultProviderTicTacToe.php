@@ -76,6 +76,9 @@ class GameResultProviderTicTacToe implements GameResultProvider
         return null;
     }
 
+    /**
+     * @throws GameResultException
+     */
     private function getForfeitResult(string $forfeitCharacterName): GameResult
     {
         $this->resultProvided = true;

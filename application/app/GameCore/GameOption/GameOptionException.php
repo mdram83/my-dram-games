@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GameOption;
 
-class GameOptionException extends \Exception
+use Exception;
+
+class GameOptionException extends Exception
 {
     public const MESSAGE_INCORRECT_AVAILABLE = 'Incorrect available options';
     public const MESSAGE_INCORRECT_DEFAULT = 'Incorrect default option';

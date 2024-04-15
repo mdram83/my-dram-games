@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GameSetup;
 
-class GameSetupException extends \Exception
+use Exception;
+
+class GameSetupException extends Exception
 {
     public const MESSAGE_OPTION_NOT_SET = 'Required option not set';
     public const MESSAGE_OPTION_INCORRECT = 'Options incorrectly set';

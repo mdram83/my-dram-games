@@ -60,7 +60,7 @@ class GamePlayController extends Controller
 
     }
 
-    public function store(Player $player, Request $request,): View|Response|RedirectResponse
+    public function store(Player $player, Request $request): View|Response|RedirectResponse
     {
         try {
             DB::beginTransaction();
@@ -290,7 +290,7 @@ class GamePlayController extends Controller
                 return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
             }
 
-            if (!$disconnection->hasExpired($forfeitAfterOptionValue->value)) {
+            if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
                 DB::rollBack();
                 return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
             }

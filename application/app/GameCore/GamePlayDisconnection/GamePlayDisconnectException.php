@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GamePlayDisconnection;
 
-class GamePlayDisconnectException extends \Exception
+use Exception;
+
+class GamePlayDisconnectException extends Exception
 {
     public const MESSAGE_GAMEPLAY_ALREADY_SET = 'GamePlay already set';
     public const MESSAGE_PLAYER_ALREADY_SET = 'Player already set';

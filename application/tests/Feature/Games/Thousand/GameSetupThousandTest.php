@@ -10,7 +10,6 @@ use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\GameSetupThousand;
-use App\Games\TicTacToe\GameSetupTicTacToe;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 

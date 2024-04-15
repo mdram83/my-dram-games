@@ -6,9 +6,10 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
+use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
 use App\Models\GamePlayStorageEloquentModel;
 
-class GamePlayStorageRepositoryEloquent implements \App\GameCore\GamePlayStorage\GamePlayStorageRepository
+class GamePlayStorageRepositoryEloquent implements GamePlayStorageRepository
 {
 
     public function __construct(private readonly GameInviteRepository $inviteRepository)

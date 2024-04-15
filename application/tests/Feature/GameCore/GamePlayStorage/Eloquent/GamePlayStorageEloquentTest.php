@@ -65,7 +65,7 @@ class GamePlayStorageEloquentTest extends TestCase
         return $invite;
     }
 
-    protected function constructStorageWithId(int|string $id): \App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent
+    protected function constructStorageWithId(int|string $id): GamePlayStorageEloquent
     {
         return new GamePlayStorageEloquent($this->inviteRepository, $id);
     }

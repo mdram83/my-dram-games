@@ -45,7 +45,7 @@ class CollectionGameOptionTest extends TestCase
     {
         $this->assertInstanceOf(Collection::class, $this->collection);
         $this->assertInstanceOf(CollectionBase::class, $this->collection);
-        $this->assertInstanceOf(\App\GameCore\GameOption\CollectionGameOption::class, $this->collection);
+        $this->assertInstanceOf(CollectionGameOption::class, $this->collection);
     }
 
     public function testFilter(): void
@@ -80,7 +80,7 @@ class CollectionGameOptionTest extends TestCase
         $newElements = ['C' => $optionC, 'D' => $optionD];
 
         $this->assertEquals($newElements, $this->collection->reset($newElements)->toArray());
-        $this->assertEquals([], $this->collection->reset([])->toArray());
+        $this->assertEquals([], $this->collection->reset()->toArray());
     }
 
     public function testThrowExceptionWhenCreatingWithIncompatibleElements(): void
@@ -91,7 +91,7 @@ class CollectionGameOptionTest extends TestCase
         new CollectionGameOption($this->handler, ['incompatible-1', 'incompatible-2']);
     }
 
-    public function testThrowExceptionWhenCeatingWithDuplicatedKeys(): void
+    public function testThrowExceptionWhenCreatingWithDuplicatedKeys(): void
     {
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_DUPLICATE);

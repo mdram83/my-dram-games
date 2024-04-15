@@ -112,7 +112,7 @@ class CollectionLaravelTest extends TestCase
     {
         $newElements = [4, 5];
         $this->assertEquals($newElements, $this->collection->reset($newElements)->toArray());
-        $this->assertEquals([], $this->collection->reset([])->toArray());
+        $this->assertEquals([], $this->collection->reset()->toArray());
     }
 
     public function testThrowExceptionWhenOverwritingSingleElementWithKey(): void

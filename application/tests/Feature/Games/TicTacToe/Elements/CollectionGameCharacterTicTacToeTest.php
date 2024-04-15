@@ -45,7 +45,7 @@ class CollectionGameCharacterTicTacToeTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_DUPLICATE);
 
-        $collection = new \App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe($this->handler);
+        $collection = new CollectionGameCharacterTicTacToe($this->handler);
         $collection->add(new GameCharacterTicTacToe('x', $this->players[0]));
         $collection->add(new GameCharacterTicTacToe('o', $this->players[0]));
     }

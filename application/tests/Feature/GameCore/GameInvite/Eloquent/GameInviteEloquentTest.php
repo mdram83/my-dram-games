@@ -90,7 +90,7 @@ class GameInviteEloquentTest extends TestCase
 
     // Setting/Getting Number Of Players
 
-    public function testThrowExceptionWhenGettingGameSetupWitoutSettingGameBox(): void
+    public function testThrowExceptionWhenGettingGameSetupWithoutSettingGameBox(): void
     {
         $this->expectException(GameInviteException::class);
         $this->gameInvite->getGameSetup();

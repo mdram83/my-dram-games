@@ -5,12 +5,13 @@ namespace Games\Thousand;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\Games\Thousand\GameOptionValueThousandReDealConditions;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class GameOptionValueThousandReDealConditionsTest extends TestCase
 {
     public function testInstanceOfGameOptions(): void
     {
-        $reflection = new \ReflectionClass(GameOptionValueThousandReDealConditions::class);
+        $reflection = new ReflectionClass(GameOptionValueThousandReDealConditions::class);
         $this->assertTrue($reflection->implementsInterface(GameOptionValue::class));
     }
 

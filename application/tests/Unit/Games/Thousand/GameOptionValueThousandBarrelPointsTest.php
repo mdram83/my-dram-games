@@ -5,12 +5,13 @@ namespace Games\Thousand;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class GameOptionValueThousandBarrelPointsTest extends TestCase
 {
     public function testInstanceOfGameOptions(): void
     {
-        $reflection = new \ReflectionClass(GameOptionValueThousandBarrelPoints::class);
+        $reflection = new ReflectionClass(GameOptionValueThousandBarrelPoints::class);
         $this->assertTrue($reflection->implementsInterface(GameOptionValue::class));
     }
 

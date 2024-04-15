@@ -2,7 +2,9 @@
 
 namespace App\GameCore\GameElements\GameBoard;
 
-class GameBoardException extends \Exception
+use Exception;
+
+class GameBoardException extends Exception
 {
     public const MESSAGE_INVALID_FIELD_VALUE = 'Invalid field value';
     public const MESSAGE_INVALID_FIELD_ID = 'Invalid field id';

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\GameCore\GameOptionValue;
 
+use App\GameCore\GameOption\CollectionGameOption;
+use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
@@ -26,7 +28,7 @@ class CollectionGameOptionValueInputTest extends TestCase
             'B' => $this->createMock(GameOptionValue::class),
         ];
 
-        $this->collection = new \App\GameCore\GameOptionValue\CollectionGameOptionValueInput($this->handler, $this->options);
+        $this->collection = new CollectionGameOptionValueInput($this->handler, $this->options);
     }
 
     protected function getExpectedToArray(): array
@@ -38,7 +40,7 @@ class CollectionGameOptionValueInputTest extends TestCase
     {
         $this->assertInstanceOf(Collection::class, $this->collection);
         $this->assertInstanceOf(CollectionBase::class, $this->collection);
-        $this->assertInstanceOf(\App\GameCore\GameOptionValue\CollectionGameOptionValueInput::class, $this->collection);
+        $this->assertInstanceOf(CollectionGameOptionValueInput::class, $this->collection);
     }
 
     public function testThrowExceptionWhenResetWithIncompatibleTypes(): void
@@ -57,7 +59,7 @@ class CollectionGameOptionValueInputTest extends TestCase
         $newElements = ['C' => $optionC, 'D' => $optionD];
 
         $this->assertEquals($newElements, $this->collection->reset($newElements)->toArray());
-        $this->assertEquals([], $this->collection->reset([])->toArray());
+        $this->assertEquals([], $this->collection->reset()->toArray());
     }
 
     public function testThrowExceptionWhenCreatingWithIncompatibleElements(): void
@@ -65,7 +67,7 @@ class CollectionGameOptionValueInputTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_INCOMPATIBLE);
 
-        new \App\GameCore\GameOption\CollectionGameOption($this->handler, ['incompatible-1', 'incompatible-2']);
+        new CollectionGameOption($this->handler, ['incompatible-1', 'incompatible-2']);
     }
 
     public function testThrowExceptionWhenAddingIncompatibleType(): void

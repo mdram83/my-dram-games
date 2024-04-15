@@ -47,7 +47,7 @@ class GameInviteController extends Controller
         try {
             $inputs = $this->getValidatedCastedStoreInputs($request, $converter);
 
-            DB::beginTransaction();;
+            DB::beginTransaction();
             $gameInvite = $factory->create($inputs['slug'], $inputs['options'], $player);
             DB::commit();
 
