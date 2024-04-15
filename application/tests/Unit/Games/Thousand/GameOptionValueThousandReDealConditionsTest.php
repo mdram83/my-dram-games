@@ -22,4 +22,30 @@ class GameOptionValueThousandReDealConditionsTest extends TestCase
         $this->assertCount(count($expected), $cases);
         $this->assertEquals($expected, array_map(fn($case) => $case->value, $cases));
     }
+
+    public function testGetValue(): void
+    {
+        $disabled = GameOptionValueThousandReDealConditions::Disabled;
+        $nines = GameOptionValueThousandReDealConditions::FourNines;
+        $tenPoints = GameOptionValueThousandReDealConditions::TenPoints;
+        $eighteenPoints = GameOptionValueThousandReDealConditions::EighteenPoints;
+
+        $this->assertEquals($disabled->value, $disabled->getValue());
+        $this->assertEquals($nines->value, $nines->getValue());
+        $this->assertEquals($tenPoints->value, $tenPoints->getValue());
+        $this->assertEquals($eighteenPoints->value, $eighteenPoints->getValue());
+    }
+
+    public function testGetLabel(): void
+    {
+        $disabled = GameOptionValueThousandReDealConditions::Disabled;
+        $nines = GameOptionValueThousandReDealConditions::FourNines;
+        $tenPoints = GameOptionValueThousandReDealConditions::TenPoints;
+        $eighteenPoints = GameOptionValueThousandReDealConditions::EighteenPoints;
+
+        $this->assertEquals('Disabled', $disabled->getLabel());
+        $this->assertEquals('Four Nines', $nines->getLabel());
+        $this->assertEquals('Ten Points', $tenPoints->getLabel());
+        $this->assertEquals('Eighteen Points', $eighteenPoints->getLabel());
+    }
 }
