@@ -100,32 +100,31 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 //        $this->storage->setFinished();
     }
 
+    /**
+     * @throws GamePlayException
+     */
     public function getSituation(Player $player): array
     {
-//        $resultArray = isset($this->result)
-//            ? ['result' => ['details' => $this->result->getDetails(), 'message' => $this->result->getMessage()]]
-//            : [];
-//
-//        return array_merge(
-//            [
-//                'players' => [
-//                    $this->storage->getGameInvite()->getPlayers()[0]->getName(),
-//                    $this->storage->getGameInvite()->getPlayers()[1]->getName(),
-//                ],
-//                'activePlayer' => $this->activePlayer->getName(),
-//                'characters' => [
-//                    'x' => $this->characters->getOne('x')->getPlayer()->getName(),
-//                    'o' => $this->characters->getOne('o')->getPlayer()->getName(),
-//                ],
-//                'board' => json_decode($this->board->toJson(), true),
-//                'isFinished' => $this->isFinished(),
-//            ],
-//            $resultArray
-//        );
-        return [];
+        if (!$this->players->exist($player->getId())) {
+            throw new GamePlayException(GamePlayException::MESSAGE_NOT_PLAYER);
+        }
+
+        $situationData = $this->getSituationData();
+
+        foreach ($situationData['orderedPlayers'] as $playerName => $playerData) {
+
+            if ($playerName !== $player->getName()) {
+                $situationData['orderedPlayers'][$playerName]['hand'] = count($situationData['orderedPlayers'][$playerName]['hand']);
+            }
+
+            $situationData['orderedPlayers'][$playerName]['tricks'] = count($situationData['orderedPlayers'][$playerName]['tricks']);
+        }
+
+        $situationData['stock'] = count($situationData['stock']);
+
+        return $situationData;
+
     }
-
-
 
     protected function initialize(): void
     {
@@ -146,29 +145,27 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->trumpSuit = null;
         $this->phase = new GamePhaseThousandSorting();
 
-//        dd($this->getSituationData());
-
         // TODO continue here to save data, restore it, and for both cases getSituation for specific player
+        // TODO this will be tricky as today I use generic gameplay repository utilizing GamePlayBase constructor...
+
         // TODO test getSituation for both 3 and 4 players
+
+
         // TODO add gameOptions to situation (if not exposed to frontend gameplay-show by Controller
-//        $this->saveData();
+
+        $this->saveData();
     }
 
     protected function saveData(): void
     {
-//        $this->storage->setGameData([
-//            'activePlayerId' => $this->activePlayer->getId(),
-//            'characters' => [
-//                'x' => $this->characters->getOne('x')->getPlayer()->getId(),
-//                'o' => $this->characters->getOne('o')->getPlayer()->getId(),
-//            ],
-//            'board' => $this->board->toJson(),
-//        ]);
+        $this->storage->setGameData($this->getSituationData());
     }
 
     protected function loadData(): void
     {
         $data = $this->storage->getGameData();
+
+
 
 //        $this->setActivePlayer($this->players->getOne($data['activePlayerId']));
 //        $this->setCharacters(
@@ -202,11 +199,13 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
     }
 
+    // TODO extract to service
     private function getEmptyPlayingCardCollection(): CollectionPlayingCard
     {
         return new CollectionPlayingCard(clone $this->collectionHandler, []);
     }
 
+    // TODO extract to service
     private function shuffleAndDealCards(): void
     {
         $this->deck->shuffle()->shuffle()->shuffle();
@@ -263,6 +262,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         ];
     }
 
+    // TODO extract to service
     private function getCardsKeys(CollectionPlayingCard $cards): array
     {
         return array_map(fn($card) => $card->getKey(), $cards->toArray());
