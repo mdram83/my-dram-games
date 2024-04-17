@@ -4,11 +4,11 @@ namespace App\GameCore\GamePlay\PhpConfig;
 
 use App\GameCore\GameBox\GameBoxException;
 use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\GamePlay\GamePlayAbsRepositoryRepository;
+use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayException;
 use Illuminate\Support\Facades\Config;
 
-class GamePlayAbsRepositoryRepositoryPhpConfig implements GamePlayAbsRepositoryRepository
+class GamePlayAbsRepositoryPhpConfig implements GamePlayAbsRepository
 {
     public const GAME_PLAY_ABS_CLASS_KEY = 'GamePlayAbs';
 

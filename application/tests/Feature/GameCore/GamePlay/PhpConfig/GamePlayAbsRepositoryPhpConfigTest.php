@@ -3,27 +3,27 @@
 namespace Tests\Feature\GameCore\GamePlay\PhpConfig;
 
 use App\GameCore\GameBox\GameBoxException;
-use App\GameCore\GamePlay\GamePlayAbsRepositoryRepository;
+use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayException;
-use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryRepositoryPhpConfig;
+use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
-class GamePlayAbsRepositoryRepositoryPhpConfigTest extends TestCase
+class GamePlayAbsRepositoryPhpConfigTest extends TestCase
 {
-    protected GamePlayAbsRepositoryRepositoryPhpConfig $repository;
+    protected GamePlayAbsRepositoryPhpConfig $repository;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->repository = App::make(GamePlayAbsRepositoryRepository::class);
+        $this->repository = App::make(GamePlayAbsRepository::class);
     }
 
     public function testInstance(): void
     {
-        $this->assertInstanceOf(GamePlayAbsRepositoryRepository::class, $this->repository);
+        $this->assertInstanceOf(GamePlayAbsRepository::class, $this->repository);
     }
 
     public function testThrowExceptionWhenNotExistingSlug(): void
@@ -46,7 +46,7 @@ class GamePlayAbsRepositoryRepositoryPhpConfigTest extends TestCase
 
         Config::shouldReceive('get')
             ->once()
-            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
+            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
             ->andReturn('NotExistingClassName');
         $this->repository->getOne($slug);
     }
@@ -65,7 +65,7 @@ class GamePlayAbsRepositoryRepositoryPhpConfigTest extends TestCase
 
         Config::shouldReceive('get')
             ->once()
-            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
+            ->with('games.box.' . $slug . '.' . GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY)
             ->andReturn('\Illuminate\Support\Facades\App');
 
         $this->repository->getOne($slug);

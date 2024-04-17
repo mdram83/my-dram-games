@@ -2,7 +2,7 @@
 
 namespace App\GameCore\GamePlay;
 
-interface GamePlayAbsRepositoryRepository
+interface GamePlayAbsRepository
 {
     public function getOne(string $slug): string;
 }

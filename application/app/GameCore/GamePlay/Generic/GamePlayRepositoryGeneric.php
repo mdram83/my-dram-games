@@ -4,8 +4,9 @@ namespace App\GameCore\GamePlay\Generic;
 
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\GamePlay\GamePlayAbsRepositoryRepository;
+use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
@@ -14,9 +15,10 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
 {
     public function __construct(
         readonly private GamePlayStorageRepository $storageRepository,
-        readonly private GamePlayAbsRepositoryRepository $gamePlayAbsRepository,
+        readonly private GamePlayAbsRepository $gamePlayAbsRepository,
         readonly private Collection $collectionHandler,
         readonly private GameRecordFactory $gameRecordFactory,
+        readonly private GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {
 

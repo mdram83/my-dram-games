@@ -29,11 +29,7 @@ class GamePlayAbsFactoryTicTacToeTest extends TestCase
 
     public function setUp(): void{
         parent::setUp();
-        $this->factory = new GamePlayAbsFactoryTicTacToe(
-            App::make(GamePlayStorageFactory::class),
-            App::make(Collection::class),
-            App::make(GameRecordFactory::class),
-        );
+        $this->factory = App::make(GamePlayAbsFactoryTicTacToe::class);
     }
 
     protected function prepareGameInvite(bool $completeSetup = true): GameInvite
