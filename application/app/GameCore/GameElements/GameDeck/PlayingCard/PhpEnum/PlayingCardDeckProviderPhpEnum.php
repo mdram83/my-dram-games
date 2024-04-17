@@ -3,6 +3,7 @@
 namespace App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCard;
+use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\Generic\PlayingCardGeneric;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardFactory;
@@ -22,9 +23,9 @@ class PlayingCardDeckProviderPhpEnum implements PlayingCardDeckProvider
     /**
      * @throws CollectionException
      */
-    public function getDeckSchnapsen(): CollectionPlayingCard
+    public function getDeckSchnapsen(): CollectionPlayingCardUnique
     {
-        $deck = new CollectionPlayingCard(clone $this->handler);
+        $deck = new CollectionPlayingCardUnique(clone $this->handler);
 
         $ranks = [
             PlayingCardRankPhpEnum::Nine,

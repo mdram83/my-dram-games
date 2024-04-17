@@ -3,7 +3,8 @@
 namespace App\Games\Thousand;
 
 use App\GameCore\GameElements\GameBoard\GameBoardException;
-use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCard;
+use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameMove\GameMove;
@@ -11,12 +12,9 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
-use App\GameCore\GamePlayStorage\GamePlayStorage;
-use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
-use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandSorting;
@@ -33,9 +31,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     private ?Player $bidWinner;
     private int $bidAmount;
 
-    private CollectionPlayingCard $stock;
-    private CollectionPlayingCard $table;
-    private CollectionPlayingCard $deck;
+    private CollectionPlayingCardUnique $stock;
+    private CollectionPlayingCardUnique $table;
+    private CollectionPlayingCardUnique $deck;
 
     private int $round;
     private ?PlayingCardSuit $trumpSuit;
@@ -43,10 +41,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     //    protected ?GameResultTicTacToe $result = null;
 
-    protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
-    {
-        $this->deckProvider = $provider->getPlayingCardDeckProvider();
-    }
+
 
     /**
      * @throws GamePlayException
@@ -163,14 +158,37 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
         $data = $this->storage->getGameData();
 
+        $this->playersData = $data['orderedPlayers'];
+        foreach (array_keys($this->playersData) as $playerId) {
 
+            $this->playersData[$playerId] = [
+                'hand' => $this->getCardsByKeys($this->playersData[$playerId]['hand']),
+                'tricks' => $this->getCardsByKeys($this->playersData[$playerId]['tricks']),
+                'barrel' => false,
+                'points' => [],
+            ];
+        }
 
-//        $this->setActivePlayer($this->players->getOne($data['activePlayerId']));
-//        $this->setCharacters(
-//            $this->players->getOne($data['characters']['x']),
-//            $this->players->getOne($data['characters']['o'])
-//        );
-//        $this->setBoard($data['board']);
+        $this->dealer = $this->getPlayerByName($data['dealer']);
+        $this->obligation = $this->getPlayerByName($data['obligation']);
+        $this->activePlayer = $this->getPlayerByName($data['activePlayer']);
+
+        $this->bidWinner = $this->getPlayerByName($data['bidWinner']);
+        $this->bidAmount = $data['bidAmount'];
+
+        $this->stock = $this->getCardsByKeys($data['stock']);
+        $this->table = $this->getCardsByKeys($data['table']);
+        $this->deck = $this->getEmptyPlayingCardCollection();
+
+        $this->round = $data['round'];
+
+        $this->trumpSuit = null; // TODO adjust after first move...
+        $this->phase = new GamePhaseThousandSorting(); // TODO adjust after first actions
+    }
+
+    protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+        $this->deckProvider = $provider->getPlayingCardDeckProvider();
     }
 
     private function getNextOrderedPlayer(Player $player): Player
@@ -181,6 +199,20 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $nextPlayerId = $keys[$nextPlayerIndex];
 
         return $this->players->getOne($nextPlayerId);
+    }
+
+    private function getPlayerByName(?string $playerName): ?Player
+    {
+        if ($playerName === null) {
+            return null;
+        }
+
+        $playerId = array_keys(array_filter(
+            $this->players->toArray(),
+            fn($item) => $item->getName() === $playerName
+        ))[0];
+
+        return $this->players->getOne($playerId);
     }
 
     private function initializePlayersData(): void
@@ -198,9 +230,27 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     }
 
     // TODO extract to service
-    private function getEmptyPlayingCardCollection(): CollectionPlayingCard
+    private function getEmptyPlayingCardCollection(): CollectionPlayingCardUnique
     {
-        return new CollectionPlayingCard(clone $this->collectionHandler, []);
+        return new CollectionPlayingCardUnique(clone $this->collectionHandler, []);
+    }
+
+    // TODO extract to service
+    private function getCardsByKeys(?array $keys): CollectionPlayingCardUnique
+    {
+        if ($keys === null || $keys === []) {
+            return $this->getEmptyPlayingCardCollection();
+        }
+
+        $deck = $this->deckProvider->getDeckSchnapsen();
+
+        return $this->getEmptyPlayingCardCollection()->reset(array_map(fn($cardKey) => $deck->getOne($cardKey), $keys));
+    }
+
+    // TODO extract to service
+    private function getCardsKeys(CollectionPlayingCardUnique $cards): array
+    {
+        return array_keys($cards->toArray());
     }
 
     // TODO extract to service
@@ -251,6 +301,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             'activePlayer' => $this->activePlayer->getName(),
             'dealer' => $this->dealer->getName(),
             'obligation' => $this->obligation->getName(),
+            'round' => $this->round,
             'phase' => [
                 'key' => $this->phase->getKey(),
                 'name' => $this->phase->getName(),
@@ -260,9 +311,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         ];
     }
 
-    // TODO extract to service
-    private function getCardsKeys(CollectionPlayingCard $cards): array
-    {
-        return array_map(fn($card) => $card->getKey(), $cards->toArray());
-    }
+
+
 }
