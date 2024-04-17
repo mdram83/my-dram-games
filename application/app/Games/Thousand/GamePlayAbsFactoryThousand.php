@@ -2,7 +2,6 @@
 
 namespace App\Games\Thousand;
 
-use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayAbsFactory;
@@ -19,7 +18,6 @@ class GamePlayAbsFactoryThousand implements GamePlayAbsFactory
         readonly private GamePlayStorageFactory $storageFactory,
         readonly private Collection $collectionHandler,
         readonly private GameRecordFactory $gameRecordFactory,
-        readonly private PlayingCardDeckProvider $deckProvider,
         readonly private GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {
@@ -33,6 +31,6 @@ class GamePlayAbsFactoryThousand implements GamePlayAbsFactory
     public function create(GameInvite $gameInvite): GamePlay
     {
         $storage = $this->storageFactory->create($gameInvite);
-        return new GamePlayThousand($storage, $this->collectionHandler, $this->gameRecordFactory, $this->gamePlayServicesProvider, $this->deckProvider);
+        return new GamePlayThousand($storage, $this->collectionHandler, $this->gameRecordFactory, $this->gamePlayServicesProvider);
     }
 }

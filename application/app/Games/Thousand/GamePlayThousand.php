@@ -43,17 +43,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     //    protected ?GameResultTicTacToe $result = null;
 
-    public function __construct(
-        protected GamePlayStorage $storage,
-        Collection $collectionHandler,
-        GameRecordFactory $gameRecordFactory,
-        GamePlayServicesProvider $gamePlayServicesProvider,
-        PlayingCardDeckProvider $deckProvider
-    )
-    {
-        parent::__construct($this->storage, $collectionHandler, $gameRecordFactory, $gamePlayServicesProvider);
-    }
-
     protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
     {
         $this->deckProvider = $provider->getPlayingCardDeckProvider();
