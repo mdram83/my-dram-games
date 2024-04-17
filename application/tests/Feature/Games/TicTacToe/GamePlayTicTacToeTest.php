@@ -80,12 +80,7 @@ class GamePlayTicTacToeTest extends TestCase
             $storage->setFinished();
         }
 
-        return new GamePlayTicTacToe(
-            $storage,
-            App::make(Collection::class),
-            App::make(GameRecordFactory::class),
-            App::make(GamePlayServicesProvider::class),
-        );
+        return new GamePlayTicTacToe($storage, App::make(GamePlayServicesProvider::class));
     }
 
     protected function prepareMove(?Player $overwritePlayer = null, int $fieldKey = 1): GameMoveTicTacToe

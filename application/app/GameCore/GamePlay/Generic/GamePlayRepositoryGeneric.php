@@ -30,7 +30,7 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
         $slug = $storage->getGameInvite()->getGameBox()->getSlug();
         $className = $this->gamePlayAbsRepository->getOne($slug);
 
-        return new $className($storage, $this->collectionHandler, $this->gameRecordFactory, $this->gamePlayServicesProvider);
+        return new $className($storage, $this->gamePlayServicesProvider);
     }
 
     public function getOneByGameInvite(GameInvite $gameInvite): ?GamePlay

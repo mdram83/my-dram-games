@@ -22,8 +22,6 @@ abstract class GamePlayBase implements GamePlay
      */
     public function __construct(
         protected GamePlayStorage $storage,
-        Collection $collectionHandler,
-        GameRecordFactory $gameRecordFactory,
         GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {

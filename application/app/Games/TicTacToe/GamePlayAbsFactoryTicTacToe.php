@@ -31,6 +31,6 @@ class GamePlayAbsFactoryTicTacToe implements GamePlayAbsFactory
     public function create(GameInvite $gameInvite): GamePlay
     {
         $storage = $this->storageFactory->create($gameInvite);
-        return new GamePlayTicTacToe($storage, $this->collectionHandler, $this->gameRecordFactory, $this->gamePlayServicesProvider);
+        return new GamePlayTicTacToe($storage, $this->gamePlayServicesProvider);
     }
 }
