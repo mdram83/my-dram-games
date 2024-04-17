@@ -16,8 +16,6 @@ class GamePlayAbsFactoryThousand implements GamePlayAbsFactory
 {
     public function __construct(
         readonly private GamePlayStorageFactory $storageFactory,
-        readonly private Collection $collectionHandler,
-        readonly private GameRecordFactory $gameRecordFactory,
         readonly private GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {

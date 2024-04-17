@@ -16,8 +16,6 @@ class GamePlayRepositoryGeneric implements GamePlayRepository
     public function __construct(
         readonly private GamePlayStorageRepository $storageRepository,
         readonly private GamePlayAbsRepository $gamePlayAbsRepository,
-        readonly private Collection $collectionHandler,
-        readonly private GameRecordFactory $gameRecordFactory,
         readonly private GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {

@@ -18,8 +18,6 @@ class GamePlayAbsFactoryRepositoryPhpConfig implements GamePlayAbsFactoryReposit
 
     public function __construct(
         readonly private GamePlayStorageFactory $storageFactory,
-        readonly private Collection $collectionHandler,
-        readonly private GameRecordFactory $gameRecordFactory,
         readonly private GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {
@@ -42,12 +40,7 @@ class GamePlayAbsFactoryRepositoryPhpConfig implements GamePlayAbsFactoryReposit
             throw new GamePlayException(GamePlayException::MESSAGE_NO_ABS_FACTORY);
         }
 
-        return new $className(
-            $this->storageFactory,
-            clone $this->collectionHandler,
-            $this->gameRecordFactory,
-            $this->gamePlayServicesProvider
-        );
+        return new $className($this->storageFactory, $this->gamePlayServicesProvider);
     }
 
     private function isEntryMissing(?string $className): bool
