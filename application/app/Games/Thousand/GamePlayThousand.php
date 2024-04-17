@@ -10,6 +10,7 @@ use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
+use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameResult\GameResultException;
@@ -22,6 +23,8 @@ use App\Games\Thousand\Elements\GamePhaseThousandSorting;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
+    protected PlayingCardDeckProvider $deckProvider;
+
     private array $playersData;
     private Player $dealer;
     private Player $obligation;
@@ -42,12 +45,18 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     public function __construct(
         protected GamePlayStorage $storage,
-        protected Collection $collectionHandler,
-        protected GameRecordFactory $gameRecordFactory,
-        protected PlayingCardDeckProvider $deckProvider
+        Collection $collectionHandler,
+        GameRecordFactory $gameRecordFactory,
+        GamePlayServicesProvider $gamePlayServicesProvider,
+        PlayingCardDeckProvider $deckProvider
     )
     {
-        parent::__construct($this->storage, $this->collectionHandler, $this->gameRecordFactory);
+        parent::__construct($this->storage, $collectionHandler, $gameRecordFactory, $gamePlayServicesProvider);
+    }
+
+    protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+        $this->deckProvider = $provider->getPlayingCardDeckProvider();
     }
 
     /**

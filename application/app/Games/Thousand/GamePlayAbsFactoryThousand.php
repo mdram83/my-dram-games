@@ -33,6 +33,6 @@ class GamePlayAbsFactoryThousand implements GamePlayAbsFactory
     public function create(GameInvite $gameInvite): GamePlay
     {
         $storage = $this->storageFactory->create($gameInvite);
-        return new GamePlayThousand($storage, $this->collectionHandler, $this->gameRecordFactory, $this->deckProvider);
+        return new GamePlayThousand($storage, $this->collectionHandler, $this->gameRecordFactory, $this->gamePlayServicesProvider, $this->deckProvider);
     }
 }

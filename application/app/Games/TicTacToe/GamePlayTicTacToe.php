@@ -8,6 +8,7 @@ use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
+use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
@@ -191,5 +192,10 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
             ->filter(fn($value, $key) => $value->getPlayer()->getId() !== $currentPlayer->getId())
             ->pullFirst()
             ->getPlayer();
+    }
+
+    protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+
     }
 }

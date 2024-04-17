@@ -14,6 +14,7 @@ use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
+use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GameRecord\GameRecordFactory;
@@ -83,6 +84,7 @@ class GamePlayTicTacToeTest extends TestCase
             $storage,
             App::make(Collection::class),
             App::make(GameRecordFactory::class),
+            App::make(GamePlayServicesProvider::class),
         );
     }
 
