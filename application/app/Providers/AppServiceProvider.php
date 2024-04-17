@@ -19,11 +19,11 @@ use App\GameCore\GameOption\PhpConfig\GameOptionClassClassRepositoryPhpConfig;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GameOptionValue\GameOptionValueConverterEnum;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
-use App\GameCore\GamePlay\GamePlayAbsRepository;
+use App\GameCore\GamePlay\GamePlayAbsRepositoryRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GamePlay\Generic\GamePlayRepositoryGeneric;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
-use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
+use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryRepositoryPhpConfig;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
@@ -82,7 +82,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class);
         app()->bind(GamePlayAbsFactoryRepository::class, GamePlayAbsFactoryRepositoryPhpConfig::class);
         app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
-        app()->bind(GamePlayAbsRepository::class, GamePlayAbsRepositoryPhpConfig::class);
+        app()->bind(GamePlayAbsRepositoryRepository::class, GamePlayAbsRepositoryRepositoryPhpConfig::class);
 
         app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
 
