@@ -8,7 +8,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 // TODO write tests
 class GamePhaseThousandSorting extends GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = 'sorting';
+    public const PHASE_KEY = 'sorting';
     protected const PHASE_NAME = 'Sorting Hand';
     protected const PHASE_DESCRIPTION = 'Sort cards on your hand and get ready for bidding';
 

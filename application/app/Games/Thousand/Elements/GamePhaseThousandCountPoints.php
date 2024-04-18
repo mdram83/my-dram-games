@@ -8,7 +8,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 // TODO write tests
 class GamePhaseThousandCountPoints extends GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = 'counting-points';
+    public const PHASE_KEY = 'counting-points';
     protected const PHASE_NAME = 'Counting Points';
     protected const PHASE_DESCRIPTION = 'See result of last round and for the whole game';
 

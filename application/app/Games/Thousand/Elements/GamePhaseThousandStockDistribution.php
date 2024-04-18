@@ -8,7 +8,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 // TODO write tests
 class GamePhaseThousandStockDistribution extends GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = 'stock-distribution';
+    public const PHASE_KEY = 'stock-distribution';
     protected const PHASE_NAME = 'Cards Sharing';
     protected const PHASE_DESCRIPTION = 'Bidding winner is sharing cards now';
 

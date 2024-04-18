@@ -8,7 +8,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 // TODO write tests
 class GamePhaseThousandPlayFirstCard extends GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = 'playing-first-card';
+    public const PHASE_KEY = 'playing-first-card';
     protected const PHASE_NAME = 'Play First Card';
     protected const PHASE_DESCRIPTION = 'Bidding or last trick winner play first card';
 

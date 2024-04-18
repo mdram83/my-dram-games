@@ -8,6 +8,7 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitPhpEnu
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameMove\GameMove;
+use App\GameCore\GameElements\GamePhase\GamePhaseException;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
@@ -17,11 +18,13 @@ use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GamePhaseThousand;
+use App\Games\Thousand\Elements\GamePhaseThousandRepository;
 use App\Games\Thousand\Elements\GamePhaseThousandSorting;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
     protected PlayingCardDeckProvider $deckProvider;
+    protected GamePhaseThousandRepository $phaseRepository;
 
     private array $playersData;
     private Player $dealer;
@@ -154,6 +157,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->storage->setGameData($this->getSituationData());
     }
 
+    /**
+     * @throws GamePhaseException
+     */
     protected function loadData(): void
     {
         $data = $this->storage->getGameData();
@@ -162,8 +168,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             $this->playersData[$this->getPlayerByName($playerName)->getId()] = [
                 'hand' => $this->getCardsByKeys($playerData['hand']),
                 'tricks' => $this->getCardsByKeys($playerData['tricks']),
-                'barrel' => false, // TODO temp until next moves
-                'points' => [], // TODO temp until next moves
+                'barrel' => $playerData['barrel'],
+                'points' => $playerData['points'],
             ];
         }
 
@@ -181,12 +187,13 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->round = $data['round'];
 
         $this->trumpSuit = null; // TODO adjust after first move...
-        $this->phase = new GamePhaseThousandSorting(); // TODO adjust after first actions
+        $this->phase = $this->phaseRepository->getOne($data['phase']['key']);
     }
 
     protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
     {
         $this->deckProvider = $provider->getPlayingCardDeckProvider();
+        $this->phaseRepository = new GamePhaseThousandRepository();
     }
 
     private function getNextOrderedPlayer(Player $player): Player
@@ -252,6 +259,11 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         return array_keys($cards->toArray());
     }
 
+    private function getSuitByKey(string $key): PlayingCardSuit
+    {
+
+    }
+
     // TODO extract to service
     private function shuffleAndDealCards(): void
     {
@@ -294,7 +306,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             'orderedPlayers' => $orderedPlayers,
             'stock' => $this->getCardsKeys($this->stock),
             'table' => $this->getCardsKeys($this->table),
-            'trumpSuit' => $this->trumpSuit,
+            'trumpSuit' => $this->trumpSuit?->getKey(),
             'bidWinner' => $this->bidWinner?->getName(),
             'bidAmount' => $this->bidAmount,
             'activePlayer' => $this->activePlayer->getName(),

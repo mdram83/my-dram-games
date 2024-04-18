@@ -7,7 +7,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 
 abstract class GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = null;
+    public const PHASE_KEY = null;
     protected const PHASE_NAME = null;
     protected const PHASE_DESCRIPTION = null;
 

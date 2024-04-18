@@ -315,4 +315,6 @@ class GamePlayThousandTest extends TestCase
         // is Finished false
         $this->assertFalse($situation['isFinished']);
     }
+
+    // TODO loaded test for 4 players
 }

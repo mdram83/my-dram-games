@@ -8,7 +8,7 @@ use App\GameCore\GameElements\GamePhase\GamePhase;
 // TODO write tests
 class GamePhaseThousandBidding extends GamePhaseThousand implements GamePhase
 {
-    protected const PHASE_KEY = 'bidding';
+    public const PHASE_KEY = 'bidding';
     protected const PHASE_NAME = 'Make your bids';
     protected const PHASE_DESCRIPTION = 'Make your bidding or pass';
 
