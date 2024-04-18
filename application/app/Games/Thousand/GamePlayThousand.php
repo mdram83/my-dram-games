@@ -7,6 +7,7 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePhase\GamePhaseException;
 use App\GameCore\GamePlay\GamePlay;
@@ -24,6 +25,7 @@ use App\Games\Thousand\Elements\GamePhaseThousandSorting;
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
     protected PlayingCardDeckProvider $deckProvider;
+    protected PlayingCardSuitRepository $suitRepository;
     protected GamePhaseThousandRepository $phaseRepository;
 
     private array $playersData;
@@ -186,13 +188,14 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $this->round = $data['round'];
 
-        $this->trumpSuit = null; // TODO adjust after first move...
+        $this->trumpSuit = isset($data['trumpSuit']) ? $this->suitRepository->getOne($data['trumpSuit']) : null;
         $this->phase = $this->phaseRepository->getOne($data['phase']['key']);
     }
 
     protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
     {
         $this->deckProvider = $provider->getPlayingCardDeckProvider();
+        $this->suitRepository = $provider->getPlayingCardSuitRepository();
         $this->phaseRepository = new GamePhaseThousandRepository();
     }
 
@@ -257,11 +260,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     private function getCardsKeys(CollectionPlayingCardUnique $cards): array
     {
         return array_keys($cards->toArray());
-    }
-
-    private function getSuitByKey(string $key): PlayingCardSuit
-    {
-
     }
 
     // TODO extract to service
