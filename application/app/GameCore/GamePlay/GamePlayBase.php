@@ -14,16 +14,18 @@ use App\GameCore\Services\Collection\Collection;
 abstract class GamePlayBase implements GamePlay
 {
     protected CollectionGamePlayPlayers $players;
+    protected Collection $collectionHandler;
+    protected GameRecordFactory $gameRecordFactory;
 
     /**
      * @throws GamePlayException
      */
-    final public function __construct(
+    public function __construct(
         protected GamePlayStorage $storage,
-        protected Collection $collectionHandler,
-        protected GameRecordFactory $gameRecordFactory,
+        GamePlayServicesProvider $gamePlayServicesProvider,
     )
     {
+        $this->configureGamePlayServices($gamePlayServicesProvider);
         $this->validateStorage();
         $this->setPlayers();
 
@@ -42,6 +44,20 @@ abstract class GamePlayBase implements GamePlay
     abstract protected function initialize(): void;
     abstract protected function saveData(): void;
     abstract protected function loadData(): void;
+
+    final protected function configureGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+        $this->configureMandatoryGamePlayServices($provider);
+        $this->configureOptionalGamePlayServices($provider);
+    }
+
+    final protected function configureMandatoryGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+        $this->collectionHandler = $provider->getCollectionHandler();
+        $this->gameRecordFactory = $provider->getGameRecordFactory();
+    }
+
+    abstract protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void;
 
     final public function getId(): int|string
     {

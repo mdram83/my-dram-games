@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardDeckProviderPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardFactoryPhpEnum;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitRepositoryPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardFactory;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
 use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GameInvite\Eloquent\GameInviteFactoryEloquent;
@@ -21,7 +23,9 @@ use App\GameCore\GameOptionValue\GameOptionValueConverterEnum;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GamePlay\Generic\GamePlayRepositoryGeneric;
+use App\GameCore\GamePlay\Generic\GamePlayServicesProviderGeneric;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
@@ -94,6 +98,9 @@ class AppServiceProvider extends ServiceProvider
 
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
         app()->bind(PlayingCardDeckProvider::class, PlayingCardDeckProviderPhpEnum::class);
+        app()->bind(PlayingCardSuitRepository::class, PlayingCardSuitRepositoryPhpEnum::class);
+
+        app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);
     }
 
     /**

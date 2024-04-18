@@ -17,20 +17,19 @@ use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GamePlayTicTacToe;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class GamePlayAbsFactoryTicTacToeTest extends TestCase
 {
+    use RefreshDatabase;
+
     protected GamePlayAbsFactoryTicTacToe $factory;
 
     public function setUp(): void{
         parent::setUp();
-        $this->factory = new GamePlayAbsFactoryTicTacToe(
-            App::make(GamePlayStorageFactory::class),
-            App::make(Collection::class),
-            App::make(GameRecordFactory::class),
-        );
+        $this->factory = App::make(GamePlayAbsFactoryTicTacToe::class);
     }
 
     protected function prepareGameInvite(bool $completeSetup = true): GameInvite
