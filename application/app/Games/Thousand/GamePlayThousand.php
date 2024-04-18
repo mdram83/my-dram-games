@@ -158,14 +158,12 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
         $data = $this->storage->getGameData();
 
-        $this->playersData = $data['orderedPlayers'];
-        foreach (array_keys($this->playersData) as $playerId) {
-
-            $this->playersData[$playerId] = [
-                'hand' => $this->getCardsByKeys($this->playersData[$playerId]['hand']),
-                'tricks' => $this->getCardsByKeys($this->playersData[$playerId]['tricks']),
-                'barrel' => false,
-                'points' => [],
+        foreach ($data['orderedPlayers'] as $playerName => $playerData) {
+            $this->playersData[$this->getPlayerByName($playerName)->getId()] = [
+                'hand' => $this->getCardsByKeys($playerData['hand']),
+                'tricks' => $this->getCardsByKeys($playerData['tricks']),
+                'barrel' => false, // TODO temp until next moves
+                'points' => [], // TODO temp until next moves
             ];
         }
 
@@ -245,6 +243,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $deck = $this->deckProvider->getDeckSchnapsen();
 
         return $this->getEmptyPlayingCardCollection()->reset(array_map(fn($cardKey) => $deck->getOne($cardKey), $keys));
+
     }
 
     // TODO extract to service
@@ -310,7 +309,4 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             'isFinished' => $this->isFinished(),
         ];
     }
-
-
-
 }
