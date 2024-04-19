@@ -4,6 +4,7 @@ use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhp
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
+use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Games\Thousand\GamePlayAbsFactoryThousand;
 use App\Games\Thousand\GamePlayThousand;
 use App\Games\Thousand\GameSetupAbsFactoryThousand;
@@ -61,7 +62,7 @@ return [
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryThousand::class,
             GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayThousand::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
+            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryThousand::class,
         ],
 
         'turbo' => [
