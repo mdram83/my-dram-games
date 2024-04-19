@@ -62,6 +62,15 @@ class GameMoveThousandSortingTest extends TestCase
         new GameMoveThousandSorting($this->player, $details);
     }
 
+    public function testThrowExceptionWhenDetailsHasSingleElement(): void
+    {
+        $this->expectException(GameMoveException::class);
+        $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
+
+        $details = ['123'];
+        new GameMoveThousandSorting($this->player, $details);
+    }
+
     public function testGetPlayer(): void
     {
         $move = new GameMoveThousandSorting($this->player, $this->details);

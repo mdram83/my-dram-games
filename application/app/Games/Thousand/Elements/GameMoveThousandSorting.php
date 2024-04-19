@@ -24,6 +24,6 @@ class GameMoveThousandSorting extends GameMoveThousand implements GameMove
 
     private function validateDetailsCount(): bool
     {
-        return count($this->details) <= 11 && count($this->details) > 0;
+        return count($this->details) <= 11 && count($this->details) > 1;
     }
 }
