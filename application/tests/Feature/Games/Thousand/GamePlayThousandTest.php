@@ -12,10 +12,9 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionException;
-use App\Games\Thousand\Elements\GamePhaseThousandSorting;
+use App\Games\Thousand\Elements\GamePhaseThousand;
+use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
 use App\Games\Thousand\GameOptionValueThousandReDealConditions;
@@ -33,6 +32,7 @@ class GamePlayThousandTest extends TestCase
     private GamePlayThousand $play;
     private array $players;
     private GamePlayRepository $gamePlayRepository;
+    private GamePhaseThousand $phase;
 
     public function setUp(): void
     {
@@ -47,6 +47,7 @@ class GamePlayThousandTest extends TestCase
 
         $this->play = $this->getGamePlay($this->getGameInvite());
         $this->gamePlayRepository = App::make(GamePlayRepository::class);
+        $this->phase = new GamePhaseThousandBidding();
     }
 
     protected function getGameInvite(bool $fourPlayers = false): GameInvite
@@ -95,7 +96,6 @@ class GamePlayThousandTest extends TestCase
 
     public function testGetSituationAfterInitiationForThreePlayers(): void
     {
-        $phase = new GamePhaseThousandSorting();
         $expectedPlayersNames = array_map(fn($player) => $player->getName(), $this->play->getPlayers()->toArray());
         $situation = $this->play->getSituation($this->players[0]);
 
@@ -152,9 +152,9 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(1, $situation['round']);
 
         // phase attributes equal to specific phase methods (check 3)
-        $this->assertEquals($phase->getKey(), $situation['phase']['key']);
-        $this->assertEquals($phase->getName(), $situation['phase']['name']);
-        $this->assertEquals($phase->getDescription(), $situation['phase']['description']);
+        $this->assertEquals($this->phase->getKey(), $situation['phase']['key']);
+        $this->assertEquals($this->phase->getName(), $situation['phase']['name']);
+        $this->assertEquals($this->phase->getDescription(), $situation['phase']['description']);
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
@@ -162,7 +162,6 @@ class GamePlayThousandTest extends TestCase
 
     public function testGetSituationAfterInitiationForFourPlayers(): void
     {
-        $phase = new GamePhaseThousandSorting();
         $play = $this->getGamePlay($this->getGameInvite(true));
         $expectedPlayersNames = array_map(fn($player) => $player->getName(), $play->getPlayers()->toArray());
         $situation = $play->getSituation($this->players[0]);
@@ -237,9 +236,9 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(1, $situation['round']);
 
         // phase attributes equal to specific phase methods (check 3)
-        $this->assertEquals($phase->getKey(), $situation['phase']['key']);
-        $this->assertEquals($phase->getName(), $situation['phase']['name']);
-        $this->assertEquals($phase->getDescription(), $situation['phase']['description']);
+        $this->assertEquals($this->phase->getKey(), $situation['phase']['key']);
+        $this->assertEquals($this->phase->getName(), $situation['phase']['name']);
+        $this->assertEquals($this->phase->getDescription(), $situation['phase']['description']);
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
@@ -250,10 +249,8 @@ class GamePlayThousandTest extends TestCase
         $gamePlayId = $this->play->getId();
         $this->play = $this->gamePlayRepository->getOne($gamePlayId);
 
-        $phase = new GamePhaseThousandSorting();
         $expectedPlayersNames = array_map(fn($player) => $player->getName(), $this->play->getPlayers()->toArray());
         $situation = $this->play->getSituation($this->players[0]);
-
 
         // three players available
         $this->assertCount(3, $situation['orderedPlayers']);
@@ -308,9 +305,9 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(1, $situation['round']);
 
         // phase attributes equal to specific phase methods (check 3)
-        $this->assertEquals($phase->getKey(), $situation['phase']['key']);
-        $this->assertEquals($phase->getName(), $situation['phase']['name']);
-        $this->assertEquals($phase->getDescription(), $situation['phase']['description']);
+        $this->assertEquals($this->phase->getKey(), $situation['phase']['key']);
+        $this->assertEquals($this->phase->getName(), $situation['phase']['name']);
+        $this->assertEquals($this->phase->getDescription(), $situation['phase']['description']);
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
@@ -318,7 +315,6 @@ class GamePlayThousandTest extends TestCase
 
     public function testGetSituationAfterInitiationAndLoadingForFourPlayers(): void
     {
-        $phase = new GamePhaseThousandSorting();
         $play = $this->getGamePlay($this->getGameInvite(true));
         $expectedPlayersNames = array_map(fn($player) => $player->getName(), $play->getPlayers()->toArray());
 
@@ -397,9 +393,9 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(1, $situation['round']);
 
         // phase attributes equal to specific phase methods (check 3)
-        $this->assertEquals($phase->getKey(), $situation['phase']['key']);
-        $this->assertEquals($phase->getName(), $situation['phase']['name']);
-        $this->assertEquals($phase->getDescription(), $situation['phase']['description']);
+        $this->assertEquals($this->phase->getKey(), $situation['phase']['key']);
+        $this->assertEquals($this->phase->getName(), $situation['phase']['name']);
+        $this->assertEquals($this->phase->getDescription(), $situation['phase']['description']);
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);

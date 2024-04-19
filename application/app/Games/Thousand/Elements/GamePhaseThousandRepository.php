@@ -11,8 +11,7 @@ class GamePhaseThousandRepository
     public function __construct()
     {
         $this->repository = [
-            GamePhaseThousandSorting::PHASE_KEY => GamePhaseThousandSorting::class,
-            GamePhaseThousandBidding::PHASE_KEY => GamePhaseThousandDeclaration::class,
+            GamePhaseThousandBidding::PHASE_KEY => GamePhaseThousandBidding::class,
             GamePhaseThousandStockDistribution::PHASE_KEY => GamePhaseThousandStockDistribution::class,
             GamePhaseThousandDeclaration::PHASE_KEY => GamePhaseThousandDeclaration::class,
             GamePhaseThousandPlayFirstCard::PHASE_KEY  => GamePhaseThousandPlayFirstCard::class,

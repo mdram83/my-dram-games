@@ -15,7 +15,7 @@ class GamePhaseThousandCountPoints extends GamePhaseThousand implements GamePhas
     public function getNextPhase(bool $lastAttempt): GamePhase
     {
         if ($lastAttempt) {
-            return new GamePhaseThousandSorting();
+            return new GamePhaseThousandBidding();
         }
         return $this;
     }

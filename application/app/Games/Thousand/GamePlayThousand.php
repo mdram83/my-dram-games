@@ -19,8 +19,8 @@ use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GamePhaseThousand;
+use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
-use App\Games\Thousand\Elements\GamePhaseThousandSorting;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
@@ -141,7 +141,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $this->round = 1;
         $this->trumpSuit = null;
-        $this->phase = new GamePhaseThousandSorting();
+        $this->phase = new GamePhaseThousandBidding();
 
         // TODO continue here to save data, restore it, and for both cases getSituation for specific player
         // TODO this will be tricky as today I use generic gameplay repository utilizing GamePlayBase constructor...

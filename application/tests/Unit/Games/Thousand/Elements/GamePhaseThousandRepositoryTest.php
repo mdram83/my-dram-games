@@ -4,8 +4,8 @@ namespace Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GamePhase\GamePhaseException;
 use App\Games\Thousand\Elements\GamePhaseThousand;
+use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
-use App\Games\Thousand\Elements\GamePhaseThousandSorting;
 use PHPUnit\Framework\TestCase;
 
 class GamePhaseThousandRepositoryTest extends TestCase
@@ -25,7 +25,7 @@ class GamePhaseThousandRepositoryTest extends TestCase
 
     public function testGetOneFromPhaseKey(): void
     {
-        $phase = $this->repository->getOne(GamePhaseThousandSorting::PHASE_KEY);
+        $phase = $this->repository->getOne(GamePhaseThousandBidding::PHASE_KEY);
         $this->assertInstanceOf(GamePhaseThousand::class, $phase);
     }
 
