@@ -123,6 +123,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['orderedPlayers'][$this->players[1]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[2]->getName()]['barrel']);
 
+        // all players ready true
+        $this->assertTrue($situation['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[2]->getName()]['ready']);
+
         // all players points []
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
@@ -206,6 +211,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['orderedPlayers'][$this->players[2]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[3]->getName()]['barrel']);
 
+        // all players ready true
+        $this->assertTrue($situation['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[2]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[3]->getName()]['ready']);
+
         // all players points []
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
@@ -275,6 +286,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['orderedPlayers'][$this->players[0]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[1]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[2]->getName()]['barrel']);
+
+        // all players ready true
+        $this->assertTrue($situation['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[2]->getName()]['ready']);
 
         // all players points []
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);
@@ -362,6 +378,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['orderedPlayers'][$this->players[1]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[2]->getName()]['barrel']);
         $this->assertFalse($situation['orderedPlayers'][$this->players[3]->getName()]['barrel']);
+
+        // all players ready true
+        $this->assertTrue($situation['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[2]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[3]->getName()]['ready']);
 
         // all players points []
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);

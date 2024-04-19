@@ -143,14 +143,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->trumpSuit = null;
         $this->phase = new GamePhaseThousandBidding();
 
-        // TODO continue here to save data, restore it, and for both cases getSituation for specific player
-        // TODO this will be tricky as today I use generic gameplay repository utilizing GamePlayBase constructor...
-
-        // TODO test getSituation for both 3 and 4 players
-
-
-        // TODO add gameOptions to situation (if not exposed to frontend gameplay-show by Controller
-
         $this->saveData();
     }
 
@@ -172,6 +164,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'tricks' => $this->getCardsByKeys($playerData['tricks']),
                 'barrel' => $playerData['barrel'],
                 'points' => $playerData['points'],
+                'ready' => $playerData['ready'],
             ];
         }
 
@@ -233,6 +226,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'tricks' => $this->getEmptyPlayingCardCollection(),
                 'barrel' => false,
                 'points' => [],
+                'ready' => true,
             ];
         }
     }
@@ -297,6 +291,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'tricks' => $this->getCardsKeys($playerData['tricks']),
                 'barrel' => $playerData['barrel'],
                 'points' => $playerData['points'],
+                'ready' => $playerData['ready'],
             ];
         }
 
