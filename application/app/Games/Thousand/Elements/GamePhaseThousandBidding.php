@@ -5,7 +5,6 @@ namespace App\Games\Thousand\Elements;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePhase\GamePhase;
 
-// TODO write tests
 class GamePhaseThousandBidding extends GamePhaseThousand implements GamePhase
 {
     public const PHASE_KEY = 'bidding';
@@ -18,10 +17,5 @@ class GamePhaseThousandBidding extends GamePhaseThousand implements GamePhase
             return new GamePhaseThousandStockDistribution();
         }
         return $this;
-    }
-
-    public function getMoveResults(GameMove $move): array
-    {
-        // TODO: Implement getMoveResults() method.
     }
 }

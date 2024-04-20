@@ -5,7 +5,6 @@ namespace App\Games\Thousand\Elements;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePhase\GamePhase;
 
-// TODO write tests
 class GamePhaseThousandPlayThirdCard extends GamePhaseThousand implements GamePhase
 {
     public const PHASE_KEY = 'playing-third-card';
@@ -18,10 +17,5 @@ class GamePhaseThousandPlayThirdCard extends GamePhaseThousand implements GamePh
             return new GamePhaseThousandCountPoints();
         }
         return new GamePhaseThousandPlayFirstCard();
-    }
-
-    public function getMoveResults(GameMove $move): array
-    {
-        // TODO: Implement getMoveResults() method.
     }
 }

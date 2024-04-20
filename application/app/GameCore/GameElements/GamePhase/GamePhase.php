@@ -10,5 +10,4 @@ interface GamePhase
     public function getName(): string;
     public function getDescription(): string;
     public function getNextPhase(bool $lastAttempt): GamePhase;
-    public function getMoveResults(GameMove $move): array;
 }

@@ -73,7 +73,7 @@ class GameMoveAbsFactoryThousandTest extends TestCase
 
     public function testCreateGameMoveThousandSorting(): void
     {
-        $move = $this->factory->create($this->player, ['phase' => 'sorting', 'data' => ['123', '234']]);
+        $move = $this->factory->create($this->player, ['phase' => 'sorting', 'data' => ['hand' => ['123', '234']]]);
         $this->assertInstanceOf(GameMoveThousandSorting::class, $move);
     }
 

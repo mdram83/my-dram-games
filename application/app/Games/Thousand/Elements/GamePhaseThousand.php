@@ -27,5 +27,4 @@ abstract class GamePhaseThousand implements GamePhase
     }
 
     abstract public function getNextPhase(bool $lastAttempt): GamePhase;
-    abstract public function getMoveResults(GameMove $move): array;
 }
