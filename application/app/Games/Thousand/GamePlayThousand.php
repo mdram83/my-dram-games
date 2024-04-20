@@ -4,7 +4,6 @@ namespace App\Games\Thousand;
 
 use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
-use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
@@ -18,6 +17,7 @@ use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
+use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
@@ -46,8 +46,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     //    protected ?GameResultTicTacToe $result = null;
 
-
-
     /**
      * @throws GamePlayException
      * @throws GameBoardException
@@ -57,6 +55,13 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         if ($this->isFinished()) {
             throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
         }
+
+        if (!isset($move->getDetails()['phase'])) {
+            $this->handleMoveSorting($move);
+            return;
+        }
+
+
 
 //        $this->validateMove($move);
 
@@ -190,6 +195,21 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->deckProvider = $provider->getPlayingCardDeckProvider();
         $this->suitRepository = $provider->getPlayingCardSuitRepository();
         $this->phaseRepository = new GamePhaseThousandRepository();
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    private function handleMoveSorting(GameMove $move): void
+    {
+        $orderedHandKeys = $move->getDetails()['hand'];
+        $currentHandKeys = array_keys($this->playersData[$move->getPlayer()->getId()]['hand']->toArray());
+
+        if (count(array_diff($currentHandKeys, $orderedHandKeys)) > 0) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        $this->playersData[$move->getPlayer()->getId()]['hand'] = $this->getCardsByKeys($orderedHandKeys);
     }
 
     private function getNextOrderedPlayer(Player $player): Player

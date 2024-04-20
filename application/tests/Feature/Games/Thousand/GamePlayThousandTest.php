@@ -12,9 +12,14 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayRepository;
+use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
+use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\Thousand\Elements\GameMoveThousand;
+use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
 use App\Games\Thousand\GameOptionValueThousandReDealConditions;
@@ -33,6 +38,8 @@ class GamePlayThousandTest extends TestCase
     private array $players;
     private GamePlayRepository $gamePlayRepository;
     private GamePhaseThousand $phase;
+    private GameMoveAbsFactoryThousand $moveFactory;
+    private GamePlayStorageRepository $storageRepository;
 
     public function setUp(): void
     {
@@ -48,6 +55,8 @@ class GamePlayThousandTest extends TestCase
         $this->play = $this->getGamePlay($this->getGameInvite());
         $this->gamePlayRepository = App::make(GamePlayRepository::class);
         $this->phase = new GamePhaseThousandBidding();
+        $this->moveFactory = new GameMoveAbsFactoryThousand();
+        $this->storageRepository = App::make(GamePlayStorageRepository::class);
     }
 
     protected function getGameInvite(bool $fourPlayers = false): GameInvite
@@ -78,6 +87,12 @@ class GamePlayThousandTest extends TestCase
     protected function getGamePlay(GameInvite $invite): GamePlayThousand
     {
         return App::make(GamePlayAbsFactoryThousand::class)->create($invite);
+    }
+
+    protected function getHand(Player $player): array
+    {
+        $situation = $this->play->getSituation($player);
+        return $situation['orderedPlayers'][$player->getName()]['hand'];
     }
 
     public function testClassInstance(): void
@@ -421,5 +436,69 @@ class GamePlayThousandTest extends TestCase
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
+    }
+
+    public function testThrowExceptionHandleMoveOnFinishedGame(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+
+        $this->storageRepository->getOne($this->play->getId())->setFinished();
+        $this->play = $this->gamePlayRepository->getOne($this->play->getId());
+        $this->play->handleMove($this->createMock(GameMoveThousand::class));
+    }
+
+    public function testThrowExceptionHandleMoveSortingInvalidCardKeys(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $player = $this->players[0];
+        $hand = $this->getHand($player);
+        $hand[0] = 'ABC';
+        $this->play->handleMove(new GameMoveThousandSorting($player, ['hand' => $hand]));
+    }
+
+    public function testThrowExceptionWhenHandleMoveSortingCardsNotMatchingHand(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $player = $this->players[0];
+        $hand = $this->getHand($player);
+        $hand[0] = $this->getHand($this->players[1])[0];
+        $this->play->handleMove(new GameMoveThousandSorting($player, ['hand' => $hand]));
+    }
+
+    public function testGetSituationAfterSortingCards(): void
+    {
+        $player = $this->players[0];
+        $currentSituationPlayerOne = $this->play->getSituation($player);
+        $currentSituationPlayerTwo = $this->play->getSituation($this->players[1]);
+        $currentSituationPlayerThree = $this->play->getSituation($this->players[2]);
+
+        $hand = $this->getHand($player);
+        $currentKeys = array_values($hand);
+        while ($currentKeys === array_values($hand)) {
+            shuffle($hand);
+        }
+        $this->play->handleMove(new GameMoveThousandSorting($player, ['hand' => $hand]));
+
+        $newSituationPlayerOne = $this->play->getSituation($player);
+        $newSituationPlayerTwo = $this->play->getSituation($this->players[1]);
+        $newSituationPlayerThree = $this->play->getSituation($this->players[2]);
+        $newHand = $this->getHand($player);
+
+        unset($currentSituationPlayerOne['orderedPlayers'][$player->getName()]['hand']);
+        unset($currentSituationPlayerTwo['orderedPlayers'][$this->players[1]->getName()]['hand']);
+        unset($currentSituationPlayerThree['orderedPlayers'][$this->players[2]->getName()]['hand']);
+        unset($newSituationPlayerOne['orderedPlayers'][$player->getName()]['hand']);
+        unset($newSituationPlayerTwo['orderedPlayers'][$this->players[1]->getName()]['hand']);
+        unset($newSituationPlayerThree['orderedPlayers'][$this->players[2]->getName()]['hand']);
+
+        $this->assertEquals($hand, $newHand);
+        $this->assertEquals($currentSituationPlayerOne, $newSituationPlayerOne);
+        $this->assertEquals($currentSituationPlayerTwo, $newSituationPlayerTwo);
+        $this->assertEquals($currentSituationPlayerThree, $newSituationPlayerThree);
     }
 }

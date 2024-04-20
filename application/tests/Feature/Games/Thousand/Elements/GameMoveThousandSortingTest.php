@@ -12,7 +12,7 @@ use Tests\TestCase;
 class GameMoveThousandSortingTest extends TestCase
 {
     private Player $player;
-    private array $details = ['A-H', '123', 'Q-D'];
+    private array $details = ['hand' => ['A-H', '123', 'Q-D']];
 
     public function setUp(): void
     {
@@ -40,7 +40,7 @@ class GameMoveThousandSortingTest extends TestCase
         $this->expectException(GameMoveException::class);
         $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
 
-        $details = [123, $this->player, '123'];
+        $details = ['hand' => [123, $this->player, '123']];
         new GameMoveThousandSorting($this->player, $details);
     }
 
@@ -49,7 +49,7 @@ class GameMoveThousandSortingTest extends TestCase
         $this->expectException(GameMoveException::class);
         $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
 
-        $details = array_fill(0, 12, 'A-H');
+        $details = ['hand' => array_fill(0, 12, 'A-H')];
         new GameMoveThousandSorting($this->player, $details);
     }
 
@@ -58,7 +58,7 @@ class GameMoveThousandSortingTest extends TestCase
         $this->expectException(GameMoveException::class);
         $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
 
-        $details = [];
+        $details = ['hand' => []];
         new GameMoveThousandSorting($this->player, $details);
     }
 
@@ -67,7 +67,7 @@ class GameMoveThousandSortingTest extends TestCase
         $this->expectException(GameMoveException::class);
         $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
 
-        $details = ['123'];
+        $details = ['hand' => ['123']];
         new GameMoveThousandSorting($this->player, $details);
     }
 
