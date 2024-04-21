@@ -10,12 +10,14 @@ use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\Games\TicTacToe\GameMoveTicTacToe;
 
 abstract class GamePlayBase implements GamePlay
 {
     protected CollectionGamePlayPlayers $players;
     protected Collection $collectionHandler;
     protected GameRecordFactory $gameRecordFactory;
+    protected const GAME_MOVE_CLASS = null;
 
     /**
      * @throws GamePlayException
@@ -34,6 +36,20 @@ abstract class GamePlayBase implements GamePlay
             $this->storage->setSetup();
         } else {
             $this->loadData();
+        }
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    protected function validateMove(GameMove $move): void
+    {
+        if (!$this->isMoveValidClass($move)) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        if (!$this->isMoveForActivePlayer($move)) {
+            throw new GamePlayException(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
         }
     }
 
@@ -62,6 +78,16 @@ abstract class GamePlayBase implements GamePlay
     final public function getId(): int|string
     {
         return $this->storage->getId();
+    }
+
+    final protected function isMoveValidClass(GameMove $move): bool
+    {
+        return is_a($move, $this::GAME_MOVE_CLASS);
+    }
+
+    final protected function isMoveForActivePlayer(GameMove $move): bool
+    {
+        return $move->getPlayer()->getId() === $this->activePlayer->getId();
     }
 
     final public function getPlayers(): CollectionGamePlayPlayers

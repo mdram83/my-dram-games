@@ -24,6 +24,8 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     protected GameBoardTicTacToe $board;
     protected ?GameResultTicTacToe $result = null;
 
+    protected const GAME_MOVE_CLASS = GameMoveTicTacToe::class;
+
     /**
      * @throws GamePlayException
      * @throws GameBoardException
@@ -161,20 +163,6 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 
         if (isset($json)) {
             $this->board->setFromJson($json);
-        }
-    }
-
-    /**
-     * @throws GamePlayException
-     */
-    private function validateMove(GameMove $move): void
-    {
-        if (!is_a($move, GameMoveTicTacToe::class)) {
-            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
-        }
-
-        if ($move->getPlayer()->getId() !== $this->activePlayer->getId()) {
-            throw new GamePlayException(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
         }
     }
 

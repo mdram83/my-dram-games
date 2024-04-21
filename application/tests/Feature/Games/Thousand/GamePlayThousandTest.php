@@ -501,4 +501,28 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($currentSituationPlayerTwo, $newSituationPlayerTwo);
         $this->assertEquals($currentSituationPlayerThree, $newSituationPlayerThree);
     }
+
+    // BIDDING MOVE TESTS
+
+    // exception not player turn
+    public function testThrowExceptionWhenHandleMoveBiddingNotPlayerTurn(): void
+    {
+//        $this->expectException(GamePlayException::class);
+//        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
+
+        $player =
+            $this->play->getSituation($this->players[0])['activePlayer'] === $this->players[0]->getName()
+            ? $this->players[1] : $this->players[0];
+        // make bid move
+    }
+
+    // exception bidding in wrong phase (active player, bid increased by 10, not passed before)
+    // exception already passed
+    // exception wrong bid amount (<> old + 10)
+    // exception bid > 120 without mariage at hand
+    // exception bid > 300
+    // everyone pass, situation updated
+    // second player pass, third win at 110
+    // second bid 110, third win at 120
+    // second bid 110, third bid at 120, first bid at 130 with mariage at hand
 }

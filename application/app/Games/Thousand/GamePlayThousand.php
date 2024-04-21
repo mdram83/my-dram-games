@@ -56,7 +56,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
         }
 
-        if (!isset($move->getDetails()['phase'])) {
+        if (is_a($move, GameMoveThousandSorting::class)) {
             $this->handleMoveSorting($move);
             return;
         }
