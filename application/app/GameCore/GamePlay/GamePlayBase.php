@@ -17,7 +17,10 @@ abstract class GamePlayBase implements GamePlay
     protected CollectionGamePlayPlayers $players;
     protected Collection $collectionHandler;
     protected GameRecordFactory $gameRecordFactory;
+
     protected const GAME_MOVE_CLASS = null;
+
+    protected ?Player $activePlayer;
 
     /**
      * @throws GamePlayException
@@ -87,12 +90,17 @@ abstract class GamePlayBase implements GamePlay
 
     final protected function isMoveForActivePlayer(GameMove $move): bool
     {
-        return $move->getPlayer()->getId() === $this->activePlayer->getId();
+        return $move->getPlayer()->getId() === $this->getActivePlayer()?->getId();
     }
 
     final public function getPlayers(): CollectionGamePlayPlayers
     {
         return $this->players;
+    }
+
+    public function getActivePlayer(): ?Player
+    {
+        return $this->activePlayer;
     }
 
     final public function getGameInvite(): GameInvite

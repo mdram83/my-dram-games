@@ -17,6 +17,7 @@ use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
+use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
@@ -28,10 +29,11 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     protected PlayingCardSuitRepository $suitRepository;
     protected GamePhaseThousandRepository $phaseRepository;
 
+    protected const GAME_MOVE_CLASS = GameMoveThousand::class;
+
     private array $playersData;
     private Player $dealer;
     private Player $obligation;
-    private Player $activePlayer;
 
     private ?Player $bidWinner;
     private int $bidAmount;
@@ -61,9 +63,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             return;
         }
 
-
-
-//        $this->validateMove($move);
+        $this->validateMove($move);
 
         // handle move/phase
 //        $this->setActivePlayer($this->getNextPlayer($move->getPlayer()));

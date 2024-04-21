@@ -19,7 +19,6 @@ use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {
-    protected Player $activePlayer;
     protected CollectionGameCharacterTicTacToe $characters;
     protected GameBoardTicTacToe $board;
     protected ?GameResultTicTacToe $result = null;

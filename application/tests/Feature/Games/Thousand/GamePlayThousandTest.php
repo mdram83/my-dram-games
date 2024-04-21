@@ -16,6 +16,7 @@ use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
+use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
@@ -507,13 +508,18 @@ class GamePlayThousandTest extends TestCase
     // exception not player turn
     public function testThrowExceptionWhenHandleMoveBiddingNotPlayerTurn(): void
     {
-//        $this->expectException(GamePlayException::class);
-//        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
 
         $player =
             $this->play->getSituation($this->players[0])['activePlayer'] === $this->players[0]->getName()
             ? $this->players[1] : $this->players[0];
-        // make bid move
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player,
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
     }
 
     // exception bidding in wrong phase (active player, bid increased by 10, not passed before)
