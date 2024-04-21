@@ -20,12 +20,15 @@ use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
+use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
 use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
 use App\Games\Thousand\GameOptionValueThousandReDealConditions;
 use App\Games\Thousand\GamePlayAbsFactoryThousand;
 use App\Games\Thousand\GamePlayThousand;
+use App\Games\Thousand\GamePlayThousandException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -96,6 +99,60 @@ class GamePlayThousandTest extends TestCase
         return $situation['orderedPlayers'][$player->getName()]['hand'];
     }
 
+    protected function getDealNoMarriage(): array
+    {
+        return [
+            ['A-H', 'K-H', 'J-H', '10-H', '9-H', 'A-S', 'K-S'],
+            ['A-D', 'K-D', 'J-D', '10-D', '9-D', 'Q-S', 'J-S'],
+            ['A-C', 'K-C', 'J-C', '10-C', '9-D', '10-S', '9-S'],
+            ['Q-H', 'Q-D', 'Q-C'],
+        ];
+    }
+
+    protected function getDealMarriages(): array
+    {
+        return [
+            ['A-H', 'K-H', 'Q-H', 'J-H', '10-H', '9-H', 'A-S'],
+            ['A-D', 'K-D', 'Q-D', 'J-D', '10-D', '9-D', 'K-S'],
+            ['A-C', 'K-C', 'Q-C', 'J-C', '10-C', '9-D', 'Q-S'],
+            ['J-S', '10-S', '9-S']
+        ];
+    }
+
+    protected function updateGamePlayDeal(callable $getDeal): void
+    {
+        $storage = $this->storageRepository->getOne($this->play->getId());
+        $data = $storage->getGameData();
+
+        $numberOfPlayers = $this->play->getGameInvite()->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->getValue();
+
+        if ($numberOfPlayers === 3) {
+            $activePlayersNames = [
+                $this->players[0]->getName(),
+                $this->players[1]->getName(),
+                $this->players[2]->getName(),
+            ];
+        } else {
+            $activePlayers = array_filter($this->players, fn($player) => $player->getName() !== $data['dealer']);
+            $activePlayersNames = array_values(array_map(fn($player) => $player->getName(), $activePlayers));
+        }
+
+        [$handOne, $handTwo, $handThree, $stock] = $getDeal();
+
+        $data['orderedPlayers'][$activePlayersNames[0]]['hand'] = $handOne;
+        $data['orderedPlayers'][$activePlayersNames[1]]['hand'] = $handTwo;
+        $data['orderedPlayers'][$activePlayersNames[2]]['hand'] = $handThree;
+        $data['stock'] = $stock;
+
+        $storage->setGameData($data);
+        $this->play = $this->gamePlayRepository->getOne($this->play->getId());
+    }
+
+    protected function getPlayerByName(string $playerName): Player
+    {
+        return array_filter($this->players, fn($player) => $player->getName() === $playerName)[0];
+    }
+
     public function testClassInstance(): void
     {
         $this->assertInstanceOf(GamePlay::class, $this->play);
@@ -149,6 +206,42 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
 
+        // all players bid null, except obligation player bid 100
+        $this->assertEquals(
+            ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[0]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[1]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[1]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[2]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[2]->getName()]['bid']
+        );
+
+        // all players have different seat position
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[0]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[1]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[2]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+
+        // seat position reflect player roles
+        $this->assertEquals(1, $situation['orderedPlayers'][$situation['dealer']]['seat']);
+        $this->assertEquals(2, $situation['orderedPlayers'][$situation['obligation']]['seat']);
+        $this->assertEquals(3, $situation['orderedPlayers'][$situation['activePlayer']]['seat']);
+
         // table empty
         $this->assertEquals([], $situation['table']);
 
@@ -160,6 +253,9 @@ class GamePlayThousandTest extends TestCase
 
         // bid amount 100
         $this->assertEquals(100, $situation['bidAmount']);
+
+        // stockRecord empty
+        $this->assertCount(0, $situation['stockRecord']);
 
         // active player <> obligation <> dealer and within 3 players
         $this->assertTrue(in_array($situation['dealer'], $expectedPlayersNames));
@@ -239,6 +335,59 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['points']);
 
+        // all players bid null, except obligation player bid 100
+        $this->assertEquals(
+            ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[0]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[1]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[1]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[2]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[2]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[3]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[3]->getName()]['bid']
+        );
+
+        // all players have different seat position
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[0]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[1]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[2]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[3]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+
+        // seat position reflect player roles
+        $this->assertEquals(1, $situation['orderedPlayers'][$situation['dealer']]['seat']);
+        $this->assertEquals(2, $situation['orderedPlayers'][$situation['obligation']]['seat']);
+        $this->assertEquals(3, $situation['orderedPlayers'][$situation['activePlayer']]['seat']);
+
         // table empty
         $this->assertEquals([], $situation['table']);
 
@@ -250,6 +399,9 @@ class GamePlayThousandTest extends TestCase
 
         // bid amount 100
         $this->assertEquals(100, $situation['bidAmount']);
+
+        // stockRecord empty
+        $this->assertCount(0, $situation['stockRecord']);
 
         // active player <> obligation <> dealer and within 3 players
         $this->assertTrue(in_array($situation['dealer'], $expectedPlayersNames));
@@ -313,6 +465,42 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
 
+        // all players bid null, except obligation player bid 100
+        $this->assertEquals(
+            ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[0]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[1]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[1]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[2]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[2]->getName()]['bid']
+        );
+
+        // all players have different seat position
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[0]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[1]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[2]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+
+        // seat position reflect player roles
+        $this->assertEquals(1, $situation['orderedPlayers'][$situation['dealer']]['seat']);
+        $this->assertEquals(2, $situation['orderedPlayers'][$situation['obligation']]['seat']);
+        $this->assertEquals(3, $situation['orderedPlayers'][$situation['activePlayer']]['seat']);
+
         // table empty
         $this->assertEquals([], $situation['table']);
 
@@ -324,6 +512,9 @@ class GamePlayThousandTest extends TestCase
 
         // bid amount 100
         $this->assertEquals(100, $situation['bidAmount']);
+
+        // stockRecord empty
+        $this->assertCount(0, $situation['stockRecord']);
 
         // active player <> obligation <> dealer and within 3 players
         $this->assertTrue(in_array($situation['dealer'], $expectedPlayersNames));
@@ -407,6 +598,59 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['points']);
 
+        // all players bid null, except obligation player bid 100
+        $this->assertEquals(
+            ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[0]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[1]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[1]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[2]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[2]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[3]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[3]->getName()]['bid']
+        );
+
+        // all players have different seat position
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[0]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[1]->getName()]['seat']);
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[2]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat']
+        );
+        $this->assertIsInt($situation['orderedPlayers'][$this->players[3]->getName()]['seat']);
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[0]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[1]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+        $this->assertNotEquals(
+            $situation['orderedPlayers'][$this->players[2]->getName()]['seat'],
+            $situation['orderedPlayers'][$this->players[3]->getName()]['seat']
+        );
+
+        // seat position reflect player roles
+        $this->assertEquals(1, $situation['orderedPlayers'][$situation['dealer']]['seat']);
+        $this->assertEquals(2, $situation['orderedPlayers'][$situation['obligation']]['seat']);
+        $this->assertEquals(3, $situation['orderedPlayers'][$situation['activePlayer']]['seat']);
+
         // table empty
         $this->assertEquals([], $situation['table']);
 
@@ -418,6 +662,9 @@ class GamePlayThousandTest extends TestCase
 
         // bid amount 100
         $this->assertEquals(100, $situation['bidAmount']);
+
+        // stockRecord empty
+        $this->assertCount(0, $situation['stockRecord']);
 
         // active player <> obligation <> dealer and within 3 players
         $this->assertTrue(in_array($situation['dealer'], $expectedPlayersNames));
@@ -503,17 +750,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($currentSituationPlayerThree, $newSituationPlayerThree);
     }
 
-    // BIDDING MOVE TESTS
-
-    // exception not player turn
     public function testThrowExceptionWhenHandleMoveBiddingNotPlayerTurn(): void
     {
         $this->expectException(GamePlayException::class);
-        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
 
-        $player =
-            $this->play->getSituation($this->players[0])['activePlayer'] === $this->players[0]->getName()
-            ? $this->players[1] : $this->players[0];
+        $player = $this->play->getActivePlayer()->getId() === $this->players[0]->getId() ? $this->players[1] : $this->players[0];
 
         $this->play->handleMove(new GameMoveThousandBidding(
             $player,
@@ -522,13 +764,385 @@ class GamePlayThousandTest extends TestCase
         ));
     }
 
-    // exception bidding in wrong phase (active player, bid increased by 10, not passed before)
-    // exception already passed
-    // exception wrong bid amount (<> old + 10)
-    // exception bid > 120 without mariage at hand
-    // exception bid > 300
-    // everyone pass, situation updated
-    // second player pass, third win at 110
-    // second bid 110, third win at 120
-    // second bid 110, third bid at 120, first bid at 130 with mariage at hand
+    public function testThrowExceptionWhenHandleMoveOtherThanSortingMoveInWrongPhase(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $storage = $this->storageRepository->getOne($this->play->getId());
+        $data = $storage->getGameData();
+        $phase = new GamePhaseThousandDeclaration();
+        $data['phase'] = [
+            'key' => $phase->getKey(),
+            'name' => $phase->getName(),
+            'description' => $phase->getDescription(),
+        ];
+
+        $storage->setGameData($data);
+        $this->play = $this->gamePlayRepository->getOne($this->play->getId());
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+    }
+
+    public function testThrowExceptionBidStepOtherThanTen(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_BID_STEP_INVALID);
+
+        $player = $this->play->getActivePlayer();
+        $bidAmount = $this->play->getSituation($player)['bidAmount'] + 11;
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player,
+            ['decision' => 'bid', 'bidAmount' => $bidAmount],
+            new GamePhaseThousandBidding()
+        ));
+    }
+
+    public function testThrowExceptionBidOver120WithoutMarriageAtHand(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_BID_NO_MARRIAGE);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+
+        for ($i = 110; $i <= 130; $i = $i + 10) {
+            $this->play->handleMove(new GameMoveThousandBidding(
+                $this->play->getActivePlayer(),
+                ['decision' => 'bid', 'bidAmount' => $i],
+                new GamePhaseThousandBidding()
+            ));
+        }
+    }
+
+    public function testThrowExceptionWhenBiddingAfterPassing(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_CURRENT_PLAYER);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+
+        $player2pass = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player2pass,
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $player3bid = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player3bid,
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+
+        $player1bid = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player1bid,
+            ['decision' => 'bid', 'bidAmount' => 120],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $player2pass,
+            ['decision' => 'bid', 'bidAmount' => 130],
+            new GamePhaseThousandBidding()
+        ));
+    }
+
+    public function testGetSituationAfterBiddingFinishedAt300(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+
+        $initialSituation0 = $this->play->getSituation($this->players[0]);
+        $initialSituation1 = $this->play->getSituation($this->players[1]);
+        $initialSituation2 = $this->play->getSituation($this->players[2]);
+
+        for ($i = 110; $i <= 300; $i = $i + 10) {
+            $bidWinner = $this->play->getActivePlayer();
+
+            $lastBiddingSituation0 = $this->play->getSituation($this->players[0]);
+            $lastBiddingSituation1 = $this->play->getSituation($this->players[1]);
+            $lastBiddingSituation2 = $this->play->getSituation($this->players[2]);
+            $lastBiddingPhase = $lastBiddingSituation0['phase'];
+            $lastBiddingBidAmount = $lastBiddingSituation0['bidAmount'];
+
+            $this->play->handleMove(new GameMoveThousandBidding(
+                $bidWinner,
+                ['decision' => 'bid', 'bidAmount' => $i],
+                new GamePhaseThousandBidding()
+            ));
+        }
+
+        $setsToRemoveIncomparableData = [
+            &$initialSituation0,
+            &$initialSituation1,
+            &$initialSituation2,
+            &$lastBiddingSituation0,
+            &$lastBiddingSituation1,
+            &$lastBiddingSituation2,
+        ];
+
+        foreach ($setsToRemoveIncomparableData as &$set) {
+            unset($set['bidWinner'], $set['bidAmount'], $set['activePlayer']);
+            foreach ($set['orderedPlayers'] as &$orderedPlayer) {
+                unset($orderedPlayer['bid']);
+            }
+        }
+
+        $finalSituation0 = $this->play->getSituation($this->players[0]);
+        $finalSituation1 = $this->play->getSituation($this->players[1]);
+        $finalSituation2 = $this->play->getSituation($this->players[2]);
+
+        $bidWinnerHand = $this->play->getSituation($bidWinner)['orderedPlayers'][$bidWinner->getName()]['hand'];
+
+        $this->assertEquals((new GamePhaseThousandBidding())->getKey(), $lastBiddingPhase['key']);
+        $this->assertEquals(290, $lastBiddingBidAmount);
+        $this->assertEquals($initialSituation0, $lastBiddingSituation0);
+        $this->assertEquals($initialSituation1, $lastBiddingSituation1);
+        $this->assertEquals($initialSituation2, $lastBiddingSituation2);
+
+        $this->assertEquals((new GamePhaseThousandStockDistribution())->getKey(), $finalSituation0['phase']['key']);
+        $this->assertEquals($bidWinner->getName(), $finalSituation0['bidWinner']);
+        $this->assertEquals(300, $finalSituation0['bidAmount']);
+        $this->assertEquals(0, $finalSituation0['stock']);
+        $this->assertEquals($bidWinner->getName(), $finalSituation0['activePlayer']);
+        $this->assertCount(0, $lastBiddingSituation0['stockRecord']);
+        $this->assertCount(3, $finalSituation0['stockRecord']);
+        $this->assertCount(0, array_diff($finalSituation0['stockRecord'], $bidWinnerHand));
+        $this->assertNull($finalSituation0['orderedPlayers'][$this->players[0]->getName()]['bid']);
+        $this->assertNull($finalSituation0['orderedPlayers'][$this->players[1]->getName()]['bid']);
+        $this->assertNull($finalSituation0['orderedPlayers'][$this->players[2]->getName()]['bid']);
+        $this->assertNull($finalSituation1['orderedPlayers'][$this->players[0]->getName()]['bid']);
+        $this->assertNull($finalSituation1['orderedPlayers'][$this->players[1]->getName()]['bid']);
+        $this->assertNull($finalSituation1['orderedPlayers'][$this->players[2]->getName()]['bid']);
+        $this->assertNull($finalSituation2['orderedPlayers'][$this->players[0]->getName()]['bid']);
+        $this->assertNull($finalSituation2['orderedPlayers'][$this->players[1]->getName()]['bid']);
+        $this->assertNull($finalSituation2['orderedPlayers'][$this->players[2]->getName()]['bid']);
+
+        $this->assertCount(
+            $bidWinner->getName() === $this->players[0]->getName() ? 10 : 7,
+            $finalSituation0['orderedPlayers'][$this->players[0]->getName()]['hand']
+        );
+        $this->assertCount(
+            $bidWinner->getName() === $this->players[1]->getName() ? 10 : 7,
+            $finalSituation1['orderedPlayers'][$this->players[1]->getName()]['hand']
+        );
+        $this->assertCount(
+            $bidWinner->getName() === $this->players[2]->getName() ? 10 : 7,
+            $finalSituation2['orderedPlayers'][$this->players[2]->getName()]['hand']
+        );
+    }
+
+    public function testGetSituationAfterBiddingFinishedNoBidIncrease(): void
+    {
+        for ($i = 1; $i <= 2; $i++) {
+            $this->play->handleMove(new GameMoveThousandBidding(
+                $this->play->getActivePlayer(),
+                ['decision' => 'pass'],
+                new GamePhaseThousandBidding()
+            ));
+        }
+        $situation = $this->play->getSituation($this->players[0]);
+
+        $this->assertEquals((new GamePhaseThousandStockDistribution())->getKey(), $situation['phase']['key']);
+        $this->assertEquals(0, $situation['stock']);
+        $this->assertCount(0, $situation['stockRecord']);
+        $this->assertEquals(100, $situation['bidAmount']);
+        $this->assertEquals($situation['obligation'], $situation['bidWinner']);
+        $this->assertEquals($situation['obligation'], $situation['activePlayer']);
+
+        $this->assertEquals(
+            $situation['obligation'] === $this->players[0]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[0])['orderedPlayers'][$this->players[0]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['obligation'] === $this->players[1]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[1])['orderedPlayers'][$this->players[1]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['obligation'] === $this->players[2]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[2])['orderedPlayers'][$this->players[2]->getName()]['hand'])
+        );
+    }
+
+    public function testGetSituationAfterBiddingThirdWinAt110(): void
+    {
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $bidWinner = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $bidWinner,
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $situation = $this->play->getSituation($bidWinner);
+
+        $this->assertEquals((new GamePhaseThousandStockDistribution())->getKey(), $situation['phase']['key']);
+        $this->assertEquals(0, $situation['stock']);
+        $this->assertCount(3, $situation['stockRecord']);
+        $this->assertEquals(110, $situation['bidAmount']);
+        $this->assertNotEquals($situation['obligation'], $situation['bidWinner']);
+        $this->assertCount(10, $situation['orderedPlayers'][$bidWinner->getName()]['hand']);
+        $this->assertEquals($bidWinner->getName(), $situation['activePlayer']);
+
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[0]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[0])['orderedPlayers'][$this->players[0]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[1]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[1])['orderedPlayers'][$this->players[1]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[2]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[2])['orderedPlayers'][$this->players[2]->getName()]['hand'])
+        );
+    }
+
+    public function testGetSituationAfterBiddingThirdWinAt120(): void
+    {
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+
+        $bidWinner = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $bidWinner,
+            ['decision' => 'bid', 'bidAmount' => 120],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $situation = $this->play->getSituation($bidWinner);
+
+        $this->assertEquals((new GamePhaseThousandStockDistribution())->getKey(), $situation['phase']['key']);
+        $this->assertEquals(0, $situation['stock']);
+        $this->assertCount(3, $situation['stockRecord']);
+        $this->assertEquals(120, $situation['bidAmount']);
+        $this->assertNotEquals($situation['obligation'], $situation['bidWinner']);
+        $this->assertCount(10, $situation['orderedPlayers'][$bidWinner->getName()]['hand']);
+        $this->assertEquals($bidWinner->getName(), $situation['activePlayer']);
+
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[0]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[0])['orderedPlayers'][$this->players[0]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[1]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[1])['orderedPlayers'][$this->players[1]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[2]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[2])['orderedPlayers'][$this->players[2]->getName()]['hand'])
+        );
+    }
+
+    public function testGetSituationAfterBiddingFirstWinAt130(): void
+    {
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'bid', 'bidAmount' => 120],
+            new GamePhaseThousandBidding()
+        ));
+
+        $bidWinner = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $bidWinner,
+            ['decision' => 'bid', 'bidAmount' => 130],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'pass'],
+            new GamePhaseThousandBidding()
+        ));
+
+        $situation = $this->play->getSituation($bidWinner);
+
+        $this->assertEquals((new GamePhaseThousandStockDistribution())->getKey(), $situation['phase']['key']);
+        $this->assertEquals(0, $situation['stock']);
+        $this->assertCount(3, $situation['stockRecord']);
+        $this->assertEquals(130, $situation['bidAmount']);
+        $this->assertEquals($situation['obligation'], $situation['bidWinner']);
+        $this->assertCount(10, $situation['orderedPlayers'][$bidWinner->getName()]['hand']);
+
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[0]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[0])['orderedPlayers'][$this->players[0]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[1]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[1])['orderedPlayers'][$this->players[1]->getName()]['hand'])
+        );
+        $this->assertEquals(
+            $situation['bidWinner'] === $this->players[2]->getName() ? 10 : 7,
+            count($this->play->getSituation($this->players[2])['orderedPlayers'][$this->players[2]->getName()]['hand'])
+        );
+    }
+
+    public function testGetSituationAfterBiddingFewTimesFourPlayers(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+
+        $activePlayersNames = [];
+        for ($i = 110; $i <= 200; $i += 10) {
+            $activePlayer = $this->play->getActivePlayer();
+            $activePlayersNames[] = $activePlayer->getName();
+            $this->play->handleMove(new GameMoveThousandBidding(
+                $activePlayer,
+                ['decision' => 'bid', 'bidAmount' => $i],
+                new GamePhaseThousandBidding()
+            ));
+        }
+
+        $dealerName = $this->play->getSituation($this->play->getActivePlayer())['dealer'];
+
+        $this->assertFalse(in_array($dealerName, $activePlayersNames, true));
+    }
 }
