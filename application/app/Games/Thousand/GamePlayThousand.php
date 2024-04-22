@@ -3,6 +3,7 @@
 namespace App\Games\Thousand;
 
 use App\GameCore\GameElements\GameBoard\GameBoardException;
+use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
@@ -54,7 +55,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     /**
      * @throws GamePlayException
-     * @throws GameBoardException
+     * @throws GameMoveException
      */
     public function handleMove(GameMove $move): void
     {
@@ -297,9 +298,27 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
     }
 
+    /**
+     * @throws GamePlayThousandException
+     */
     private function handleMoveStockDistribution(GameMove $move): void
     {
+        $distribution = $move->getDetails()['distribution'];
+        $this->validateMoveStockDistribution($distribution);
 
+        try {
+            foreach ($distribution as $distributionPlayerName => $distributionCardKey) {
+                $this->distributeCards(
+                    $this->playersData[$move->getPlayer()->getId()]['hand'],
+                    $this->playersData[$this->getPlayerByName($distributionPlayerName)->getId()]['hand'],
+                    [$distributionCardKey]
+                );
+            }
+        } catch (CollectionException) {
+            throw new GamePlayThousandException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        $this->phase = $this->phase->getNextPhase(true);
     }
 
     private function isLastBiddingMove(): bool
@@ -317,6 +336,22 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         );
 
         return $this->players->getOne(array_search(max($bids), $bids));
+    }
+
+    /**
+     * @throws GamePlayThousandException
+     */
+    private function validateMoveStockDistribution(array $distribution): void
+    {
+        $numberOfPlayers = $this->getGameInvite()->getGameSetup()->getNumberOfPlayers()->getConfiguredValue()->getValue();
+
+        if (
+            in_array($this->activePlayer->getName(), array_keys($distribution))
+            || count(array_unique($distribution)) !== 2
+            || ($numberOfPlayers === 4 && in_array($this->dealer->getName(), array_keys($distribution)))
+        ) {
+            throw new GamePlayThousandException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
     }
 
     private function getNextOrderedPlayer(Player $player): Player
@@ -370,6 +405,18 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'seat' => $seat,
             ];
             $seat++;
+        }
+    }
+
+    // TODO extract to service
+    /**
+     * @throws CollectionException
+     */
+    private function distributeCards(CollectionPlayingCard $from, CollectionPlayingCard $to, array $cardKeys): void
+    {
+        foreach ($cardKeys as $cardKey) {
+            $to->add($from->getOne($cardKey));
+            $from->removeOne($cardKey);
         }
     }
 

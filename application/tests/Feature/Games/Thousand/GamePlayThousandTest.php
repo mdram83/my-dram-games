@@ -18,6 +18,7 @@ use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
+use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
@@ -150,7 +151,24 @@ class GamePlayThousandTest extends TestCase
 
     protected function getPlayerByName(string $playerName): Player
     {
-        return array_filter($this->players, fn($player) => $player->getName() === $playerName)[0];
+        return array_values(array_filter($this->players, fn($player) => $player->getName() === $playerName))[0];
+    }
+
+    protected function processPhaseBidding(bool $fourPlayers = false): void
+    {
+        $this->play->handleMove(new GameMoveThousandBidding(
+            $this->play->getActivePlayer(),
+            ['decision' => 'bid', 'bidAmount' => 110],
+            new GamePhaseThousandBidding()
+        ));
+
+        for ($i = 1; $i <= ($fourPlayers ? 4 : 3) - 1; $i++) {
+            $this->play->handleMove(new GameMoveThousandBidding(
+                $this->play->getActivePlayer(),
+                ['decision' => 'pass'],
+                new GamePhaseThousandBidding()
+            ));
+        }
     }
 
     public function testClassInstance(): void
@@ -1146,11 +1164,160 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse(in_array($dealerName, $activePlayersNames, true));
     }
 
-    // Stock distribution move tests:
-    // exception if distributing to self
-    // exception if distributing to same other player two cards
-    // exception if distributing same card to other players
-    // exception if distributing to dealer in 4 players game
-    // exception if distributing cards not in hand
+    public function testThrowExceptionWhenHandleMoveStockDistributionToSelf(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+
+        $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
+        $bidWinner = $this->getPlayerByName($bidWinnerName);
+        $situation = $this->play->getSituation($bidWinner);
+
+        $distribution = ['distribution' => [
+            $bidWinnerName => $situation['orderedPlayers'][$bidWinnerName]['hand'][0],
+            (
+                $this->players[0]->getName() !== $bidWinnerName
+                    ? $this->players[0]->getName()
+                    : $this->players[1]->getName()
+            ) => $situation['orderedPlayers'][$bidWinnerName]['hand'][1],
+        ]];
+
+        $this->play->handleMove(new GameMoveThousandStockDistribution(
+            $bidWinner,
+            $distribution,
+            new GamePhaseThousandStockDistribution()
+        ));
+    }
+
+    public function testThrowExceptionWhenHandleMoveStockDistributionSameCard(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+
+        $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
+        $bidWinner = $this->getPlayerByName($bidWinnerName);
+        $situation = $this->play->getSituation($bidWinner);
+
+        $distributionPlayerNames = array_filter(
+            array_keys($situation['orderedPlayers']),
+            fn($playerName) => $playerName !== $bidWinnerName
+        );
+
+        $distribution = ['distribution' => [
+            array_pop($distributionPlayerNames) => $situation['orderedPlayers'][$bidWinnerName]['hand'][0],
+            array_pop($distributionPlayerNames) => $situation['orderedPlayers'][$bidWinnerName]['hand'][0],
+        ]];
+
+        $this->play->handleMove(new GameMoveThousandStockDistribution(
+            $bidWinner,
+            $distribution,
+            new GamePhaseThousandStockDistribution()
+        ));
+    }
+
+    public function testThrowExceptionWhenHandleMoveStockDistributionToDealerFourPlayers(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+
+        $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
+        $bidWinner = $this->getPlayerByName($bidWinnerName);
+        $situation = $this->play->getSituation($bidWinner);
+
+        $distributionPlayerNames = array_filter(
+            array_keys($situation['orderedPlayers']),
+            fn($playerName) => $playerName !== $bidWinnerName && $playerName !== $situation['dealer']
+        );
+
+        $distribution = ['distribution' => [
+            array_pop($distributionPlayerNames) => $situation['orderedPlayers'][$bidWinnerName]['hand'][0],
+            $situation['dealer'] => $situation['orderedPlayers'][$bidWinnerName]['hand'][1],
+        ]];
+
+        $this->play->handleMove(new GameMoveThousandStockDistribution(
+            $bidWinner,
+            $distribution,
+            new GamePhaseThousandStockDistribution()
+        ));
+    }
+
+    public function testThrowExceptionWhenHandleMoveStockDistributionCardsNotInHand(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+
+        $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
+        $bidWinner = $this->getPlayerByName($bidWinnerName);
+        $situation = $this->play->getSituation($bidWinner);
+
+        $distributionPlayerNames = array_filter(
+            array_keys($situation['orderedPlayers']),
+            fn($playerName) => $playerName !== $bidWinnerName
+        );
+
+        $distributionPlayerOne = array_pop($distributionPlayerNames);
+        $situationNotWinner = $this->play->getSituation($this->getPlayerByName($distributionPlayerOne));
+
+        $distribution = ['distribution' => [
+            $distributionPlayerOne => $situationNotWinner['orderedPlayers'][$distributionPlayerOne]['hand'][0],
+            array_pop($distributionPlayerNames) => $situation['orderedPlayers'][$bidWinnerName]['hand'][1],
+        ]];
+
+        $this->play->handleMove(new GameMoveThousandStockDistribution(
+            $bidWinner,
+            $distribution,
+            new GamePhaseThousandStockDistribution()
+        ));
+    }
+
     // distribution and situation change (phase, number of cards)
+    public function testGetSituationAfterStockDistributionMove(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+
+        $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
+        $bidWinner = $this->getPlayerByName($bidWinnerName);
+        $situationSD = $this->play->getSituation($bidWinner);
+
+        $distributionPlayerNames = array_filter(
+            array_keys($situationSD['orderedPlayers']),
+            fn($playerName) => $playerName !== $bidWinnerName
+        );
+        $distributionPlayerName1 = array_pop($distributionPlayerNames);
+        $distributionPlayerName2 = array_pop($distributionPlayerNames);
+
+        $distribution = ['distribution' => [
+            $distributionPlayerName1 => $situationSD['orderedPlayers'][$bidWinnerName]['hand'][0],
+            $distributionPlayerName2 => $situationSD['orderedPlayers'][$bidWinnerName]['hand'][1],
+        ]];
+
+        $this->play->handleMove(new GameMoveThousandStockDistribution(
+            $bidWinner,
+            $distribution,
+            new GamePhaseThousandStockDistribution()
+        ));
+
+        $situation = $this->play->getSituation($bidWinner);
+
+        $this->assertCount(8, $situation['orderedPlayers'][$bidWinnerName]['hand']);
+        $this->assertEquals(8, $situation['orderedPlayers'][$distributionPlayerName1]['hand']);
+        $this->assertEquals(8, $situation['orderedPlayers'][$distributionPlayerName2]['hand']);
+        $this->assertCount(3, $situation['stockRecord']);
+        $this->assertEquals($bidWinnerName, $situation['activePlayer']);
+        $this->assertEquals((new GamePhaseThousandDeclaration())->getKey(), $situation['phase']['key']);
+    }
 }

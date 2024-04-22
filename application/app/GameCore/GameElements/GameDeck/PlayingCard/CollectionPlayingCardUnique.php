@@ -7,7 +7,7 @@ use App\GameCore\Services\Collection\CollectionException;
 use App\GameCore\Services\Collection\CollectionTraitResetByAddingWithoutDirectKeyUse;
 use App\GameCore\Services\Collection\CollectionTraitUniqueKey;
 
-class CollectionPlayingCardUnique extends CollectionBase
+class CollectionPlayingCardUnique extends CollectionPlayingCard
 {
     use CollectionTraitResetByAddingWithoutDirectKeyUse;
     use CollectionTraitUniqueKey;
