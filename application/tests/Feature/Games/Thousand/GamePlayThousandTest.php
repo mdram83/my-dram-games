@@ -1145,4 +1145,12 @@ class GamePlayThousandTest extends TestCase
 
         $this->assertFalse(in_array($dealerName, $activePlayersNames, true));
     }
+
+    // Stock distribution move tests:
+    // exception if distributing to self
+    // exception if distributing to same other player two cards
+    // exception if distributing same card to other players
+    // exception if distributing to dealer in 4 players game
+    // exception if distributing cards not in hand
+    // distribution and situation change (phase, number of cards)
 }

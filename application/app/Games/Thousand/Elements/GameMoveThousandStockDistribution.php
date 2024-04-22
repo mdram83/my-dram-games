@@ -19,13 +19,19 @@ class GameMoveThousandStockDistribution extends GameMoveThousand implements Game
     private function hasValidDataStructure(): bool
     {
         return
-            count($this->details) === 2
-            && $this->hasStringElements(array_keys($this->details))
-            && $this->hasStringElements(array_values($this->details));
+            $this->hasDistributionArray()
+            && count($this->details['distribution']) === 2
+            && $this->hasStringElements(array_keys($this->details['distribution']))
+            && $this->hasStringElements(array_values($this->details['distribution']));
+    }
+
+    private function hasDistributionArray(): bool
+    {
+        return isset($this->details['distribution']);
     }
 
     private function hasStringElements(array $array): bool
     {
-        return count($array) === count(array_filter($array, fn($element) => is_string($element)));
+        return count($array) === count(array_filter($array, fn($element) => is_string($element) && $element !== ''));
     }
 }

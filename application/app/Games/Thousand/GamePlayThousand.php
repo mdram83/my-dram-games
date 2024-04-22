@@ -8,6 +8,7 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameElements\GameMove\GameMove;
+use App\GameCore\GameElements\GameMove\GameMoveException;
 use App\GameCore\GameElements\GamePhase\GamePhase;
 use App\GameCore\GameElements\GamePhase\GamePhaseException;
 use App\GameCore\GamePlay\GamePlay;
@@ -21,6 +22,7 @@ use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
+use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
 
@@ -217,6 +219,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     /**
      * @throws GamePlayThousandException
+     * @throws GameMoveException
      */
     private function handleMoveByPhase(GameMove $move): void
     {
@@ -224,6 +227,11 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             case GameMoveThousandBidding::class:
                 $this->handleMoveBidding($move);
                 break;
+            case GameMoveThousandStockDistribution::class:
+                $this->handleMoveStockDistribution($move);
+                break;
+            default:
+                throw new GameMoveException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
         }
     }
 
@@ -287,6 +295,10 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             $this->phase = $this->phase->getNextPhase(false);
             $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
         }
+    }
+
+    private function handleMoveStockDistribution(GameMove $move): void
+    {
 
     }
 
