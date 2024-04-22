@@ -2,6 +2,7 @@
 
 namespace GameCore\GamePlay\Generic;
 
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
@@ -44,5 +45,10 @@ class GamePlayServicesProviderGenericTest extends TestCase
     public function testGetPlayingCardSuitRepository(): void
     {
         $this->assertInstanceOf(PlayingCardSuitRepository::class, $this->provider->getPlayingCardSuitRepository());
+    }
+
+    public function testGetPlayingCardDealer(): void
+    {
+        $this->assertInstanceOf(PlayingCardDealer::class, $this->provider->getPlayingCardDealer());
     }
 }

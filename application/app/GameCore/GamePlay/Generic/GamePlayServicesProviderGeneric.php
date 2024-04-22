@@ -2,6 +2,7 @@
 
 namespace App\GameCore\GamePlay\Generic;
 
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
@@ -15,6 +16,7 @@ class GamePlayServicesProviderGeneric implements GamePlayServicesProvider
         readonly private GameRecordFactory $gameRecordFactory,
         readonly private PlayingCardDeckProvider $playingCardDeckProvider,
         readonly private PlayingCardSuitRepository $playingCardSuitRepository,
+        readonly private PlayingCardDealer $playingCardDealer,
     )
     {
 
@@ -38,5 +40,10 @@ class GamePlayServicesProviderGeneric implements GamePlayServicesProvider
     public function getPlayingCardSuitRepository(): PlayingCardSuitRepository
     {
         return $this->playingCardSuitRepository;
+    }
+
+    public function getPlayingCardDealer(): PlayingCardDealer
+    {
+        return $this->playingCardDealer;
     }
 }
