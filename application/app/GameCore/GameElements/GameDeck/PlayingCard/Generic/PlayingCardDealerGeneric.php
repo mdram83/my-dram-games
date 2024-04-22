@@ -69,12 +69,8 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
             throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_NOT_UNIQUE_KEYS);
         }
 
-        if ($strict) {
-            foreach ($keys as $key) {
-                if (!$deck->exist($key)) {
-                    throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_KEY_MISSING_IN_STOCK);
-                }
-            }
+        if ($strict && !$this->hasStockAllKeys($deck, $keys)) {
+            throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_KEY_MISSING_IN_STOCK);
         }
 
         return $this->getEmptyStock($unique)->reset(array_map(fn($cardKey) => $deck->getOne($cardKey), $keys ?? []));
@@ -85,9 +81,23 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
         return array_keys($stock->toArray());
     }
 
+    /**
+     * @throws PlayingCardDealerException
+     * @throws CollectionException
+     */
     public function getSortedCards(CollectionPlayingCard $stock, array $keys, bool $strict = false): CollectionPlayingCard
     {
-        // TODO: Implement getSortedCards() method.
+        $stockAllKeys = $this->getCardsKeys($stock);
+
+        if ($strict && count(array_diff($stockAllKeys, $keys)) > 0) {
+            throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_KEYS_NOT_MATCHING_STOCK);
+        }
+
+        $stockPriorityKeys = array_intersect($keys, $stockAllKeys);
+        $stockRemainingKeys = array_diff($stockAllKeys, $keys);
+        $stockOrderedKeys = array_merge($stockPriorityKeys, $stockRemainingKeys);
+
+        return $stock->reset($this->getCardsByKeys($stock, $stockOrderedKeys, false, true)->toArray());
     }
 
     /**
@@ -104,9 +114,20 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
         return $stock->pullFirst();
     }
 
+    /**
+     * @throws PlayingCardDealerException
+     * @throws CollectionException
+     */
     public function moveCardsByKeys(CollectionPlayingCard $fromStock, CollectionPlayingCard $toStock, array $keys): void
     {
-        // TODO: Implement moveCardsByKeys() method.
+        if (!$this->hasStockAllKeys($fromStock, $keys)) {
+            throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_KEY_MISSING_IN_STOCK);
+        }
+
+        foreach ($keys as $key) {
+            $toStock->add($fromStock->getOne($key));
+            $fromStock->removeOne($key);
+        }
     }
 
     /**
@@ -124,13 +145,45 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
         }
     }
 
+    /**
+     * @throws PlayingCardDealerException
+     * @throws CollectionException
+     */
     public function collectCards(CollectionPlayingCard $toStock, array $fromStocks): CollectionPlayingCard
     {
-        // TODO: Implement collectCards() method.
+        $this->validateCollectFromStockInputs($fromStocks);
+
+        foreach ($fromStocks as $fromStock) {
+            $this->moveCardsTimes($fromStock, $toStock, $fromStock->count(), true);
+        }
+
+        return $toStock;
     }
 
+    /**
+     * @throws PlayingCardDealerException
+     */
     public function hasStockAnyCombination(CollectionPlayingCard $stock, array $combinations): bool
     {
+        $this->validateHasStockAnyCombinationInputs($combinations);
+
+        foreach ($combinations as $combination) {
+
+            if ($combination === []) {
+                continue;
+            }
+
+            foreach ($combination as $element) {
+                if (!$stock->exist($element)) {
+                    continue 2;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+
         // TODO: Implement hasStockAnyCombination() method.
     }
 
@@ -175,5 +228,41 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
     {
         $numbersOfCards = array_column($definitions, 'numberOfCards');
         array_multisort($numbersOfCards, SORT_DESC, $definitions);
+    }
+
+    private function hasStockAllKeys(CollectionPlayingCard $stock, array $keys): bool
+    {
+        foreach ($keys as $key) {
+            if (!$stock->exist($key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @throws PlayingCardDealerException
+     */
+    private function validateCollectFromStockInputs(array $fromStocks): void
+    {
+        foreach ($fromStocks as $fromStock) {
+            if (!$fromStock instanceof CollectionPlayingCard) {
+                throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_COLLECTION_FROM_INVALID);
+            }
+        }
+    }
+
+    /**
+     * @throws PlayingCardDealerException
+     */
+    private function validateHasStockAnyCombinationInputs(array $combinations): void
+    {
+        foreach ($combinations as $combination) {
+            foreach ($combination as $element) {
+                if (!is_string($element) || $element === '') {
+                    throw new PlayingCardDealerException(PlayingCardDealerException::MESSAGE_COMBINATION_INVALID);
+                }
+            }
+        }
     }
 }

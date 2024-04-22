@@ -278,4 +278,163 @@ class PlayingCardDealerGenericTest extends TestCase
         $this->assertEquals($keys, $this->dealer->getCardsKeys($stock));
         $this->assertEquals([], $this->dealer->getCardsKeys($emptyStock));
     }
+
+    public function testThrowsExceptionWhenGetSortedCardsStrictKeysNotMatchingStock(): void
+    {
+        $this->expectException(PlayingCardDealerException::class);
+        $this->expectExceptionMessage(PlayingCardDealerException::MESSAGE_KEYS_NOT_MATCHING_STOCK);
+
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $this->dealer->moveCardsTimes($deck, $stock, 3);
+
+        $this->dealer->getSortedCards($stock, [$deck->pullFirst()->getKey(), $deck->pullFirst()->getKey()], true);
+    }
+
+    public function testGetSortedCardsStrictKeysAsRequested(): void
+    {
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $this->dealer->moveCardsTimes($deck, $stock, 3);
+        $initialKeys = $this->dealer->getCardsKeys($stock);
+        $requestedKeys = [$initialKeys[1], $initialKeys[0], $initialKeys[2]];
+        $orderedStock = $this->dealer->getSortedCards($stock, $requestedKeys, true);
+
+        $this->assertEquals($requestedKeys, $this->dealer->getCardsKeys($stock));
+        $this->assertEquals($requestedKeys, $this->dealer->getCardsKeys($orderedStock));
+    }
+
+    public function testGetSortedCardsNoStrictMoreKeys(): void
+    {
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $requestedKeys = array_slice($this->dealer->getCardsKeys($deck), 0, 4);
+        $requestedKeys = array_reverse($requestedKeys);
+        $this->dealer->moveCardsTimes($deck, $stock, 2);
+        $orderedStock = $this->dealer->getSortedCards($stock, $requestedKeys);
+
+        $this->assertEquals(
+            array_slice($requestedKeys, -2, 2),
+            array_slice($this->dealer->getCardsKeys($stock), 0, 2)
+        );
+        $this->assertEquals(
+            array_slice($requestedKeys, -2, 2),
+            array_slice($this->dealer->getCardsKeys($orderedStock), 0, 2)
+        );
+    }
+
+    public function testGetSortedCardsNoStrictLessKeys(): void
+    {
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $requestedKeys = array_slice($this->dealer->getCardsKeys($deck), 0, 8);
+        shuffle($requestedKeys);
+        $this->dealer->moveCardsTimes($deck, $stock, 16);
+        $orderedStock = $this->dealer->getSortedCards($stock, $requestedKeys);
+
+        $this->assertEquals(
+            $requestedKeys,
+            array_slice($this->dealer->getCardsKeys($stock), 0, 8)
+        );
+        $this->assertEquals(
+            $requestedKeys,
+            array_slice($this->dealer->getCardsKeys($orderedStock), 0, 8)
+        );
+    }
+
+    public function testGetSortedCardsNoStrictEmptyKeys(): void
+    {
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $this->dealer->moveCardsTimes($deck, $stock, 10);
+        $initialKeys = $this->dealer->getCardsKeys($stock);
+        $orderedStock = $this->dealer->getSortedCards($stock, []);
+
+        $this->assertEquals($initialKeys, $this->dealer->getCardsKeys($stock));
+        $this->assertEquals($initialKeys, $this->dealer->getCardsKeys($orderedStock));
+    }
+
+    public function testThrowExceptionWhenMoveCardsByKeysMissingInStock(): void
+    {
+        $this->expectException(PlayingCardDealerException::class);
+        $this->expectExceptionMessage(PlayingCardDealerException::MESSAGE_KEY_MISSING_IN_STOCK);
+
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $keys = [$deck->pullFirst()->getKey(), $deck->pullFirst()->getKey()];
+        $this->dealer->moveCardsByKeys($deck, $stock, $keys);
+    }
+
+    public function testMoveCardsByKeys(): void
+    {
+        $stock = $this->dealer->getEmptyStock();
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $keys = array_slice($this->dealer->getCardsKeys($deck), 0, 2);
+        $this->dealer->moveCardsByKeys($deck, $stock, $keys);
+
+        $this->assertEquals(2, $stock->count());
+        $this->assertEquals($keys, $this->dealer->getCardsKeys($stock));
+    }
+
+    public function testThrowExceptionWhenCollectCardsNotFromCollectionPlayingCard(): void
+    {
+        $this->expectException(PlayingCardDealerException::class);
+        $this->expectExceptionMessage(PlayingCardDealerException::MESSAGE_COLLECTION_FROM_INVALID);
+
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $stock = $this->dealer->getEmptyStock();
+        $notStock = [];
+        $this->dealer->collectCards($stock, [$deck, $notStock]);
+    }
+
+    public function testCollectCards(): void
+    {
+        $deck = $this->deckProvider->getDeckSchnapsen();
+        $stock1 = $this->dealer->getEmptyStock();
+        $stock2 = $this->dealer->getEmptyStock();
+        $stock3 = $this->dealer->getEmptyStock();
+        $targetStock = $this->dealer->getEmptyStock();
+        $this->dealer->moveCardsTimes($deck, $stock1, 10);
+        $this->dealer->moveCardsTimes($deck, $stock2, 5);
+        $expectedKeys = array_merge($this->dealer->getCardsKeys($stock1), $this->dealer->getCardsKeys($stock2));
+        $this->dealer->collectCards($targetStock, [$stock1, $stock2, $stock3]);
+
+        $this->assertEquals(15, $targetStock->count());
+        $this->assertEquals($expectedKeys, $this->dealer->getCardsKeys($targetStock));
+    }
+
+    public function testThrowExceptionWhenHasStockAnyCombinationRequestedWithInvalidCombinationFormat(): void
+    {
+        $this->expectException(PlayingCardDealerException::class);
+        $this->expectExceptionMessage(PlayingCardDealerException::MESSAGE_COMBINATION_INVALID);
+
+        $combinations = [
+            ['123', '234', '345'],
+            [['invalid element']]
+        ];
+        $stock = $this->deckProvider->getDeckSchnapsen();
+        $this->dealer->hasStockAnyCombination($stock, $combinations);
+    }
+
+    public function testHasStockAnyCombination(): void
+    {
+        $keys = ['A-H', 'K-H', 'Q-H', 'J-H', '10-H', '9-H'];
+        $stock = $this->dealer->getCardsByKeys($this->deckProvider->getDeckSchnapsen(), $keys, true, true);
+        $combTrue1 = ['K-H', 'Q-H'];
+        $combTrue2 = $keys;
+        $combFalse1 = ['9-H', '9-D', '9-C', '9-S'];
+        $combFalse2 = ['K-S', 'Q-S'];
+
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue1]));
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue1, []]));
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue1, $combTrue2]));
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue1, $combFalse1, $combFalse2]));
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue1, $combTrue2, $combFalse1, $combFalse2]));
+        $this->assertTrue($this->dealer->hasStockAnyCombination($stock, [$combTrue2, $combFalse1, $combFalse2]));
+        $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [$combFalse1, $combFalse2]));
+        $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [$combFalse1]));
+        $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [$combFalse2]));
+        $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [[]]));
+
+    }
 }
