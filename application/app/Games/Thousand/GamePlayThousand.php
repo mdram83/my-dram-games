@@ -5,6 +5,8 @@ namespace App\Games\Thousand;
 use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealerException;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
@@ -31,6 +33,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 {
     protected PlayingCardDeckProvider $deckProvider;
     protected PlayingCardSuitRepository $suitRepository;
+    protected PlayingCardDealer $cardDealer;
     protected GamePhaseThousandRepository $phaseRepository;
 
     protected const GAME_MOVE_CLASS = GameMoveThousand::class;
@@ -51,11 +54,17 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     private ?PlayingCardSuit $trumpSuit;
     private GamePhase $phase;
 
+    private array $marriagesKeys = [
+        ['K-H', 'Q-H'],
+        ['K-D', 'Q-D'],
+        ['K-C', 'Q-C'],
+        ['K-S', 'Q-S'],
+    ];
+
     //    protected ?GameResultTicTacToe $result = null;
 
     /**
-     * @throws GamePlayException
-     * @throws GameMoveException
+     * @throws GamePlayException|GameMoveException|CollectionException
      */
     public function handleMove(GameMove $move): void
     {
@@ -143,9 +152,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->bidAmount = 100;
         $this->playersData[$this->obligation->getId()]['bid'] = $this->bidAmount;
 
-        $this->stock = $this->getEmptyPlayingCardCollection();
-        $this->stockRecord = $this->getEmptyPlayingCardCollection();
-        $this->table = $this->getEmptyPlayingCardCollection();
+        $this->stock = $this->cardDealer->getEmptyStock();
+        $this->stockRecord = $this->cardDealer->getEmptyStock();
+        $this->table = $this->cardDealer->getEmptyStock();
         $this->deck = $this->deckProvider->getDeckSchnapsen();
         $this->shuffleAndDealCards();
 
@@ -168,10 +177,12 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
         $data = $this->storage->getGameData();
 
+        $this->deck = $this->deckProvider->getDeckSchnapsen();
+
         foreach ($data['orderedPlayers'] as $playerName => $playerData) {
             $this->playersData[$this->getPlayerByName($playerName)->getId()] = [
-                'hand' => $this->getCardsByKeys($playerData['hand']),
-                'tricks' => $this->getCardsByKeys($playerData['tricks']),
+                'hand' => $this->cardDealer->getCardsByKeys($this->deck, $playerData['hand'], true, true),
+                'tricks' => $this->cardDealer->getCardsByKeys($this->deck, $playerData['tricks'], true, true),
                 'barrel' => $playerData['barrel'],
                 'points' => $playerData['points'],
                 'ready' => $playerData['ready'],
@@ -187,10 +198,11 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->bidWinner = $this->getPlayerByName($data['bidWinner']);
         $this->bidAmount = $data['bidAmount'];
 
-        $this->stock = $this->getCardsByKeys($data['stock']);
-        $this->stockRecord = $this->getCardsByKeys($data['stockRecord']);
-        $this->table = $this->getCardsByKeys($data['table']);
-        $this->deck = $this->getEmptyPlayingCardCollection();
+        $this->stock = $this->cardDealer->getCardsByKeys($this->deck, $data['stock'], true, true);
+        $this->table = $this->cardDealer->getCardsByKeys($this->deck, $data['table'], true, true);
+        $this->stockRecord = $this
+            ->cardDealer
+            ->getCardsByKeys($this->deckProvider->getDeckSchnapsen(), $data['stockRecord'], true, true);
 
         $this->round = $data['round'];
 
@@ -202,6 +214,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
         $this->deckProvider = $provider->getPlayingCardDeckProvider();
         $this->suitRepository = $provider->getPlayingCardSuitRepository();
+        $this->cardDealer = $provider->getPlayingCardDealer();
         $this->phaseRepository = new GamePhaseThousandRepository();
     }
 
@@ -221,6 +234,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     /**
      * @throws GamePlayThousandException
      * @throws GameMoveException
+     * @throws CollectionException
      */
     private function handleMoveByPhase(GameMove $move): void
     {
@@ -241,18 +255,20 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
      */
     private function handleMoveSorting(GameMove $move): void
     {
-        $orderedHandKeys = $move->getDetails()['hand'];
-        $currentHandKeys = array_keys($this->playersData[$move->getPlayer()->getId()]['hand']->toArray());
-
-        if (count(array_diff($currentHandKeys, $orderedHandKeys)) > 0) {
+        try {
+            $this->cardDealer->getSortedCards(
+                $this->playersData[$move->getPlayer()->getId()]['hand'],
+                $move->getDetails()['hand'],
+                true
+            );
+        } catch (PlayingCardDealerException) {
             throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
         }
-
-        $this->playersData[$move->getPlayer()->getId()]['hand'] = $this->getCardsByKeys($orderedHandKeys);
     }
 
     /**
      * @throws GamePlayThousandException
+     * @throws CollectionException
      */
     private function handleMoveBidding(GameMove $move): void
     {
@@ -264,7 +280,13 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_BID_STEP_INVALID);
             }
 
-            if ($bidAmount > 120 && !$this->hasMarriage($this->playersData[$move->getPlayer()->getId()]['hand'])) {
+            if (
+                $bidAmount > 120
+                && !$this->cardDealer->hasStockAnyCombination(
+                    $this->playersData[$move->getPlayer()->getId()]['hand'],
+                    $this->marriagesKeys
+                )
+            ) {
                 throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_BID_NO_MARRIAGE);
             }
 
@@ -281,12 +303,10 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             $this->bidWinner = $this->getHighestBiddingPlayer();
 
             if ($this->bidAmount > 100) {
-                $this->stockRecord = $this->getCardsByKeys($this->getCardsKeys($this->stock));
+                $this->stockRecord = $this->stockRecord->reset($this->stock->toArray());
             }
 
-            while ($this->stock->count() > 0) {
-                $this->playersData[$this->bidWinner->getId()]['hand']->add($this->stock->pullFirst());
-            }
+            $this->cardDealer->collectCards($this->playersData[$this->bidWinner->getId()]['hand'], [$this->stock]);
 
             foreach ($this->playersData as $playerId => $playerData) {
                 $this->playersData[$playerId]['bid'] = null;
@@ -308,13 +328,13 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         try {
             foreach ($distribution as $distributionPlayerName => $distributionCardKey) {
-                $this->distributeCards(
+                $this->cardDealer->moveCardsByKeys(
                     $this->playersData[$move->getPlayer()->getId()]['hand'],
                     $this->playersData[$this->getPlayerByName($distributionPlayerName)->getId()]['hand'],
                     [$distributionCardKey]
                 );
             }
-        } catch (CollectionException) {
+        } catch (PlayingCardDealerException) {
             throw new GamePlayThousandException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
         }
 
@@ -396,8 +416,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $seat = 1;
         foreach (array_keys($this->playersData) as $playerId) {
             $this->playersData[$playerId] = [
-                'hand' => $this->getEmptyPlayingCardCollection(),
-                'tricks' => $this->getEmptyPlayingCardCollection(),
+                'hand' => $this->cardDealer->getEmptyStock(),
+                'tricks' => $this->cardDealer->getEmptyStock(),
                 'barrel' => false,
                 'points' => [],
                 'ready' => true,
@@ -408,86 +428,17 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
     }
 
-    // TODO extract to service
-    /**
-     * @throws CollectionException
-     */
-    private function distributeCards(CollectionPlayingCard $from, CollectionPlayingCard $to, array $cardKeys): void
-    {
-        foreach ($cardKeys as $cardKey) {
-            $to->add($from->getOne($cardKey));
-            $from->removeOne($cardKey);
-        }
-    }
-
-    // TODO extract to service
-    private function getEmptyPlayingCardCollection(): CollectionPlayingCardUnique
-    {
-        return new CollectionPlayingCardUnique(clone $this->collectionHandler, []);
-    }
-
-    // TODO extract to service
-    private function getCardsByKeys(?array $keys): CollectionPlayingCardUnique
-    {
-        if ($keys === null || $keys === []) {
-            return $this->getEmptyPlayingCardCollection();
-        }
-
-        $deck = $this->deckProvider->getDeckSchnapsen();
-
-        return $this->getEmptyPlayingCardCollection()->reset(array_map(fn($cardKey) => $deck->getOne($cardKey), $keys));
-
-    }
-
-    // TODO extract to service
-    private function getCardsKeys(CollectionPlayingCardUnique $cards): array
-    {
-        return array_keys($cards->toArray());
-    }
-
-    // TODO extract to service
     private function shuffleAndDealCards(): void
     {
-        $this->deck->shuffle()->shuffle()->shuffle();
+        $definition = [['stock' => $this->stock, 'numberOfCards' => 3]];
+        $nextPlayer = $this->dealer;
 
         for ($i = 1; $i <= 3; $i++) {
-            $this->stock->add($this->deck->pullFirst());
+            $nextPlayer = $this->getNextOrderedPlayer($nextPlayer);
+            $definition[] = ['stock' => $this->playersData[$nextPlayer->getId()]['hand'], 'numberOfCards' => 7];
         }
 
-        reset($this->playersData);
-
-        while ($this->deck->count() > 0) {
-            next($this->playersData);
-            if (key($this->playersData) === null) {
-                reset($this->playersData);
-            }
-
-            if ($this->players->count() === 4 && key($this->playersData) === $this->dealer->getId()) {
-                continue;
-            }
-
-            $this->playersData[key($this->playersData)]['hand']->add($this->deck->pullFirst());
-        }
-    }
-
-    // TODO extract to service
-    private function hasMarriage(CollectionPlayingCardUnique $cards): bool
-    {
-        $cardKeys = $this->getCardsKeys($cards);
-        $marriagesKeys = [
-            ['K-H', 'Q-H'],
-            ['K-D', 'Q-D'],
-            ['K-C', 'Q-C'],
-            ['K-S', 'Q-S'],
-        ];
-
-        foreach ($marriagesKeys as $marriageKeys) {
-            if (in_array($marriageKeys[0], $cardKeys) && in_array($marriageKeys[1], $cardKeys)) {
-                return true;
-            }
-        }
-
-        return false;
+        $this->cardDealer->shuffleAndDealCards($this->deck, $definition);
     }
 
     private function getSituationData(): array
@@ -496,8 +447,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         foreach ($this->playersData as $playerId => $playerData) {
             $orderedPlayers[$this->players->getOne($playerId)->getName()] = [
-                'hand' => $this->getCardsKeys($playerData['hand']),
-                'tricks' => $this->getCardsKeys($playerData['tricks']),
+                'hand' => $this->cardDealer->getCardsKeys($playerData['hand']),
+                'tricks' => $this->cardDealer->getCardsKeys($playerData['tricks']),
                 'barrel' => $playerData['barrel'],
                 'points' => $playerData['points'],
                 'ready' => $playerData['ready'],
@@ -508,9 +459,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         return [
             'orderedPlayers' => $orderedPlayers,
-            'stock' => $this->getCardsKeys($this->stock),
-            'stockRecord' => $this->getCardsKeys($this->stockRecord),
-            'table' => $this->getCardsKeys($this->table),
+            'stock' => $this->cardDealer->getCardsKeys($this->stock),
+            'stockRecord' => $this->cardDealer->getCardsKeys($this->stockRecord),
+            'table' => $this->cardDealer->getCardsKeys($this->table),
             'trumpSuit' => $this->trumpSuit?->getKey(),
             'bidWinner' => $this->bidWinner?->getName(),
             'bidAmount' => $this->bidAmount,
