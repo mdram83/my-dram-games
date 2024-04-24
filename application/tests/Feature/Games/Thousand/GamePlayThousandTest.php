@@ -22,6 +22,7 @@ use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
@@ -1545,8 +1546,178 @@ class GamePlayThousandTest extends TestCase
         ));
     }
 
+    public function testGetSituationAfterDeclarationBombMoveRound1(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution();
+
+        $bidWinner = $this->play->getActivePlayer();
+        $situationI0 = $this->play->getSituation($this->players[0]);
+        $situationI1 = $this->play->getSituation($this->players[1]);
+        $situationI2 = $this->play->getSituation($this->players[2]);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $bidWinner,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situationF0 = $this->play->getSituation($this->players[0]);
+        $situationF1 = $this->play->getSituation($this->players[1]);
+        $situationF2 = $this->play->getSituation($this->players[2]);
+
+        $phase = $situationF0['phase']['key'];
+        $points0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['points'];
+        $points1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['points'];
+        $points2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['points'];
+        $ready0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['ready'];
+        $ready1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['ready'];
+        $ready2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['ready'];
+        $bombRounds0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['bombRounds'];
+        $bombRounds1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['bombRounds'];
+        $bombRounds2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['bombRounds'];
+
+        unset($situationI0['phase'], $situationI1['phase'], $situationI2['phase'], $situationF0['phase'], $situationF1['phase'], $situationF2['phase']);
+
+        for ($i = 0; $i <= 2; $i++) {
+            unset(
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+            );
+        }
+
+        $this->assertEquals((new GamePhaseThousandCountPoints())->getKey(), $phase);
+        $this->assertEquals([1 => $this->players[0]->getId() === $bidWinner->getId() ? 0 : 60], $points0);
+        $this->assertEquals([1 => $this->players[1]->getId() === $bidWinner->getId() ? 0 : 60], $points1);
+        $this->assertEquals([1 => $this->players[2]->getId() === $bidWinner->getId() ? 0 : 60], $points2);
+        $this->assertFalse($ready0);
+        $this->assertFalse($ready1);
+        $this->assertFalse($ready2);
+        $this->assertEquals($this->players[0]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds0);
+        $this->assertEquals($this->players[1]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds1);
+        $this->assertEquals($this->players[2]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds2);
+        $this->assertEquals($situationI0, $situationF0);
+        $this->assertEquals($situationI1, $situationF1);
+        $this->assertEquals($situationI2, $situationF2);
+    }
+
+    public function testGetSituationAfterDeclarationBombMoveRound1FourPlayersNoStockPoints(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution(true);
+
+        $bidWinner = $this->play->getActivePlayer();
+        $situationI0 = $this->play->getSituation($this->players[0]);
+        $situationI1 = $this->play->getSituation($this->players[1]);
+        $situationI2 = $this->play->getSituation($this->players[2]);
+        $situationI3 = $this->play->getSituation($this->players[3]);
+        $dealer = $this->getPlayerByName($situationI0['dealer']);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $bidWinner,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situationF0 = $this->play->getSituation($this->players[0]);
+        $situationF1 = $this->play->getSituation($this->players[1]);
+        $situationF2 = $this->play->getSituation($this->players[2]);
+        $situationF3 = $this->play->getSituation($this->players[3]);
+
+        $phase = $situationF0['phase']['key'];
+        $points0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['points'];
+        $points1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['points'];
+        $points2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['points'];
+        $points3 = $situationF3['orderedPlayers'][$this->players[3]->getName()]['points'];
+        $ready0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['ready'];
+        $ready1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['ready'];
+        $ready2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['ready'];
+        $ready3 = $situationF3['orderedPlayers'][$this->players[3]->getName()]['ready'];
+        $bombRounds0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['bombRounds'];
+        $bombRounds1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['bombRounds'];
+        $bombRounds2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['bombRounds'];
+        $bombRounds3 = $situationF3['orderedPlayers'][$this->players[3]->getName()]['bombRounds'];
+
+        unset($situationI0['phase'], $situationI1['phase'], $situationI2['phase'], $situationI3['phase'], $situationF0['phase'], $situationF1['phase'], $situationF2['phase'], $situationF3['phase']);
+
+        for ($i = 0; $i <= 3; $i++) {
+            unset(
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI3['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationI3['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationI3['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF3['orderedPlayers'][$this->players[$i]->getName()]['points'],
+                $situationF3['orderedPlayers'][$this->players[$i]->getName()]['ready'],
+                $situationF3['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+            );
+        }
+
+        $expectedPoints0 = in_array($this->players[0]->getId(), [$bidWinner->getId(), $dealer->getId()]) ? 0 : 60;
+        $expectedPoints1 = in_array($this->players[1]->getId(), [$bidWinner->getId(), $dealer->getId()]) ? 0 : 60;
+        $expectedPoints2 = in_array($this->players[2]->getId(), [$bidWinner->getId(), $dealer->getId()]) ? 0 : 60;
+        $expectedPoints3 = in_array($this->players[3]->getId(), [$bidWinner->getId(), $dealer->getId()]) ? 0 : 60;
+
+        $this->assertEquals((new GamePhaseThousandCountPoints())->getKey(), $phase);
+        $this->assertEquals([1 => $expectedPoints0], $points0);
+        $this->assertEquals([1 => $expectedPoints1], $points1);
+        $this->assertEquals([1 => $expectedPoints2], $points2);
+        $this->assertEquals([1 => $expectedPoints3], $points3);
+        $this->assertFalse($ready0);
+        $this->assertFalse($ready1);
+        $this->assertFalse($ready2);
+        $this->assertFalse($ready3);
+        $this->assertEquals($this->players[0]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds0);
+        $this->assertEquals($this->players[1]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds1);
+        $this->assertEquals($this->players[2]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds2);
+        $this->assertEquals($this->players[3]->getId() === $bidWinner->getId() ? [1] : [], $bombRounds3);
+        $this->assertEquals($situationI0, $situationF0);
+        $this->assertEquals($situationI1, $situationF1);
+        $this->assertEquals($situationI2, $situationF2);
+        $this->assertEquals($situationI3, $situationF3);
+    }
+
     // TODO next declaration...
-    // accept declaration === 0 (bomb), call count points function, points counted (incl. 4 player stock points), bomb given etc., phase = count points
+    // not bidwinner on barrel
+    // 4 players dealer with 2 aces in stock
+    // 4 players dealer with marriage in stock
+    // 4 players dealer with marriage in stock but on barrel
+
     // TODO think what change in situation and write in above accept declaration === 0 test
 
 

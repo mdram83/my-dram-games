@@ -356,9 +356,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->validateMoveDeclaration($declaration);
 
         if ($declaration === 0) {
-            // TODO handle bomb here, call count points, call game resutls check
-
-            // if game not finished:
+            $this->countRoundPoints(true);
+            $this->playersData[$this->activePlayer->getId()]['bombRounds'][] = $this->round;
             $this->phase = new GamePhaseThousandCountPoints();
             return;
         }
@@ -424,6 +423,27 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         } elseif (($declaration < $this->bidAmount || $declaration > 300 || $declaration % 10 !== 0)) {
             throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_WRONG_DECLARATION);
+        }
+    }
+
+    private function countRoundPoints(bool $isBombMove = false): void
+    {
+        foreach ($this->players->toArray() as $player) {
+
+            $playerId = $player->getId();
+
+            $pointsPreviousRounds = $this->playersData[$playerId]['points'][$this->round - 1] ?? 0;
+
+            $pointsCurrentRound =
+                $isBombMove
+                    ? ((
+                        $playerId === $this->activePlayer->getId()
+                        || $this->players->count() === 4 && $playerId === $this->dealer->getId()
+                    ) ? 0 : 60)
+                    : 0; // later replace 60 with calculation based on Stock, Marriages, Tricks, Barrel etc.
+
+            $this->playersData[$playerId]['points'][$this->round] = $pointsPreviousRounds + $pointsCurrentRound;
+            $this->playersData[$playerId]['ready'] = false;
         }
     }
 
