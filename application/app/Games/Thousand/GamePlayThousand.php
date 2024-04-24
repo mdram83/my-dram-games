@@ -24,6 +24,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
@@ -245,6 +246,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             case GameMoveThousandStockDistribution::class:
                 $this->handleMoveStockDistribution($move);
                 break;
+            case GameMoveThousandDeclaration::class;
+                $this->handleMoveDeclaration($move);
+                break;
             default:
                 throw new GameMoveException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
         }
@@ -341,6 +345,20 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->phase = $this->phase->getNextPhase(true);
     }
 
+    /**
+     * @throws GamePlayThousandException
+     */
+    private function handleMoveDeclaration(GameMove $move): void
+    {
+        $declaration = $move->getDetails()['declaration'];
+        if ($declaration < $this->bidAmount || $declaration > 300 || $declaration % 10 !== 0) {
+            throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_WRONG_DECLARATION);
+        }
+
+        $this->bidAmount = $declaration;
+        $this->phase = $this->phase->getNextPhase(true);
+    }
+
     private function isLastBiddingMove(): bool
     {
         return
@@ -395,6 +413,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 : $nextPlayer;
     }
 
+    // TODO consider moving up
     private function getPlayerByName(?string $playerName): ?Player
     {
         if ($playerName === null) {
