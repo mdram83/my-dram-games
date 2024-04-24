@@ -56,4 +56,10 @@ class GameMoveThousandDeclarationTest extends TestCase
         $move = new GameMoveThousandDeclaration($this->player, $this->details, $this->phase);
         $this->assertEquals(array_merge($this->details, ['phase' => $this->phase]), $move->getDetails());
     }
+
+    public function testCreateGameMoveThousandDeclarationForBomb(): void
+    {
+        $move = new GameMoveThousandDeclaration($this->player, ['declaration' => 0], $this->phase);
+        $this->assertEquals(array_merge(['declaration' => 0], ['phase' => $this->phase]), $move->getDetails());
+    }
 }

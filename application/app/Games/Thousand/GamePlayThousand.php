@@ -28,6 +28,7 @@ use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
@@ -189,6 +190,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'ready' => $playerData['ready'],
                 'bid' => $playerData['bid'],
                 'seat' => $playerData['seat'],
+                'bombRounds' => $playerData['bombRounds'],
             ];
         }
 
@@ -351,8 +353,14 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     private function handleMoveDeclaration(GameMove $move): void
     {
         $declaration = $move->getDetails()['declaration'];
-        if ($declaration < $this->bidAmount || $declaration > 300 || $declaration % 10 !== 0) {
-            throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_WRONG_DECLARATION);
+        $this->validateMoveDeclaration($declaration);
+
+        if ($declaration === 0) {
+            // TODO handle bomb here, call count points, call game resutls check
+
+            // if game not finished:
+            $this->phase = new GamePhaseThousandCountPoints();
+            return;
         }
 
         $this->bidAmount = $declaration;
@@ -389,6 +397,33 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             || ($numberOfPlayers === 4 && in_array($this->dealer->getName(), array_keys($distribution)))
         ) {
             throw new GamePlayThousandException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+    }
+
+    /**
+     * @throws GamePlayThousandException
+     */
+    private function validateMoveDeclaration(int $declaration): void
+    {
+        if ($declaration === 0) {
+
+            if ($this->bidAmount !== 100) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_BOMB_ON_BID);
+            }
+
+            $allowedBombMoves = $this
+                ->getGameInvite()
+                ->getGameSetup()
+                ->getOption('thousand-number-of-bombs')
+                ->getConfiguredValue()
+                ->getValue();
+
+            if (count($this->playersData[$this->getActivePlayer()->getId()]['bombRounds']) >= $allowedBombMoves) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_BOMB_USED);
+            }
+
+        } elseif (($declaration < $this->bidAmount || $declaration > 300 || $declaration % 10 !== 0)) {
+            throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_WRONG_DECLARATION);
         }
     }
 
@@ -442,6 +477,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'ready' => true,
                 'bid' => null,
                 'seat' => $seat,
+                'bombRounds' => [],
             ];
             $seat++;
         }
@@ -473,6 +509,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'ready' => $playerData['ready'],
                 'bid' => $playerData['bid'],
                 'seat' => $playerData['seat'],
+                'bombRounds' => $playerData['bombRounds'],
             ];
         }
 

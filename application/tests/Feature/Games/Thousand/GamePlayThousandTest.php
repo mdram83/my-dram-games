@@ -122,6 +122,13 @@ class GamePlayThousandTest extends TestCase
         ];
     }
 
+    protected function updateGameData(array $overwrite): void
+    {
+        $storage = $this->storageRepository->getOne($this->play->getId());
+        $storage->setGameData(array_merge($storage->getGameData(), $overwrite));
+        $this->play = $this->gamePlayRepository->getOne($this->play->getId());
+    }
+
     protected function updateGamePlayDeal(callable $getDeal): void
     {
         $storage = $this->storageRepository->getOne($this->play->getId());
@@ -156,13 +163,17 @@ class GamePlayThousandTest extends TestCase
         return array_values(array_filter($this->players, fn($player) => $player->getName() === $playerName))[0];
     }
 
-    protected function processPhaseBidding(bool $fourPlayers = false): void
+    protected function processPhaseBidding(bool $fourPlayers = false, int $bidUntil = 110): void
     {
-        $this->play->handleMove(new GameMoveThousandBidding(
-            $this->play->getActivePlayer(),
-            ['decision' => 'bid', 'bidAmount' => 110],
-            new GamePhaseThousandBidding()
-        ));
+        if ($bidUntil >= 110) {
+            for ($bidAmount = 110; $bidAmount <= $bidUntil; $bidAmount += 10) {
+                $this->play->handleMove(new GameMoveThousandBidding(
+                    $this->play->getActivePlayer(),
+                    ['decision' => 'bid', 'bidAmount' => $bidAmount],
+                    new GamePhaseThousandBidding()
+                ));
+            }
+        }
 
         for ($i = 1; $i <= ($fourPlayers ? 4 : 3) - 1; $i++) {
             $this->play->handleMove(new GameMoveThousandBidding(
@@ -260,6 +271,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
+
+        // all players bombRounds []
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['bombRounds']);
 
         // all players bid null, except obligation player bid 100
         $this->assertEquals(
@@ -390,6 +406,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['points']);
 
+        // all players bombRounds []
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['bombRounds']);
+
         // all players bid null, except obligation player bid 100
         $this->assertEquals(
             ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
@@ -519,6 +541,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
+
+        // all players bombRounds []
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['bombRounds']);
 
         // all players bid null, except obligation player bid 100
         $this->assertEquals(
@@ -652,6 +679,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['points']);
         $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['points']);
+
+        // all players bombRounds []
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[0]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[1]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[2]->getName()]['bombRounds']);
+        $this->assertEquals([], $situation['orderedPlayers'][$this->players[3]->getName()]['bombRounds']);
 
         // all players bid null, except obligation player bid 100
         $this->assertEquals(
@@ -1471,7 +1504,52 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($situationI2, $situationF2);
     }
 
+    public function testThrowExceptionWhenHandleMoveDeclarationBombAfterBidding(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_BOMB_ON_BID);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+
+        $situation = $this->play->getSituation($this->players[0]);
+        $player = $this->getPlayerByName($situation['bidWinner']);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+    }
+
+    public function testThrowExceptionWhenHandleMoveDeclarationNoMoreBombs(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_BOMB_USED);
+
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution();
+
+        $player = $this->play->getActivePlayer();
+
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        $overwrite[$player->getName()]['bombRounds'] = [1];
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+    }
 
     // TODO next declaration...
-    // accept declaration, update situation (only declaration change, update bidAmount or create declaration?) and phase
+    // accept declaration === 0 (bomb), call count points function, points counted (incl. 4 player stock points), bomb given etc., phase = count points
+    // TODO think what change in situation and write in above accept declaration === 0 test
+
+
+    // count points phase should be only for confirm readiness for next phase
+    // counting points itself should happen after accepted bomb (Declaration) or last ThirdCard (last in hand)
 }
