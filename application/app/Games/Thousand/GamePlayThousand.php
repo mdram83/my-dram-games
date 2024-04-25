@@ -356,7 +356,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->validateMoveDeclaration($declaration);
 
         if ($declaration === 0) {
-            $this->countRoundPoints(true);
+            $this->countRoundPointsAndSetUnready(true);
             $this->playersData[$this->activePlayer->getId()]['bombRounds'][] = $this->round;
             $this->phase = new GamePhaseThousandCountPoints();
             return;
@@ -426,7 +426,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
     }
 
-    private function countRoundPoints(bool $isBombMove = false): void
+    private function countRoundPointsAndSetUnready(bool $isBombMove = false): void
     {
         foreach ($this->players->toArray() as $player) {
 
@@ -442,7 +442,20 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                     ) ? 0 : 60)
                     : 0; // later replace 60 with calculation based on Stock, Marriages, Tricks, Barrel etc.
 
-            $this->playersData[$playerId]['points'][$this->round] = $pointsPreviousRounds + $pointsCurrentRound;
+            $this->playersData[$playerId]['points'][$this->round] = $pointsPreviousRounds
+                + ($this->playersData[$playerId]['barrel'] ? 0 : $pointsCurrentRound);
+
+            $barrel = $this
+                ->getGameInvite()
+                ->getGameSetup()
+                ->getOption('thousand-barrel-points')
+                ->getConfiguredValue()
+                ->getValue();
+
+            $this->playersData[$playerId]['barrel'] =
+                $barrel > 0
+                && $this->playersData[$playerId]['points'][$this->round] >= $barrel;
+
             $this->playersData[$playerId]['ready'] = false;
         }
     }

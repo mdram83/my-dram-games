@@ -1712,15 +1712,77 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($situationI3, $situationF3);
     }
 
+    public function testGetSituationAfterDeclarationBombMoveNotBidWinnerOnBarrelDontGetPoints(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution();
+
+        $player = $this->play->getActivePlayer();
+
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData();
+        $preparedPoints = [
+            [1 => 0, 2 => 0, 3 => 0, 4 => 0],
+            [1 => 200, 2 => 400, 3 => 600, 4 => 750],
+            [1 => 200, 2 => 410, 3 => 610, 4 => 820],
+        ];
+
+        for ($i = 0; $i <= 2; $i++) {
+            $overwrite['orderedPlayers'][$this->players[$i]->getName()]['points'] =
+                $this->players[$i]->getID() === $player->getId()
+                    ? array_shift($preparedPoints)
+                    : array_pop($preparedPoints);
+            $overwrite['orderedPlayers'][$this->players[$i]->getName()]['barrel'] =
+                $overwrite['orderedPlayers'][$this->players[$i]->getName()]['points'][4] >= 800;
+        }
+        $overwrite['round'] = 5;
+        $this->updateGameData(['orderedPlayers' => $overwrite['orderedPlayers'], 'round' => $overwrite['round']]);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situation = $this->play->getSituation($player);
+
+        $points4R0 = $situation['orderedPlayers'][$this->players[0]->getName()]['points'][4];
+        $points4R1 = $situation['orderedPlayers'][$this->players[1]->getName()]['points'][4];
+        $points4R2 = $situation['orderedPlayers'][$this->players[2]->getName()]['points'][4];
+        $points5R0 = $situation['orderedPlayers'][$this->players[0]->getName()]['points'][5];
+        $points5R1 = $situation['orderedPlayers'][$this->players[1]->getName()]['points'][5];
+        $points5R2 = $situation['orderedPlayers'][$this->players[2]->getName()]['points'][5];
+        $barrel5R0 = $situation['orderedPlayers'][$this->players[0]->getName()]['barrel'];
+        $barrel5R1 = $situation['orderedPlayers'][$this->players[1]->getName()]['barrel'];
+        $barrel5R2 = $situation['orderedPlayers'][$this->players[2]->getName()]['barrel'];
+
+//        dd($situation);
+
+        $expectedPoints5R0 = $this->players[0]->getId() === $player->getId() ? $points4R0 : ($points4R0 === 820 ? 820 : $points4R0 + 60);
+        $expectedPoints5R1 = $this->players[1]->getId() === $player->getId() ? $points4R1 : ($points4R1 === 820 ? 820 : $points4R1 + 60);
+        $expectedPoints5R2 = $this->players[2]->getId() === $player->getId() ? $points4R2 : ($points4R2 === 820 ? 820 : $points4R2 + 60);
+
+        $expectedBarrel5R0 = $expectedPoints5R0 >= 800;
+        $expectedBarrel5R1 = $expectedPoints5R1 >= 800;
+        $expectedBarrel5R2 = $expectedPoints5R2 >= 800;
+
+        $this->assertEquals($expectedPoints5R0, $points5R0);
+        $this->assertEquals($expectedPoints5R1, $points5R1);
+        $this->assertEquals($expectedPoints5R2, $points5R2);
+        $this->assertEquals($expectedBarrel5R0, $barrel5R0);
+        $this->assertEquals($expectedBarrel5R1, $barrel5R1);
+        $this->assertEquals($expectedBarrel5R2, $barrel5R2);
+    }
+
     // TODO next declaration...
-    // not bidwinner on barrel
-    // 4 players dealer with 2 aces in stock
-    // 4 players dealer with marriage in stock
-    // 4 players dealer with marriage in stock but on barrel
-
-    // TODO think what change in situation and write in above accept declaration === 0 test
+    // 4 players dealer with 2 aces in stock not on barrel
+    // 4 players dealer with marriage in stock not on barrel
+    // 4 players dealer with marriage in stock is on barrel
 
 
-    // count points phase should be only for confirm readiness for next phase
+
+    // count  points  phase  should  be  only   to   confirm  readiness  for  next  phase
     // counting points itself should happen after accepted bomb (Declaration) or last ThirdCard (last in hand)
+
+    // later... test barrel not update if option value for barrel is set to 0
 }
