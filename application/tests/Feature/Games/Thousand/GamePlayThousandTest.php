@@ -2,6 +2,8 @@
 
 namespace Games\Thousand;
 
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
@@ -18,6 +20,7 @@ use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
+use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousand;
@@ -25,6 +28,7 @@ use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
+use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
 use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
 use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
@@ -48,6 +52,8 @@ class GamePlayThousandTest extends TestCase
     private GamePhaseThousand $phase;
     private GameMoveAbsFactoryThousand $moveFactory;
     private GamePlayStorageRepository $storageRepository;
+    private PlayingCardDealer $cardDealer;
+    private PlayingCardDeckProvider $deckProvider;
 
     public function setUp(): void
     {
@@ -65,6 +71,8 @@ class GamePlayThousandTest extends TestCase
         $this->phase = new GamePhaseThousandBidding();
         $this->moveFactory = new GameMoveAbsFactoryThousand();
         $this->storageRepository = App::make(GamePlayStorageRepository::class);
+        $this->cardDealer = App::make(PlayingCardDealer::class);
+        $this->deckProvider = App::make(PlayingCardDeckProvider::class);
     }
 
     protected function getGameInvite(bool $fourPlayers = false): GameInvite
@@ -240,13 +248,25 @@ class GamePlayThousandTest extends TestCase
         ));
     }
 
+    protected function processPhaseDeclaration(int $increaseBy = 0): void
+    {
+        $player = $this->play->getActivePlayer();
+        $bidAmount = $this->play->getSituation($player)['bidAmount'];
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => ($bidAmount + $increaseBy)],
+            new GamePhaseThousandDeclaration()
+        ));
+    }
+
     public function testClassInstance(): void
     {
         $this->assertInstanceOf(GamePlay::class, $this->play);
         $this->assertInstanceOf(GamePlayBase::class, $this->play);
     }
 
-    public function testGetSituationThrowExceptionIfNotPlayer(): void
+    public function testThrowExceptionWhenGetSituationIfNotPlayer(): void
     {
         $this->expectException(GamePlayException::class);
         $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
@@ -339,6 +359,9 @@ class GamePlayThousandTest extends TestCase
 
         // trump suit null
         $this->assertNull($situation['trumpSuit']);
+
+        // turn suit null
+        $this->assertNull($situation['turnSuit']);
 
         // bid winner null
         $this->assertNull($situation['bidWinner']);
@@ -492,6 +515,9 @@ class GamePlayThousandTest extends TestCase
         // trump suit null
         $this->assertNull($situation['trumpSuit']);
 
+        // turn suit null
+        $this->assertNull($situation['turnSuit']);
+
         // bid winner null
         $this->assertNull($situation['bidWinner']);
 
@@ -609,6 +635,9 @@ class GamePlayThousandTest extends TestCase
 
         // trump suit null
         $this->assertNull($situation['trumpSuit']);
+
+        // turn suit null
+        $this->assertNull($situation['turnSuit']);
 
         // bid winner null
         $this->assertNull($situation['bidWinner']);
@@ -765,6 +794,9 @@ class GamePlayThousandTest extends TestCase
 
         // trump suit null
         $this->assertNull($situation['trumpSuit']);
+
+        // turn suit null
+        $this->assertNull($situation['turnSuit']);
 
         // bid winner null
         $this->assertNull($situation['bidWinner']);
@@ -1872,7 +1904,56 @@ class GamePlayThousandTest extends TestCase
         $this->assertCount(3, $situation['stockRecord']);
     }
 
+    public function testThrowExceptionWhenMoveFirstCardOutsideOfHand(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
 
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $player = $this->play->getActivePlayer();
+        $notActivePlayer = $this->players[0]->getId() === $player->getId() ? $this->players[1] : $this->players[0];
+        $notActivePlayerHand = $this->play->getSituation($notActivePlayer)['orderedPlayers'][$notActivePlayer->getName()]['hand'];
+
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $notActivePlayerHand[0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+    }
+
+    public function testGetSituationAfterPlayFirstCardMove(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $player = $this->play->getActivePlayer();
+        $cardKey = $this->play->getSituation($player)['orderedPlayers'][$player->getName()]['hand'][0];
+        $suit = $this->cardDealer->getCardsByKeys($this->deckProvider->getDeckSchnapsen(), [$cardKey])->pullFirst()->getSuit();
+
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $cardKey],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $nextPlayer = $this->play->getActivePlayer();
+        $situationPlayer = $this->play->getSituation($player);
+        $situationNext = $this->play->getSituation($nextPlayer);
+
+        $this->assertCount(7, $situationPlayer['orderedPlayers'][$player->getName()]['hand']);
+        $this->assertEquals(7, $situationNext['orderedPlayers'][$player->getName()]['hand']);
+        $this->assertEquals((new GamePhaseThousandPlaySecondCard())->getKey(), $situationPlayer['phase']['key']);
+        $this->assertEquals($cardKey, $situationPlayer['table'][0]);
+        $this->assertCount(1, $situationPlayer['table']);
+        $this->assertNotEquals($player->getId(), $nextPlayer->getId());
+        $this->assertEquals($suit->getKey(), $situationPlayer['turnSuit']);
+    }
 
 
     // count  points  phase  should  be  only   to   confirm  readiness  for  next  phase

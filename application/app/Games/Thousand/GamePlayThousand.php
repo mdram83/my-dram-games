@@ -25,6 +25,7 @@ use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
+use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
@@ -54,6 +55,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
     private int $round;
     private ?PlayingCardSuit $trumpSuit;
+    private ?PlayingCardSuit $turnSuit;
     private GamePhase $phase;
 
     private array $acesKeys = [['A-H'], ['A-D'], ['A-C'], ['A-S']];
@@ -168,6 +170,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $this->round = 1;
         $this->trumpSuit = null;
+        $this->turnSuit = null;
         $this->phase = new GamePhaseThousandBidding();
 
         $this->saveData();
@@ -216,6 +219,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->round = $data['round'];
 
         $this->trumpSuit = isset($data['trumpSuit']) ? $this->suitRepository->getOne($data['trumpSuit']) : null;
+        $this->turnSuit = isset($data['turnSuit']) ? $this->suitRepository->getOne($data['turnSuit']) : null;
         $this->phase = $this->phaseRepository->getOne($data['phase']['key']);
     }
 
@@ -241,9 +245,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     }
 
     /**
-     * @throws GamePlayThousandException
-     * @throws GameMoveException
-     * @throws CollectionException
+     * @throws GamePlayThousandException|GameMoveException|CollectionException|GamePlayException
      */
     private function handleMoveByPhase(GameMove $move): void
     {
@@ -256,6 +258,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 break;
             case GameMoveThousandDeclaration::class;
                 $this->handleMoveDeclaration($move);
+                break;
+            case GameMoveThousandPlayCard::class:
+                $this->handleMovePlayCard($move);
                 break;
             default:
                 throw new GameMoveException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
@@ -378,6 +383,24 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
 
         $this->bidAmount = $declaration;
+        $this->phase = $this->phase->getNextPhase(true);
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    private function handleMovePlayCard(GameMove $move): void
+    {
+        $cardKey = $move->getDetails()['card'];
+        $hand = $this->playersData[$move->getPlayer()->getId()]['hand'];
+
+        if (!$hand->exist($cardKey)) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        $this->cardDealer->moveCardsByKeys($hand, $this->table, [$cardKey]);
+        $this->turnSuit = $this->table->getOne($cardKey)->getSuit();
+        $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
         $this->phase = $this->phase->getNextPhase(true);
     }
 
@@ -549,6 +572,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             'stockRecord' => $this->cardDealer->getCardsKeys($this->stockRecord),
             'table' => $this->cardDealer->getCardsKeys($this->table),
             'trumpSuit' => $this->trumpSuit?->getKey(),
+            'turnSuit' => $this->turnSuit?->getKey(),
             'bidWinner' => $this->bidWinner?->getName(),
             'bidAmount' => $this->bidAmount,
             'activePlayer' => $this->activePlayer->getName(),
