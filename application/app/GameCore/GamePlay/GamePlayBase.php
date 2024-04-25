@@ -113,6 +113,20 @@ abstract class GamePlayBase implements GamePlay
         return $this->storage->getFinished();
     }
 
+    final protected function getPlayerByName(?string $playerName): ?Player
+    {
+        if ($playerName === null) {
+            return null;
+        }
+
+        $playerId = array_keys(array_filter(
+            $this->players->toArray(),
+            fn($item) => $item->getName() === $playerName
+        ))[0];
+
+        return $this->players->getOne($playerId);
+    }
+
     final protected function setPlayers(): void
     {
         if (!isset($this->players)) {

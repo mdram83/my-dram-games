@@ -123,6 +123,26 @@ class GamePlayThousandTest extends TestCase
         ];
     }
 
+    protected function getDealTwoAcesInStock(): array
+    {
+        return [
+            ['Q-H', 'K-H', 'J-H', '10-H', '9-H', 'A-S', 'K-S'],
+            ['Q-D', 'K-D', 'J-D', '10-D', '9-D', 'Q-S', 'J-S'],
+            ['A-C', 'K-C', 'J-C', '10-C', '9-C', '10-S', '9-S'],
+            ['A-H', 'A-D', 'Q-C'],
+        ];
+    }
+
+    protected function getDealMarriageInStock(): array
+    {
+        return [
+            ['A-H', 'K-H', 'J-H', '10-H', '9-H', 'A-S', 'Q-D'],
+            ['A-D', 'K-D', 'J-D', '10-D', '9-D', 'Q-H', 'J-S'],
+            ['A-C', 'K-C', 'J-C', '10-C', '9-C', '10-S', '9-S'],
+            ['K-S', 'Q-S', 'Q-C'],
+        ];
+    }
+
     protected function updateGameData(array $overwrite): void
     {
         $storage = $this->storageRepository->getOne($this->play->getId());
@@ -200,9 +220,9 @@ class GamePlayThousandTest extends TestCase
         $distributionPlayerName2 = array_pop($distributionPlayerNames);
 
         $binWinnerHand = $situation['orderedPlayers'][$bidWinnerName]['hand'];
-        $cards = (in_array('A-H', $binWinnerHand)
+        $cards = (in_array('K-H', $binWinnerHand)
             ? ['J-H', '9-H']
-            : (in_array('A-D', $binWinnerHand)
+            : (in_array('K-D', $binWinnerHand)
                 ? ['J-D', '9-D']
                 : ['J-C', '9-C']
             )
@@ -1644,6 +1664,7 @@ class GamePlayThousandTest extends TestCase
         $situationF3 = $this->play->getSituation($this->players[3]);
 
         $phase = $situationF0['phase']['key'];
+        $stockRecord = $situationF0['stockRecord'];
         $points0 = $situationF0['orderedPlayers'][$this->players[0]->getName()]['points'];
         $points1 = $situationF1['orderedPlayers'][$this->players[1]->getName()]['points'];
         $points2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['points'];
@@ -1657,7 +1678,16 @@ class GamePlayThousandTest extends TestCase
         $bombRounds2 = $situationF2['orderedPlayers'][$this->players[2]->getName()]['bombRounds'];
         $bombRounds3 = $situationF3['orderedPlayers'][$this->players[3]->getName()]['bombRounds'];
 
-        unset($situationI0['phase'], $situationI1['phase'], $situationI2['phase'], $situationI3['phase'], $situationF0['phase'], $situationF1['phase'], $situationF2['phase'], $situationF3['phase']);
+        unset(
+            $situationI0['phase'], $situationI0['stockRecord'],
+            $situationI1['phase'], $situationI1['stockRecord'],
+            $situationI2['phase'], $situationI2['stockRecord'],
+            $situationI3['phase'], $situationI3['stockRecord'],
+            $situationF0['phase'], $situationF0['stockRecord'],
+            $situationF1['phase'], $situationF1['stockRecord'],
+            $situationF2['phase'], $situationF2['stockRecord'],
+            $situationF3['phase'], $situationF3['stockRecord'],
+        );
 
         for ($i = 0; $i <= 3; $i++) {
             unset(
@@ -1710,6 +1740,7 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($situationI1, $situationF1);
         $this->assertEquals($situationI2, $situationF2);
         $this->assertEquals($situationI3, $situationF3);
+        $this->assertCount(3, $stockRecord);
     }
 
     public function testGetSituationAfterDeclarationBombMoveNotBidWinnerOnBarrelDontGetPoints(): void
@@ -1726,7 +1757,6 @@ class GamePlayThousandTest extends TestCase
             [1 => 200, 2 => 400, 3 => 600, 4 => 750],
             [1 => 200, 2 => 410, 3 => 610, 4 => 820],
         ];
-
         for ($i = 0; $i <= 2; $i++) {
             $overwrite['orderedPlayers'][$this->players[$i]->getName()]['points'] =
                 $this->players[$i]->getID() === $player->getId()
@@ -1756,8 +1786,6 @@ class GamePlayThousandTest extends TestCase
         $barrel5R1 = $situation['orderedPlayers'][$this->players[1]->getName()]['barrel'];
         $barrel5R2 = $situation['orderedPlayers'][$this->players[2]->getName()]['barrel'];
 
-//        dd($situation);
-
         $expectedPoints5R0 = $this->players[0]->getId() === $player->getId() ? $points4R0 : ($points4R0 === 820 ? 820 : $points4R0 + 60);
         $expectedPoints5R1 = $this->players[1]->getId() === $player->getId() ? $points4R1 : ($points4R1 === 820 ? 820 : $points4R1 + 60);
         $expectedPoints5R2 = $this->players[2]->getId() === $player->getId() ? $points4R2 : ($points4R2 === 820 ? 820 : $points4R2 + 60);
@@ -1774,10 +1802,76 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($expectedBarrel5R2, $barrel5R2);
     }
 
-    // TODO next declaration...
-    // 4 players dealer with 2 aces in stock not on barrel
-    // 4 players dealer with marriage in stock not on barrel
-    // 4 players dealer with marriage in stock is on barrel
+    public function testGetSituationAfterDeclarationBombMoveFourPlayersAcesInStock(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealTwoAcesInStock']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution(true);
+
+        $player = $this->play->getActivePlayer();
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situation = $this->play->getSituation($player);
+        $dealerName = $situation['dealer'];
+
+        $this->assertEquals(100, $situation['orderedPlayers'][$dealerName]['points'][1]);
+        $this->assertCount(3, $situation['stockRecord']);
+    }
+
+    public function testGetSituationAfterDeclarationBombMoveFourPlayersMarriageInStock(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealMarriageInStock']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution(true);
+
+        $player = $this->play->getActivePlayer();
+        $dealerName = $this->play->getSituation($player)['dealer'];
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situation = $this->play->getSituation($player);
+
+        $this->assertEquals(40, $situation['orderedPlayers'][$dealerName]['points'][1]);
+        $this->assertCount(3, $situation['stockRecord']);
+    }
+
+    public function testGetSituationAfterDeclarationBombMoveFourPlayersMarriageInStockDealerOnBarrel(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealMarriageInStock']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution(true);
+
+        $player = $this->play->getActivePlayer();
+        $dealerName = $this->play->getSituation($player)['dealer'];
+
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        $overwrite[$dealerName]['barrel'] = true;
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $player,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        $situation = $this->play->getSituation($player);
+
+        $this->assertEquals(0, $situation['orderedPlayers'][$dealerName]['points'][1]);
+        $this->assertCount(3, $situation['stockRecord']);
+    }
+
 
 
 
