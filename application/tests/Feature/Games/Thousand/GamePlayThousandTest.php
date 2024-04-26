@@ -299,6 +299,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[1]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[2]->getName()]['tricks']);
 
+        // player see his and other players trumps count empty
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[0]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[1]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[2]->getName()]['trumps']);
+
         // players see stock count but not cards
         $this->assertEquals(3, $situation['stock']);
 
@@ -432,6 +437,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[1]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[2]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[3]->getName()]['tricks']);
+
+        // player see his and other players trumps count empty
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[0]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[1]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[2]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[3]->getName()]['trumps']);
 
         // players see stock count but not cards
         $this->assertEquals(3, $situation['stock']);
@@ -575,6 +586,11 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[1]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[2]->getName()]['tricks']);
 
+        // player see his and other players trumps count empty
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[0]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[1]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[2]->getName()]['trumps']);
+
         // players see stock count but not cards
         $this->assertEquals(3, $situation['stock']);
 
@@ -712,6 +728,12 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[1]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[2]->getName()]['tricks']);
         $this->assertEquals(0, $situation['orderedPlayers'][$this->players[3]->getName()]['tricks']);
+
+        // player see his and other players trumps count empty
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[0]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[1]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[2]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[3]->getName()]['trumps']);
 
         // players see stock count but not cards
         $this->assertEquals(3, $situation['stock']);
@@ -1929,6 +1951,56 @@ class GamePlayThousandTest extends TestCase
         ));
     }
 
+    public function testThrowExceptionWhenMoveFirstCardMarriageWithoutOneAtHand(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_PLAY_TRUMP_PAIR);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['K-H', 'J-H'], ['K-D', 'J-D'], ['K-C', 'J-C']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = array_pop($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0], 'marriage' => true],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+    }
+
+    public function testThrowExceptionWhenMoveFirstCardMarriageUsingNotKingOrQueen(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_PLAY_TRUMP_RANK);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['K-H', 'Q-H', 'J-H'], ['K-D', 'Q-D', 'J-D'], ['K-C', 'Q-C', 'J-C']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = array_pop($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][2], 'marriage' => true],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+    }
+
     public function testGetSituationAfterPlayFirstCardMove(): void
     {
         $this->updateGamePlayDeal([$this, 'getDealMarriages']);
@@ -1957,6 +2029,33 @@ class GamePlayThousandTest extends TestCase
         $this->assertCount(1, $situationPlayer['table']);
         $this->assertNotEquals($player->getId(), $nextPlayer->getId());
         $this->assertEquals($suit->getKey(), $situationPlayer['turnSuit']);
+    }
+
+    public function testGetSituationAfterPlayFirstCardMoveWithTrump(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $player = $this->play->getActivePlayer();
+        $situationI = $this->play->getSituation($player);
+        $card = $situationI['orderedPlayers'][$player->getName()]['hand'][1];
+
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        $overwrite[$player->getName()]['trumps'] = [0 => 'K-S'];
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $card, 'marriage' => true],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $situationF = $this->play->getSituation($player);
+
+        $this->assertEquals(substr($card, 2, 1), $situationF['trumpSuit']);
+        $this->assertCount(2, $situationF['orderedPlayers'][$player->getName()]['trumps']);
     }
 
     public function testThrowExceptionWhenMoveSecondCardNotTurnSuitWhileAtHand(): void
@@ -2220,8 +2319,37 @@ class GamePlayThousandTest extends TestCase
         $this->assertNotEquals($playerSecond->getId(), $this->play->getActivePlayer()->getId());
     }
 
-    // TODO go back to first move and test marriage declaration...
-    // TODO test 2nd move options after marriage in first one...
+    public function testThrowExceptionWhenMoveSecondCardMarriageRequest(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['K-H', 'Q-H', 'J-H'], ['K-D', 'Q-D', 'J-D'], ['K-C', 'Q-C', 'J-C']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = array_pop($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0], 'marriage' => true],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0], 'marriage' => true],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+    }
 
     // count  points  phase  should  be  only   to   confirm  readiness  for  next  phase
     // counting points itself should happen after accepted bomb (Declaration) or last ThirdCard (last in hand)

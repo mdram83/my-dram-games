@@ -204,6 +204,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'bid' => $playerData['bid'],
                 'seat' => $playerData['seat'],
                 'bombRounds' => $playerData['bombRounds'],
+                'trumps' => $playerData['trumps'],
             ];
         }
 
@@ -397,13 +398,18 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
         $cardKey = $move->getDetails()['card'];
         $hand = $this->playersData[$move->getPlayer()->getId()]['hand'];
+        $hasMarriageRequest = $move->getDetails()['marriage'] ?? false;
 
-        $this->validateMovePlayingCard($hand, $cardKey);
-
+        $this->validateMovePlayingCard($hand, $cardKey, $hasMarriageRequest);
         $this->cardDealer->moveCardsByKeys($hand, $this->table, [$cardKey]);
 
         if ($move->getDetails()['phase']->getKey() === GamePhaseThousandPlayFirstCard::PHASE_KEY) {
             $this->turnSuit = $this->table->getOne($cardKey)->getSuit();
+
+            if ($hasMarriageRequest) {
+                $this->trumpSuit = $this->turnSuit;
+                $this->playersData[$this->activePlayer->getId()]['trumps'][] = $cardKey;
+            }
         }
 
         $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
@@ -473,10 +479,29 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     /**
      * @throws GamePlayException
      */
-    private function validateMovePlayingCard(CollectionPlayingCard $hand, string $cardKey): void
+    private function validateMovePlayingCard(CollectionPlayingCard $hand, string $cardKey, bool $marriage = false): void
     {
         if (!$hand->exist($cardKey)) {
             throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        if ($marriage) {
+            $marriageCards = $hand->filter(fn($item, $key) => (
+                $item->getSuit() === $hand->getOne($cardKey)->getSuit()
+                && in_array($item->getRank()->getKey(), ['K', 'Q'])
+            ));
+
+            if ($marriageCards->count() !== 2) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_PLAY_TRUMP_PAIR);
+            }
+
+            if (!in_array($hand->getOne($cardKey)->getRank()->getKey(), ['K', 'Q'])) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_PLAY_TRUMP_RANK);
+            }
+
+            if ($this->phase->getKey() !== GamePhaseThousandPlayFirstCard::PHASE_KEY) {
+                throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+            }
         }
 
         if ($this->phase->getKey() !== GamePhaseThousandPlayFirstCard::PHASE_KEY) {
@@ -581,6 +606,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'bid' => null,
                 'seat' => $seat,
                 'bombRounds' => [],
+                'trumps' => [],
             ];
             $seat++;
         }
@@ -613,6 +639,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 'bid' => $playerData['bid'],
                 'seat' => $playerData['seat'],
                 'bombRounds' => $playerData['bombRounds'],
+                'trumps' => $playerData['trumps'],
             ];
         }
 

@@ -62,9 +62,31 @@ class GameMoveThousandPlayCardTest extends TestCase
         new GameMoveThousandPlayCard($this->player, ['card' => ''], $this->phase);
     }
 
-    public function testCreateGameMoveThousandDeclaration(): void
+    public function testThrowExceptionWhenMarriageNotBoolean(): void
+    {
+        $this->expectException(GameMoveException::class);
+        $this->expectExceptionMessage(GameMoveException::MESSAGE_INVALID_MOVE_PARAMS);
+
+        new GameMoveThousandPlayCard($this->player, array_merge($this->details, ['marriage' => 'notBool']), $this->phase);
+    }
+
+    public function testCreateGameMoveThousandDeclarationWithoutMarriage(): void
     {
         $move = new GameMoveThousandPlayCard($this->player, $this->details, $this->phase);
         $this->assertEquals(array_merge($this->details, ['phase' => $this->phase]), $move->getDetails());
+    }
+
+    public function testCreateGameMoveThousandDeclarationWithMarriage(): void
+    {
+        $move = new GameMoveThousandPlayCard(
+            $this->player,
+            array_merge($this->details, ['marriage' => true]),
+            $this->phase
+        );
+
+        $this->assertEquals(
+            array_merge($this->details, ['phase' => $this->phase, 'marriage' => true]),
+            $move->getDetails()
+        );
     }
 }

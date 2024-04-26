@@ -13,4 +13,6 @@ class GamePlayThousandException extends GamePlayException
     public const MESSAGE_RULE_BOMB_USED = 'Can not use more bomb moves';
     public const MESSAGE_RULE_PLAY_TURN_SUIT = 'Need to follow led Suit if available at hand';
     public const MESSAGE_RULE_PLAY_HIGH_RANK = 'Need to play higher rank card if available at hand';
+    public const MESSAGE_RULE_PLAY_TRUMP_PAIR = 'Can not set Trump without King and Queen pair at hand';
+    public const MESSAGE_RULE_PLAY_TRUMP_RANK = 'Can not set Trump playing other card than King and Queen';
 }
