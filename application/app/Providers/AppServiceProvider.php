@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\GameCore\GameElements\GameDeck\PlayingCard\Generic\PlayingCardDealerGeneric;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardDeckProviderPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardFactoryPhpEnum;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardRankRepositoryPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardSuitRepositoryPhpEnum;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardFactory;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardRankRepository;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
 use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhpConfig;
@@ -101,6 +103,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
         app()->bind(PlayingCardDeckProvider::class, PlayingCardDeckProviderPhpEnum::class);
         app()->bind(PlayingCardSuitRepository::class, PlayingCardSuitRepositoryPhpEnum::class);
+        app()->bind(PlayingCardRankRepository::class, PlayingCardRankRepositoryPhpEnum::class);
         app()->bind(PlayingCardDealer::class, PlayingCardDealerGeneric::class);
 
         app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);

@@ -4,6 +4,7 @@ namespace Games\Thousand;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
@@ -29,6 +30,7 @@ use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
+use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
 use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
@@ -54,6 +56,7 @@ class GamePlayThousandTest extends TestCase
     private GamePlayStorageRepository $storageRepository;
     private PlayingCardDealer $cardDealer;
     private PlayingCardDeckProvider $deckProvider;
+    private PlayingCardSuitRepository $suitRepository;
 
     public function setUp(): void
     {
@@ -73,6 +76,7 @@ class GamePlayThousandTest extends TestCase
         $this->storageRepository = App::make(GamePlayStorageRepository::class);
         $this->cardDealer = App::make(PlayingCardDealer::class);
         $this->deckProvider = App::make(PlayingCardDeckProvider::class);
+        $this->suitRepository = App::make(PlayingCardSuitRepository::class);
     }
 
     protected function getGameInvite(bool $fourPlayers = false): GameInvite
@@ -213,7 +217,7 @@ class GamePlayThousandTest extends TestCase
         }
     }
 
-    protected function processPhaseStockDistribution(bool $fourPlayers = false): void
+    protected function processPhaseStockDistribution(bool $fourPlayers = false, ?array $cards = null): void
     {
         $bidWinnerName = $this->play->getSituation($this->players[0])['bidWinner'];
         $bidWinner = $this->getPlayerByName($bidWinnerName);
@@ -228,17 +232,17 @@ class GamePlayThousandTest extends TestCase
         $distributionPlayerName2 = array_pop($distributionPlayerNames);
 
         $binWinnerHand = $situation['orderedPlayers'][$bidWinnerName]['hand'];
-        $cards = (in_array('K-H', $binWinnerHand)
+        $distributionCards = $cards ?? ((in_array('K-H', $binWinnerHand)
             ? ['J-H', '9-H']
             : (in_array('K-D', $binWinnerHand)
                 ? ['J-D', '9-D']
                 : ['J-C', '9-C']
             )
-        );
+        ));
 
         $distribution = ['distribution' => [
-            $distributionPlayerName1 => $cards[0],
-            $distributionPlayerName2 => $cards[1],
+            $distributionPlayerName1 => $distributionCards[0],
+            $distributionPlayerName2 => $distributionCards[1],
         ]];
 
         $this->play->handleMove(new GameMoveThousandStockDistribution(
@@ -1955,6 +1959,269 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($suit->getKey(), $situationPlayer['turnSuit']);
     }
 
+    public function testThrowExceptionWhenMoveSecondCardNotTurnSuitWhileAtHand(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_PLAY_TURN_SUIT);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['A-H', 'A-D'], ['K-H', 'K-D'], ['Q-H', 'Q-D']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        for ($i = 0; $i <= 2; $i++) {
+            $overwrite[$this->players[$i]->getName()]['hand'] = $hands[$i];
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][1]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+    }
+
+    public function testThrowExceptionWhenMoveSecondCardNotHigherRankWhileAtHand(): void
+    {
+        $this->expectException(GamePlayThousandException::class);
+        $this->expectExceptionMessage(GamePlayThousandException::MESSAGE_RULE_PLAY_HIGH_RANK);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-H', 'A-H'], ['J-H', '10-H'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][1]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+    }
+
+    public function testHandleMoveSecondCardHigherRankAtHand(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-H', 'A-H'], ['J-H', '10-H'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][1]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $situation = $this->play->getSituation($this->play->getActivePlayer());
+
+        $this->assertEquals(GamePhaseThousandPlayThirdCard::PHASE_KEY, $situation['phase']['key']);
+    }
+
+    public function testHandleMoveSecondCardLowerRankTurnSuitNotAtHand(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-H', 'A-D'], ['J-H', '10-D'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite[$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $situation = $this->play->getSituation($this->play->getActivePlayer());
+
+        $this->assertEquals(GamePhaseThousandPlayThirdCard::PHASE_KEY, $situation['phase']['key']);
+    }
+
+    public function testHandleMoveSecondCardTrumpCardTurnSuitNotAtHand(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-D', 'A-D'], ['J-D', '10-D'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData();
+        foreach ($overwrite['orderedPlayers'] as $playerName => $playerData) {
+            $overwrite['orderedPlayers'][$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $overwrite['trumpSuit'] = 'D';
+        $this->updateGameData(['orderedPlayers' => $overwrite['orderedPlayers'], 'trumpSuit' => $overwrite['trumpSuit']]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite['orderedPlayers'][$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite['orderedPlayers'][$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $situation = $this->play->getSituation($this->play->getActivePlayer());
+
+        $this->assertEquals(GamePhaseThousandPlayThirdCard::PHASE_KEY, $situation['phase']['key']);
+    }
+
+    public function testHandleMoveSecondCardNotRelatedCardTurnSuitNotAtHand(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-S', 'A-D'], ['J-S', '10-D'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData();
+        foreach ($overwrite['orderedPlayers'] as $playerName => $playerData) {
+            $overwrite['orderedPlayers'][$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $overwrite['trumpSuit'] = 'D';
+        $this->updateGameData(['orderedPlayers' => $overwrite['orderedPlayers'], 'trumpSuit' => $overwrite['trumpSuit']]);
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite['orderedPlayers'][$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player,
+            ['card' => $overwrite['orderedPlayers'][$player->getName()]['hand'][0]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $situation = $this->play->getSituation($this->play->getActivePlayer());
+
+        $this->assertEquals(GamePhaseThousandPlayThirdCard::PHASE_KEY, $situation['phase']['key']);
+    }
+
+    public function testGetSituationAfterHandleMovePlaySecondCard(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution(false, ['J-S', '9-S']);
+        $this->processPhaseDeclaration();
+
+        $playerFirst = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $playerFirst,
+            ['card' => $this->play->getSituation($playerFirst)['orderedPlayers'][$playerFirst->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $situationInitial = $this->play->getSituation($this->play->getActivePlayer());
+
+        $playerSecond = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $playerSecond,
+            ['card' => $this->play->getSituation($playerSecond)['orderedPlayers'][$playerSecond->getName()]['hand'][0]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $situation1 = $this->play->getSituation($playerFirst);
+        $situation2 = $this->play->getSituation($playerSecond);
+        $table1 = $situation1['table'];
+        $table2 = $situation2['table'];
+        $hand11 = $situation1['orderedPlayers'][$playerFirst->getName()]['hand'];
+        $hand12 = $situation1['orderedPlayers'][$playerSecond->getName()]['hand'];
+        $hand21 = $situation2['orderedPlayers'][$playerFirst->getName()]['hand'];
+        $hand22 = $situation2['orderedPlayers'][$playerSecond->getName()]['hand'];
+        $phase = $situation1['phase']['key'];
+
+        unset(
+            $situation1['table'], $situation2['table'], $situationInitial['table'],
+            $situation1['orderedPlayers'], $situation2['orderedPlayers'], $situationInitial['orderedPlayers'],
+            $situation1['phase'], $situation2['phase'], $situationInitial['phase'],
+            $situation1['activePlayer'], $situation2['activePlayer'], $situationInitial['activePlayer'],
+        );
+
+        $this->assertCount(2, $table1);
+        $this->assertCount(2, $table2);
+        $this->assertCount(7, $hand11);
+        $this->assertCount(7, $hand22);
+        $this->assertEquals(7, $hand12);
+        $this->assertEquals(7, $hand21);
+        $this->assertEquals(GamePhaseThousandPlayThirdCard::PHASE_KEY, $phase);
+        $this->assertEquals($situationInitial, $situation1);
+        $this->assertEquals($situationInitial, $situation2);
+        $this->assertNotEquals($playerFirst->getId(), $this->play->getActivePlayer()->getId());
+        $this->assertNotEquals($playerSecond->getId(), $this->play->getActivePlayer()->getId());
+    }
+
+    // TODO go back to first move and test marriage declaration...
+    // TODO test 2nd move options after marriage in first one...
 
     // count  points  phase  should  be  only   to   confirm  readiness  for  next  phase
     // counting points itself should happen after accepted bomb (Declaration) or last ThirdCard (last in hand)

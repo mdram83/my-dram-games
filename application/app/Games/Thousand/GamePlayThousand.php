@@ -5,9 +5,11 @@ namespace App\Games\Thousand;
 use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealerException;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardRank;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameElements\GameMove\GameMove;
@@ -30,6 +32,8 @@ use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
+use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
+use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
@@ -394,12 +398,14 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $cardKey = $move->getDetails()['card'];
         $hand = $this->playersData[$move->getPlayer()->getId()]['hand'];
 
-        if (!$hand->exist($cardKey)) {
-            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
-        }
+        $this->validateMovePlayingCard($hand, $cardKey);
 
         $this->cardDealer->moveCardsByKeys($hand, $this->table, [$cardKey]);
-        $this->turnSuit = $this->table->getOne($cardKey)->getSuit();
+
+        if ($move->getDetails()['phase']->getKey() === GamePhaseThousandPlayFirstCard::PHASE_KEY) {
+            $this->turnSuit = $this->table->getOne($cardKey)->getSuit();
+        }
+
         $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
         $this->phase = $this->phase->getNextPhase(true);
     }
@@ -464,6 +470,38 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
     }
 
+    /**
+     * @throws GamePlayException
+     */
+    private function validateMovePlayingCard(CollectionPlayingCard $hand, string $cardKey): void
+    {
+        if (!$hand->exist($cardKey)) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        if ($this->phase->getKey() !== GamePhaseThousandPlayFirstCard::PHASE_KEY) {
+            if (
+                $hand->filter(fn($item, $key) => $item->getSuit() === $this->turnSuit)->count() > 0
+                && $hand->getOne($cardKey)->getSuit() !== $this->turnSuit
+            ) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_PLAY_TURN_SUIT);
+            }
+        }
+
+        if ($this->phase->getKey() === GamePhaseThousandPlaySecondCard::PHASE_KEY) {
+
+            $tableCard = $this->table->getOne($this->cardDealer->getCardsKeys($this->table)[0]);
+            $mustPlayRankCards = $hand->filter(fn($item, $key) => (
+                $this->getCardPoints($item) > $this->getCardPoints($tableCard)
+                && $item->getSuit() === $this->turnSuit
+            ));
+
+            if ($mustPlayRankCards->count() > 0 && !$mustPlayRankCards->exist($cardKey)) {
+                throw new GamePlayThousandException(GamePlayThousandException::MESSAGE_RULE_PLAY_HIGH_RANK);
+            }
+        }
+    }
+
     private function countPlayerPoints(Player $player, bool $isBombMove = false): void
     {
             $playerId = $player->getId();
@@ -514,6 +552,18 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             )
                 ? $this->getNextOrderedPlayer($nextPlayer)
                 : $nextPlayer;
+    }
+
+    private function getCardPoints(PlayingCard $card): int
+    {
+        return match($card->getRank()->getKey()) {
+            'A' => 11,
+            '10' => 10,
+            'K' => 4,
+            'Q' => 3,
+            'J' => 2,
+            '9' => 0,
+        };
     }
 
     private function initializePlayersData(): void
