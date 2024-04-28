@@ -34,7 +34,9 @@ use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
+use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
+use Games\Thousand\Elements\GamePhaseThousandPlayThirdCardTest;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
@@ -60,6 +62,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     private int $round;
     private ?PlayingCardSuit $trumpSuit;
     private ?PlayingCardSuit $turnSuit;
+    private ?Player $turnLead;
     private GamePhase $phase;
 
     private array $acesKeys = [['A-H'], ['A-D'], ['A-C'], ['A-S']];
@@ -175,6 +178,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         $this->round = 1;
         $this->trumpSuit = null;
         $this->turnSuit = null;
+        $this->turnLead = null;
         $this->phase = new GamePhaseThousandBidding();
 
         $this->saveData();
@@ -225,6 +229,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $this->trumpSuit = isset($data['trumpSuit']) ? $this->suitRepository->getOne($data['trumpSuit']) : null;
         $this->turnSuit = isset($data['turnSuit']) ? $this->suitRepository->getOne($data['turnSuit']) : null;
+        $this->turnLead = $this->getPlayerByName($data['turnLead']);
         $this->phase = $this->phaseRepository->getOne($data['phase']['key']);
     }
 
@@ -388,6 +393,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
 
         $this->bidAmount = $declaration;
+        $this->turnLead = $this->bidWinner;
         $this->phase = $this->phase->getNextPhase(true);
     }
 
@@ -412,8 +418,89 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             }
         }
 
-        $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
-        $this->phase = $this->phase->getNextPhase(true);
+        if ($this->phase->getKey() === GamePhaseThousandPlayThirdCard::PHASE_KEY) {
+
+            $tableWithPlayersKeys = [];
+            $player = $this->turnLead;
+            foreach($this->table->toArray() as $card) {
+                $tableWithPlayersKeys[] = ['player' => $player, 'card' => $card];
+                $player = $this->getNextOrderedPlayer($player);
+            }
+
+            $winningCard = $tableWithPlayersKeys[0]['card'];
+            $winningIndex = 0;
+
+            for ($i = 1; $i <= 2; $i++) {
+                $nextCard = $tableWithPlayersKeys[$i]['card'];
+                $isNextBetter = false;
+
+                // next in trumpSuit beat previuos not in trumpSuit
+                if (
+                    $nextCard->getSuit()->getKey() === $this->trumpSuit?->getKey()
+                    && $winningCard->getSuit()->getKey() !== $this->trumpSuit?->getKey()
+                ) {
+                    $isNextBetter = true;
+                }
+
+                // next in trumpSuit beat previous in trump BY RANK
+                if (
+                    $nextCard->getSuit()->getKey() === $this->trumpSuit?->getKey()
+                    && $winningCard->getSuit()->getKey() === $this->trumpSuit?->getKey()
+                    && $this->getCardPoints($nextCard) > $this->getCardPoints($winningCard)
+                ) {
+                    $isNextBetter = true;
+                }
+
+                // next not in trumpSuite but in turnSuite beat previous not in trumpSuit BY RANK
+                if (
+                    $nextCard->getSuit()->getKey() !== $this->trumpSuit?->getKey()
+                    && $winningCard->getSuit()->getKey() !== $this->trumpSuit?->getKey()
+                    && $nextCard->getSuit()->getKey() === $this->turnSuit->getKey()
+                    && $this->getCardPoints($nextCard) > $this->getCardPoints($winningCard)
+                ) {
+                    $isNextBetter = true;
+                }
+
+                if ($isNextBetter) {
+                    $winningCard = $nextCard;
+                    $winningIndex = $i;
+                }
+            }
+
+            $winningPlayer = $tableWithPlayersKeys[$winningIndex]['player'];
+            $this->cardDealer->moveCardsTimes($this->table, $this->playersData[$winningPlayer->getId()]['tricks'], 3);
+            $this->activePlayer = $winningPlayer;
+            $this->turnLead = $winningPlayer;
+            $this->turnSuit = null;
+
+            if ($this->playersData[$move->getPlayer()->getId()]['hand']->count() === 0) {
+
+                $barrelFrom = $this->getGameInvite()->getGameSetup()->getOption('thousand-barrel-points')->getConfiguredValue()->getValue();
+
+                foreach ($this->players->toArray() as $player) {
+
+                    $this->countPlayerPoints($player, false);
+
+                    $this->playersData[$player->getId()]['tricks'] = $this->cardDealer->getEmptyStock();
+                    $this->playersData[$player->getId()]['trumps'] = [];
+                    $this->playersData[$player->getId()]['ready'] = false;
+                    $this->playersData[$player->getId()]['barrel'] =
+                        $barrelFrom > 0
+                        && $this->playersData[$player->getId()]['points'][$this->round] >= $barrelFrom;
+                }
+
+                $this->trumpSuit = null;
+                $this->turnLead = null;
+                $this->stockRecord = $this->cardDealer->getEmptyStock();
+                $this->activePlayer = $this->bidWinner;
+            }
+
+        } else {
+            $this->activePlayer = $this->getNextOrderedPlayer($move->getPlayer());
+        }
+
+        $isLastAttempt = $this->phase->getKey() !== GamePhaseThousandPlayThirdCard::PHASE_KEY || $hand->count() === 0;
+        $this->phase = $this->phase->getNextPhase($isLastAttempt);
     }
 
     private function isLastBiddingMove(): bool
@@ -531,16 +618,21 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     {
             $playerId = $player->getId();
             $isFourPlayersDealer = ($this->players->count() === 4 && $playerId === $this->dealer->getId());
+            $isOnBarrel = $this->playersData[$playerId]['barrel'];
 
             $pointsPreviousRounds = $this->playersData[$playerId]['points'][$this->round - 1] ?? 0;
 
             $pointsCurrentRound =
                 $isBombMove
-                    ? (($playerId === $this->activePlayer->getId() || $isFourPlayersDealer) ? 0 : 60)
-                    : 0; // later replace  with calculation based on Marriages and Tricks from round
+                    ? ((
+                        $playerId === $this->activePlayer->getId()
+                        || $isFourPlayersDealer
+                        || $isOnBarrel // ADDED
+                    ) ? 0 : 60)
+                    : $this->collectPointsFromTricksAndTrumps($player);
 
             $stockPoints =
-                !$isFourPlayersDealer
+                (!$isFourPlayersDealer || $isOnBarrel)
                     ? 0
                     : (
                         $this->stockRecord->exist($this->acesKeys[0]) * 50
@@ -556,6 +648,35 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             $this->playersData[$playerId]['points'][$this->round] =
                 $pointsPreviousRounds
                 + ($this->playersData[$playerId]['barrel'] ? 0 : ($pointsCurrentRound + $stockPoints));
+    }
+
+    private function collectPointsFromTricksAndTrumps(Player $player): int
+    {
+        if ($player->getId() !== $this->bidWinner->getId() && $this->playersData[$player->getId()]['barrel']) {
+            return 0;
+        }
+
+        $trickPoints = 0;
+        foreach ($this->playersData[$player->getId()]['tricks']->toArray() as $card) {
+            $trickPoints += $this->getCardPoints($card);
+        }
+
+
+        $trumpPoints = 0;
+        foreach ($this->playersData[$player->getId()]['trumps'] as $trumpCardKey) {
+            foreach ($this->marriagesKeys as $points => $marriageKeys) {
+                $trumpPoints += in_array($trumpCardKey, $marriageKeys) ? $points : 0;
+            }
+        }
+
+
+        $totalPoints = $trickPoints + $trumpPoints;
+
+        if ($player->getId() === $this->bidWinner->getId()) {
+            $totalPoints = $this->bidAmount * ($totalPoints < $this->bidAmount ? -1 : 1);
+        }
+
+        return (int)round($totalPoints, -1);
     }
 
     private function getNextOrderedPlayer(Player $player): Player
@@ -650,6 +771,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             'table' => $this->cardDealer->getCardsKeys($this->table),
             'trumpSuit' => $this->trumpSuit?->getKey(),
             'turnSuit' => $this->turnSuit?->getKey(),
+            'turnLead' => $this->turnLead?->getName(),
             'bidWinner' => $this->bidWinner?->getName(),
             'bidAmount' => $this->bidAmount,
             'activePlayer' => $this->activePlayer->getName(),
