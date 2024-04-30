@@ -26,6 +26,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
@@ -85,12 +86,18 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         }
 
         if (is_a($move, GameMoveThousandSorting::class)) {
+
             $this->handleMoveSorting($move);
-            return;
+
+        } elseif (is_a($move, GameMoveThousandCountPoints::class)) {
+
+            $this->handleMoveCountPoints($move);
+
+        } else {
+            $this->validateMove($move);
+            $this->handleMoveByPhase($move);
         }
 
-        $this->validateMove($move);
-        $this->handleMoveByPhase($move);
         $this->saveData();
 
 //        $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
@@ -501,6 +508,34 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $isLastAttempt = $this->phase->getKey() !== GamePhaseThousandPlayThirdCard::PHASE_KEY || $hand->count() === 0;
         $this->phase = $this->phase->getNextPhase($isLastAttempt);
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    private function handleMoveCountPoints(GameMove $move): void
+    {
+        if ($this->playersData[$move->getPlayer()->getId()]['ready']) {
+            throw new GamePlayException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
+        }
+
+        $this->playersData[$move->getPlayer()->getId()]['ready'] = true;
+
+        if (count(array_filter(array_map(fn($item) => $item['ready'], $this->playersData), fn($item) => !$item)) === 0) {
+
+            $this->dealer = $this->getNextOrderedPlayer($this->dealer);
+            $this->obligation = $this->getNextOrderedPlayer($this->dealer);
+            $this->activePlayer = $this->getNextOrderedPlayer($this->obligation);
+
+            $this->bidWinner = null;
+            $this->bidAmount = 100;
+            $this->playersData[$this->obligation->getId()]['bid'] = $this->bidAmount;
+
+            $this->shuffleAndDealCards();
+
+            $this->round++;
+            $this->phase = $this->phase->getNextPhase(true);
+        }
     }
 
     private function isLastBiddingMove(): bool

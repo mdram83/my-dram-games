@@ -20,6 +20,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
@@ -264,6 +265,35 @@ class GamePlayThousandTest extends TestCase
             ['declaration' => ($bidAmount + $increaseBy)],
             new GamePhaseThousandDeclaration()
         ));
+    }
+
+    protected function processPhasePlayCard(): void
+    {
+        $orderedPlayers = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        $hands = [];
+        foreach ($orderedPlayers as $playerName => $data) {
+            $hands[$playerName] = $data['hand'];
+        }
+
+        $phases = [
+            1 => new GamePhaseThousandPlayFirstCard(),
+            2 => new GamePhaseThousandPlaySecondCard(),
+            3 => new GamePhaseThousandPlayThirdCard(),
+        ];
+
+        for ($i = 0; $i <= 7; $i++) {
+            for ($phaseNumber = 1; $phaseNumber <= 3; $phaseNumber++) {
+
+                $playerName = $this->play->getActivePlayer()->getName();
+                $card = $hands[$playerName][$i];
+
+                $this->play->handleMove(new GameMoveThousandPlayCard(
+                    $this->play->getActivePlayer(),
+                    ['card' => $card, 'marriage' => ($i === 1 && $phaseNumber === 1)],
+                    $phases[$phaseNumber]
+                ));
+            }
+        }
     }
 
     public function testClassInstance(): void
@@ -2963,7 +2993,191 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['orderedPlayers'][$this->players[2]->getName()]['barrel']);
     }
 
+    public function testThrowExceptionWhenHandleMoveCountPointsAlredyReady(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
 
-    // later... gamescore after reaching 1000
-    // DONTFORGET to impelement and test moving back from countpoinst to bidding (and that dealer roles should change)
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution(false, ['J-S', '9-S']);
+        $this->processPhaseDeclaration();
+        $this->processPhasePlayCard();
+
+        for ($i = 1; $i <= 2; $i++) {
+            $this->play->handleMove(new GameMoveThousandCountPoints(
+                $this->players[0],
+                ['ready' => true],
+                new GamePhaseThousandCountPoints(),
+            ));
+        }
+    }
+
+    public function testGetSituationAfterHandleMoveCountPointsForOnePlayer(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution(false, ['J-S', '9-S']);
+        $this->processPhaseDeclaration();
+        $this->processPhasePlayCard();
+
+        $this->play->handleMove(new GameMoveThousandCountPoints(
+            $this->players[0],
+            ['ready' => true],
+            new GamePhaseThousandCountPoints(),
+        ));
+
+        $situation0 = $this->play->getSituation($this->players[0]);
+        $situation1 = $this->play->getSituation($this->players[1]);
+
+        foreach ($this->play->getPlayers()->toArray() as $player) {
+            unset (
+                $situation0['orderedPlayers'][$player->getName()]['hand'],
+                $situation1['orderedPlayers'][$player->getName()]['hand'],
+            );
+        }
+
+        $this->assertEquals($situation0, $situation1);
+        $this->assertTrue($situation0['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertFalse($situation0['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertFalse($situation0['orderedPlayers'][$this->players[2]->getName()]['ready']);
+    }
+
+    public function testGetSituationAfterHandleMoveCountPointsAllPlayersFourPlayersGame(): void
+    {
+        $this->play = $this->getGamePlay($this->getGameInvite(true));
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution(true, ['J-S', '9-S']);
+        $this->processPhaseDeclaration();
+        $this->processPhasePlayCard();
+
+        $initialSituation = $this->play->getSituation($this->players[0]);
+
+        foreach ($this->play->getPlayers()->toArray() as $player) {
+            $this->play->handleMove(new GameMoveThousandCountPoints(
+                $player,
+                ['ready' => true],
+                new GamePhaseThousandCountPoints(),
+            ));
+        }
+
+        $situation = $this->play->getSituation($this->players[0]);
+        $expectedPlayersNames = array_map(fn($player) => $player->getName(), $this->play->getPlayers()->toArray());
+
+        // all players available
+        $this->assertCount(4, $situation['orderedPlayers']);
+        $this->assertArrayHasKey($this->players[0]->getName(), $situation['orderedPlayers']);
+        $this->assertArrayHasKey($this->players[1]->getName(), $situation['orderedPlayers']);
+        $this->assertArrayHasKey($this->players[2]->getName(), $situation['orderedPlayers']);
+        $this->assertArrayHasKey($this->players[3]->getName(), $situation['orderedPlayers']);
+
+        // player see his cards and not other players cards
+        $this->assertCount(
+            $situation['dealer'] === $this->players[0]->getName() ? 0 : 7,
+            $situation['orderedPlayers'][$this->players[0]->getName()]['hand']
+        );
+        $this->assertEquals(
+            $situation['dealer'] === $this->players[1]->getName() ? 0 : 7,
+            $situation['orderedPlayers'][$this->players[1]->getName()]['hand']
+        );
+        $this->assertEquals(
+            $situation['dealer'] === $this->players[2]->getName() ? 0 : 7,
+            $situation['orderedPlayers'][$this->players[2]->getName()]['hand']
+        );
+        $this->assertEquals(
+            $situation['dealer'] === $this->players[3]->getName() ? 0 : 7,
+            $situation['orderedPlayers'][$this->players[3]->getName()]['hand']
+        );
+
+        // player see his and other players tricks count but not cards
+        $this->assertEquals(0, $situation['orderedPlayers'][$this->players[0]->getName()]['tricks']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$this->players[1]->getName()]['tricks']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$this->players[2]->getName()]['tricks']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$this->players[3]->getName()]['tricks']);
+
+        // player see his and other players trumps count empty
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[0]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[1]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[2]->getName()]['trumps']);
+        $this->assertCount(0, $situation['orderedPlayers'][$this->players[3]->getName()]['trumps']);
+
+        // players see stock count but not cards
+        $this->assertEquals(3, $situation['stock']);
+
+        // all players ready true
+        $this->assertTrue($situation['orderedPlayers'][$this->players[0]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[1]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[2]->getName()]['ready']);
+        $this->assertTrue($situation['orderedPlayers'][$this->players[3]->getName()]['ready']);
+
+        // all players points counts > 0
+        $this->assertGreaterThan(0, count($situation['orderedPlayers'][$this->players[0]->getName()]['points']));
+        $this->assertGreaterThan(0, count($situation['orderedPlayers'][$this->players[1]->getName()]['points']));
+        $this->assertGreaterThan(0, count($situation['orderedPlayers'][$this->players[2]->getName()]['points']));
+        $this->assertGreaterThan(0, count($situation['orderedPlayers'][$this->players[3]->getName()]['points']));
+
+        // all players bid null, except obligation player bid 100
+        $this->assertEquals(
+            ($this->players[0]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[0]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[1]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[1]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[2]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[2]->getName()]['bid']
+        );
+        $this->assertEquals(
+            ($this->players[3]->getName() === $situation['obligation'] ? 100 : null),
+            $situation['orderedPlayers'][$this->players[3]->getName()]['bid']
+        );
+
+        // seat position reflect player roles
+        $this->assertEquals(1 + 1, $situation['orderedPlayers'][$situation['dealer']]['seat']);
+        $this->assertEquals(2 + 1, $situation['orderedPlayers'][$situation['obligation']]['seat']);
+        $this->assertEquals(3 + 1, $situation['orderedPlayers'][$situation['activePlayer']]['seat']);
+
+        // table empty
+        $this->assertEquals([], $situation['table']);
+
+        // trump suit null
+        $this->assertNull($situation['trumpSuit']);
+
+        // turn suit null
+        $this->assertNull($situation['turnSuit']);
+
+        // turn lead null
+        $this->assertNull($situation['turnLead']);
+
+        // bid winner null
+        $this->assertNull($situation['bidWinner']);
+
+        // bid amount 100
+        $this->assertEquals(100, $situation['bidAmount']);
+
+        // stockRecord empty
+        $this->assertCount(0, $situation['stockRecord']);
+
+        // active player <> obligation <> dealer and within 3 players
+        $this->assertTrue(in_array($situation['dealer'], $expectedPlayersNames));
+        $this->assertTrue(in_array($situation['obligation'], $expectedPlayersNames));
+        $this->assertTrue(in_array($situation['activePlayer'], $expectedPlayersNames));
+        $this->assertNotEquals($situation['dealer'], $situation['obligation']);
+        $this->assertNotEquals($situation['dealer'], $situation['activePlayer']);
+        $this->assertNotEquals($situation['obligation'], $situation['activePlayer']);
+
+        // round added
+        $this->assertEquals($initialSituation['round'] + 1, $situation['round']);
+
+        // phase key updated
+        $this->assertEquals(GamePhaseThousandBidding::PHASE_KEY, $situation['phase']['key']);
+
+        // is Finished false
+        $this->assertFalse($situation['isFinished']);
+    }
+
+    // later... gamescore/results/gamefinished after reaching 1000
 }
