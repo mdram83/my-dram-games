@@ -136,4 +136,26 @@ class GameResultProviderThousandTest extends TestCase
         $this->assertInstanceOf(CollectionGameRecord::class, $records);
         $this->assertEquals(3, $records->count());
     }
+
+    public function testThrowExceptionWhenGetResultInvalidForfeited(): void
+    {
+        $this->expectException(GameResultProviderException::class);
+        $this->expectExceptionMessage(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
+
+        $this->provider->getResult([
+            'players' => $this->players,
+            'playersData' => $this->playersDataNoWin,
+            'forfeited' => 'not-player',
+        ]);
+    }
+
+    public function testGetResultWithForfeited(): void
+    {
+        $result = $this->provider->getResult([
+            'players' => $this->players,
+            'playersData' => $this->playersDataNoWin,
+            'forfeited' => $this->players->getOne('Id0'),
+        ]);
+        $this->assertNotNull($result);
+    }
 }

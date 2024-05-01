@@ -130,13 +130,15 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
         }
 
-//        $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
-//
-//        $this->result = $resultProvider->getResult(
-//            ['forfeitCharacter' => $this->getPlayerCharacterName($player), 'characters' => $this->characters]
-//        );
-//        $resultProvider->createGameRecords($this->getGameInvite());
-//        $this->storage->setFinished();
+        $resultProvider = new GameResultProviderThousand(clone $this->collectionHandler, $this->gameRecordFactory);
+
+        $this->result = $resultProvider->getResult([
+            'players' => $this->players,
+            'playersData' => $this->playersData,
+            'forfeited' => $player,
+        ]);
+        $resultProvider->createGameRecords($this->getGameInvite());
+        $this->storage->setFinished();
     }
 
     /**

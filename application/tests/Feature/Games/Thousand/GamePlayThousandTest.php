@@ -3212,4 +3212,34 @@ class GamePlayThousandTest extends TestCase
         $this->assertTrue($situation['isFinished']);
         $this->assertArrayHasKey('result', $situation);
     }
+
+    public function testThrowExceptionWhenForfeitOnFinishedGame(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+
+        $storage = $this->storageRepository->getOne($this->play->getId());
+        $storage->setFinished();
+        $this->play = $this->gamePlayRepository->getOne($this->play->getId());
+
+        $this->play->handleForfeit($this->players[0]);
+    }
+
+    public function testThrowExceptionWhenForfeitNotPlayer(): void
+    {
+        $this->expectException(GamePlayException::class);
+        $this->expectExceptionMessage(GamePlayException::MESSAGE_NOT_PLAYER);
+
+        $this->play->handleForfeit($this->players[3]);
+    }
+
+    public function testGetSituationAfterForfeitMove(): void
+    {
+        $this->play->handleForfeit($this->players[0]);
+        $situation = $this->play->getSituation($this->players[0]);
+
+        $this->assertTrue($this->play->isFinished());
+        $this->assertTrue($situation['isFinished']);
+        $this->assertArrayHasKey('result', $situation);
+    }
 }

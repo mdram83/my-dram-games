@@ -5,7 +5,6 @@ namespace App\Games\Thousand;
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\CollectionGameRecord;
-use App\GameCore\GameRecord\GameRecord;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
@@ -19,6 +18,7 @@ class GameResultProviderThousand implements GameResultProvider
     private bool $resultProvided = false;
     private bool $recordCreated = false;
     private ?Player $winner = null;
+    private ?Player $forfeited = null;
 
     private CollectionGamePlayPlayers $players;
     private array $playersData;
@@ -44,10 +44,11 @@ class GameResultProviderThousand implements GameResultProvider
         $this->validateData($data);
         $this->players = $data['players'];
         $this->playersData = $data['playersData'];
+        $this->forfeited = $data['forfeited'] ?? null;
 
         $this->resultProvided = true;
 
-        return $this->getWinResult() ?? null;
+        return $this->getForfeitResult() ?? $this->getWinResult();
     }
 
     /**
@@ -70,7 +71,11 @@ class GameResultProviderThousand implements GameResultProvider
                 $gameInvite,
                 $player,
                 $player->getId() === $this->winner?->getId(),
-                ['pointsTable' => $this->playersData[$player->getId()]['points']]
+                array_merge(
+                    ['pointsTable' => $this->playersData[$player->getId()]['points']],
+                    !isset($this->forfeited) ? [] : ['forfeit' => $player->getId() === $this->forfeited->getId()]
+                )
+
             );
             $recordsCollection->add($record);
         }
@@ -90,6 +95,7 @@ class GameResultProviderThousand implements GameResultProvider
             || !isset($data['players']) || !is_a($data['players'], CollectionGamePlayPlayers::class)
             || count(array_diff_key($data['players']->toArray(), $data['playersData'])) > 0
             || count(array_diff_key($data['playersData'], $data['players']->toArray())) > 0
+            || (isset($data['forfeited']) && !is_a($data['forfeited'], Player::class))
         ) {
             throw new GameResultProviderException(GameResultProviderException::MESSAGE_INCORRECT_DATA_PARAMETER);
         }
@@ -106,17 +112,7 @@ class GameResultProviderThousand implements GameResultProvider
      */
     private function getWinResult(): ?GameResultThousand
     {
-        $points = [];
-        $resultData = [];
-
-        foreach ($this->playersData as $playerId => $playerData) {
-
-            $points[$playerId] = $playerData['points'][max(array_keys($playerData['points']))];
-            $resultData[$this->playersData[$playerId]['seat']] = [
-                'playerName' => $this->players->getOne($playerId)->getName(),
-                'points' => $points[$playerId]
-            ];
-        }
+        [$points, $resultData] = $this->getLastRoundPointsAndResultData();
 
         $maxPoints = max($points);
 
@@ -128,8 +124,38 @@ class GameResultProviderThousand implements GameResultProvider
         $winnerId = array_keys($winnerPoints)[0];
         $this->winner = $this->players->getOne($winnerId);
 
-
-
         return new GameResultThousand($resultData, $this->winner);
+    }
+
+    /**
+     * @throws GameResultException
+     */
+    private function getForfeitResult(): ?GameResultThousand
+    {
+        if (isset($this->forfeited)) {
+            [$points, $resultData] = $this->getLastRoundPointsAndResultData();
+            return new GameResultThousand($resultData, null, $this->forfeited);
+        }
+        return null;
+    }
+
+    private function getLastRoundPointsAndResultData(): array
+    {
+        $points = [];
+        $resultData = [];
+
+        foreach ($this->playersData as $playerId => $playerData) {
+
+            $points[$playerId] =
+                count($playerData['points']) > 0
+                    ? $playerData['points'][max(array_keys($playerData['points']))]
+                    : 0;
+            $resultData[$this->playersData[$playerId]['seat']] = [
+                'playerName' => $this->players->getOne($playerId)->getName(),
+                'points' => $points[$playerId]
+            ];
+        }
+
+        return [$points, $resultData];
     }
 }
