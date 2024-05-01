@@ -434,6 +434,9 @@ class GamePlayThousandTest extends TestCase
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
+
+        // result not available
+        $this->assertArrayNotHasKey('result', $situation);
     }
 
     public function testGetSituationAfterInitiationForFourPlayers(): void
@@ -598,6 +601,9 @@ class GamePlayThousandTest extends TestCase
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
+
+        // result not available
+        $this->assertArrayNotHasKey('result', $situation);
     }
 
     public function testGetSituationAfterInitiationAndLoadingForThreePlayers(): void
@@ -727,6 +733,9 @@ class GamePlayThousandTest extends TestCase
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
+
+        // result not available
+        $this->assertArrayNotHasKey('result', $situation);
     }
 
     public function testGetSituationAfterInitiationAndLoadingForFourPlayers(): void
@@ -895,6 +904,9 @@ class GamePlayThousandTest extends TestCase
 
         // is Finished false
         $this->assertFalse($situation['isFinished']);
+
+        // result not available
+        $this->assertArrayNotHasKey('result', $situation);
     }
 
     public function testThrowExceptionHandleMoveOnFinishedGame(): void
@@ -3179,5 +3191,25 @@ class GamePlayThousandTest extends TestCase
         $this->assertFalse($situation['isFinished']);
     }
 
-    // later... gamescore/results/gamefinished after reaching 1000
+    public function testGetSituationAfterHandleMovePlayLastCardWin(): void
+    {
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData();
+        foreach ($overwrite['orderedPlayers'] as $playerName => $playerData) {
+            $overwrite['orderedPlayers'][$playerName]['points'][1] = 900;
+            $overwrite['orderedPlayers'][$playerName]['barrel'] = true;
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite['orderedPlayers'], 'round' => 2]);
+
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding(false, 120);
+        $this->processPhaseStockDistribution(false, ['J-S', '9-S']);
+        $this->processPhaseDeclaration(10);
+        $this->processPhasePlayCard();
+
+        $situation = $this->play->getSituation($this->players[0]);
+
+        $this->assertTrue($this->play->isFinished());
+        $this->assertTrue($situation['isFinished']);
+        $this->assertArrayHasKey('result', $situation);
+    }
 }

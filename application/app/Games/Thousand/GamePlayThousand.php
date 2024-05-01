@@ -46,6 +46,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     protected PlayingCardDealer $cardDealer;
     protected GamePhaseThousandRepository $phaseRepository;
 
+    protected ?GameResultThousand $result = null;
+
     protected const GAME_MOVE_CLASS = GameMoveThousand::class;
 
     private array $playersData;
@@ -74,10 +76,10 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         40  => ['K-S', 'Q-S'],
     ];
 
-    //    protected ?GameResultTicTacToe $result = null;
-
     /**
      * @throws GamePlayException|GameMoveException|CollectionException
+     * @throws GameResultProviderException
+     * @throws GameResultException
      */
     public function handleMove(GameMove $move): void
     {
@@ -100,16 +102,19 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
         $this->saveData();
 
-//        $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
+        if ($this->round > 1) {
 
-//        if ($this->result = $resultProvider->getResult([
-//            'board' => $this->board,
-//            'characters' => $this->characters,
-//            'nextMoveCharacterName' => $this->getPlayerCharacterName($this->activePlayer),
-//        ])) {
-//            $resultProvider->createGameRecords($this->getGameInvite());
-//            $this->storage->setFinished();
-//        }
+            $resultProvider = new GameResultProviderThousand(clone $this->collectionHandler, $this->gameRecordFactory);
+
+            if ($this->result = $resultProvider->getResult([
+                'players' => $this->players,
+                'playersData' => $this->playersData,
+            ])) {
+                $resultProvider->createGameRecords($this->getGameInvite());
+                $this->storage->setFinished();
+            }
+        }
+
     }
 
     /**
@@ -160,6 +165,10 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             || ($this->phase->getKey() === (new GamePhaseThousandCountPoints())->getKey()) && $this->players->count() === 4)
                 ? $situationData['stockRecord']
                 : [];
+
+        if (isset($this->result)) {
+            $situationData['result'] = $this->result->toArray();
+        }
 
         return $situationData;
 
@@ -682,7 +691,11 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
 
             $this->playersData[$playerId]['points'][$this->round] =
                 $pointsPreviousRounds
-                + ($this->playersData[$playerId]['barrel'] ? 0 : ($pointsCurrentRound + $stockPoints));
+                + (
+                    ($this->playersData[$playerId]['barrel'] && $player->getId() !== $this->bidWinner->getId())
+                        ? 0
+                        : ($pointsCurrentRound + $stockPoints)
+                );
     }
 
     private function collectPointsFromTricksAndTrumps(Player $player): int

@@ -28,7 +28,7 @@ class CollectionGamePlayPlayers extends CollectionBase implements Collection
     {
         $this->validateType($element);
 
-        $key = $element->getKey();
+        $key = $element->getId();
         $this->validateUnique($key, $element);
 
         $this->collectionHandler = $this->collectionHandler->add($element, $key);
