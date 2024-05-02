@@ -31,10 +31,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
      */
     public function handleMove(GameMove $move): void
     {
-        if ($this->isFinished()) {
-            throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
-        }
-
+        $this->validateActionOnFinishedGame();
         $this->validateMove($move);
 
         $this->board->setFieldValue($move->getDetails()['fieldKey'], $this->getPlayerCharacterName($move->getPlayer()));
@@ -58,13 +55,8 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
      */
     public function handleForfeit(Player $player): void
     {
-        if (!$this->getPlayers()->exist($player->getId())) {
-            throw new GamePlayException(GamePlayException::MESSAGE_NOT_PLAYER);
-        }
-
-        if ($this->isFinished()) {
-            throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
-        }
+        $this->validateGamePlayer($player);
+        $this->validateActionOnFinishedGame();
 
         $resultProvider = new GameResultProviderTicTacToe(clone $this->collectionHandler, $this->gameRecordFactory);
 
@@ -182,6 +174,11 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     }
 
     protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void
+    {
+
+    }
+
+    protected function configureServicesAfterHooks(): void
     {
 
     }

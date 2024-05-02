@@ -41,4 +41,6 @@ interface PlayingCardDealer
     public function collectCards(CollectionPlayingCard $toStock, array $fromStocks): CollectionPlayingCard;
 
     public function hasStockAnyCombination(CollectionPlayingCard $stock, array $combinations): bool;
+
+    public function countStockMatchingCombinations(CollectionPlayingCard $stock, array $combinations): int;
 }

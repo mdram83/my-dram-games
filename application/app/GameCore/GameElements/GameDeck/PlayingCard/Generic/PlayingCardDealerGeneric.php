@@ -160,31 +160,37 @@ class PlayingCardDealerGeneric implements PlayingCardDealer
         return $toStock;
     }
 
+
     /**
      * @throws PlayingCardDealerException
      */
     public function hasStockAnyCombination(CollectionPlayingCard $stock, array $combinations): bool
     {
+        return $this->countStockMatchingCombinations($stock, $combinations) > 0;
+    }
+
+    /**
+     * @throws PlayingCardDealerException
+     */
+    public function countStockMatchingCombinations(CollectionPlayingCard $stock, array $combinations): int
+    {
         $this->validateHasStockAnyCombinationInputs($combinations);
 
-        foreach ($combinations as $combination) {
+        return array_reduce($combinations, function ($carry, $combination) use ($stock) {
 
             if ($combination === []) {
-                continue;
+                return $carry;
             }
 
             foreach ($combination as $element) {
                 if (!$stock->exist($element)) {
-                    continue 2;
+                    return $carry;
                 }
             }
 
-            return true;
-        }
+            return $carry + 1;
 
-        return false;
-
-        // TODO: Implement hasStockAnyCombination() method.
+        }, 0);
     }
 
     /**

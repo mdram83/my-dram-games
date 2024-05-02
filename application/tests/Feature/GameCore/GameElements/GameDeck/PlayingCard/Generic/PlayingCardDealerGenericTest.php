@@ -435,6 +435,32 @@ class PlayingCardDealerGenericTest extends TestCase
         $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [$combFalse1]));
         $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [$combFalse2]));
         $this->assertFalse($this->dealer->hasStockAnyCombination($stock, [[]]));
+    }
 
+    public function testThrowExceptionWhencountStockMatchingCombinationsWithInvalidCombinationFormat(): void
+    {
+        $this->expectException(PlayingCardDealerException::class);
+        $this->expectExceptionMessage(PlayingCardDealerException::MESSAGE_COMBINATION_INVALID);
+
+        $combinations = [
+            ['123', '234', '345'],
+            [['invalid element']]
+        ];
+        $stock = $this->deckProvider->getDeckSchnapsen();
+        $this->dealer->countStockMatchingCombinations($stock, $combinations);
+    }
+
+    public function testCountStockMatchingCombinations(): void
+    {
+        $keys = ['A-H', 'K-H', 'Q-H', 'J-H', '10-H', '9-H'];
+        $stock = $this->dealer->getCardsByKeys($this->deckProvider->getDeckSchnapsen(), $keys, true, true);
+        $combTrue1 = ['K-H', 'Q-H'];
+        $combTrue2 = $keys;
+        $combFalse1 = ['9-H', '9-D', '9-C', '9-S'];
+        $combFalse2 = ['K-S', 'Q-S'];
+
+        $this->assertEquals(0, $this->dealer->countStockMatchingCombinations($stock, [$combFalse1, $combFalse2]));
+        $this->assertEquals(1, $this->dealer->countStockMatchingCombinations($stock, [$combTrue1, $combFalse1]));
+        $this->assertEquals(2, $this->dealer->countStockMatchingCombinations($stock, [$combTrue1, $combTrue2, $combFalse1, $combFalse2]));
     }
 }

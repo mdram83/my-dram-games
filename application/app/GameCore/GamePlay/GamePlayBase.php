@@ -33,6 +33,7 @@ abstract class GamePlayBase implements GamePlay
         $this->configureGamePlayServices($gamePlayServicesProvider);
         $this->validateStorage();
         $this->setPlayers();
+        $this->configureServicesAfterhooks();
 
         if (!$this->storage->getSetup()) {
             $this->initialize();
@@ -77,6 +78,8 @@ abstract class GamePlayBase implements GamePlay
     }
 
     abstract protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void;
+
+    abstract protected function configureServicesAfterHooks(): void;
 
     final public function getId(): int|string
     {
@@ -153,6 +156,26 @@ abstract class GamePlayBase implements GamePlay
             !== count($gameInvite->getPlayers())
         ) {
             throw new GamePlayException(GamePlayException::MESSAGE_MISSING_PLAYERS);
+        }
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    final protected function validateActionOnFinishedGame(): void
+    {
+        if ($this->isFinished()) {
+            throw new GamePlayException(GamePlayException::MESSAGE_MOVE_ON_FINISHED_GAME);
+        }
+    }
+
+    /**
+     * @throws GamePlayException
+     */
+    final protected function validateGamePlayer(Player $player): void
+    {
+        if (!$this->getPlayers()->exist($player->getId())) {
+            throw new GamePlayException(GamePlayException::MESSAGE_NOT_PLAYER);
         }
     }
 }
