@@ -5,6 +5,7 @@ namespace App\Games\Thousand\Tools;
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
+use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuit;
 use App\GameCore\GameElements\GamePhase\GamePhase;
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
@@ -15,6 +16,7 @@ use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 
 class GameStewardThousand
 {
+    private array $acesKeys = [['A-H'], ['A-D'], ['A-C'], ['A-S']];
     private array $marriagesKeys = [
         100 => ['K-H', 'Q-H'],
         80  => ['K-D', 'Q-D'],
@@ -85,6 +87,14 @@ class GameStewardThousand
         $this->dealer->shuffleAndDealCards($deck, $definition);
     }
 
+    public function hasMarriageAtHand(Player $player, array $playersData): bool
+    {
+        return $this->dealer->hasStockAnyCombination(
+            $playersData[$player->getId()]['hand'],
+            $this->marriagesKeys
+        );
+    }
+
     public function isLastBiddingMove(int $bidAmount, array $playersData): bool
     {
         return
@@ -107,6 +117,17 @@ class GameStewardThousand
         return ($this->players->count() === 4 && $player->getId() === $dealer->getId());
     }
 
+    public function hasPlayerUsedMaxBombMoves(Player $player, array $playersData): bool
+    {
+        $allowedBombMoves = $this->invite
+            ->getGameSetup()
+            ->getOption('thousand-number-of-bombs')
+            ->getConfiguredValue()
+            ->getValue();
+
+        return count($playersData[$player->getId()]['bombRounds']) >= $allowedBombMoves;
+    }
+
     public function getCardPoints(PlayingCard $card): int
     {
         return match($card->getRank()->getKey()) {
@@ -117,6 +138,110 @@ class GameStewardThousand
             'J' => 2,
             '9' => 0,
         };
+    }
+
+    public function getTrickWinner(
+        Player $dealer,
+        Player $turnLead,
+        ?PlayingCardSuit $trumpSuit,
+        ?PlayingCardSuit $turnSuit,
+        CollectionPlayingCardUnique $table,
+        array $playersData,
+    ): Player
+    {
+        $tableWithPlayers = [];
+        $player = $turnLead;
+        $trumpSuitKey = $trumpSuit?->getKey();
+        $turnSuitKey = $turnSuit?->getKey();
+
+        foreach ($table->toArray() as $card) {
+            $tableWithPlayers[] = ['player' => $player, 'card' => $card];
+            $player = $this->getNextOrderedPlayer($player, $dealer, $playersData);
+        }
+
+        $winningCard = $tableWithPlayers[0]['card'];
+        $winningIndex = 0;
+
+        for ($i = 1; $i <= 2; $i++) {
+
+            $nextCard = $tableWithPlayers[$i]['card'];
+            $isNextBetter = false;
+
+            $nextCardSuite = $nextCard->getSuit()->getKey();
+            $winningCardSuit = $winningCard->getSuit()->getKey();
+
+            // next in trumpSuit beat previous not in trumpSuit
+            if ($nextCardSuite === $trumpSuitKey && $winningCardSuit !== $trumpSuitKey) {
+                $isNextBetter = true;
+            }
+
+            // next in trumpSuit beat previous in trumpSuit by Rank
+            if (
+                $nextCardSuite === $trumpSuitKey
+                && $winningCardSuit === $trumpSuitKey
+                && $this->getCardPoints($nextCard) > $this->getCardPoints($winningCard)
+            ) {
+                $isNextBetter = true;
+            }
+
+            // next not in trumpSuite but in turnSuite beat previous not in trumpSuit BY RANK
+            if (
+                $nextCardSuite !== $trumpSuitKey
+                && $winningCardSuit !== $trumpSuitKey
+                && $nextCardSuite === $turnSuitKey
+                && $this->getCardPoints($nextCard) > $this->getCardPoints($winningCard)
+            ) {
+                $isNextBetter = true;
+            }
+
+            if ($isNextBetter) {
+                $winningCard = $nextCard;
+                $winningIndex = $i;
+            }
+        }
+
+        return $tableWithPlayers[$winningIndex]['player'];
+    }
+
+    public function setRoundPoints(
+        Player $player,
+        Player $dealer,
+        Player $activePlayer,
+        Player $bidWinner,
+        int $bidAmount,
+        int $round,
+        CollectionPlayingCardUnique $stockRecord,
+        array &$playersData,
+        bool $isBombMove = false,
+    ): void
+    {
+        $playerId = $player->getId();
+        $isFourPlayersDealer = $this->isFourPlayersDealer($player, $dealer);
+        $isOnBarrel = $playersData[$playerId]['barrel'];
+
+        $pointsCurrentRound =  $isBombMove
+            ? (($playerId === $activePlayer->getId() || $isFourPlayersDealer || $isOnBarrel) ? 0 : 60)
+            : $this->countPlayedPoints($player, $bidWinner, $bidAmount, $playersData);
+
+        $stockPoints = ($isFourPlayersDealer && !$isOnBarrel)
+            ? (
+                $this->countStockAcesPoints($stockRecord)
+                + $this->countStockMarriagePoints($stockRecord)
+            )
+            : 0;
+
+        $playersData[$playerId]['points'][$round] =
+            ($playersData[$playerId]['points'][$round - 1] ?? 0)
+            + (
+            !$this->isPlayerEligibleForPoints($player, $bidWinner, $playersData)
+                ? 0
+                : ($pointsCurrentRound + $stockPoints)
+            );
+    }
+
+    public function isPlayerEligibleForPoints(Player $player, Player $bidWinner, array $playersData): bool
+    {
+        return !$playersData[$player->getId()]['barrel'] || $player->getId() === $bidWinner->getId();
     }
 
     public function countStockMarriagePoints(CollectionPlayingCardUnique $stock): int
@@ -132,6 +257,50 @@ class GameStewardThousand
         return $cumulatedPoints;
     }
 
-    // TODO add method countStockAcesPoints()... to be used in Thousand setRoundPOints instead of directly calling dealer and acesKeys parameter
+    public function countStockAcesPoints(CollectionPlayingCardUnique $stock): int
+    {
+        return $this->dealer->countStockMatchingCombinations($stock, $this->acesKeys) * 50;
+    }
 
+    public function countPlayedPoints(Player $player, Player $bidWinner, int $bidAmount, array $playersData): int
+    {
+        $points = $this->countTricksPoints($player, $playersData) + $this->countTrumpsPoints($player, $playersData);
+
+        if ($player->getId() === $bidWinner->getId()) {
+            $points = $bidAmount * ($points < $bidAmount ? -1 : 1);
+        }
+
+        return (int)round($points, -1);
+    }
+
+    private function countTricksPoints(Player $player, array $playersData): int
+    {
+        $cards = $playersData[$player->getId()]['tricks']->toArray();
+        return array_reduce($cards, fn($points, $card) => $points + $this->getCardPoints($card), 0);
+    }
+
+    private function countTrumpsPoints(Player $player, array $playersData): int
+    {
+        $trumpDeclarationKeys = $playersData[$player->getId()]['trumps'];
+
+        return array_reduce($trumpDeclarationKeys, function($points, $cardKey) {
+            foreach ($this->marriagesKeys as $trumpPoints => $marriageKeys) {
+                $points += in_array($cardKey, $marriageKeys) ? $trumpPoints : 0;
+            }
+            return $points;
+        }, 0);
+    }
+
+    public function setBarrelStatus(Player $player, int $round, array &$playersData): void
+    {
+        $pointsLimit = $this->invite
+            ->getGameSetup()
+            ->getOption('thousand-barrel-points')
+            ->getConfiguredValue()
+            ->getValue();
+
+        $playersData[$player->getId()]['barrel'] =
+            $pointsLimit > 0
+            && $playersData[$player->getId()]['points'][$round] >= $pointsLimit;
+    }
 }
