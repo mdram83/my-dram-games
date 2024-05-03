@@ -31,6 +31,7 @@ use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
+use App\Games\Thousand\Tools\CollectionPlayerDataThousand;
 use App\Games\Thousand\Tools\GameDataThousand;
 use App\Games\Thousand\Tools\GameStewardThousand;
 
@@ -47,6 +48,7 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
     protected ?GameResultThousand $result = null;
     private array $playersData;
     private GameDataThousand $gameData;
+//    private CollectionPlayerDataThousand $pData;
 
     /**
      * @throws GamePlayException|GameMoveException|CollectionException|GameResultProviderException|GameResultException
