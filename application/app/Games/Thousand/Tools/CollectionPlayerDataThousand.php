@@ -2,6 +2,7 @@
 
 namespace App\Games\Thousand\Tools;
 
+use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
 use App\GameCore\Services\Collection\CollectionTraitResetByAddingWithoutDirectKeyUse;
@@ -31,5 +32,10 @@ class CollectionPlayerDataThousand extends CollectionBase
 
         $this->collectionHandler = $this->collectionHandler->add($element, $key);
         return $this;
+    }
+
+    public function getFor(Player $player): PlayerDataThousand
+    {
+        return $this->getOne($player->getId());
     }
 }

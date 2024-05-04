@@ -25,4 +25,9 @@ class GameDataThousand
     public ?PlayingCardSuit $turnSuit;
     public ?Player $turnLead;
     public GamePhase $phase;
+
+    public function advanceGamePhase(bool $lastAttempt): void
+    {
+        $this->phase = $this->phase->getNextPhase($lastAttempt);
+    }
 }

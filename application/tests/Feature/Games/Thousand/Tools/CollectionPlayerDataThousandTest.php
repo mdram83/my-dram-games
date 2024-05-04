@@ -92,6 +92,12 @@ class CollectionPlayerDataThousandTest extends TestCase
         $this->assertInstanceOf(PlayerDataThousand::class, $this->collection->getOne($this->players[0]->getId()));
     }
 
+    public function testGetFor(): void
+    {
+        $this->collection->add($this->playersData[0]);
+        $this->assertInstanceOf(PlayerDataThousand::class, $this->collection->getFor($this->players[0]));
+    }
+
     public function testToArray(): void
     {
         $this->collection->reset($this->playersData);

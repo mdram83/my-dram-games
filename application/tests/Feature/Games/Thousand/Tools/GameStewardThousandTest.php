@@ -379,6 +379,4 @@ class GameStewardThousandTest extends TestCase
         $this->assertFalse($dataArray['Id-2']->barrel);
         $this->assertFalse($dataArray['Id-3']->barrel);
     }
-
-    // TODO write test for setRoundPointsWithSomeDifferentOptions to test (Stock marriage, aces, trumps, bid achieved/not, player on barrel or not, 4 players dealer etc.)
 }

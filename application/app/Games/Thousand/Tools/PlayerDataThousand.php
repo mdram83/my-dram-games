@@ -45,5 +45,4 @@ class PlayerDataThousand
             'trumps' => $this->trumps,
         ];
     }
-
 }
