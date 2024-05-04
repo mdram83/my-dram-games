@@ -17,7 +17,10 @@ use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
+use App\Games\Thousand\Tools\CollectionPlayerDataThousand;
+use App\Games\Thousand\Tools\GameDataThousand;
 use App\Games\Thousand\Tools\GameStewardThousand;
+use App\Games\Thousand\Tools\PlayerDataThousand;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
@@ -85,6 +88,18 @@ class GameStewardThousandTest extends TestCase
         );
     }
 
+    private function getCollectionPlayerDataThousand(bool $fourPlayers = false): CollectionPlayerDataThousand
+    {
+        $players = $this->getPlayersCollectionMock($fourPlayers);
+        $collection = new CollectionPlayerDataThousand(clone $this->handler);
+
+        for ($i = 0; $i <= 2 + ($fourPlayers ? 1 : 0); $i++) {
+            $collection->add(new PlayerDataThousand($players->getOne("Id-$i")));
+        }
+
+        return $collection;
+    }
+
     public function testInstance(): void
     {
         $this->assertInstanceOf(GameStewardThousand::class, $this->steward);
@@ -146,47 +161,57 @@ class GameStewardThousandTest extends TestCase
         $this->assertTrue($this->getSteward(true)->isFourPlayersDealer($player, $player));
     }
 
-    public function testCountStockMarriagePoints(): void
-    {
-        $deck = $this->deckProvider->getDeckSchnapsen();
-
-        $cards100 = [$deck->getOne('K-H'), $deck->getOne('Q-H'), $deck->getOne('A-H')];
-        $deck100 = new CollectionPlayingCardUnique(clone $this->handler, $cards100);
-
-        $cards000 = [$deck->getOne('K-H'), $deck->getOne('Q-C'), $deck->getOne('A-D')];
-        $deck000 = new CollectionPlayingCardUnique(clone $this->handler, $cards000);
-
-        $cards080 = [$deck->getOne('K-D'), $deck->getOne('Q-D'), $deck->getOne('K-H')];
-        $deck080 = new CollectionPlayingCardUnique(clone $this->handler, $cards080);
-
-        $this->assertEquals(100, $this->steward->countStockMarriagePoints($deck100));
-        $this->assertEquals(0, $this->steward->countStockMarriagePoints($deck000));
-        $this->assertEquals(80, $this->steward->countStockMarriagePoints($deck080));
-    }
-
     public function testIsLastBiddingMove(): void
     {
-        $DataOnePass = ['123' => ['bid' => 'pass'], '234' => ['bid' => 110], '345' => ['bid' => 120]];
-        $DataTwoPass = ['123' => ['bid' => 'pass'], '234' => ['bid' => 110], '345' => ['bid' => 'pass']];
+        $dataBid = $this->getCollectionPlayerDataThousand();
+        $dataPass = $this->getCollectionPlayerDataThousand();
 
-        $this->assertFalse($this->steward->isLastBiddingMove(150, $DataOnePass));
-        $this->assertTrue($this->steward->isLastBiddingMove(150, $DataTwoPass));
-        $this->assertTrue($this->steward->isLastBiddingMove(300, $DataOnePass));
-        $this->assertTrue($this->steward->isLastBiddingMove(300, $DataTwoPass));
+        $dataBid->each(function($playerData, $playerId) {
+            $playerData->bid = in_array($playerData->getId(), ['Id-0']) ? 'pass' : 110;
+            return $playerData;
+        });
+
+        $dataPass->each(function($playerData, $playerId) {
+            $playerData->bid = in_array($playerData->getId(), ['Id-0', 'Id-1']) ? 'pass' : 110;
+            return $playerData;
+        });
+
+        $this->assertFalse($this->steward->isLastBiddingMove(150, $dataBid));
+        $this->assertTrue($this->steward->isLastBiddingMove(150, $dataPass));
+        $this->assertTrue($this->steward->isLastBiddingMove(300, $dataBid));
+        $this->assertTrue($this->steward->isLastBiddingMove(300, $dataPass));
     }
 
     public function testGetHighestBiddingPlayer(): void
     {
-        $bids = ['Id-0' => ['bid' => 110], 'Id-1' => ['bid' => 120], 'Id-2' => ['bid' => 'pass']];
-        $bidWinner = $this->steward->getHighestBiddingPlayer($bids);
+        $data = $this->getCollectionPlayerDataThousand();
+        $data->each(function($playerData, $playerId) {
+            $bids = ['Id-0' => 110, 'Id-1' => 120, 'Id-2' => 'pass'];
+            $playerData->bid = $bids[$playerId];
+            return $playerData;
+        });
+        $bidWinner = $this->steward->getHighestBiddingPlayer($data);
 
         $this->assertEquals('Id-1', $bidWinner->getId());
     }
 
     public function testGetNextOrderedPlayer(): void
     {
-        $data3P = ['Id-0' => ['seat' => 3, 'bid' => 'pass'], 'Id-1' => ['seat' => 2, 'bid' => null], 'Id-2' => ['seat' => 1, 'bid' => null]];
-        $data4P = ['Id-0' => ['seat' => 1, 'bid' => 'pass'], 'Id-1' => ['seat' => 2, 'bid' => null], 'Id-2' => ['seat' => 3, 'bid' => null], 'Id-3' => ['seat' => 4, 'bid' => null]];
+        $data3P = $this->getCollectionPlayerDataThousand();
+        $data3P->each(function($playerData, $playerId) {
+            $params = ['Id-0' => ['seat' => 3, 'bid' => 'pass'], 'Id-1' => ['seat' => 2, 'bid' => null], 'Id-2' => ['seat' => 1, 'bid' => null]];
+            $playerData->bid = $params[$playerId]['bid'];
+            $playerData->seat = $params[$playerId]['seat'];
+            return $playerData;
+        });
+
+        $data4P = $this->getCollectionPlayerDataThousand(true);
+        $data4P->each(function($playerData, $playerId) {
+            $params = ['Id-0' => ['seat' => 1, 'bid' => 'pass'], 'Id-1' => ['seat' => 2, 'bid' => null], 'Id-2' => ['seat' => 3, 'bid' => null], 'Id-3' => ['seat' => 4, 'bid' => null]];
+            $playerData->bid = $params[$playerId]['bid'];
+            $playerData->seat = $params[$playerId]['seat'];
+            return $playerData;
+        });
 
         $steward3P = $this->steward;
         $steward4P = $this->getSteward(true);
@@ -208,122 +233,112 @@ class GameStewardThousandTest extends TestCase
 
     public function testShuffleAndDealCards(): void
     {
-        $deck3P = $this->deckProvider->getDeckSchnapsen();
-        $deck4P = $this->deckProvider->getDeckSchnapsen();
-        $stock3P = $this->dealer->getEmptyStock();
-        $stock4P = $this->dealer->getEmptyStock();
-        $data3P = [
-            'Id-0' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 1, 'bid' => null],
-            'Id-1' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 2, 'bid' => null],
-            'Id-2' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 3, 'bid' => null],
-        ];
-        $data4P = [
-            'Id-0' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 1, 'bid' => null],
-            'Id-1' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 2, 'bid' => null],
-            'Id-2' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 3, 'bid' => null],
-            'Id-3' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 4, 'bid' => null],
-        ];
+        $gData3P = new GameDataThousand();
+        $gData3P->deck = $this->deckProvider->getDeckSchnapsen();
+        $gData3P->stock = $this->dealer->getEmptyStock();
+        $gData3P->dealer = $this->getPlayersCollectionMock()->getOne('Id-0');
 
-        $dealer = $this->getPlayersCollectionMock()->getOne('Id-0');
+        $gData4P = new GameDataThousand();
+        $gData4P->deck = $this->deckProvider->getDeckSchnapsen();
+        $gData4P->stock = $this->dealer->getEmptyStock();
+        $gData4P->dealer = $this->getPlayersCollectionMock()->getOne('Id-0');
+
+        $data3P = $this->getCollectionPlayerDataThousand();
+        $data3P->each(function($playerData, $playerId) {
+            $params = ['Id-0' => 1, 'Id-1' => 2, 'Id-2' => 3];
+            $playerData->bid = null;
+            $playerData->seat = $params[$playerId];
+            $playerData->hand = $this->dealer->getEmptyStock();
+            return $playerData;
+        });
+
+        $data4P = $this->getCollectionPlayerDataThousand(true);
+        $data4P->each(function($playerData, $playerId) {
+            $params = ['Id-0' => 1, 'Id-1' => 2, 'Id-2' => 3, 'Id-3' => 4];
+            $playerData->bid = null;
+            $playerData->seat = $params[$playerId];
+            $playerData->hand = $this->dealer->getEmptyStock();
+            return $playerData;
+        });
 
         $steward3P = $this->steward;
         $steward4P = $this->getSteward(true);
 
-        $steward3P->shuffleAndDealCards($deck3P, $stock3P, $dealer, $data3P);
-        $steward4P->shuffleAndDealCards($deck4P, $stock4P, $dealer, $data4P);
+        $steward3P->shuffleAndDealCards($gData3P, $data3P);
+        $steward4P->shuffleAndDealCards($gData4P, $data4P);
 
-        $this->assertEquals(0, $deck3P->count());
-        $this->assertEquals(0, $deck4P->count());
-        $this->assertEquals(3, $stock3P->count());
-        $this->assertEquals(3, $stock4P->count());
-        $this->assertEquals(7, $data3P['Id-0']['hand']->count());
-        $this->assertEquals(7, $data3P['Id-1']['hand']->count());
-        $this->assertEquals(7, $data3P['Id-2']['hand']->count());
-        $this->assertEquals(0, $data4P['Id-0']['hand']->count());
-        $this->assertEquals(7, $data4P['Id-1']['hand']->count());
-        $this->assertEquals(7, $data4P['Id-2']['hand']->count());
-        $this->assertEquals(7, $data4P['Id-3']['hand']->count());
+        $this->assertEquals(0, $gData3P->deck->count());
+        $this->assertEquals(0, $gData4P->deck->count());
+        $this->assertEquals(3, $gData3P->stock->count());
+        $this->assertEquals(3, $gData4P->stock->count());
+        $this->assertEquals(7, $data3P->getOne('Id-0')->hand->count());
+        $this->assertEquals(7, $data3P->getOne('Id-1')->hand->count());
+        $this->assertEquals(7, $data3P->getOne('Id-2')->hand->count());
+        $this->assertEquals(0, $data4P->getOne('Id-0')->hand->count());
+        $this->assertEquals(7, $data4P->getOne('Id-1')->hand->count());
+        $this->assertEquals(7, $data4P->getOne('Id-2')->hand->count());
+        $this->assertEquals(7, $data4P->getOne('Id-3')->hand->count());
     }
 
     public function testGetTrickWinner(): void
     {
-        $data3P = [
-            'Id-0' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 1, 'bid' => null],
-            'Id-1' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 2, 'bid' => null],
-            'Id-2' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 3, 'bid' => null],
-        ];
+        $data3P = $this->getCollectionPlayerDataThousand();
+        $data3P->each(function($playerData, $playerId) {
+            $params = ['Id-0' => 1, 'Id-1' => 2, 'Id-2' => 3];
+            $playerData->bid = null;
+            $playerData->seat = $params[$playerId];
+            $playerData->hand = $this->dealer->getEmptyStock();
+            return $playerData;
+        });
 
         $deck = $this->deckProvider->getDeckSchnapsen();
 
-        $dealer = $this->getPlayersCollectionMock()->getOne('Id-0');
-        $turnLead = $dealer;
-        $trumpSuit = $deck->getOne('A-H')->getSuit();
-        $turnSuit = $deck->getOne('A-D')->getSuit();
+        $gData3P = new GameDataThousand();
+        $gData3P->dealer = $this->getPlayersCollectionMock()->getOne('Id-0');
+        $gData3P->turnLead = $gData3P->dealer;
+        $gData3P->trumpSuit = $deck->getOne('A-H')->getSuit();
+        $gData3P->turnSuit = $deck->getOne('A-D')->getSuit();
 
-        $cardsTrumpBeatsNotTrump = [$deck->getOne('10-D'), $deck->getOne('A-D'), $deck->getOne('9-H')];
-        $cardsTrumpBeatsTrumpRank = [$deck->getOne('10-D'), $deck->getOne('10-H'), $deck->getOne('A-H')];
-        $cardsTurnBeatsTurnRank = [$deck->getOne('10-D'), $deck->getOne('K-C'), $deck->getOne('A-D')];
-        $tableTrumpBeatsNotTrump = $this->dealer->getEmptyStock()->reset($cardsTrumpBeatsNotTrump);
-        $tableTrumpBeatsTrumpRank = $this->dealer->getEmptyStock()->reset($cardsTrumpBeatsTrumpRank);
-        $tableTurnBeatsTurnRank = $this->dealer->getEmptyStock()->reset($cardsTurnBeatsTurnRank);
+        $tableTrumpBeatsNotTrump = $this->dealer->getEmptyStock()->reset(
+            [$deck->getOne('10-D'), $deck->getOne('A-D'), $deck->getOne('9-H')]
+        );
+        $tableTrumpBeatsTrumpRank = $this->dealer->getEmptyStock()->reset(
+            [$deck->getOne('10-D'), $deck->getOne('10-H'), $deck->getOne('A-H')]
+        );
+        $tableTurnBeatsTurnRank = $this->dealer->getEmptyStock()->reset(
+            [$deck->getOne('10-D'), $deck->getOne('K-C'), $deck->getOne('A-D')]
+        );
 
-        $this->assertEquals('Id-2', $this->steward->getTrickWinner(
-            $dealer, $turnLead, $trumpSuit, $turnSuit, $tableTrumpBeatsNotTrump, $data3P
-        )->getId());
-        $this->assertEquals('Id-2', $this->steward->getTrickWinner(
-            $dealer, $turnLead, $trumpSuit, $turnSuit, $tableTrumpBeatsTrumpRank, $data3P
-        )->getId());
-        $this->assertEquals('Id-2', $this->steward->getTrickWinner(
-            $dealer, $turnLead, $trumpSuit, $turnSuit, $tableTurnBeatsTurnRank, $data3P
-        )->getId());
+        $gData3P->table = $tableTrumpBeatsNotTrump;
+        $this->assertEquals('Id-2', $this->steward->getTrickWinner($gData3P, $data3P)->getId());
+
+        $gData3P->table = $tableTrumpBeatsTrumpRank;
+        $this->assertEquals('Id-2', $this->steward->getTrickWinner($gData3P, $data3P)->getId());
+
+        $gData3P->table = $tableTurnBeatsTurnRank;
+        $this->assertEquals('Id-2', $this->steward->getTrickWinner($gData3P, $data3P)->getId());
     }
 
     public function testHasPlayerUsedMaxBombMoves(): void
     {
-        $data3P = [
-            'Id-0' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 1, 'bid' => null, 'bombRounds' => [1, 4]],
-            'Id-1' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 2, 'bid' => null, 'bombRounds' => [2]],
-            'Id-2' => ['hand' => $this->dealer->getEmptyStock(), 'seat' => 3, 'bid' => null, 'bombRounds' => []],
-        ];
-
-        $players = $this->getPlayersCollectionMock();
         $this->steward = $this->getSteward(false, 2, null);
 
-        $this->assertTrue($this->steward->hasPlayerUsedMaxBombMoves($players->getOne('Id-0'), $data3P));
-        $this->assertFalse($this->steward->hasPlayerUsedMaxBombMoves($players->getOne('Id-1'), $data3P));
-        $this->assertFalse($this->steward->hasPlayerUsedMaxBombMoves($players->getOne('Id-2'), $data3P));
-    }
-
-    public function testIsPlayerEligibleForPoints(): void
-    {
-        $data3P = [
-            'Id-0' => ['barrel' => false],
-            'Id-1' => ['barrel' => true],
-            'Id-2' => ['barrel' => true],
-        ];
-
-        $players = $this->getPlayersCollectionMock();
-        $bidWinner = $players->getOne('Id-1');
-
-        $this->assertTrue($this->steward->isPlayerEligibleForPoints($players->getOne('Id-0'), $bidWinner, $data3P));
-        $this->assertTrue($this->steward->isPlayerEligibleForPoints($players->getOne('Id-1'), $bidWinner, $data3P));
-        $this->assertFalse($this->steward->isPlayerEligibleForPoints($players->getOne('Id-2'), $bidWinner, $data3P));
+        $this->assertTrue($this->steward->hasPlayerUsedMaxBombMoves([1, 4]));
+        $this->assertFalse($this->steward->hasPlayerUsedMaxBombMoves([2]));
+        $this->assertFalse($this->steward->hasPlayerUsedMaxBombMoves([]));
     }
 
     public function testHasMarriageAtHand(): void
     {
         $deck = $this->deckProvider->getDeckSchnapsen();
-        $data3P = [
-            'Id-0' => ['hand' => $this->dealer->getCardsByKeys($deck, ['A-H', '10-H', 'K-H', 'Q-H', 'J-H', '9-H', 'Q-S'], true, true)],
-            'Id-1' => ['hand' => $this->dealer->getCardsByKeys($deck, ['A-D', '10-D', 'K-D', 'Q-C', 'J-D', '9-D', '10-S'], true, true)],
-            'Id-2' => ['hand' => $this->dealer->getCardsByKeys($deck, ['A-C', '10-C', 'J-S', 'A-S', 'J-C', '9-C', '9-S'], true, true)],
-        ];
 
-        $players = $this->getPlayersCollectionMock();
+        $hand1 = $this->dealer->getCardsByKeys($deck, ['A-H', '10-H', 'K-H', 'Q-H', 'J-H', '9-H', 'Q-S'], true, true);
+        $hand2 = $this->dealer->getCardsByKeys($deck, ['A-D', '10-D', 'K-D', 'Q-C', 'J-D', '9-D', '10-S'], true, true);
+        $hand3 = $this->dealer->getCardsByKeys($deck, ['A-C', '10-C', 'J-S', 'A-S', 'J-C', '9-C', '9-S'], true, true);
 
-        $this->assertTrue($this->steward->hasMarriageAtHand($players->getOne('Id-0'), $data3P));
-        $this->assertFalse($this->steward->hasMarriageAtHand($players->getOne('Id-1'), $data3P));
-        $this->assertFalse($this->steward->hasMarriageAtHand($players->getOne('Id-2'), $data3P));
+        $this->assertTrue($this->steward->hasMarriageAtHand($hand1));
+        $this->assertFalse($this->steward->hasMarriageAtHand($hand2));
+        $this->assertFalse($this->steward->hasMarriageAtHand($hand3));
     }
 
     public function testCountPlayedPoints(): void
@@ -333,53 +348,37 @@ class GameStewardThousandTest extends TestCase
         $tricks1 = $this->dealer->getCardsByKeys($deck, ['A-D', '10-D', 'K-D', 'Q-C', 'J-D', '9-D', '10-S'], true, true);
         $tricks2 = $this->dealer->getCardsByKeys($deck, ['A-C', '10-C', 'J-S', 'A-S', 'J-C', '9-C', '9-S'], true, true);
 
-        $data3P = [
-            'Id-0' => ['tricks' => $tricks0, 'trumps' => ['K-H']],
-            'Id-1' => ['tricks' => $tricks1, 'trumps' => []],
-            'Id-2' => ['tricks' => $tricks2, 'trumps' => []],
-        ];
+        $trumps0 = ['K-H'];
+        $trumps1 = [];
+        $trumps2 = [];
 
-        $players = $this->getPlayersCollectionMock();
-        $player0 = $players->getOne('Id-0');
-        $player1 = $players->getOne('Id-1');
-        $player2 = $players->getOne('Id-2');
-
-        $this->assertEquals(100, $this->steward->countPlayedPoints($player0, $player0, 100, $data3P));
-        $this->assertEquals(-120, $this->steward->countPlayedPoints($player1, $player1, 120, $data3P));
-        $this->assertEquals(130, $this->steward->countPlayedPoints($player0, $player1, 100, $data3P));
-        $this->assertEquals(40, $this->steward->countPlayedPoints($player2, $player0, 100, $data3P));
+        $this->assertEquals(100, $this->steward->countPlayedPoints(true, 100, $tricks0, $trumps0));
+        $this->assertEquals(-120, $this->steward->countPlayedPoints(true, 120, $tricks1, $trumps1));
+        $this->assertEquals(130, $this->steward->countPlayedPoints(false, 100, $tricks0, $trumps0));
+        $this->assertEquals(40, $this->steward->countPlayedPoints(false, 100, $tricks2, $trumps2));
     }
 
     public function testSetBarrelStatus(): void
     {
-        $data3P = [
-            'Id-0' => ['points' => [1 => 790], 'barrel' => false],
-            'Id-1' => ['points' => [1 => 810], 'barrel' => false],
-            'Id-2' => ['points' => [1 => 900], 'barrel' => false],
-        ];
+        $data = $this->getCollectionPlayerDataThousand(true);
+        $data->each(function($playerData, $playerId) {
+            $points = ['Id-0' => [1 => 800], 'Id-1' => [1 => 790], 'Id-2' => [1 => 900],  'Id-3' => []];
+            $playerData->points = $points[$playerId];
+            return $playerData;
+        });
 
-        $players = $this->getPlayersCollectionMock();
-        $this->getSteward(false, null, 800)->setBarrelStatus($players->getOne('Id-0'), 1, $data3P);
-        $this->getSteward(false, null, 800)->setBarrelStatus($players->getOne('Id-1'), 1, $data3P);
-        $this->getSteward(false, null, 0)->setBarrelStatus($players->getOne('Id-2'), 1, $data3P);
+        $this->getSteward(false, null, 800)->setBarrelStatus($data->getOne('Id-0'));
+        $this->getSteward(false, null, 800)->setBarrelStatus($data->getOne('Id-1'));
+        $this->getSteward(false, null, 0)->setBarrelStatus($data->getOne('Id-2'));
+        $this->getSteward(false, null, 0)->setBarrelStatus($data->getOne('Id-3'));
 
-        $this->assertFalse($data3P['Id-0']['barrel']);
-        $this->assertTrue($data3P['Id-1']['barrel']);
-        $this->assertFalse($data3P['Id-2']['barrel']);
+        $dataArray = $data->toArray();
+
+        $this->assertTrue($dataArray['Id-0']->barrel);
+        $this->assertFalse($dataArray['Id-1']->barrel);
+        $this->assertFalse($dataArray['Id-2']->barrel);
+        $this->assertFalse($dataArray['Id-3']->barrel);
     }
 
-    public function testCountStockAcesPoints(): void
-    {
-        $deck = $this->deckProvider->getDeckSchnapsen();
-        $stock000 = $this->dealer->getCardsByKeys($deck, ['J-H', '9-H', 'Q-S'], true, true);
-        $stock050 = $this->dealer->getCardsByKeys($deck, ['A-D', 'J-D', 'K-D'], true, true);
-        $stock100 = $this->dealer->getCardsByKeys($deck, ['A-C', 'J-S', 'A-S'], true, true);
-        $stock150 = $this->dealer->getCardsByKeys($deck, ['A-C', 'A-S', 'A-H'], true, true);
-
-        $this->assertEquals(0, $this->steward->countStockAcesPoints($stock000));
-        $this->assertEquals(50, $this->steward->countStockAcesPoints($stock050));
-        $this->assertEquals(100, $this->steward->countStockAcesPoints($stock100));
-        $this->assertEquals(150, $this->steward->countStockAcesPoints($stock150));
-    }
-
+    // TODO write test for setRoundPointsWithSomeDifferentOptions to test (Stock marriage, aces, trumps, bid achieved/not, player on barrel or not, 4 players dealer etc.)
 }
