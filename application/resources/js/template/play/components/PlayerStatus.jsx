@@ -1,9 +1,9 @@
 import React from "react";
-import {usePlayersStatusStore} from "./usePlayersStatusStore.jsx";
+import {useGamePlayStore} from "../../../src/game-core/game-play/useGamePlayStore.jsx";
 
 export const PlayerStatus = ({isCurrent, borderColorClass, avatarElement, name}) => {
 
-    const connected = usePlayersStatusStore((state) => state.players[name]);
+    const connected = useGamePlayStore((state) => state.players[name]);
     const isYou = (name === window.MyDramGames.player.name);
 
     const gridColClass = 'flex items-center justify-start sm:justify-center col-span-2 sm:col-span-1 sm:text-center ';

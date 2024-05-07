@@ -1,15 +1,18 @@
 import React, {useState} from "react";
 import axios from "axios";
 import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
+import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.jsx";
 
 export const FieldTicTacToe = ({fieldKey, fieldValue}) => {
 
-    const gamePlayId = useTicTacToeStore((state) => state.gamePlayId);
-    const isFinished = useTicTacToeStore((state) => state.isFinished);
+    const gamePlayId = useGamePlayStore((state) => state.gamePlayId);
+    const isFinished = useGamePlayStore((state) => state.isFinished);
+    const setMessage = useGamePlayStore((state) => state.setMessage);
+
     const winningFields = useTicTacToeStore((state) => state.winningFields);
     const moving = useTicTacToeStore((state) => state.moving);
     const setMoving = useTicTacToeStore((state) => state.setMoving);
-    const setMessage = useTicTacToeStore((state) => state.setMessage);
+
     const [localMove, setLocalMove] = useState(false);
 
     const setMove = (status) => {

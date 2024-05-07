@@ -1,11 +1,11 @@
 import React from "react";
 import {PlayerStatus} from "../../../../template/play/components/PlayerStatus.jsx";
 import {configTicTacToe} from "./configTicTacToe.jsx";
-import {useTicTacToeStore} from "./useTicTacToeStore.jsx";
+import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.jsx";
 
 export const StatusBarTicTacToe = ({characters}) => {
 
-    const activePlayer = useTicTacToeStore((state) => state.activePlayer);
+    const activePlayer = useGamePlayStore((state) => state.activePlayer);
 
     const getAvatarElement = (characterName) => {
         return <span className="text-gray-800 text-[2.8vh] sm:text-[3.2vh]">{configTicTacToe[characterName].avatar}</span>;
