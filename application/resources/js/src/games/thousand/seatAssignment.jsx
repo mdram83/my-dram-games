@@ -9,7 +9,7 @@ export const seatAssignment = () => {
     const numberOfPlayers = names.length;
 
     const seats = new Array(4);
-    names.forEach((name, index, names) => {
+    names.forEach((name) => {
         seats[orderedPlayers[name].seat] = name;
     });
 
