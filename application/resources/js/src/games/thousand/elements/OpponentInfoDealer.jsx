@@ -1,5 +1,4 @@
 import React from "react";
-import {useThousandStore} from "../useThousandStore.jsx";
 
 export const OpponentInfoDealer = ({playerName, isFourPlayersDealer}) => {
 
