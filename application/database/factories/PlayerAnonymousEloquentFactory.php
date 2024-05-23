@@ -17,12 +17,12 @@ class PlayerAnonymousEloquentFactory extends Factory
      */
     public function definition(): array
     {
-        $namePrefix = 'Anonymous';
+        $namePrefix = '';
         $nameMiddle = fake()->city();
-        $nameSuffix = fake()->numberBetween(10000, 99999);
+        $nameSuffix = fake()->numberBetween(1000, 9999);
 
         return [
-            'name' => "$namePrefix $nameMiddle $nameSuffix",
+            'name' => "$namePrefix$nameMiddle$nameSuffix",
             'hash' => null,
         ];
     }
