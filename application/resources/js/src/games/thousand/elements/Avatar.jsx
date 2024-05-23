@@ -22,7 +22,7 @@ export const Avatar = ({playerName}) => {
         + (!isConnected ? ' animate-pulse bg-gray-200 ' : ' ')
         + (isCurrent ? ' border-8 border-solid bg-white ' : ' border-2 border-solid bg-gray-200 ');
 
-    const initialClass = ' text-[4vh] sm:text-[5vh] font-sans '
+    const initialClass = ' text-[4vh] sm:text-[5vh] font-sans pb-[0.5vh] '
         + (isCurrent ? (' font-black ' + avatarTextClass) : (' font-bold text-gray-600 '));
 
     return (

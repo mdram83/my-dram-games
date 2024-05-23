@@ -59,7 +59,7 @@ controller.getRoot().render(
         {/*Scrollable*/}
         {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
         {/*Fixed*/}
-        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[74vh] bg-[url('https://media.istockphoto.com/id/966787750/pl/zdj%C4%99cie/puste-t%C5%82o-tabeli.jpg?s=612x612&w=0&k=20&c=ovSedN2ph7_RUmMmOU7llHEyM8wsnBN7qO_db6Qi4Hc=')]">
+        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-bottom bg-no-repeat bg-cover bg-[url('https://media.istockphoto.com/id/966787750/pl/zdj%C4%99cie/puste-t%C5%82o-tabeli.jpg?s=612x612&w=0&k=20&c=ovSedN2ph7_RUmMmOU7llHEyM8wsnBN7qO_db6Qi4Hc=')]">
 
             <div className="grid grid-cols-3 gap-1 content-stretch h-full">
 
@@ -89,12 +89,11 @@ controller.getRoot().render(
 
         </div>
 
-        <div className="fixed bottom-0 w-full h-[16vh] sm:h-[12vh] px-[4%] sm:px-[2%] py-[2vh] bg-gray-800">
-            <PlayerSection />
+        <div className="fixed -bottom-[0.1vh] w-[92%] sm:w-[96%] h-[10vh] sm:h-[12vh] px-[4%] sm:px-[2%] py-[2vh] bg-gray-800">
+            <PlayerSection fourPlayersGame={fourPlayersGame} />
         </div>
 
         <FlashMessageGamePlay />
 
     </div>
 );
-
