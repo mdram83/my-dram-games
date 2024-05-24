@@ -1,13 +1,19 @@
 import React from "react";
 import {Avatar} from "./Avatar.jsx";
 import {PlayerInfoBidding} from "./PlayerInfoBidding.jsx";
+import {useThousandStore} from "../useThousandStore.jsx";
+import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
 
 export const PlayerSection = ({fourPlayersGame}) => {
 
     console.log('call PlayerSection');
     const playerName = window.MyDramGames.player.name;
 
-    // TODO continue here, with player hand + show to Player who is fourPlayerDealer that he is a dealer
+    const dealer = useThousandStore(state => state.situation.dealer);
+    const isDealer = playerName === dealer;
+    const isFourPlayersDealer = isDealer && fourPlayersGame;
+
+    // TODO continue here, with player hand
 
     return (
         <div className="flex flex-row items-center h-full">
@@ -16,7 +22,13 @@ export const PlayerSection = ({fourPlayersGame}) => {
                 <Avatar playerName={playerName}/>
             </div>
 
-            <div className="basis-[60%] sm:basis-[80%]">
+            {isFourPlayersDealer &&
+                <div className="basis-[80%] sm:basis-[90%] flex justify-center">
+                    <PlayerFourPlayersDealerMessage />
+                </div>
+            }
+
+            {!isFourPlayersDealer && <div className="basis-[60%] sm:basis-[80%]">
 
                 <div className="absolute bottom-[12vh] left-0 w-full">
                     <div className="flex justify-center">
@@ -26,11 +38,11 @@ export const PlayerSection = ({fourPlayersGame}) => {
 
                 <div>Tricks</div>
                 <div>Hand</div>
-            </div>
+            </div>}
 
-            <div className="basis-[20%] sm:basis-[10%]">
+            {!isFourPlayersDealer && <div className="basis-[20%] sm:basis-[10%]">
                 Hand view switch
-            </div>
+            </div>}
 
         </div>
     );

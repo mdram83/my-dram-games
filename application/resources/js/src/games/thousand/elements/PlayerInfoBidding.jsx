@@ -9,10 +9,6 @@ export const PlayerInfoBidding = ({playerName, fourPlayersGame}) => {
 
     console.log(' call PlayerInfoBidding');
 
-    const dealer = useThousandStore(state => state.situation.dealer);
-    const isDealer = playerName === dealer;
-    const isFourPlayersDealer = isDealer && fourPlayersGame;
-
     // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseBidding store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseBidding = phaseKey === 'bidding';
@@ -30,7 +26,7 @@ export const PlayerInfoBidding = ({playerName, fourPlayersGame}) => {
 
     const renderBid = () => {
 
-        if (!isPhaseBidding || isFourPlayersDealer) {
+        if (!isPhaseBidding) {
             return <></>;
         }
 
@@ -39,7 +35,7 @@ export const PlayerInfoBidding = ({playerName, fourPlayersGame}) => {
                 className={borderColorClass + ' w-[40%] sm:w-[20%] border-2 border-solid bg-white rounded-xl py-[1vh] px-[4%] bg-opacity-60 '}>
 
                 <div className={singleClassName}>
-                    <OpponentInfoBidding playerName={playerName} isFourPlayersDealer={isFourPlayersDealer}/>
+                    <OpponentInfoBidding playerName={playerName} isFourPlayersDealer={false}/>
                 </div>
 
                 <div className={singleClassName}>
