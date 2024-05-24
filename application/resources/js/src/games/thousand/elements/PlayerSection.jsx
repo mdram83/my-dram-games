@@ -32,7 +32,7 @@ export const PlayerSection = ({fourPlayersGame}) => {
 
                 <div className="absolute bottom-[12vh] left-0 w-full">
                     <div className="flex justify-center">
-                        <PlayerInfoBidding playerName={playerName} fourPlayersGame={fourPlayersGame} />
+                        <PlayerInfoBidding playerName={playerName} />
                     </div>
                 </div>
 
