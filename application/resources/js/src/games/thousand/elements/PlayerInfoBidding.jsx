@@ -5,7 +5,7 @@ import {useThousandStore} from "../useThousandStore.jsx";
 import {OpponentInfoBidding} from "./OpponentInfobBidding.jsx";
 import {ActionBid} from "./ActionBid.jsx";
 
-export const PlayerInfoBidding = ({playerName, fourPlayersGame}) => {
+export const PlayerInfoBidding = ({playerName}) => {
 
     console.log(' call PlayerInfoBidding');
 
