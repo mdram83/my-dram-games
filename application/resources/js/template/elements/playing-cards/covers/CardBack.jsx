@@ -1,5 +1,4 @@
 import React from "react";
-// import cardBack from './card-7031432_640.png'
 
 export const CardBack = () => {
 

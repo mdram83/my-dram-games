@@ -7,23 +7,30 @@ export const StockSection = () => {
     console.log('call TableSection');
 
     const stock = useThousandStore(state => state.situation.stock);
+    const phaseKey = useThousandStore(state => state.situation.phase.key);
+    const isPhaseBidding = phaseKey === 'bidding';
 
-    console.log(stock);
-
-    const renderStockElements = () => {
-
-        let list = [];
-
-        for (let i = 1; i <= stock; i++) {
-            list.push(<li key={i}><CardBack /></li>);
+    const renderItems = () => {
+        const items = [];
+        for (let i = 0; i < stock; i++) {
+            items.push(<div key={i}><CardBack /></div>)
         }
-
-        console.log(list);
-
-        return list;
+        return items;
     }
 
-    return (
-        <div><ul>{renderStockElements()}</ul></div>
-    );
+    const renderStock = () => {
+
+        if (!isPhaseBidding) {
+            return <></>;
+        }
+
+        return (
+            <div className="grid grid-cols-3 gap-[2vh] sm:gap-[4vh]">
+                {renderItems()}
+            </div>
+        );
+
+    }
+
+    return renderStock();
 }

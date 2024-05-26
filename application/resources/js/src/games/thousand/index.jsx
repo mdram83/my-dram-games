@@ -74,7 +74,7 @@ controller.getRoot().render(
                         {fourPlayersGame && <OpponentSection playerName={frontSeat} fourPlayersGame={fourPlayersGame} />}
                         {!fourPlayersGame && <div></div>}
                     </div>
-                    <div className="row-span-2">
+                    <div className="row-span-1">
                         <TableSection />
                     </div>
                 </div>
