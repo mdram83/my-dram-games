@@ -46,6 +46,8 @@
 
 <x-jsfeeds.route-names />
 <x-jsfeeds.user-data />
+<x-jsfeeds.asset-url />
+
 @stack('custom-scripts')
 
 </body>

@@ -3,6 +3,7 @@ import {Avatar} from "./Avatar.jsx";
 import {PlayerInfoBidding} from "./PlayerInfoBidding.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
+import {PlayerHand} from "./PlayerHand.jsx";
 
 export const PlayerSection = ({fourPlayersGame}) => {
 
@@ -37,7 +38,7 @@ export const PlayerSection = ({fourPlayersGame}) => {
                 </div>
 
                 <div>Tricks</div>
-                <div>Hand</div>
+                <div><PlayerHand playerName={playerName} /></div>
             </div>}
 
             {!isFourPlayersDealer && <div className="basis-[20%] sm:basis-[10%]">
