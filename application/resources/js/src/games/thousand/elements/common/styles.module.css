@@ -21,7 +21,7 @@
     position: absolute;
     width: 30px;
     height: 30px;
-    transform-origin: 50% 50% 0px;
+    transform-origin: 50% 50% 0;
     cursor: pointer;
     border-radius: 5px;
     color: white;
