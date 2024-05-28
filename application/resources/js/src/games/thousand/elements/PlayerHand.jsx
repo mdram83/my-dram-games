@@ -1,6 +1,7 @@
 import React from "react";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayingCard} from "../../../../template/elements/playing-cards/decks/PlayingCard.jsx";
+import DraggableList from "./common/DraggableList.jsx";
 
 export const PlayerHand = ({playerName}) => {
 
@@ -14,6 +15,11 @@ export const PlayerHand = ({playerName}) => {
     }
 
     return (
-        <div className="flex items-center">{renderElements()}</div>
+        <div className="flex items-center">
+            <DraggableList items={renderElements()} parentWidth={300} />
+
+        </div>
     );
 }
+
+// {renderElements()}
