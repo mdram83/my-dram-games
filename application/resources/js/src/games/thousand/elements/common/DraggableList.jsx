@@ -1,8 +1,6 @@
-import React, { useRef } from 'react'
-import { useSprings, animated } from '@react-spring/web'
-import { useDrag } from 'react-use-gesture'
-
-import styles from './styles.module.css'
+import React, { useRef } from 'react';
+import { useSprings, animated } from '@react-spring/web';
+import { useDrag } from 'react-use-gesture';
 
 const fn =
     (order, singleWidth, active = false, originalIndex = 0, curIndex = 0, x = 0) =>
@@ -26,46 +24,52 @@ const fn =
 
 export default function DraggableList({ items, parentWidth }) {
 
-    const singleWidth = parentWidth / items.length
+    console.log('call DraggableList with width = ', parentWidth);
 
-    const order = useRef(items.map((_, index) => index))
-    const [springs, api] = useSprings(items.length, fn(order.current, singleWidth))
+    const singleWidth = parentWidth / (items.length + 1);
+
+    const order = useRef(items.map((_, index) => index));
+    const [springs, api] = useSprings(items.length, fn(order.current, singleWidth));
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const swap = (array, fromIndex, toIndex) => {
-        const newArray = array.slice() // Create a copy of the array to avoid mutating the original
-        const [movedElement] = newArray.splice(fromIndex, 1) // Remove the element from the original position
-        newArray.splice(toIndex, 0, movedElement) // Insert the element at the new position
-        return newArray
+        const newArray = array.slice();
+        const [movedElement] = newArray.splice(fromIndex, 1);
+        newArray.splice(toIndex, 0, movedElement);
+        return newArray;
     }
 
     const bind = useDrag(({ args: [originalIndex], active, movement: [x] }) => {
-        const curIndex = order.current.indexOf(originalIndex)
-        const curRow = clamp(Math.round((curIndex * singleWidth + x) / singleWidth), 0, items.length - 1)
-        const newOrder = swap(order.current, curIndex, curRow)
+        const curIndex = order.current.indexOf(originalIndex);
+        const curRow = clamp(Math.round((curIndex * singleWidth + x) / singleWidth), 0, items.length - 1);
+        const newOrder = swap(order.current, curIndex, curRow);
 
-        api.start(fn(newOrder, singleWidth, active, originalIndex, curIndex, x))
+        api.start(fn(newOrder, singleWidth, active, originalIndex, curIndex, x));
 
         if (!active) {
-            order.current = newOrder
+            order.current = newOrder;
             // TODO here make axios call with new order to backend to save it (or call external function in case you will reuse it with some other dragging component)
         }
-    })
+    });
+
+    const containerWidth = Math.round(parentWidth);
+    const containerMargin = Math.round(parentWidth / 2);
+    const containerClassName =
+        ' flex relative items-center justify-items-center h-full '
+        // + ' w-[' + containerWidth.toString() + 'px] -ml-[' + (containerMargin.toString()) + 'px] ';
+        + ' w-[' + containerWidth.toString() + 'px] -ml-[100%] ';
 
     return (
-        <div className={styles.content}>
+        <div className={containerClassName}>
             {springs.map(({ zIndex, x, scale }, i) => (
                 <animated.div
                     {...bind(i)}
-                    key={i}
-                    style={{
-                        zIndex,
-                        x,
-                        scale,
-                    }}
-                    children={items[i]}
+                    key = {i}
+                    style = {{zIndex, x, scale}}
+                    children = {items[i]}
+                    className = ' absolute cursor-pointer touch-none '
                 />
             ))}
         </div>
-    )
+    );
 }

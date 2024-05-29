@@ -24,12 +24,13 @@ export const PlayerSection = ({fourPlayersGame}) => {
             </div>
 
             {isFourPlayersDealer &&
-                <div className="basis-[80%] sm:basis-[90%] flex justify-center">
-                    <PlayerFourPlayersDealerMessage />
-                </div>
+            <div className="basis-[80%] sm:basis-[90%] flex justify-center">
+                <PlayerFourPlayersDealerMessage />
+            </div>
             }
 
-            {!isFourPlayersDealer && <div className="basis-[60%] sm:basis-[80%]">
+            {!isFourPlayersDealer &&
+            <div className="basis-[80%] sm:basis-[90%]">
 
                 <div className="absolute bottom-[12vh] left-0 w-full">
                     <div className="flex justify-center">
@@ -37,13 +38,9 @@ export const PlayerSection = ({fourPlayersGame}) => {
                     </div>
                 </div>
 
-                <div>Tricks</div>
                 <div><PlayerHand playerName={playerName} /></div>
-            </div>}
-
-            {!isFourPlayersDealer && <div className="basis-[20%] sm:basis-[10%]">
-                Hand view switch
-            </div>}
+            </div>
+            }
 
         </div>
     );
