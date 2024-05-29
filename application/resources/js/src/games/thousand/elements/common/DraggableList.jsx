@@ -52,7 +52,6 @@ export default function DraggableList({ items, parentWidth }) {
         }
     });
 
-    const containerMargin = Math.round(parentWidth / 2);
     const containerClassName =
         ' flex relative items-center h-[4vh] ' // TODO h-full works ok, adjust or remove at all after testing
         // + ' -ml-[' + (containerMargin.toString()) + 'px] ';
