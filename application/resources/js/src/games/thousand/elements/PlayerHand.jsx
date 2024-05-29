@@ -9,8 +9,16 @@ export const PlayerHand = ({playerName}) => {
 
     const hand = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
 
+    const cardScale = 1.2;
+    const cardBaseWidthPx = 57;
+    const cardFinalWidthPx = Math.round(cardScale * cardBaseWidthPx);
+    const divMaxWidthPx = Math.round(cardFinalWidthPx * hand.length - cardFinalWidthPx / 2);
+    const style = {
+        maxWidth: `${divMaxWidthPx.toString()}px`,
+    }
+
     const renderElements = () => {
-        return hand.map((cardKey) => <PlayingCard key={cardKey} cardKey={cardKey} />);
+        return hand.map((cardKey) => <PlayingCard key={cardKey} cardKey={cardKey} scale={cardScale} />);
     }
 
     const ref = useRef(null);
@@ -34,9 +42,10 @@ export const PlayerHand = ({playerName}) => {
 
     }, []);
 
+    // TODO remove id=PlayerHand after testing
 
     return (
-        <div ref={ref} className="flex items-center justify-center -mt-[2vh]">
+        <div ref={ref} id="PlayerHand" className="flex items-center justify-center sm:w-[60%] w-[70%] -mt-[5vh]" style={style}>
             {width && <DraggableList items={renderElements()} parentWidth={width} />}
         </div>
     );

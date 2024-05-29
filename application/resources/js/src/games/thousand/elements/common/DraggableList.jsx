@@ -52,12 +52,11 @@ export default function DraggableList({ items, parentWidth }) {
         }
     });
 
-    const containerWidth = Math.round(parentWidth);
     const containerMargin = Math.round(parentWidth / 2);
     const containerClassName =
-        ' flex relative items-center justify-items-center h-full '
-        // + ' w-[' + containerWidth.toString() + 'px] -ml-[' + (containerMargin.toString()) + 'px] ';
-        + ' w-[' + containerWidth.toString() + 'px] -ml-[100%] ';
+        ' flex relative items-center h-[4vh] ' // TODO h-full works ok, adjust or remove at all after testing
+        // + ' -ml-[' + (containerMargin.toString()) + 'px] ';
+        + '  sm:-ml-[100%] -ml-[120%] ';
 
     return (
         <div className={containerClassName}>

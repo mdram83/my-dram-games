@@ -14,8 +14,6 @@ export const PlayerSection = ({fourPlayersGame}) => {
     const isDealer = playerName === dealer;
     const isFourPlayersDealer = isDealer && fourPlayersGame;
 
-    // TODO continue here, with player hand
-
     return (
         <div className="flex flex-row items-center h-full">
 
@@ -38,7 +36,7 @@ export const PlayerSection = ({fourPlayersGame}) => {
                     </div>
                 </div>
 
-                <div><PlayerHand playerName={playerName} /></div>
+                <div className="flex justify-center"><PlayerHand playerName={playerName} /></div>
             </div>
             }
 
