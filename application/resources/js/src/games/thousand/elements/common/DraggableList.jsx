@@ -2,7 +2,16 @@ import React, { useRef } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useDrag } from 'react-use-gesture';
 
-const fn =
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const swap = (array, fromIndex, toIndex) => {
+    const newArray = array.slice();
+    const [movedElement] = newArray.splice(fromIndex, 1);
+    newArray.splice(toIndex, 0, movedElement);
+    return newArray;
+}
+
+const createSpringConfig =
     (order, singleWidth, active = false, originalIndex = 0, curIndex = 0, x = 0) =>
         index =>
             active && index === originalIndex
@@ -29,22 +38,14 @@ export default function DraggableList({ items, parentWidth }) {
     const singleWidth = parentWidth / (items.length + 1);
 
     const order = useRef(items.map((_, index) => index));
-    const [springs, api] = useSprings(items.length, fn(order.current, singleWidth));
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const swap = (array, fromIndex, toIndex) => {
-        const newArray = array.slice();
-        const [movedElement] = newArray.splice(fromIndex, 1);
-        newArray.splice(toIndex, 0, movedElement);
-        return newArray;
-    }
+    const [springs, api] = useSprings(items.length, createSpringConfig(order.current, singleWidth));
 
     const bind = useDrag(({ args: [originalIndex], active, movement: [x] }) => {
         const curIndex = order.current.indexOf(originalIndex);
         const curRow = clamp(Math.round((curIndex * singleWidth + x) / singleWidth), 0, items.length - 1);
         const newOrder = swap(order.current, curIndex, curRow);
 
-        api.start(fn(newOrder, singleWidth, active, originalIndex, curIndex, x));
+        api.start(createSpringConfig(newOrder, singleWidth, active, originalIndex, curIndex, x));
 
         if (!active) {
             order.current = newOrder;
@@ -52,13 +53,9 @@ export default function DraggableList({ items, parentWidth }) {
         }
     });
 
-    const containerClassName =
-        ' flex relative items-center h-[4vh] ' // TODO h-full works ok, adjust or remove at all after testing
-        // + ' -ml-[' + (containerMargin.toString()) + 'px] ';
-        + '  sm:-ml-[100%] -ml-[120%] ';
-
+    // TODO h-full works ok, adjust or remove at all after testing in below className
     return (
-        <div className={containerClassName}>
+        <div className="flex relative items-center h-[4vh] sm:-ml-[100%] -ml-[120%]">
             {springs.map(({ zIndex, x, scale }, i) => (
                 <animated.div
                     {...bind(i)}
