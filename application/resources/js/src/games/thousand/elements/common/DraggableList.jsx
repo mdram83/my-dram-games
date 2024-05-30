@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
-import { useSprings, animated } from '@react-spring/web';
-import { useDrag } from 'react-use-gesture';
+import React, {useEffect, useRef} from 'react';
+import {animated, useSprings} from '@react-spring/web';
+import {useDrag} from 'react-use-gesture';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -38,7 +38,7 @@ export default function DraggableList({ items, parentWidth }) {
     const singleWidth = parentWidth / (items.length + 1);
 
     const order = useRef(items.map((_, index) => index));
-    const [springs, api] = useSprings(items.length, createSpringConfig(order.current, singleWidth));
+    const [springs, api] = useSprings(items.length, index => createSpringConfig(order.current, singleWidth)(index));
 
     const bind = useDrag(({ args: [originalIndex], active, movement: [x] }) => {
         const curIndex = order.current.indexOf(originalIndex);
@@ -49,13 +49,20 @@ export default function DraggableList({ items, parentWidth }) {
 
         if (!active) {
             order.current = newOrder;
+            // this is the place that is fired when user drop the card :)
+            console.log(order, items);
             // TODO here make axios call with new order to backend to save it (or call external function in case you will reuse it with some other dragging component)
         }
     });
 
-    // TODO h-full works ok, adjust or remove at all after testing in below className
+    useEffect(() => {
+        const newSingleWidth = parentWidth / (items.length + 1);
+        order.current = items.map((_, index) => index);
+        api.start(index => createSpringConfig(order.current, newSingleWidth)(index));
+    }, [parentWidth, items.length, api]);
+
     return (
-        <div className="flex relative items-center h-[4vh] sm:-ml-[100%] -ml-[120%]">
+        <div className="flex relative items-center sm:-ml-[100%] -ml-[120%]">
             {springs.map(({ zIndex, x, scale }, i) => (
                 <animated.div
                     {...bind(i)}
