@@ -31,7 +31,7 @@ const createSpringConfig =
                     config: { duration: 220 },
                 }
 
-export default function DraggableList({ items, parentWidth }) {
+export default function DraggableList({ items, parentWidth, callback = undefined }) {
 
     console.log('call DraggableList with width = ', parentWidth);
 
@@ -47,19 +47,32 @@ export default function DraggableList({ items, parentWidth }) {
 
         api.start(createSpringConfig(newOrder, singleWidth, active, originalIndex, curIndex, x));
 
-        if (!active) {
+        if (!active && order.current.join() !== newOrder.join()) {
+
+            console.log('apply sorting');
+
             order.current = newOrder;
-            // this is the place that is fired when user drop the card :)
-            console.log(order, items);
-            // TODO here make axios call with new order to backend to save it (or call external function in case you will reuse it with some other dragging component)
+
+            // TODO temp
+            console.log('new order:', order.current);
+            console.log('current keys:', items.map((element) => element.props.cardKey));
+
+            if (callback) {
+                callback(order.current, items.map((element) => element.props.cardKey));
+            }
         }
     });
 
     useEffect(() => {
         const newSingleWidth = parentWidth / (items.length + 1);
+
+        console.log(order.current, items.map((_, index) => index));
+
         order.current = items.map((_, index) => index);
         api.start(index => createSpringConfig(order.current, newSingleWidth)(index));
-    }, [parentWidth, items.length, api]);
+    // }, [parentWidth, items.length, api]); // this doesn work immediately now when hearing from backend
+    }, [parentWidth, items, api]); // this work immediately but with strange effect double sorting or so...
+    // TODO For items, I should trigger re-rended when LENGTH or ORDER has changed...
 
     return (
         <div className="flex relative items-center sm:-ml-[100%] -ml-[120%]">
