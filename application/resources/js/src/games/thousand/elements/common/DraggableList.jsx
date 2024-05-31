@@ -2,6 +2,19 @@ import React, {useEffect, useRef} from 'react';
 import {animated, useSprings} from '@react-spring/web';
 import {useDrag} from 'react-use-gesture';
 
+const itemsEqual = (arr1, arr2) => {
+
+    const items1 = arr1.map((item) => item.props.cardKey);
+    const items2 = arr2.map((item) => item.props.cardKey);
+
+    if (items1.length !== items2.length) return false;
+
+    const sortedArr1 = [...items1].sort();
+    const sortedArr2 = [...items2].sort();
+
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
+};
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const swap = (array, fromIndex, toIndex) => {
@@ -31,7 +44,7 @@ const createSpringConfig =
                     config: { duration: 220 },
                 }
 
-export default function DraggableList({ items, parentWidth, callback = undefined }) {
+function DraggableList({ items, parentWidth, callback = undefined }) {
 
     console.log('call DraggableList with width = ', parentWidth);
 
@@ -49,13 +62,7 @@ export default function DraggableList({ items, parentWidth, callback = undefined
 
         if (!active && order.current.join() !== newOrder.join()) {
 
-            console.log('apply sorting');
-
             order.current = newOrder;
-
-            // TODO temp
-            console.log('new order:', order.current);
-            console.log('current keys:', items.map((element) => element.props.cardKey));
 
             if (callback) {
                 callback(order.current, items.map((element) => element.props.cardKey));
@@ -65,14 +72,9 @@ export default function DraggableList({ items, parentWidth, callback = undefined
 
     useEffect(() => {
         const newSingleWidth = parentWidth / (items.length + 1);
-
-        console.log(order.current, items.map((_, index) => index));
-
         order.current = items.map((_, index) => index);
         api.start(index => createSpringConfig(order.current, newSingleWidth)(index));
-    // }, [parentWidth, items.length, api]); // this doesn work immediately now when hearing from backend
-    }, [parentWidth, items, api]); // this work immediately but with strange effect double sorting or so...
-    // TODO For items, I should trigger re-rended when LENGTH or ORDER has changed...
+    }, [parentWidth, items, api]);
 
     return (
         <div className="flex relative items-center sm:-ml-[100%] -ml-[120%]">
@@ -88,3 +90,7 @@ export default function DraggableList({ items, parentWidth, callback = undefined
         </div>
     );
 }
+
+export default React.memo(DraggableList, (prevProps, nextProps) => {
+    return itemsEqual(prevProps.items, nextProps.items) && prevProps.parentWidth === nextProps.parentWidth;
+});

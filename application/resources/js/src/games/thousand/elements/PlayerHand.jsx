@@ -14,53 +14,17 @@ export const PlayerHand = ({playerName}) => {
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
     const actionSortHand = (order, cards) => {
-
-        console.log('call actionSortHand');
-
         const sortedHand = order.map((targetIndex, index) => cards[targetIndex]);
-
-        console.log('sorted hand:', sortedHand);
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        sleep(3000).then(() => {
-            axios
-                .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
-                    move: {data: {hand: sortedHand}, phase: 'sorting'}
-                })
-                .then(() => {console.log('sorting finished')})
-                .catch(error => {
-                    console.log(error.response);
-                    setMessage(error.response.data.message ?? 'Unexpected error', true);
-                });
-        });
-
-        // const timeOutedAxios = () =>
-        //     axios
-        //         .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
-        //             move: {data: {hand: sortedHand}, phase: 'sorting'}
-        //         })
-        //         .then(() => {console.log('sorting finished')})
-        //         .catch(error => {
-        //             console.log(error.response);
-        //             setMessage(error.response.data.message ?? 'Unexpected error', true);
-        //         });
-        //
-        // setTimeout(timeOutedAxios(), 2000);
-
-        // axios
-        //     .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
-        //         move: {data: {hand: sortedHand}, phase: 'sorting'}
-        //     })
-        //     .then(() => {console.log('sorting finished')})
-        //     .catch(error => {
-        //         console.log(error.response);
-        //         setMessage(error.response.data.message ?? 'Unexpected error', true);
-        //     });
+        axios
+            .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
+                move: {data: {hand: sortedHand}, phase: 'sorting'}
+            })
+            .then(() => {console.log('sorting finished')})
+            .catch(error => {
+                console.log(error.response);
+                setMessage(error.response.data.message ?? 'Unexpected error', true);
+            });
     }
-
 
     const cardScale = 1.2;
     const cardBaseWidthPx = 57;
@@ -95,10 +59,8 @@ export const PlayerHand = ({playerName}) => {
 
     }, []);
 
-    // TODO remove id=PlayerHand after testing
-
     return (
-        <div ref={ref} id="PlayerHand" className="flex items-center justify-center sm:w-[60%] w-[70%] -mt-[5vh]" style={style}>
+        <div ref={ref} className="flex items-center justify-center sm:w-[60%] w-[70%] -mt-[5vh]" style={style}>
             {width && <DraggableList items={renderElements()} parentWidth={width} callback={actionSortHand} />}
         </div>
     );
