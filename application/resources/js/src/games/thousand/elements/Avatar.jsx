@@ -16,11 +16,15 @@ export const Avatar = ({playerName}) => {
     const borderColorClass = configThousand[seat].borderColorClass;
     const avatarTextClass = configThousand[seat].avatarTextClass;
 
+    const notConnectedClass = ' animate-pulse bg-gray-200 ';
+    const currentAndConnectedClass = ' animate-bounce ';
+
     const circleClass =
-        ' flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] '
-        + borderColorClass + ' rounded-full '
-        + (!isConnected ? ' animate-pulse bg-gray-200 ' : ' ')
-        + (isCurrent ? ' border-[1vh] border-solid bg-white ' : ' border-[0.4vh] border-solid bg-gray-200 ');
+        ' flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full '
+        + borderColorClass
+        + (!isConnected ? notConnectedClass : ' ')
+        + (isCurrent ? ' border-[1vh] border-solid bg-white ' : ' border-[0.4vh] border-solid bg-gray-200 ')
+        + (isCurrent && isConnected ? currentAndConnectedClass : ' ');
 
     const initialClass = ' text-[4vh] sm:text-[5vh] font-sans pb-[0.5vh] '
         + (isCurrent ? (' font-black ' + avatarTextClass) : (' font-bold text-gray-600 '));
