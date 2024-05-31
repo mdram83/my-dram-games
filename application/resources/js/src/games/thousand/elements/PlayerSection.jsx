@@ -5,6 +5,8 @@ import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
 import {PlayerHand} from "./PlayerHand.jsx";
 
+// TODO continue here with handling stock distribution
+
 export const PlayerSection = ({fourPlayersGame}) => {
 
     console.log('call PlayerSection');
@@ -30,7 +32,7 @@ export const PlayerSection = ({fourPlayersGame}) => {
             {!isFourPlayersDealer &&
             <div className="basis-[80%] sm:basis-[90%]">
 
-                <div className="absolute bottom-[12vh] left-0 w-full">
+                <div className="absolute bottom-[20vh] left-0 w-full z-20">
                     <div className="flex justify-center">
                         <PlayerInfoBidding playerName={playerName} />
                     </div>

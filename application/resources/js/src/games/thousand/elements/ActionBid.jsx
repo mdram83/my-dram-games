@@ -11,7 +11,7 @@ export const ActionBid = ({decision, amount, phase, disabled = false}) => {
 
     const label = decision === 'bid' ? 'BID ' + amount : 'PASS';
     const buttonClassName =
-        ' border-0 rounded-md p-[1vh] w-[100%] font-sans font-bold text-white '
+        ' border-0 rounded-md p-[1vh] w-[100%] font-sans font-bold text-white text-[2.2vh] '
         + (disabled ? ' bg-gray-600 opacity-80 ' : '  hover:cursor-pointer bg-blue-700 hover:bg-blue-900 ');
 
     const action = () => {

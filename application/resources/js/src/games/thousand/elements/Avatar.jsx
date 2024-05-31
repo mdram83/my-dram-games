@@ -20,7 +20,7 @@ export const Avatar = ({playerName}) => {
         ' flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] '
         + borderColorClass + ' rounded-full '
         + (!isConnected ? ' animate-pulse bg-gray-200 ' : ' ')
-        + (isCurrent ? ' border-8 border-solid bg-white ' : ' border-2 border-solid bg-gray-200 ');
+        + (isCurrent ? ' border-[1vh] border-solid bg-white ' : ' border-[0.4vh] border-solid bg-gray-200 ');
 
     const initialClass = ' text-[4vh] sm:text-[5vh] font-sans pb-[0.5vh] '
         + (isCurrent ? (' font-black ' + avatarTextClass) : (' font-bold text-gray-600 '));

@@ -14,7 +14,7 @@ export const PlayerHand = ({playerName}) => {
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
     const actionSortHand = (order, cards) => {
-        const sortedHand = order.map((targetIndex, index) => cards[targetIndex]);
+        const sortedHand = order.map((targetIndex) => cards[targetIndex]);
         axios
             .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
                 move: {data: {hand: sortedHand}, phase: 'sorting'}

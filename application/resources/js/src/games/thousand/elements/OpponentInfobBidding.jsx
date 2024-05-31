@@ -10,15 +10,16 @@ export const OpponentInfoBidding = ({playerName, isFourPlayersDealer}) => {
     const isPhaseBidding = phaseKey === 'bidding';
 
     const bid = useThousandStore(state => state.situation.orderedPlayers[playerName].bid);
+    const bidAmount = useThousandStore(state => state.situation.bidAmount);
 
     const renderBid = () => {
 
-        const commonClassName = ' font-sans font-bold ';
+        const commonClassName = ' font-sans text-[3vh] ' + (bid === bidAmount ? ' font-black ' : ' font-bold ');
         let bidMessage = 'BID: ' + bid;
         let textClassName = ' text-orange-600 ';
 
         if (bid === null) {
-            bidMessage = 'NO BID YET';
+            bidMessage = 'BID: ...';
         }
 
         if (bid === 'pass') {
