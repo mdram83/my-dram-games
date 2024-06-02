@@ -7,7 +7,7 @@ import {ActionBid} from "./ActionBid.jsx";
 
 export const PlayerInfoBidding = ({playerName}) => {
 
-    console.log(' call PlayerInfoBidding');
+    console.log('PlayerInfoBidding');
 
     // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseBidding store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);

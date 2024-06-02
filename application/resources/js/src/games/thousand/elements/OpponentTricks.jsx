@@ -3,7 +3,7 @@ import {useThousandStore} from "../useThousandStore.jsx";
 
 export const OpponentTricks = ({playerName}) => {
 
-    console.log(' call OpponentTricks for ' + playerName);
+    console.log('OpponentTricks:' + playerName);
 
     const tricksCount = useThousandStore(state => state.situation.orderedPlayers[playerName].tricks);
 

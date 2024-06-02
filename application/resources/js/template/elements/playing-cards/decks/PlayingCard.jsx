@@ -1,9 +1,13 @@
 import React from "react";
 import {minicardsSvg} from "./minicardsSvg.jsx";
+import {useThousandStore} from "../../../../src/games/thousand/useThousandStore.jsx";
 
 export const PlayingCard = ({cardKey, scale = 1}) => {
 
-    console.log('call PlayingCard cardKey=', cardKey);
+    console.log('PlayingCard:', cardKey);
+
+    const activeCardKey = useThousandStore(state => state.activeCardKey);
+    const setActiveCardKey = useThousandStore(state => state.setActiveCardKey);
 
     const style = {
         transform: `scale(${scale.toString()})`,

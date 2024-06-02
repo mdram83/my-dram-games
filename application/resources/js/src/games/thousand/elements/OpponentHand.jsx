@@ -3,7 +3,7 @@ import {useThousandStore} from "../useThousandStore.jsx";
 
 export const OpponentHand = ({playerName}) => {
 
-    console.log(' call OpponentHand for ' + playerName);
+    console.log('OpponentHand:' + playerName);
 
     const handCount = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
 

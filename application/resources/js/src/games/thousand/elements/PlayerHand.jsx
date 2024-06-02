@@ -7,9 +7,10 @@ import DraggableList from "./common/DraggableList.jsx";
 
 export const PlayerHand = ({playerName}) => {
 
-    console.log(' call PlayerHand');
+    console.log('PlayerHand');
 
     const hand = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
+
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
@@ -19,7 +20,7 @@ export const PlayerHand = ({playerName}) => {
             .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
                 move: {data: {hand: sortedHand}, phase: 'sorting'}
             })
-            .then(() => {console.log('sorting finished')})
+            .then(() => {})
             .catch(error => {
                 console.log(error.response);
                 setMessage(error.response.data.message ?? 'Unexpected error', true);
@@ -34,9 +35,7 @@ export const PlayerHand = ({playerName}) => {
         maxWidth: `${divMaxWidthPx.toString()}px`,
     }
 
-    const renderElements = () => {
-        return hand.map((cardKey) => <PlayingCard key={cardKey} cardKey={cardKey} scale={cardScale} />);
-    }
+    const renderElements = () => hand.map((cardKey) => <PlayingCard key={cardKey} cardKey={cardKey} scale={cardScale} />)
 
     const ref = useRef(null);
     const [width, setWidth] = useState(0);

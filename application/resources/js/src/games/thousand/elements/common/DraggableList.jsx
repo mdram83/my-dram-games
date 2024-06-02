@@ -46,7 +46,7 @@ const createSpringConfig =
 
 function DraggableList({ items, parentWidth, callback = undefined }) {
 
-    console.log('call DraggableList with width = ', parentWidth);
+    console.log('DraggableList:', parentWidth);
 
     const singleWidth = parentWidth / (items.length + 1);
 

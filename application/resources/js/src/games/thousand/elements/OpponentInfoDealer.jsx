@@ -2,7 +2,7 @@ import React from "react";
 
 export const OpponentInfoDealer = ({playerName, isFourPlayersDealer}) => {
 
-    console.log('  call OpponentInfoDealer for ' + playerName);
+    console.log('OpponentInfoDealer:' + playerName);
 
     return (
         <div>

@@ -3,7 +3,7 @@ import {StockSection} from "./StockSection.jsx";
 
 export const TableSection = () => {
 
-    console.log('call TableSection');
+    console.log('TableSection');
 
     return (
         <div>

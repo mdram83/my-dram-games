@@ -9,7 +9,7 @@ import {PlayerHand} from "./PlayerHand.jsx";
 
 export const PlayerSection = ({fourPlayersGame}) => {
 
-    console.log('call PlayerSection');
+    console.log('PlayerSection');
     const playerName = window.MyDramGames.player.name;
 
     const dealer = useThousandStore(state => state.situation.dealer);

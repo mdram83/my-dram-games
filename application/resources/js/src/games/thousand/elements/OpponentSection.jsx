@@ -6,7 +6,7 @@ import {OpponentInfo} from "./OpponentInfo.jsx";
 
 export const OpponentSection = ({playerName, fourPlayersGame}) => {
 
-    console.log('call OpponentSection for ' + playerName);
+    console.log('OpponentSection:' + playerName);
     const singleClassName = 'flex justify-center items-center';
 
     return (

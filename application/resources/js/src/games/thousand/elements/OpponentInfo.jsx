@@ -5,7 +5,7 @@ import {useThousandStore} from "../useThousandStore.jsx";
 
 export const OpponentInfo = ({playerName, fourPlayersGame}) => {
 
-    console.log(' call OpponentInfo for ' + playerName);
+    console.log('OpponentInfo:' + playerName);
 
     const dealer = useThousandStore(state => state.situation.dealer);
     const isDealer = playerName === dealer;

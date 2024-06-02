@@ -4,7 +4,7 @@ import {CardBack} from "../../../../template/elements/playing-cards/covers/CardB
 
 export const StockSection = () => {
 
-    console.log('call TableSection');
+    console.log('StockSection');
 
     const stock = useThousandStore(state => state.situation.stock);
     const phaseKey = useThousandStore(state => state.situation.phase.key);
