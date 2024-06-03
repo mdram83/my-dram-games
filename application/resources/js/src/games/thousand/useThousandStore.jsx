@@ -8,4 +8,13 @@ export const useThousandStore = create((set, get) => ({
     activeCardKey: null,
     setActiveCardKey: (activeCardKey) => set(() => ({ activeCardKey: activeCardKey })),
 
+    stockDistribution: {},
+    setStockDistribution: (playerName, cardKey) => {
+
+        const updatedPlayer = {};
+        updatedPlayer[playerName] = cardKey;
+
+        set((state) => ({ stockDistribution: {...state.stockDistribution, ...updatedPlayer} }));
+    },
+
 }));

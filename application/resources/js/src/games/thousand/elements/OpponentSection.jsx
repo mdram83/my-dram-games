@@ -3,6 +3,7 @@ import {Avatar} from "./Avatar.jsx";
 import {OpponentHand} from "./OpponentHand.jsx";
 import {OpponentTricks} from "./OpponentTricks.jsx";
 import {OpponentInfo} from "./OpponentInfo.jsx";
+import {OpponentStockDistribution} from "./OpponentStockDistribution.jsx";
 
 export const OpponentSection = ({playerName, fourPlayersGame}) => {
 
@@ -22,6 +23,10 @@ export const OpponentSection = ({playerName, fourPlayersGame}) => {
 
             <div className={singleClassName}>
                 <OpponentHand playerName={playerName}/>
+            </div>
+
+            <div className={singleClassName}>
+                <OpponentStockDistribution playerName={playerName} fourPlayersGame={fourPlayersGame} />
             </div>
 
             <div className={singleClassName}>

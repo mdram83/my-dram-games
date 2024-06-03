@@ -10,6 +10,13 @@ export const PlayerHand = ({playerName}) => {
     console.log('PlayerHand');
 
     const hand = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
+    const stockDistribution = useThousandStore(state => state.stockDistribution);
+
+    const stockDistributionCardKeys = [];
+    for (const [playerName, stockDistributionCardKey] of Object.entries(stockDistribution)) {
+        stockDistributionCardKeys.push(stockDistributionCardKey);
+    }
+    console.log('SDCKs:', stockDistributionCardKeys);
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
@@ -35,7 +42,14 @@ export const PlayerHand = ({playerName}) => {
         maxWidth: `${divMaxWidthPx.toString()}px`,
     }
 
-    const renderElements = () => hand.map((cardKey) => <PlayingCard key={cardKey} cardKey={cardKey} scale={cardScale} />)
+    const renderElements = () => hand.map(
+        (cardKey) => {
+            const blocked = stockDistributionCardKeys.includes(cardKey);
+            console.log('blocked:', cardKey, blocked);
+            // FIXME although above show true, it is not getting passed as true to below component...
+            return <PlayingCard key={cardKey} cardKey={cardKey} scale={cardScale} blocked={blocked}/>;
+        }
+    );
 
     const ref = useRef(null);
     const [width, setWidth] = useState(0);

@@ -2,16 +2,18 @@ import React, {useRef, useState} from "react";
 import {minicardsSvg} from "./minicardsSvg.jsx";
 import {useThousandStore} from "../../../../src/games/thousand/useThousandStore.jsx";
 
-export const PlayingCard = ({cardKey, scale = 1}) => {
+export const PlayingCard = ({cardKey, scale = 1, blocked = false}) => {
 
-    console.log('PlayingCard:', cardKey);
+    console.log('PlayingCard:', cardKey, 'blocked:', blocked);
 
     const activeCardKey = useThousandStore(state => state.activeCardKey);
     const setActiveCardKey = useThousandStore(state => state.setActiveCardKey);
     const isActive = cardKey === activeCardKey;
 
     const toggleActive = () => {
-        setActiveCardKey(isActive ? null : cardKey);
+        if (!blocked) {
+            setActiveCardKey(isActive ? null : cardKey);
+        }
     }
 
     const initialPosition = useRef({x: 0, y: 0});
@@ -62,6 +64,8 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
         transform: `scale(${(scale * (isActive ? 1.12 : 1.0)).toString()}) translateY(${isActive ? -2.0 : 0.0}vh)`,
     }
 
+    const className = blocked ? 'opacity-35' : '';
+
     const getCard = (cardKey) => {
         return minicardsSvg[cardKey];
     }
@@ -74,6 +78,7 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
 
     return (
         <div style={style}
+             className={className}
              onMouseDown={handleMouseDown}
              onMouseMove={handleMouseMove}
              onMouseUp={handleMouseUp}
