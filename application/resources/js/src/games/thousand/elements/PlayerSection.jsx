@@ -4,6 +4,7 @@ import {PlayerInfoBidding} from "./PlayerInfoBidding.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
 import {PlayerHand} from "./PlayerHand.jsx";
+import {PlayerInfoStockDistribution} from "./PlayerInfoStockDistribution.jsx";
 
 // TODO continue here with handling stock distribution
 
@@ -30,16 +31,22 @@ export const PlayerSection = ({fourPlayersGame}) => {
             }
 
             {!isFourPlayersDealer &&
-            <div className="basis-[80%] sm:basis-[90%]">
+                <div className="basis-[80%] sm:basis-[90%]">
 
-                <div className="absolute bottom-[20vh] left-0 w-full z-20">
-                    <div className="flex justify-center">
-                        <PlayerInfoBidding playerName={playerName} />
+                    <div className="absolute bottom-[20vh] left-0 w-full z-20">
+                        <div className="flex justify-center">
+                            <PlayerInfoBidding playerName={playerName}/>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex justify-center"><PlayerHand playerName={playerName} /></div>
-            </div>
+                    <div className="absolute bottom-[20vh] left-0 w-full z-20">
+                        <div className="flex justify-center">
+                            <PlayerInfoStockDistribution />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-center"><PlayerHand playerName={playerName}/></div>
+                </div>
             }
 
         </div>

@@ -40,17 +40,14 @@ export const OpponentStockDistribution = ({playerName, fourPlayersGame}) => {
 
     const toggleCard = () => {
         if (!isPlayable && !hasStockDistribution) {
-            console.log('No actions');
             return null;
         }
         if (isPlayable) {
-            console.log('Distribute card:', activeCardKey);
             setStockDistribution(playerName, activeCardKey);
             setActiveCardKey(null);
             return null;
         }
         if (hasStockDistribution) {
-            console.log('Return card:', stockDistribution);
             setStockDistribution(playerName, null);
             return null;
         }
