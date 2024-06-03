@@ -5,6 +5,7 @@ import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
 import {PlayerHand} from "./PlayerHand.jsx";
 import {PlayerInfoStockDistribution} from "./PlayerInfoStockDistribution.jsx";
+import {PlayerInfoDeclaration} from "./PlayerInfoDeclaration.jsx";
 
 // TODO continue here with handling stock distribution
 
@@ -41,7 +42,13 @@ export const PlayerSection = ({fourPlayersGame}) => {
 
                     <div className="absolute bottom-[20vh] left-0 w-full z-20">
                         <div className="flex justify-center">
-                            <PlayerInfoStockDistribution />
+                            <PlayerInfoStockDistribution/>
+                        </div>
+                    </div>
+
+                    <div className="absolute bottom-[20vh] left-0 w-full z-20">
+                        <div className="flex justify-center">
+                            <PlayerInfoDeclaration />
                         </div>
                     </div>
 
