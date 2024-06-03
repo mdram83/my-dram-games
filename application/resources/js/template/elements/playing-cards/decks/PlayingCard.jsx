@@ -2,13 +2,17 @@ import React, {useRef, useState} from "react";
 import {minicardsSvg} from "./minicardsSvg.jsx";
 import {useThousandStore} from "../../../../src/games/thousand/useThousandStore.jsx";
 
-export const PlayingCard = ({cardKey, scale = 1, blocked = false}) => {
+export const PlayingCard = ({cardKey, scale = 1}) => {
 
-    console.log('PlayingCard:', cardKey, 'blocked:', blocked);
+    console.log('PlayingCard:', cardKey);
 
     const activeCardKey = useThousandStore(state => state.activeCardKey);
     const setActiveCardKey = useThousandStore(state => state.setActiveCardKey);
     const isActive = cardKey === activeCardKey;
+
+    const stockDistribution = useThousandStore(state => state.stockDistribution);
+    const stockDistributionCardKeys = Object.values(stockDistribution);
+    const blocked = stockDistributionCardKeys.includes(cardKey);
 
     const toggleActive = () => {
         if (!blocked) {
