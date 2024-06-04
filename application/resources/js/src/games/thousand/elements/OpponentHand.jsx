@@ -24,7 +24,7 @@ export const OpponentHand = ({playerName}) => {
     }
 
     return (
-        <div className="relative -mt-[5vh] w-[5vh] sm:w-[10vh]">
+        <div className="relative -mt-[2vh] w-[5vh] sm:w-[10vh] h-[7vh] sm:h-[14vh]">
             {renderItems()}
         </div>
     );

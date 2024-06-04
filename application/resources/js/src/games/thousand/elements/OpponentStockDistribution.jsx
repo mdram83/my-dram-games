@@ -61,7 +61,7 @@ export const OpponentStockDistribution = ({playerName, fourPlayersGame}) => {
         <>
             {
                 isActive && isPhaseStockDistribution && !isFourPlayersDealer &&
-                <div className="flex items-center justify-center mt-[3vh] sm:mt-[10vh] w-full z-20">
+                <div className="flex items-center justify-center w-full z-50">
                     <div className={divClassBase + divClassBorder + divClassCard} onClick={toggleCard}>
                         <div style={divStyleCard}>
                             {hasStockDistribution && getCard(stockDistribution)}

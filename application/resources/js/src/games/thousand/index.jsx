@@ -45,7 +45,7 @@ console.log(useGamePlayStore.getState());
 
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
-const sidePlayersPosition = fourPlayersGame ? 'mb-[10vh]' : 'mb-[30vh]';
+const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
 
 controller.getRoot().render(
 
@@ -63,23 +63,23 @@ controller.getRoot().render(
 
             <div className="grid grid-cols-3 gap-1 content-stretch h-full">
 
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-start">
                     <div className={sidePlayersPosition}>
                         <OpponentSection playerName={leftHandSeat} fourPlayersGame={fourPlayersGame} />
                     </div>
                 </div>
 
-                <div className="grid grid-rows-3 gap-1 content-stretch h-full justify-items-center items-center">
+                <div className="grid grid-rows-2 gap-1 content-stretch h-full justify-items-center items-center">
                     <div>
                         {fourPlayersGame && <OpponentSection playerName={frontSeat} fourPlayersGame={fourPlayersGame} />}
                         {!fourPlayersGame && <div></div>}
                     </div>
-                    <div className="row-span-1">
+                    <div className="h-full w-full flex justify-center items-center">
                         <TableSection />
                     </div>
                 </div>
 
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-start">
                     <div className={sidePlayersPosition}>
                         <OpponentSection playerName={rightHandSeat} fourPlayersGame={fourPlayersGame} />
                     </div>
