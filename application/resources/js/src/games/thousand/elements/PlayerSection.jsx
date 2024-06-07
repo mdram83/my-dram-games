@@ -4,8 +4,6 @@ import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
 import {PlayerHand} from "./PlayerHand.jsx";
 
-// TODO continue here with handling stock distribution
-
 export const PlayerSection = ({fourPlayersGame}) => {
 
     console.log('PlayerSection');

@@ -47,6 +47,13 @@ const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
 const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
 
+// TODO need to fix layout so elements are not overlapping, disappearing and so on.
+// TODO to do this I should
+// TODO *move player Cards outside bottom bar to some absolute div with z-index 1
+// TODO *move ...Info screens also outside TableSection to some absolute div with z-index 20 and keep it Xvh from screen bottom, basically idependent on grid that it is currently in
+// TODO front player and table can then stay as middle grid column as they are right now; Table should be positioned from bottom so it is not so affected by m fron tplayer div high changes
+// TODO btw fix issue that delaer see bidding info action screen
+
 controller.getRoot().render(
 
     <div className="relative w-full h-full">

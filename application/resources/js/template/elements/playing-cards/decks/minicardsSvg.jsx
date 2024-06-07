@@ -368,7 +368,7 @@ export const minicardsSvg = {
             <g style={{ fill: '#000' }}>
                 <use xlinkHref="#index-A-S"></use>
                 <use xlinkHref="#index-A-S" transform="rotate(180, 28.5, 44)"></use>
-                <use xlinkHref="#suit" transform="translate(20.5, 34) scale(2)"></use>
+                <use xlinkHref="#suit-S" transform="translate(20.5, 34) scale(2)"></use>
             </g>
         </svg>
     ),
