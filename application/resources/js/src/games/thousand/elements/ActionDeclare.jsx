@@ -19,7 +19,7 @@ export const ActionDeclare = ({phase, declaration, disabled = false}) => {
         console.log(declaration);
         axios
             .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
-                move: {data: {declaration: declaration}, phase: phase}
+                move: {data: {declaration: parseInt(declaration)}, phase: phase}
             })
             .then(() => {})
             .catch(error => {

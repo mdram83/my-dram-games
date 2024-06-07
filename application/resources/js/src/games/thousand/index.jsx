@@ -67,11 +67,12 @@ const controller = new GamePlayController(getPlayersNames, setupSituation, setup
 console.log(useThousandStore.getState().situation);
 console.log(useGamePlayStore.getState());
 
+// TODO general thing - check where do you check which useThousandStore elements
+// TODO with above, try to minimize props passing through components
+
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
 const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
-
-// TODO fix bug with invalid params for declaration action
 
 controller.getRoot().render(
     <div className="relative w-full h-full">
