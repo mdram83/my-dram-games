@@ -42,13 +42,13 @@ export const PlayerHand = ({playerName}) => {
     const ref = useRef(null);
     const [width, setWidth] = useState(0);
 
-    useEffect(() => {
-
-        const handleResize = () => {
-            if (ref.current) {
-                setWidth(ref.current.offsetWidth);
-            }
+    const handleResize = () => {
+        if (ref.current) {
+            setWidth(ref.current.offsetWidth);
         }
+    }
+
+    useEffect(() => {
 
         handleResize();
 
@@ -58,7 +58,7 @@ export const PlayerHand = ({playerName}) => {
             window.removeEventListener('resize', handleResize);
         };
 
-    }, []);
+    }, [hand]);
 
     return (
         <div ref={ref} className="flex items-center justify-center sm:w-[60%] w-[70%]" style={style}>

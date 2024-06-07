@@ -71,7 +71,6 @@ const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
 const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
 
-// TODO player hand in new place do not refresh automatically, need to resize screen (as in the past), fix it
 // TODO fix bug with invalid params for declaration action
 
 controller.getRoot().render(
