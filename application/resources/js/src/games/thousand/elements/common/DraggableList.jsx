@@ -77,7 +77,7 @@ function DraggableList({ items, parentWidth, callback = undefined }) {
     }, [parentWidth, items, api]);
 
     return (
-        <div className="flex relative items-center sm:-ml-[100%] -ml-[120%]">
+        <div className="flex relative items-center -ml-[88%]">
             {springs.map(({ zIndex, x, scale }, i) => (
                 <animated.div
                     {...bind(i)}

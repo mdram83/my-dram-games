@@ -2,7 +2,6 @@ import React from "react";
 import {Avatar} from "./Avatar.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {PlayerFourPlayersDealerMessage} from "./PlayerFourPlayersDealerMessage.jsx";
-import {PlayerHand} from "./PlayerHand.jsx";
 
 export const PlayerSection = ({fourPlayersGame}) => {
 
@@ -24,12 +23,6 @@ export const PlayerSection = ({fourPlayersGame}) => {
             <div className="basis-[80%] sm:basis-[90%] flex justify-center">
                 <PlayerFourPlayersDealerMessage />
             </div>
-            }
-
-            {!isFourPlayersDealer &&
-                <div className="basis-[80%] sm:basis-[90%]">
-                    <div className="flex justify-center"><PlayerHand playerName={playerName}/></div>
-                </div>
             }
 
         </div>

@@ -61,7 +61,7 @@ export const PlayerHand = ({playerName}) => {
     }, []);
 
     return (
-        <div ref={ref} className="flex items-center justify-center sm:w-[60%] w-[70%] -mt-[5vh]" style={style}>
+        <div ref={ref} className="flex items-center justify-center sm:w-[60%] w-[70%]" style={style}>
             {width && <DraggableList items={renderElements()} parentWidth={width} callback={actionSortHand} />}
         </div>
     );

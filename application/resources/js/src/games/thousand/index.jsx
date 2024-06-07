@@ -9,14 +9,33 @@ import {seatAssignment} from "./seatAssignment.jsx";
 import {OpponentSection} from "./elements/OpponentSection.jsx";
 import {TableSection} from "./elements/TableSection.jsx";
 import {PlayerSection} from "./elements/PlayerSection.jsx";
+import {PlayerHand} from "./elements/PlayerHand.jsx";
+import {PlayerInfos} from "./elements/PlayerInfos.jsx";
+
+const playerName = window.MyDramGames.player.name;
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.orderedPlayers);
 
-const setupSituation = (situation) => unstable_batchedUpdates(
-    () => useThousandStore.getState().setSituation(situation)
-);
+const setupSituation = (situation) => unstable_batchedUpdates(() => {
 
-const setupMoveEvent = (e) =>
+    useThousandStore.getState().setSituation(situation);
+
+    if (getPlayersNames(situation).length === 4) {
+        useThousandStore.getState().setIsFourPlayersGame(true);
+        useThousandStore.getState().setIsPlayerFourPlayersDealer(playerName === situation.dealer);
+    }
+
+});
+
+const setupMoveEvent = (e) => {
+
+    const previousSituation = useThousandStore.getState().situation;
+    const isFourPlayersGame = useThousandStore.getState().isFourPlayersGame;
+    const hasSwitchedPlayerToActive = () => (
+        e.situation.activePlayer === window.MyDramGames.player.name
+        && previousSituation.activePlayer !== e.situation.activePlayer
+    );
+
     unstable_batchedUpdates(() => {
         useThousandStore.getState().setSituation(e.situation);
 
@@ -31,11 +50,16 @@ const setupMoveEvent = (e) =>
 
             useGamePlayStore.getState().setActivePlayer(e.situation.activePlayer);
 
-            if (e.situation.activePlayer === window.MyDramGames.player.name) {
+            if (isFourPlayersGame) {
+                useThousandStore.getState().setIsPlayerFourPlayersDealer(playerName === e.situation.dealer);
+            }
+
+            if (hasSwitchedPlayerToActive()) {
                 useGamePlayStore.getState().setMessage('Your turn', false, 0.5);
             }
         }
     });
+}
 
 const controller = new GamePlayController(getPlayersNames, setupSituation, setupMoveEvent);
 
@@ -47,48 +71,44 @@ const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
 const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
 
-// TODO need to fix layout so elements are not overlapping, disappearing and so on.
-// TODO to do this I should
-// TODO *move player Cards outside bottom bar to some absolute div with z-index 1
-// TODO *move ...Info screens also outside TableSection to some absolute div with z-index 20 and keep it Xvh from screen bottom, basically idependent on grid that it is currently in
-// TODO front player and table can then stay as middle grid column as they are right now; Table should be positioned from bottom so it is not so affected by m fron tplayer div high changes
-// TODO btw fix issue that delaer see bidding info action screen
+// TODO player hand in new place do not refresh automatically, need to resize screen (as in the past), fix it
+// TODO fix bug with invalid params for declaration action
 
 controller.getRoot().render(
-
     <div className="relative w-full h-full">
 
         <div className="fixed top-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800 z-10">
-            <Menu gameInvite={controller.getGameInvite()} />
+            <Menu gameInvite={controller.getGameInvite()}/>
         </div>
 
         {/*--- Board ---*/}
         {/*Scrollable*/}
         {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
         {/*Fixed*/}
-        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-bottom bg-no-repeat bg-cover bg-[url('https://media.istockphoto.com/id/966787750/pl/zdj%C4%99cie/puste-t%C5%82o-tabeli.jpg?s=612x612&w=0&k=20&c=ovSedN2ph7_RUmMmOU7llHEyM8wsnBN7qO_db6Qi4Hc=')]">
+        <div
+            className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-bottom bg-no-repeat bg-cover bg-[url('https://media.istockphoto.com/id/966787750/pl/zdj%C4%99cie/puste-t%C5%82o-tabeli.jpg?s=612x612&w=0&k=20&c=ovSedN2ph7_RUmMmOU7llHEyM8wsnBN7qO_db6Qi4Hc=')]">
 
             <div className="grid grid-cols-3 gap-1 content-stretch h-full">
 
                 <div className="flex justify-center items-start">
                     <div className={sidePlayersPosition}>
-                        <OpponentSection playerName={leftHandSeat} fourPlayersGame={fourPlayersGame} />
+                        <OpponentSection playerName={leftHandSeat} fourPlayersGame={fourPlayersGame}/>
                     </div>
                 </div>
 
                 <div className="grid grid-rows-2 gap-1 content-stretch h-full justify-items-center items-center">
                     <div>
-                        {fourPlayersGame && <OpponentSection playerName={frontSeat} fourPlayersGame={fourPlayersGame} />}
+                        {fourPlayersGame && <OpponentSection playerName={frontSeat} fourPlayersGame={fourPlayersGame}/>}
                         {!fourPlayersGame && <div></div>}
                     </div>
                     <div className="h-full w-full flex justify-center items-center">
-                        <TableSection />
+                        <TableSection/>
                     </div>
                 </div>
 
                 <div className="flex justify-center items-start">
                     <div className={sidePlayersPosition}>
-                        <OpponentSection playerName={rightHandSeat} fourPlayersGame={fourPlayersGame} />
+                        <OpponentSection playerName={rightHandSeat} fourPlayersGame={fourPlayersGame}/>
                     </div>
                 </div>
 
@@ -96,11 +116,26 @@ controller.getRoot().render(
 
         </div>
 
-        <div className="fixed -bottom-[0.1vh] w-[92%] sm:w-[96%] h-[10vh] sm:h-[12vh] px-[4%] sm:px-[2%] py-[2vh] bg-gray-800">
-            <PlayerSection fourPlayersGame={fourPlayersGame} />
+        <div
+            className="fixed -bottom-[0.1vh] w-[92%] sm:w-[96%] h-[10vh] sm:h-[12vh] px-[4%] sm:px-[2%] py-[2vh] bg-gray-800">
+            <PlayerSection fourPlayersGame={fourPlayersGame}/>
         </div>
 
-        <FlashMessageGamePlay />
+        <div className="fixed bottom-[10vh] w-full z-10">
+            <div className="flex justify-center">
+                <PlayerHand playerName={playerName}/>
+            </div>
+        </div>
 
-    </div>
-);
+        <div className="fixed bottom-[18vh] sm:bottom-[20vh] w-full z-20">
+            <div className="flex justify-center">
+                <div className="flex relative justify-center">
+                    <PlayerInfos/>
+                </div>
+            </div>
+        </div>
+
+            <FlashMessageGamePlay/>
+
+        </div>
+        );

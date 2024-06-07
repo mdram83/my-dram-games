@@ -13,6 +13,8 @@ export const PlayerInfoBidding = ({playerName}) => {
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseBidding = phaseKey === 'bidding';
 
+    const isPlayerFourPlayersDealer = useThousandStore(state => state.isPlayerFourPlayersDealer);
+
     const activePlayer = useGamePlayStore(state => state.activePlayer);
     const isActivePlayer = playerName === activePlayer;
 
@@ -26,13 +28,13 @@ export const PlayerInfoBidding = ({playerName}) => {
 
     const renderBid = () => {
 
-        if (!isPhaseBidding) {
+        if (!isPhaseBidding || isPlayerFourPlayersDealer) {
             return <></>;
         }
 
         return (
             <div
-                className={borderColorClass + ' w-full border-2 border-solid bg-white rounded-xl py-[1vh] px-[6%] bg-opacity-60 '}>
+                className={borderColorClass + ' w-full border-[0.4vh] border-solid bg-white rounded-xl bg-opacity-60 px-[2vh] '}>
 
                 <div className={singleClassName}>
                     <OpponentInfoBidding playerName={playerName} isFourPlayersDealer={false}/>

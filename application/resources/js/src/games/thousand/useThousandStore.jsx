@@ -5,6 +5,12 @@ export const useThousandStore = create((set, get) => ({
     situation: {},
     setSituation: (situation) => set(() => ({ situation: situation })),
 
+    isFourPlayersGame: false,
+    setIsFourPlayersGame: (isFourPlayersGame) => set(() => ({ isFourPlayersGame: isFourPlayersGame})),
+
+    isPlayerFourPlayersDealer: false,
+    setIsPlayerFourPlayersDealer: (value) => set(() => ({ isPlayerFourPlayersDealer: value })),
+
     activeCardKey: null,
     setActiveCardKey: (activeCardKey) => set(() => ({ activeCardKey: activeCardKey })),
 

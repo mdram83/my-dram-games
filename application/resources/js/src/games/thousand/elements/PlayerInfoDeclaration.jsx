@@ -35,7 +35,7 @@ export const PlayerInfoDeclaration = () => {
 
         return (
             <div
-                className={borderColorClass + ' w-full border-2 border-solid bg-white rounded-xl py-[1vh] px-[6%] bg-opacity-60 '}>
+                className={borderColorClass + ' w-full border-[0.4vh] border-solid bg-white rounded-xl bg-opacity-60 px-[2vh] '}>
 
                 <div className={singleClassName}>
                     <span className="font-sans text-[3vh] font-bold text-orange-600 text-center">
@@ -44,7 +44,7 @@ export const PlayerInfoDeclaration = () => {
                 </div>
 
                 <div className={singleClassName}>
-                    <input type="range" min={bidAmount} max="300" step="10" onChange={updateDeclaration}/>
+                    <input type="range" min={bidAmount} max="300" step="10" onChange={updateDeclaration} className='w-full'/>
                 </div>
 
                 <div className={singleClassName}>
