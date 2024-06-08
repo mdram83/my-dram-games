@@ -1,6 +1,7 @@
 import React from "react";
 import {StockSection} from "./StockSection.jsx";
 import {StockRecord} from "./StockRecord.jsx";
+import {Table} from "./Table.jsx";
 
 export const TableSection = () => {
 
@@ -11,9 +12,8 @@ export const TableSection = () => {
         <div className="relative z-10 h-full w-full">
             <div className={commonStandardDivClass}><StockSection/></div>
             <div className={commonStandardDivClass}><StockRecord/></div>
-            <div className={commonStandardDivClass}>Table Goes Here</div>
+            <div className={commonStandardDivClass}><Table /></div>
         </div>
-
     );
 }
 

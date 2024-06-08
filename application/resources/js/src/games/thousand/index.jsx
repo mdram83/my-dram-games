@@ -69,6 +69,7 @@ console.log(useGamePlayStore.getState());
 
 // TODO general thing - check where do you check which useThousandStore elements
 // TODO with above, try to minimize props passing through components
+// TODO remove unnecessary marginal martins/positions from below divs
 
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
@@ -137,5 +138,5 @@ controller.getRoot().render(
 
             <FlashMessageGamePlay/>
 
-        </div>
-        );
+    </div>
+);
