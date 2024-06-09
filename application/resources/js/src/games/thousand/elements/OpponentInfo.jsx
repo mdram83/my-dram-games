@@ -2,6 +2,7 @@ import React from "react";
 import {OpponentInfoDealer} from "./OpponentInfoDealer.jsx";
 import {OpponentInfoBidding} from "./OpponentInfobBidding.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
+import {OpponentInfoReady} from "./OpponentInfoReady.jsx";
 
 export const OpponentInfo = ({playerName, fourPlayersGame}) => {
 
@@ -22,6 +23,10 @@ export const OpponentInfo = ({playerName, fourPlayersGame}) => {
 
             <div className={singleClassName}>
                 <OpponentInfoBidding playerName={playerName} isFourPlayersDealer={isFourPlayersDealer}/>
+            </div>
+
+            <div className={singleClassName}>
+                <OpponentInfoReady playerName={playerName} />
             </div>
 
         </div>
