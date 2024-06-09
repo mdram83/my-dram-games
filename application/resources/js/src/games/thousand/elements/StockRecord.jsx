@@ -29,13 +29,12 @@ export const StockRecord = () => {
     );
 
     return (
-        <>
+        <div className="relative">
             {isPhaseStockDistribution && !isActivePlayer &&
-                <div
-                    className="inline-grid grid-cols-3 gap-0 items-center justify-center w-[80%] sm:w-[100%] -ml-[10%] sm:ml-0">
+                <div className="inline-grid grid-cols-3 gap-0 items-center justify-center w-[100%] ml-0">
                     {renderItems()}
                 </div>
             }
-        </>
+        </div>
     );
 }
