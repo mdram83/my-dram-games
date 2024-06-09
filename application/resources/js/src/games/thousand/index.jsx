@@ -71,10 +71,6 @@ console.log(useGamePlayStore.getState());
 // TODO with above, try to minimize props passing through components
 // TODO remove unnecessary marginal martins/positions from below divs
 
-// TODO bug that initial declaration always show 100 instead of bidAmount (if winning bid at 120, it always starts from 100)
-// TODO it works after reloading the page, but if you dont reload between bidding and declaration, it shows 100
-// TODO possibly bidAmount is not getting refreshed or not updated from store in declaration component
-
 // TODO display current trump suit somewhere
 
 // TODO better styling of stock record (similar to table)

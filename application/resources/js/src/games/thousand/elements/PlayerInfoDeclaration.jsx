@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.jsx";
 import {configThousand} from "../configThousand.jsx";
@@ -26,6 +26,10 @@ export const PlayerInfoDeclaration = () => {
     const seat = useThousandStore(state => state.situation.orderedPlayers[playerName].seat);
     const borderColorClass = configThousand[seat].borderColorClass;
     const singleClassName = ' flex justify-center items-center py-[2vh] ';
+
+    useEffect(() => {
+        setDeclaration(bidAmount);
+    }, [bidAmount]);
 
     const renderDeclaration = () => {
 

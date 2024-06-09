@@ -8,18 +8,13 @@ export const Table = () => {
 
     console.log('Table');
 
-    // TODO 2. add marriage meld info section, to be available with active card being Q/K prior to sending to table
-    // TODO 3. adjsut styling so that first card is rotated by 5deg, second by 105deg, 3rd by 265deg
-
     const table = useThousandStore(state => state.situation.table);
-    const activeCardKey = useThousandStore(state => state.activeCardKey);
 
     const playerName = window.MyDramGames.player.name;
     const activePlayer = useGamePlayStore(state => state.activePlayer);
     const isActivePlayer = playerName === activePlayer;
 
     const phaseKey = useThousandStore(state => state.situation.phase.key);
-    const isPhasePlayingFirstCard = phaseKey === 'playing-first-card';
     const isPhasePlayingCard = (
         phaseKey === 'playing-first-card'
         || phaseKey === 'playing-second-card'
