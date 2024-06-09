@@ -11,6 +11,9 @@ export const TableDistribution = () => {
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const phaseKey = useThousandStore(state => state.situation.phase.key);
 
+    const meldMarriageDecision = useThousandStore(state => state.meldMarriageDecision);
+    const setMeldMarriageDecision = useThousandStore(state => state.setMeldMarriageDecision);
+
     const activeCardKey = useThousandStore(state => state.activeCardKey);
     const setActiveCardKey = useThousandStore(state => state.setActiveCardKey);
     const hasActiveCard = activeCardKey !== null;
@@ -29,9 +32,12 @@ export const TableDistribution = () => {
         const card = activeCardKey;
         setActiveCardKey(null);
 
+        const marriage = meldMarriageDecision;
+        setMeldMarriageDecision(false);
+
         axios
             .post(window.MyDramGames.routes['ajax.gameplay.move'](gamePlayId), {
-                move: {data: {card: card, marriage: false}, phase: phaseKey} // TODO adjust marriage after setting Action element
+                move: {data: {card: card, marriage: marriage}, phase: phaseKey}
             })
             .then(() => {})
             .catch(error => {

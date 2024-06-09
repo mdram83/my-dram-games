@@ -2,6 +2,7 @@ import React from "react";
 import {PlayerInfoDeclaration} from "./PlayerInfoDeclaration.jsx";
 import {PlayerInfoStockDistribution} from "./PlayerInfoStockDistribution.jsx";
 import {PlayerInfoBidding} from "./PlayerInfoBidding.jsx";
+import {PlayerInfoMarriageMelding} from "./PlayerInfoMarriageMelding.jsx";
 
 export const PlayerInfos = () => {
 
@@ -12,6 +13,7 @@ export const PlayerInfos = () => {
             <PlayerInfoBidding playerName={window.MyDramGames.player.name} />
             <PlayerInfoStockDistribution />
             <PlayerInfoDeclaration />
+            <PlayerInfoMarriageMelding />
         </div>
     );
 }

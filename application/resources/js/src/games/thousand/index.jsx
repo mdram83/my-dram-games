@@ -71,6 +71,17 @@ console.log(useGamePlayStore.getState());
 // TODO with above, try to minimize props passing through components
 // TODO remove unnecessary marginal martins/positions from below divs
 
+// TODO bug that initial declaration always show 100 instead of bidAmount (if winning bid at 120, it always starts from 100)
+// TODO it works after reloading the page, but if you dont reload between bidding and declaration, it shows 100
+// TODO possibly bidAmount is not getting refreshed or not updated from store in declaration component
+
+// TODO display current trump suit somewhere
+
+// TODO better styling of stock record (similar to table)
+
+// TODO need to find a method to show third played card at least for a sec before emptying the table...
+// TODO I can either send 3rd card situation (last move, last phase etc., dont show e.g. distribution) OR add new phase for trick winner to collect the trick from table (during which time table would show 3 cards)
+
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
 const sidePlayersPosition = fourPlayersGame ? 'mt-[25vh] sm:mt-[20vh]' : 'mt-[20vh] sm:mt-[15vh]';
