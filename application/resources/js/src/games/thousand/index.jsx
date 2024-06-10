@@ -67,16 +67,21 @@ const controller = new GamePlayController(getPlayersNames, setupSituation, setup
 console.log(useThousandStore.getState().situation);
 console.log(useGamePlayStore.getState());
 
+// TODO next: display points summary at count-points phase
+// TODO next: link to game infos (paper card on the table or sth...)
+
+// FIXME: internal error when last player try to get ready in round with bomb
+// FIXME: stock distribution not getting cleared immediately after distributing
+
 // TODO general thing - check where do you check which useThousandStore elements
 // TODO with above, try to minimize props passing through components
 // TODO remove unnecessary marginal martins/positions from below divs
 
-// TODO display current trump suit somewhere
-
-// TODO better styling of stock record (similar to table)
+// TODO display current trump suit somewhere (or not..., or just info after declaration)
 
 // TODO need to find a method to show third played card at least for a sec before emptying the table...
 // TODO I can either send 3rd card situation (last move, last phase etc., dont show e.g. distribution) OR add new phase for trick winner to collect the trick from table (during which time table would show 3 cards)
+// TODO eventually consider 'animation' inside situation, or as additional element sent in Event... or extra Event...
 
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;
