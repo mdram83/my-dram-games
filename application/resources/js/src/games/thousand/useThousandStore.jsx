@@ -22,6 +22,7 @@ export const useThousandStore = create((set, get) => ({
 
         set((state) => ({ stockDistribution: {...state.stockDistribution, ...updatedPlayer} }));
     },
+    clearStockDistribution: () => set(() => ({ stockDistribution: {} })),
 
     meldMarriageDecision: false,
     setMeldMarriageDecision: (decision) => set(() => ({ meldMarriageDecision: decision})),

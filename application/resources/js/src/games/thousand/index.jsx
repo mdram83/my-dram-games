@@ -70,8 +70,6 @@ console.log(useGamePlayStore.getState());
 // TODO next: display points summary at count-points phase
 // TODO next: link to game infos (paper card on the table or sth...)
 
-// FIXME: stock distribution not getting cleared immediately after distributing (visible in next round in player hand if same card is there)
-
 // TODO general thing - check where do you check which useThousandStore elements
 // TODO with above, try to minimize props passing through components
 // TODO remove unnecessary marginal martins/positions from below divs
