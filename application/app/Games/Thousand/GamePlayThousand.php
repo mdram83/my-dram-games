@@ -442,6 +442,8 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             foreach ($this->players->toArray() as $player) {
                 $this->steward->setRoundPoints($player, $this->activePlayer, $this->gameData, $this->playersData, true);
                 $this->steward->setBarrelStatus($this->playersData->getFor($player));
+
+                $this->playersData->getFor($player)->hand = $this->cardDealer->getEmptyStock();
                 $this->playersData->getFor($player)->ready = false;
             }
 

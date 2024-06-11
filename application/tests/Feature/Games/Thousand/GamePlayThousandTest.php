@@ -1721,21 +1721,27 @@ class GamePlayThousandTest extends TestCase
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['hand'],
             );
         }
 
@@ -1811,27 +1817,35 @@ class GamePlayThousandTest extends TestCase
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI0['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI1['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI2['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationI3['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationI3['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationI3['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationI3['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF0['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF0['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF1['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF1['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF2['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF2['orderedPlayers'][$this->players[$i]->getName()]['hand'],
                 $situationF3['orderedPlayers'][$this->players[$i]->getName()]['points'],
                 $situationF3['orderedPlayers'][$this->players[$i]->getName()]['ready'],
                 $situationF3['orderedPlayers'][$this->players[$i]->getName()]['bombRounds'],
+                $situationF3['orderedPlayers'][$this->players[$i]->getName()]['hand'],
             );
         }
 
@@ -3241,5 +3255,30 @@ class GamePlayThousandTest extends TestCase
         $this->assertTrue($this->play->isFinished());
         $this->assertTrue($situation['isFinished']);
         $this->assertArrayHasKey('result', $situation);
+    }
+
+    public function testGetSituationAfterBombAndCountPoints(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealNoMarriage']);
+        $this->processPhaseBidding(false, 100);
+        $this->processPhaseStockDistribution();
+
+        $bidWinner = $this->play->getActivePlayer();
+
+        $this->play->handleMove(new GameMoveThousandDeclaration(
+            $bidWinner,
+            ['declaration' => 0],
+            new GamePhaseThousandDeclaration()
+        ));
+
+        for ($i = 0; $i <= 2; $i++) {
+            $this->play->handleMove(new GameMoveThousandCountPoints(
+                $this->players[$i],
+                ['ready' => true],
+                new GamePhaseThousandCountPoints()
+            ));
+        }
+
+        $this->assertEquals((new GamePhaseThousandBidding())->getKey(), $this->play->getSituation($bidWinner)['phase']['key']);
     }
 }
