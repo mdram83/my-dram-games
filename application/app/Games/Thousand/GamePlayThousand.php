@@ -522,7 +522,6 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             $this->gameData->trumpSuit = null;
             $this->gameData->turnLead = null;
             $this->gameData->stockRecord = $this->cardDealer->getEmptyStock();
-            $this->activePlayer = $this->gameData->bidWinner; // TODO do I need this one?
         }
 
         $this->gameData->advanceGamePhase($hand->count() === 0);
