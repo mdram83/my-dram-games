@@ -20,6 +20,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
@@ -27,6 +28,7 @@ use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\Elements\GamePhaseThousandCollectTricks;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
@@ -267,6 +269,15 @@ class GamePlayThousandTest extends TestCase
         ));
     }
 
+    protected function processPhaseCollectTricks(Player $player): void
+    {
+        $this->play->handleMove(new GameMoveThousandCollectTricks(
+            $player,
+            ['collect' => true],
+            new GamePhaseThousandCollectTricks(),
+        ));
+    }
+
     protected function processPhasePlayCard(): void
     {
         $orderedPlayers = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
@@ -293,6 +304,7 @@ class GamePlayThousandTest extends TestCase
                     $phases[$phaseNumber]
                 ));
             }
+            $this->processPhaseCollectTricks($this->play->getActivePlayer());
         }
     }
 
@@ -2510,6 +2522,8 @@ class GamePlayThousandTest extends TestCase
         $expectedTricks2 = $overwrite[$player2->getName()]['hand'][1] === 'A-H' ? 3 : 0;
         $expectedTricks3 = $overwrite[$player2->getName()]['hand'][1] === 'A-H' ? 0 : 3;
 
+        $this->processPhaseCollectTricks($expectedTurnLead);
+
         $situationF = $this->play->getSituation($player1);
 
         $phase = $situationF['phase']['key'];
@@ -2555,6 +2569,59 @@ class GamePlayThousandTest extends TestCase
         $this->assertEquals($situationI, $situationF);
     }
 
+    public function testHandleMoveThirdCardThreeCardsOnTable(): void
+    {
+        $this->updateGamePlayDeal([$this, 'getDealMarriages']);
+        $this->processPhaseBidding();
+        $this->processPhaseStockDistribution();
+        $this->processPhaseDeclaration();
+
+        $hands = [['9-H', 'A-H'], ['J-H', '10-H'], ['Q-H', 'K-H']];
+        $overwrite = $this->storageRepository->getOne($this->play->getId())->getGameData()['orderedPlayers'];
+        foreach ($overwrite as $playerName => $playerData) {
+            $overwrite[$playerName]['hand'] = $playerName === $this->play->getActivePlayer()->getName()
+                ? array_pop($hands)
+                : array_shift($hands);
+        }
+        $this->updateGameData(['orderedPlayers' => $overwrite]);
+
+        $player1 = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player1,
+            ['card' => $overwrite[$player1->getName()]['hand'][0]],
+            new GamePhaseThousandPlayFirstCard()
+        ));
+
+        $player2 = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player2,
+            ['card' => $overwrite[$player2->getName()]['hand'][1]],
+            new GamePhaseThousandPlaySecondCard()
+        ));
+
+        $player3 = $this->play->getActivePlayer();
+        $this->play->handleMove(new GameMoveThousandPlayCard(
+            $player3,
+            ['card' => $overwrite[$player3->getName()]['hand'][1]],
+            new GamePhaseThousandPlayThirdCard()
+        ));
+
+        $expectedActivePlayer = $overwrite[$player2->getName()]['hand'][1] === 'A-H' ? $player2 : $player3;
+
+        $situation = $this->play->getSituation($player1);
+
+        $this->assertEquals(GamePhaseThousandCollectTricks::PHASE_KEY, $situation['phase']['key']);
+        $this->assertCount(3, $situation['table']);
+        $this->assertNotNull($situation['turnSuit']);
+        $this->assertEquals($expectedActivePlayer->getName(), $situation['activePlayer']);
+        $this->assertCount(1, $situation['orderedPlayers'][$player1->getName()]['hand']);
+        $this->assertEquals(1, $situation['orderedPlayers'][$player2->getName()]['hand']);
+        $this->assertEquals(1, $situation['orderedPlayers'][$player3->getName()]['hand']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$player1->getName()]['tricks']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$player2->getName()]['tricks']);
+        $this->assertEquals(0, $situation['orderedPlayers'][$player3->getName()]['tricks']);
+    }
+
     public function testHandleMoveThirdCardTrickDistributionOnlyFirstTurnSuit(): void
     {
         $this->updateGamePlayDeal([$this, 'getDealMarriages']);
@@ -2591,6 +2658,8 @@ class GamePlayThousandTest extends TestCase
             ['card' => $overwrite[$player3->getName()]['hand'][1]],
             new GamePhaseThousandPlayThirdCard()
         ));
+
+        $this->processPhaseCollectTricks($player1);
 
         $situation = $this->play->getSituation($player1);
 
@@ -2643,6 +2712,8 @@ class GamePlayThousandTest extends TestCase
             ? $player2->getName()
             : $player3->getName();
 
+        $this->processPhaseCollectTricks($this->getPlayerByName($expectedTurnLead));
+
         $situation = $this->play->getSituation($player1);
 
         $this->assertEquals($expectedTurnLead, $situation['turnLead']);
@@ -2693,6 +2764,8 @@ class GamePlayThousandTest extends TestCase
         $expectedTurnLead = $overwrite['orderedPlayers'][$player2->getName()]['hand'][1] === 'A-D'
             ? $player2->getName()
             : $player3->getName();
+
+        $this->processPhaseCollectTricks($this->getPlayerByName($expectedTurnLead));
 
         $situation = $this->play->getSituation($player1);
 
@@ -2745,6 +2818,8 @@ class GamePlayThousandTest extends TestCase
             ? $player2->getName()
             : $player3->getName();
 
+        $this->processPhaseCollectTricks($this->getPlayerByName($expectedTurnLead));
+
         $situation = $this->play->getSituation($player1);
 
         $this->assertEquals($expectedTurnLead, $situation['turnLead']);
@@ -2781,6 +2856,7 @@ class GamePlayThousandTest extends TestCase
                     $phases[$phaseNumber]
                 ));
             }
+            $this->processPhaseCollectTricks($this->play->getActivePlayer());
         }
 
         $player = $this->play->getActivePlayer();
@@ -2872,6 +2948,7 @@ class GamePlayThousandTest extends TestCase
                     $phases[$phaseNumber]
                 ));
             }
+            $this->processPhaseCollectTricks($this->play->getActivePlayer());
         }
 
         $situation = $this->play->getSituation($this->play->getActivePlayer());
@@ -2954,6 +3031,7 @@ class GamePlayThousandTest extends TestCase
                     $phases[$phaseNumber]
                 ));
             }
+            $this->processPhaseCollectTricks($this->play->getActivePlayer());
         }
 
         $situation = $this->play->getSituation($this->play->getActivePlayer());
@@ -3010,6 +3088,7 @@ class GamePlayThousandTest extends TestCase
                     $phases[$phaseNumber]
                 ));
             }
+            $this->processPhaseCollectTricks($this->play->getActivePlayer());
         }
 
         $situation = $this->play->getSituation($this->play->getActivePlayer());

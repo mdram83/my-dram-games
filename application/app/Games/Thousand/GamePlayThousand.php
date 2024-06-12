@@ -23,6 +23,7 @@ use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
@@ -340,6 +341,10 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
                 $this->handleMovePlayCard($move);
                 break;
 
+            case GameMoveThousandCollectTricks::class:
+                $this->handleMoveCollectTricks($move);
+                break;
+
             default:
                 throw new GameMoveException(GamePlayException::MESSAGE_INCOMPATIBLE_MOVE);
         }
@@ -480,42 +485,47 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
             }
         }
 
-        if ($this->steward->isThirdCardPhase($this->gameData->phase)) {
+        $this->activePlayer = $this->steward->isThirdCardPhase($this->gameData->phase)
+            ? $this->steward->getTrickWinner($this->gameData, $this->playersData)
+            : $this->steward->getNextOrderedPlayer($move->getPlayer(), $this->gameData->dealer, $this->playersData);
 
-            $trickWinner = $this->steward->getTrickWinner($this->gameData, $this->playersData);
-            $this->cardDealer->moveCardsTimes(
-                $this->gameData->table, $this->playersData->getFor($trickWinner)->tricks,
-                3
-            );
+        $this->gameData->advanceGamePhase(true);
+    }
 
-            $this->activePlayer = $trickWinner;
-            $this->gameData->turnLead = $trickWinner;
-            $this->gameData->turnSuit = null;
+    private function handleMoveCollectTricks(GameMove $move): void
+    {
+        $trickWinner = $move->getPlayer();
 
-            if ($hand->count() === 0) {
+        $this->cardDealer->moveCardsTimes(
+            $this->gameData->table,
+            $this->playersData->getFor($trickWinner)->tricks,
+            3
+        );
 
-                foreach ($this->players->toArray() as $player) {
+        $this->gameData->turnLead = $trickWinner;
+        $this->gameData->turnSuit = null;
 
-                    $this->steward->setRoundPoints($player, $this->activePlayer, $this->gameData, $this->playersData);
-                    $this->steward->setBarrelStatus($this->playersData->getFor($player));
+        $hand = $this->playersData->getFor($trickWinner)->hand;
 
-                    $this->playersData->getFor($player)->tricks = $this->cardDealer->getEmptyStock();
-                    $this->playersData->getFor($player)->trumps = [];
-                    $this->playersData->getFor($player)->ready = false;
-                }
+        if ($hand->count() === 0) {
 
-                $this->gameData->trumpSuit = null;
-                $this->gameData->turnLead = null;
-                $this->gameData->stockRecord = $this->cardDealer->getEmptyStock();
-                $this->activePlayer = $this->gameData->bidWinner;
+            foreach ($this->players->toArray() as $player) {
+
+                $this->steward->setRoundPoints($player, $this->activePlayer, $this->gameData, $this->playersData);
+                $this->steward->setBarrelStatus($this->playersData->getFor($player));
+
+                $this->playersData->getFor($player)->tricks = $this->cardDealer->getEmptyStock();
+                $this->playersData->getFor($player)->trumps = [];
+                $this->playersData->getFor($player)->ready = false;
             }
 
-        } else {
-            $this->activePlayer = $this->steward->getNextOrderedPlayer($move->getPlayer(), $this->gameData->dealer, $this->playersData);
+            $this->gameData->trumpSuit = null;
+            $this->gameData->turnLead = null;
+            $this->gameData->stockRecord = $this->cardDealer->getEmptyStock();
+            $this->activePlayer = $this->gameData->bidWinner; // TODO do I need this one?
         }
 
-        $isLastPhaseAttempt = !$this->steward->isThirdCardPhase($this->gameData->phase) || $hand->count() === 0;
-        $this->gameData->advanceGamePhase($isLastPhaseAttempt);
+        $this->gameData->advanceGamePhase($hand->count() === 0);
     }
 
     /**
