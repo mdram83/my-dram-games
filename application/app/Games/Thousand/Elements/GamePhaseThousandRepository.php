@@ -17,6 +17,7 @@ class GamePhaseThousandRepository
             GamePhaseThousandPlayFirstCard::PHASE_KEY  => GamePhaseThousandPlayFirstCard::class,
             GamePhaseThousandPlaySecondCard::PHASE_KEY  => GamePhaseThousandPlaySecondCard::class,
             GamePhaseThousandPlayThirdCard::PHASE_KEY  => GamePhaseThousandPlayThirdCard::class,
+            GamePhaseThousandCollectTricks::PHASE_KEY  => GamePhaseThousandCollectTricks::class,
             GamePhaseThousandCountPoints::PHASE_KEY  => GamePhaseThousandCountPoints::class,
         ];
     }

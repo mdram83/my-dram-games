@@ -7,6 +7,7 @@ use App\GameCore\GameElements\GameMove\GameMoveException;
 use App\GameCore\Player\Player;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
@@ -111,6 +112,12 @@ class GameMoveAbsFactoryThousandTest extends TestCase
     {
         $move = $this->factory->create($this->player, ['phase' => 'playing-third-card', 'data' => ['card' => '123']]);
         $this->assertInstanceOf(GameMoveThousandPlayCard::class, $move);
+    }
+
+    public function testCreateGameMoveCollectTricks(): void
+    {
+        $move = $this->factory->create($this->player, ['phase' => 'collecting-tricks', 'data' => ['collect' => true]]);
+        $this->assertInstanceOf(GameMoveThousandCollectTricks::class, $move);
     }
 
     public function testCreateGameMoveThousandCountPoints(): void

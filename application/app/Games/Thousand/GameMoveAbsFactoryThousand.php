@@ -9,6 +9,7 @@ use App\GameCore\GameElements\GamePhase\GamePhaseException;
 use App\GameCore\Player\Player;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
+use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GameMoveThousandDeclaration;
 use App\Games\Thousand\Elements\GameMoveThousandPlayCard;
@@ -16,6 +17,7 @@ use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;
+use App\Games\Thousand\Elements\GamePhaseThousandCollectTricks;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandDeclaration;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
@@ -83,6 +85,7 @@ class GameMoveAbsFactoryThousand implements GameMoveAbsFactory
             GamePhaseThousandPlayFirstCard::PHASE_KEY  => GameMoveThousandPlayCard::class,
             GamePhaseThousandPlaySecondCard::PHASE_KEY  => GameMoveThousandPlayCard::class,
             GamePhaseThousandPlayThirdCard::PHASE_KEY  => GameMoveThousandPlayCard::class,
+            GamePhaseThousandCollectTricks::PHASE_KEY  => GameMoveThousandCollectTricks::class,
             GamePhaseThousandCountPoints::PHASE_KEY  => GameMoveThousandCountPoints::class,
         ];
 
