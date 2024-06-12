@@ -4,6 +4,7 @@ import {PlayerInfoStockDistribution} from "./PlayerInfoStockDistribution.jsx";
 import {PlayerInfoBidding} from "./PlayerInfoBidding.jsx";
 import {PlayerInfoMarriageMelding} from "./PlayerInfoMarriageMelding.jsx";
 import {PlayerInfoReady} from "./PlayerInfoReady.jsx";
+import {PlayerInfoCollect} from "./PlayerInfoCollect.jsx";
 
 export const PlayerInfos = () => {
 
@@ -15,6 +16,7 @@ export const PlayerInfos = () => {
             <PlayerInfoStockDistribution />
             <PlayerInfoDeclaration />
             <PlayerInfoMarriageMelding />
+            <PlayerInfoCollect />
             <PlayerInfoReady />
         </div>
     );

@@ -20,6 +20,7 @@ export const Table = () => {
         || phaseKey === 'playing-second-card'
         || phaseKey === 'playing-third-card'
     );
+    const isTableVisible = isPhasePlayingCard || phaseKey === 'collecting-tricks';
 
     const getCard = (cardKey) => {
         return minicardsSvg[cardKey];
@@ -35,7 +36,7 @@ export const Table = () => {
 
     return (
         <div className="relative">
-            {isPhasePlayingCard && renderItems()}
+            {isTableVisible && renderItems()}
             {isPhasePlayingCard && isActivePlayer &&
                 <div className="absolute z-10">
                     <TableDistribution/>
