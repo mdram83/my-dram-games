@@ -4,6 +4,7 @@ namespace App\Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePhase\GamePhase;
+use App\GameCore\GameElements\GamePhase\GamePhaseException;
 
 class GamePhaseThousandPlayThirdCard extends GamePhaseThousand implements GamePhase
 {
@@ -11,11 +12,14 @@ class GamePhaseThousandPlayThirdCard extends GamePhaseThousand implements GamePh
     protected const PHASE_NAME = 'Play Third Card';
     protected const PHASE_DESCRIPTION = 'Last player is playing his card now';
 
+    /**
+     * @throws GamePhaseException
+     */
     public function getNextPhase(bool $lastAttempt): GamePhase
     {
-        if ($lastAttempt) {
-            return new GamePhaseThousandCountPoints();
+        if (!$lastAttempt) {
+            throw new GamePhaseException(GamePhaseException::MESSAGE_PHASE_SINGLE_ATTEMPT);
         }
-        return new GamePhaseThousandPlayFirstCard();
+        return new GamePhaseThousandCollectTricks();
     }
 }

@@ -14,14 +14,14 @@ use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
 use PHPUnit\Framework\TestCase;
 
-class GamePhaseThousandPlayThirdCardTest extends TestCase
+class GamePhaseThousandCollectTricksTest extends TestCase
 {
-    private GamePhaseThousandPlayThirdCard $phase;
+    private GamePhaseThousandCollectTricks $phase;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->phase = new GamePhaseThousandPlayThirdCard();
+        $this->phase = new GamePhaseThousandCollectTricks();
     }
 
     public function testGetKey(): void
@@ -45,14 +45,7 @@ class GamePhaseThousandPlayThirdCardTest extends TestCase
 
     public function testGetNextPhase(): void
     {
-        $this->assertInstanceOf(GamePhaseThousandCollectTricks::class, $this->phase->getNextPhase(true));
-    }
-
-    public function testThrowExceptionWhenGettingNextPhaseWithLastAttemptFalse(): void
-    {
-        $this->expectException(GamePhaseException::class);
-        $this->expectExceptionMessage(GamePhaseException::MESSAGE_PHASE_SINGLE_ATTEMPT);
-
-        $this->phase->getNextPhase(false);
+        $this->assertInstanceOf(GamePhaseThousandPlayFirstCard::class, $this->phase->getNextPhase(false));
+        $this->assertInstanceOf(GamePhaseThousandCountPoints::class, $this->phase->getNextPhase(true));
     }
 }
