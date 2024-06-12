@@ -11,6 +11,7 @@ import {TableSection} from "./elements/TableSection.jsx";
 import {PlayerSection} from "./elements/PlayerSection.jsx";
 import {PlayerHand} from "./elements/PlayerHand.jsx";
 import {PlayerInfos} from "./elements/PlayerInfos.jsx";
+import {TrumpSuit} from "./elements/TrumpSuit.jsx";
 
 const playerName = window.MyDramGames.player.name;
 
@@ -73,8 +74,6 @@ console.log(useGamePlayStore.getState());
 // TODO general thing - check where do you check which useThousandStore elements
 // TODO with above, try to minimize props passing through components
 // TODO remove unnecessary marginal martins/positions from below divs
-
-// TODO display current trump suit somewhere (or not..., or just info after declaration)
 
 // TODO need to find a method to show third played card at least for a sec before emptying the table...
 // TODO I can either send 3rd card situation (last move, last phase etc., dont show e.g. distribution) OR add new phase for trick winner to collect the trick from table (during which time table would show 3 cards)
@@ -145,7 +144,11 @@ controller.getRoot().render(
             </div>
         </div>
 
-            <FlashMessageGamePlay/>
+        <div className="fixed mt-[12vh] sm:mt-[14vh] ml-[2vh]">
+            <TrumpSuit />
+        </div>
+
+        <FlashMessageGamePlay/>
 
     </div>
 );
