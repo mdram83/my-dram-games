@@ -12,7 +12,7 @@ import {PlayerSection} from "./elements/PlayerSection.jsx";
 import {PlayerHand} from "./elements/PlayerHand.jsx";
 import {PlayerInfos} from "./elements/PlayerInfos.jsx";
 import {TrumpSuit} from "./elements/TrumpSuit.jsx";
-import {GamePoints} from "./elements/GamePoints.jsx";
+import {GameInformation} from "./elements/GameInformation.jsx";
 
 const playerName = window.MyDramGames.player.name;
 
@@ -146,7 +146,7 @@ controller.getRoot().render(
         </div>
 
         <div className="fixed mt-[12vh] sm:mt-[14vh] right-[2vw] z-30">
-            <GamePoints />
+            <GameInformation />
         </div>
 
         <FlashMessageGamePlay/>

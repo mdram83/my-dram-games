@@ -20,7 +20,7 @@ export const TrumpSuit = () => {
         }
 
         return (
-            <div className="flex items-center px-[1.5vh] py-[1.2vh] border-[0.4vh] border-solid border-gray-400 bg-white rounded-md bg-opacity-60 shadow-md shadow-gray-400">
+            <div className="flex items-center px-[1.5vh] py-[1.2vh] border-[0.4vh] border-solid border-gray-400 bg-white rounded-md bg-opacity-60 shadow-md shadow-gray-600">
                 <span className="font-sans text-gray-700 font-bold text-[3vh] pr-[1vh] pb-[0.2vh]">TRUMP</span>
                 {getSuit(trumpSuit)}
             </div>
