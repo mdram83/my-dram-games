@@ -8,8 +8,6 @@ export const TrumpSuit = () => {
 
     const trumpSuit = useThousandStore(state => state.situation.trumpSuit);
 
-    console.log(trumpSuit);
-
     const getSuit = (suitKey) => {
         return minicardsSuitsSvg[suitKey];
     }

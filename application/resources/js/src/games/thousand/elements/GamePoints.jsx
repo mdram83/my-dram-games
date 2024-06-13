@@ -19,67 +19,50 @@ export const GamePoints = () => {
         pointsByRoundAndSeat[i - 1] = playersBySeat.map((playerName) => orderedPlayers[playerName].points[i] ?? null);
     }
 
-    console.log(pointsByRoundAndSeat);
-    console.log(pointsByRoundAndSeat
-        .filter((row, index) => (index + 1) >= (round - (displayNumberOfRounds - 1))));
+    const gridClassName = ` grid grid-cols-${(players.length + 1)} gap-0 `;
+    const headerCommonClassName = ' border-0 border-b-[0.2vh] border-solid border-gray-600 flex items-center justify-center font-sans font-semibold text-[1.4vh] sm:text-[2vh] text-wrap '
 
-    const renderPoints = () => {
+    const renderPlayers = () => {
 
         const headerRow = playersBySeat.map((playerName) =>
-            <th key={playerName}>
+            <div key={playerName} className={headerCommonClassName}>
                 {playerName}
-            </th>
+            </div>
         );
 
         headerRow.unshift(
-            <th key='Round'>
+            <div key='Round' className={headerCommonClassName}>
                 Round
-            </th>
+            </div>
         );
 
-        const pointsRows = pointsByRoundAndSeat.map((row, index) => {
-
-                const pointsRow = row.map((points, seat) =>
-                    <td key={seat}>
-                        {points}
-                    </td>
-                );
-
-                pointsRow.unshift(
-                    <td key='round'>
-                        {index + 1}
-                    </td>
-                );
-
-                return (
-                    <tr key={index + 1}>
-                        {pointsRow}
-                    </tr>
-                );
-
-            }).filter((row, index) => (index + 1) >= (round - (displayNumberOfRounds - 1)));
-
-        return (
-            <table>
-                <thead>
-                    <tr>
-                        {headerRow}
-                    </tr>
-                </thead>
-                <tbody>
-                    {pointsRows}
-                </tbody>
-            </table>
-        );
+        return headerRow;
     }
 
-    // TODO draw the table with names and points per round
-    // show only last 5 rounds (or all if there is not more than 5)
+    const renderPoints = pointsByRoundAndSeat
+        .map((row, index) => {
 
+            const pointsRow = row.map((points, seat) =>
+                <div key={seat}>
+                    {points}
+                </div>
+            );
+
+            pointsRow.unshift(
+                <div key='round' className={(index + 1) === round ? 'font-bold' : ''}>
+                    {index + 1}
+                </div>
+            );
+
+            return pointsRow;
+
+        })
+        .filter((row, index) => (index + 1) >= (round - (displayNumberOfRounds - 1)));
 
     return (
-        <div>
-            {renderPoints()}
+        <div className={gridClassName}>
+            {renderPlayers()}
+            {renderPoints}
         </div>
     );
 }

@@ -28,9 +28,9 @@ export const GameInformation = () => {
             <div className={divClassName} style={{backgroundImage: `url(${bgUrl})`}} onClick={toggleDisplay}>
                 {label}
                 {display &&
-                    <div className='grid grid-cols-2 gap-1 w-full'>
-                        <div className='col-span-2 sm:col-span-1'><GamePoints /></div>
-                        <div className='col-span-2 sm:col-span-1'>Game Details</div>
+                    <div className='grid grid-cols-4 gap-1 w-full'>
+                        <div className='col-span-4 sm:col-span-3'><GamePoints /></div>
+                        <div className='col-span-4 sm:col-span-1'>Game Details</div>
                     </div>
                 }
             </div>
