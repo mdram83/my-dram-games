@@ -13,34 +13,49 @@ export const GameDetails = () => {
     const bidWinner = useThousandStore(state => state.situation.bidWinner);
     const bidAmount = useThousandStore(state => state.situation.bidAmount);
 
-    const headerClassName = 'text-center font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-gray-800 uppercase';
-    const labelClassName = 'font-sans font-bold text-[1.6vh] sm:text-[2vh] text-gray-600 uppercase';
+    const isPhaseCountPoints = phase.key === 'counting-points';
+
+    const headerClassName = ' text-center font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-gray-800 uppercase ';
+    const labelClassName = ' mt-[1vh] font-sans font-bold text-[1.6vh] sm:text-[2vh] text-gray-600 uppercase ';
+    const valueClassName = ' font-sans font-semibold text-[1.8vh] sm:text-[2.2vh] text-orange-600 ';
+    const ellipsisClassName = ' text-ellipsis overflow-hidden ';
+    const wrapClassName = ' text-pretty ';
 
     return (
-        <div className="w-full justify-center mt-[2vh] sm:mt-0">
+        <div className="w-full justify-center mt-[2vh] sm:mt-0 px-0 sm:px-[1vh]">
 
             <div className={headerClassName}>Round {round}</div>
 
             <div>
                 <div className={labelClassName}>Phase</div>
-                <div>{phase.name}</div>
+                <div className={valueClassName + wrapClassName}>{phase.name}</div>
             </div>
+
+            {!isPhaseCountPoints &&
             <div>
                 <div className={labelClassName}>Current Move</div>
-                <div>{player}</div>
+                <div className={valueClassName + ellipsisClassName}>{player}</div>
             </div>
+            }
+
             <div>
                 <div className={labelClassName}>Dealer</div>
-                <div>{dealer}</div>
+                <div className={valueClassName + ellipsisClassName}>{dealer}</div>
             </div>
+
             <div>
                 <div className={labelClassName}>Obligation</div>
-                <div>{obligation}</div>
+                <div className={valueClassName + ellipsisClassName}>{obligation}</div>
             </div>
+
+            {bidWinner &&
             <div>
                 <div className={labelClassName}>Bid Result</div>
-                <div>{bidWinner} : {bidAmount}</div>
+                <div className={valueClassName + wrapClassName}>{bidWinner} : {bidAmount} points</div>
             </div>
+            }
+
+
         </div>
     );
 }
