@@ -53,18 +53,26 @@ export const GamePoints = () => {
     const renderPoints = pointsByRoundAndSeat
         .map((row, index) => {
 
-            const pointsRow = row.map((points, seat) =>
-                <div key={seat} className={rowCommonClassName}>
-                    {points}
-                </div>
-            );
+            const pointsRound = index + 1;
+
+            const pointsRow = row.map((points, seat) => {
+
+                const isBomb = orderedPlayers[playersBySeat[seat]].bombRounds.includes(pointsRound);
+                const displayPoints = isBomb ? '\ud83d\udca3' : points;
+
+                return (
+                    <div key={seat} className={rowCommonClassName}>
+                        {displayPoints}
+                    </div>
+                );
+            });
 
             const rowRoundClassName =
-                ((index + 1) === round ? ' font-black ' : ' ') + ' text-gray-600 ';
+            (pointsRound === round ? ' font-black ' : ' ') + ' text-gray-600 ';
 
             pointsRow.unshift(
                 <div key='round' className={rowRoundClassName + rowCommonClassName}>
-                    {index + 1}
+                    {pointsRound}
                 </div>
             );
 
