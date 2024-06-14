@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {GamePoints} from "./GamePoints.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
+import {GameDetails} from "./GameDetails.jsx";
 
 export const GameInformation = () => {
 
@@ -39,7 +40,7 @@ export const GameInformation = () => {
                 {display &&
                     <div className='grid grid-cols-4 gap-1 w-full'>
                         <div className='col-span-4 sm:col-span-3'><GamePoints /></div>
-                        <div className='col-span-4 sm:col-span-1'>Game Details</div>
+                        <div className='col-span-4 sm:col-span-1'><GameDetails /></div>
                     </div>
                 }
             </div>
