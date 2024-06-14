@@ -19,8 +19,13 @@ export const GamePoints = () => {
         pointsByRoundAndSeat[i - 1] = playersBySeat.map((playerName) => orderedPlayers[playerName].points[i] ?? null);
     }
 
-    const gridClassName = ` grid grid-cols-${(players.length + 1)} gap-0 `;
-    const headerCommonClassName = ' border-0 border-b-[0.2vh] border-solid border-gray-600 flex items-center justify-center font-sans font-semibold text-[1.4vh] sm:text-[2vh] text-wrap '
+    const gridCols = players.length + 1;
+    const gridClassName = ` grid grid-cols-${gridCols} gap-0 `;
+    const headerCommonClassName =
+        ' border-0 border-b-[0.2vh] border-solid border-gray-600 '
+        + ' px-[1vh] py-[1vh] '
+        + ' flex items-center justify-start '
+        + ' font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-ellipsis overflow-hidden '
 
     const renderPlayers = () => {
 
@@ -39,17 +44,26 @@ export const GamePoints = () => {
         return headerRow;
     }
 
+    const rowCommonClassName =
+        ' border-0 border-b-[0.2vh] border-dashed border-gray-400 '
+        + ' h-[4vh] '
+        + ' flex items-center justify-center '
+        + ' font-sans font-medium text-[2vh] sm:text-[2.4vh] '
+
     const renderPoints = pointsByRoundAndSeat
         .map((row, index) => {
 
             const pointsRow = row.map((points, seat) =>
-                <div key={seat}>
+                <div key={seat} className={rowCommonClassName}>
                     {points}
                 </div>
             );
 
+            const rowRoundClassName =
+                ((index + 1) === round ? ' font-black ' : ' ') + ' text-gray-600 ';
+
             pointsRow.unshift(
-                <div key='round' className={(index + 1) === round ? 'font-bold' : ''}>
+                <div key='round' className={rowRoundClassName + rowCommonClassName}>
                     {index + 1}
                 </div>
             );

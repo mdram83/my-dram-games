@@ -1,12 +1,21 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {GamePoints} from "./GamePoints.jsx";
+import {useThousandStore} from "../useThousandStore.jsx";
 
 export const GameInformation = () => {
 
     console.log('GameInformation');
 
-    const [display, setDisplay] = useState(false);
+    const phaseKey = useThousandStore(state => state.situation.phase.key);
+    const isPhaseCountPoints = phaseKey === 'counting-points';
+    const isPhaseBidding = phaseKey === 'bidding';
+
+    const [display, setDisplay] = useState(isPhaseCountPoints);
     const toggleDisplay = () => setDisplay(!display);
+
+    useEffect(() => {
+        setDisplay((isPhaseCountPoints || display) && !isPhaseBidding);
+    }, [isPhaseCountPoints, isPhaseBidding]);
 
     const renderGamePoints = () => {
 

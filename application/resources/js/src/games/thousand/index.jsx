@@ -133,7 +133,7 @@ controller.getRoot().render(
             </div>
         </div>
 
-        <div className="fixed bottom-[18vh] sm:bottom-[20vh] w-full z-20">
+        <div className="fixed bottom-[18vh] sm:bottom-[20vh] w-full z-30">
             <div className="flex justify-center">
                 <div className="flex relative justify-center">
                     <PlayerInfos/>
@@ -145,7 +145,7 @@ controller.getRoot().render(
             <TrumpSuit/>
         </div>
 
-        <div className="fixed mt-[12vh] sm:mt-[14vh] right-[2vw] z-30">
+        <div className="fixed mt-[12vh] sm:mt-[14vh] right-[2vw] z-20">
             <GameInformation />
         </div>
 
