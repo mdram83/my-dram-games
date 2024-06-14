@@ -1,5 +1,6 @@
 import React from "react";
 import {useThousandStore} from "../useThousandStore.jsx";
+import {configThousand} from "../configThousand.jsx";
 
 export const GamePoints = () => {
 
@@ -19,18 +20,17 @@ export const GamePoints = () => {
         pointsByRoundAndSeat[i - 1] = playersBySeat.map((playerName) => orderedPlayers[playerName].points[i] ?? null);
     }
 
-    const gridCols = players.length + 1;
-    const gridClassName = ` grid grid-cols-${gridCols} gap-0 `;
+    const gridClassName = players.length === 4 ? ' grid grid-cols-5 gap-0 ' : ' grid grid-cols-4 gap-0 ';
     const headerCommonClassName =
         ' border-0 border-b-[0.2vh] border-solid border-gray-600 '
         + ' px-[1vh] py-[1vh] '
         + ' flex items-center justify-start '
-        + ' font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-ellipsis overflow-hidden '
+        + ' font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-ellipsis overflow-hidden ';
 
     const renderPlayers = () => {
 
-        const headerRow = playersBySeat.map((playerName) =>
-            <div key={playerName} className={headerCommonClassName}>
+        const headerRow = playersBySeat.map((playerName, index) =>
+            <div key={playerName} className={headerCommonClassName + configThousand[index + 1].playerTextClass}>
                 {playerName}
             </div>
         );

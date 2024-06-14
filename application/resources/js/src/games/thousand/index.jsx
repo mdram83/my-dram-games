@@ -69,8 +69,7 @@ const controller = new GamePlayController(getPlayersNames, setupSituation, setup
 console.log(useThousandStore.getState().situation);
 console.log(useGamePlayStore.getState());
 
-// TODO next: display points summary at count-points phase
-// TODO next: link to game infos (paper card on the table or sth...)
+// TODO next: game win message and points display (disable actions) - check isFinished on Continue + add Continue Info/Action with action = go back to invite
 
 // TODO general thing - check where do you check which useThousandStore elements
 // TODO with above, try to minimize props passing through components
