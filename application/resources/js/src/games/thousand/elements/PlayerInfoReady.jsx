@@ -11,6 +11,8 @@ export const PlayerInfoReady = () => {
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseCountingPoints = phaseKey === 'counting-points';
 
+    const isFinished = useThousandStore(state => state.situation.isFinished);
+
     const playerName = window.MyDramGames.player.name;
 
     const ready = useThousandStore(state => state.situation.orderedPlayers[playerName].ready);
@@ -21,7 +23,7 @@ export const PlayerInfoReady = () => {
 
     const renderDistribution = () => {
 
-        if (!isPhaseCountingPoints) {
+        if (!isPhaseCountingPoints || isFinished) {
             return <></>;
         }
 

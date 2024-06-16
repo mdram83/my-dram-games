@@ -17,6 +17,8 @@ export const PlayerInfoDeclaration = () => {
     const isActivePlayer = playerName === activePlayer;
 
     const bidAmount = useThousandStore(state => state.situation.bidAmount);
+    const bombAvailable = bidAmount === 100;
+
     const [declaration, setDeclaration] = useState(bidAmount);
 
     const updateDeclaration = (e) => {
@@ -55,9 +57,11 @@ export const PlayerInfoDeclaration = () => {
                     <ActionDeclare phase={phaseKey} declaration={declaration}/>
                 </div>
 
+                {bombAvailable &&
                 <div className={singleClassName}>
                     <ActionDeclare phase={phaseKey} declaration={0}/>
                 </div>
+                }
 
             </div>
 

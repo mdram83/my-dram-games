@@ -2,10 +2,14 @@ import React, {useEffect, useState} from "react";
 import {GamePoints} from "./GamePoints.jsx";
 import {useThousandStore} from "../useThousandStore.jsx";
 import {GameDetails} from "./GameDetails.jsx";
+import {GameResult} from "./GameResult.jsx";
 
 export const GameInformation = () => {
 
     console.log('GameInformation');
+
+    const isFinished = useThousandStore(state => state.situation.isFinished);
+    const pointsSpanClassName = isFinished ? 'col-span-4 sm:col-span-4' : 'col-span-4 sm:col-span-3';
 
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseCountPoints = phaseKey === 'counting-points';
@@ -39,8 +43,9 @@ export const GameInformation = () => {
                 {label}
                 {display &&
                     <div className='grid grid-cols-4 gap-1 w-full'>
-                        <div className='col-span-4 sm:col-span-3'><GamePoints /></div>
-                        <div className='col-span-4 sm:col-span-1'><GameDetails /></div>
+                        <div className={pointsSpanClassName}><GamePoints /></div>
+                        {!isFinished && <div className='col-span-4 sm:col-span-1'><GameDetails /></div>}
+                        {isFinished && <div className='col-span-4'><GameResult /></div>}
                     </div>
                 }
             </div>

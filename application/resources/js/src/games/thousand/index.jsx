@@ -46,6 +46,8 @@ const setupMoveEvent = (e) => {
             useGamePlayStore.getState().setFinished();
             useGamePlayStore.getState().setMessage(e.situation.result.message, false, 10);
 
+            console.log('Finished Situation', e.situation);
+
             // useTicTacToeStore.getState().setWinningFields(e.situation.result.details.winningFields); // TODO adjust for thousand
 
         } else {
@@ -70,10 +72,6 @@ console.log(useThousandStore.getState().situation);
 console.log(useGamePlayStore.getState());
 
 // TODO next: game win message and points display (disable actions) - check isFinished on Continue + add Continue Info/Action with action = go back to invite
-
-// TODO general thing - check where do you check which useThousandStore elements
-// TODO with above, try to minimize props passing through components
-// TODO remove unnecessary marginal martins/positions from below divs
 
 const [leftHandSeat, frontSeat, rightHandSeat] = seatAssignment();
 const fourPlayersGame = controller.getGameInvite().options.numberOfPlayers === 4;

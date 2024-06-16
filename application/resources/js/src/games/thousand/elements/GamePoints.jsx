@@ -6,9 +6,10 @@ export const GamePoints = () => {
 
     console.log('GamePoints');
 
-    const displayNumberOfRounds = 5;
-
     const round = useThousandStore(state => state.situation.round);
+    const isFinished = useThousandStore(state => state.situation.isFinished);
+    const displayNumberOfRounds = isFinished ? 8 : 5;
+
     const orderedPlayers = useThousandStore(state => state.situation.orderedPlayers);
 
     const players = Object.getOwnPropertyNames(orderedPlayers);
@@ -26,6 +27,19 @@ export const GamePoints = () => {
         + ' px-[1vh] py-[1vh] '
         + ' flex items-center justify-start '
         + ' font-sans font-semibold text-[2vh] sm:text-[2.4vh] text-ellipsis overflow-hidden ';
+    const rowCommonClassName =
+        ' border-0 border-b-[0.2vh] border-dashed border-gray-400 '
+        + ' h-[4vh] '
+        + ' flex items-center justify-center '
+        + ' font-sans font-medium text-[2vh] sm:text-[2.4vh] '
+    const headerBombClassName =
+        ' h-[4vh] pl-[1vh] mb-[2vh] '
+        + ' flex items-center justify-start '
+        + ' font-sans font-semibold text-[1.6vh] sm:text-[2vh] text-gray-600 ';
+    const rowBombClassName =
+        ' h-[4vh] '
+        + ' flex items-center justify-center '
+        + ' font-sans font-medium text-[2vh] sm:text-[2.4vh] '
 
     const renderPlayers = () => {
 
@@ -44,11 +58,28 @@ export const GamePoints = () => {
         return headerRow;
     }
 
-    const rowCommonClassName =
-        ' border-0 border-b-[0.2vh] border-dashed border-gray-400 '
-        + ' h-[4vh] '
-        + ' flex items-center justify-center '
-        + ' font-sans font-medium text-[2vh] sm:text-[2.4vh] '
+    const renderBombCount = () => {
+
+        const bombsRow = playersBySeat.map((playerName, index) => {
+
+            const bombRounds = orderedPlayers[playersBySeat[index]].bombRounds;
+            const displayBombs = bombRounds.map(() => '\ud83d\udca3');
+
+            return (
+                <div key={playerName} className={rowBombClassName}>
+                    {displayBombs}
+                </div>
+            );
+        });
+
+        bombsRow.unshift(
+            <div key='Bombs' className={headerBombClassName}>
+                Bombs
+            </div>
+        );
+
+        return bombsRow;
+    }
 
     const renderPoints = pointsByRoundAndSeat
         .map((row, index) => {
@@ -84,6 +115,7 @@ export const GamePoints = () => {
     return (
         <div className={gridClassName}>
             {renderPlayers()}
+            {renderBombCount()}
             {renderPoints}
         </div>
     );
