@@ -4,8 +4,6 @@ import {CardBack} from "../../../../template/elements/playing-cards/covers/CardB
 
 export const OpponentHand = ({playerName}) => {
 
-    console.log('OpponentHand:' + playerName);
-
     const handCount = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
 
     const angleStep = 6;

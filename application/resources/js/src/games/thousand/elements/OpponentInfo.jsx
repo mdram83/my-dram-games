@@ -6,8 +6,6 @@ import {OpponentInfoReady} from "./OpponentInfoReady.jsx";
 
 export const OpponentInfo = ({playerName, fourPlayersGame}) => {
 
-    console.log('OpponentInfo:' + playerName);
-
     const dealer = useThousandStore(state => state.situation.dealer);
     const isDealer = playerName === dealer;
     const isFourPlayersDealer = isDealer && fourPlayersGame;
@@ -18,7 +16,7 @@ export const OpponentInfo = ({playerName, fourPlayersGame}) => {
         <div>
 
             <div className={singleClassName}>
-                <OpponentInfoDealer playerName={playerName} isFourPlayersDealer={isFourPlayersDealer}/>
+                <OpponentInfoDealer isFourPlayersDealer={isFourPlayersDealer}/>
             </div>
 
             <div className={singleClassName}>

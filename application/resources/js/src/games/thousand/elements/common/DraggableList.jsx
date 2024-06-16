@@ -46,8 +46,6 @@ const createSpringConfig =
 
 function DraggableList({ items, parentWidth, callback = undefined }) {
 
-    console.log('DraggableList:', parentWidth);
-
     const singleWidth = parentWidth / (items.length + 1);
 
     const order = useRef(items.map((_, index) => index));

@@ -8,8 +8,6 @@ import {PlayerInfoCollect} from "./PlayerInfoCollect.jsx";
 
 export const PlayerInfos = () => {
 
-    console.log('PlayerInfos');
-
     return (
         <div className="absolute bottom-[2vh] mr-[4vh] sm:w-[60vw] w-[40vw] max-w-[400px] min-w-[20vw]">
             <PlayerInfoBidding playerName={window.MyDramGames.player.name} />

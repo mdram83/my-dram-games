@@ -5,9 +5,6 @@ import {configThousand} from "../configThousand.jsx";
 
 export const PlayerInfoMarriageMelding = () => {
 
-    console.log('PlayerInfoMarriageMelding');
-
-    // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseStockDistribution store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhasePlayingFirstCard = phaseKey === 'playing-first-card';
 

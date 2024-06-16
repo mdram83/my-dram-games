@@ -5,8 +5,6 @@ import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.js
 
 export const TableDistribution = () => {
 
-    console.log('TableDistribution');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const phaseKey = useThousandStore(state => state.situation.phase.key);

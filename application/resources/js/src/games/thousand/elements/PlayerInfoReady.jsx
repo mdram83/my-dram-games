@@ -5,9 +5,6 @@ import {ActionReady} from "./ActionReady.jsx";
 
 export const PlayerInfoReady = () => {
 
-    console.log('PlayerInfoReady');
-
-    // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseStockDistribution store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseCountingPoints = phaseKey === 'counting-points';
 

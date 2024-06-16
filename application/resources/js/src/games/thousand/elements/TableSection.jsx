@@ -5,7 +5,6 @@ import {Table} from "./Table.jsx";
 
 export const TableSection = () => {
 
-    console.log('TableSection');
     const commonStandardDivClass = 'flex justify-center items-center';
 
     return (

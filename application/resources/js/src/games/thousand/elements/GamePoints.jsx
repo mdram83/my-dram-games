@@ -4,8 +4,6 @@ import {configThousand} from "../configThousand.jsx";
 
 export const GamePoints = () => {
 
-    console.log('GamePoints');
-
     const round = useThousandStore(state => state.situation.round);
     const isFinished = useThousandStore(state => state.situation.isFinished);
     const displayNumberOfRounds = isFinished ? 8 : 5;

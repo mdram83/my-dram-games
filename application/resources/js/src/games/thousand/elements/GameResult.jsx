@@ -4,8 +4,6 @@ import {configThousand} from "../configThousand.jsx";
 
 export const GameResult = () => {
 
-    console.log('GameResult');
-
     const orderedPlayers = useThousandStore(state => state.situation.orderedPlayers);
     const winner        = useThousandStore(state => state.situation.result.winnerName);
     const forfeited = useThousandStore(state => state.situation.result.forfeitedName);

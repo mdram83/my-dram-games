@@ -5,8 +5,6 @@ import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.js
 
 export const Avatar = ({playerName}) => {
 
-    console.log('Avatar:' + playerName);
-
     const isConnected = useGamePlayStore((state) => state.players[playerName]);
     const activePlayer = useGamePlayStore((state) => state.activePlayer);
     const isCurrent = activePlayer === playerName;

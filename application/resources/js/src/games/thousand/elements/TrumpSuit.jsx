@@ -4,8 +4,6 @@ import {minicardsSuitsSvg} from "../../../../template/elements/playing-cards/dec
 
 export const TrumpSuit = () => {
 
-    console.log('TrumpSuit');
-
     const trumpSuit = useThousandStore(state => state.situation.trumpSuit);
 
     const getSuit = (suitKey) => {

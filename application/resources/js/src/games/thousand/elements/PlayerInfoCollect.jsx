@@ -5,9 +5,6 @@ import {ActionCollect} from "./ActionCollect.jsx";
 
 export const PlayerInfoCollect = () => {
 
-    console.log('PlayerInfoCollect');
-
-    // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseStockDistribution store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseCollectTricks = phaseKey === 'collecting-tricks';
 

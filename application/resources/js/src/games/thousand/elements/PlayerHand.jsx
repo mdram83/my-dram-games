@@ -7,8 +7,6 @@ import DraggableList from "./common/DraggableList.jsx";
 
 export const PlayerHand = ({playerName}) => {
 
-    console.log('PlayerHand');
-
     const hand = useThousandStore(state => state.situation.orderedPlayers[playerName].hand);
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);

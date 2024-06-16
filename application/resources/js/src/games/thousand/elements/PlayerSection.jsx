@@ -6,7 +6,6 @@ import {OpponentTricks} from "./OpponentTricks.jsx";
 
 export const PlayerSection = ({fourPlayersGame}) => {
 
-    console.log('PlayerSection');
     const playerName = window.MyDramGames.player.name;
 
     const dealer = useThousandStore(state => state.situation.dealer);

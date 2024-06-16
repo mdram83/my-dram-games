@@ -1,8 +1,6 @@
 import React from "react";
 
-export const OpponentInfoDealer = ({playerName, isFourPlayersDealer}) => {
-
-    console.log('OpponentInfoDealer:' + playerName);
+export const OpponentInfoDealer = ({isFourPlayersDealer}) => {
 
     return (
         <div>

@@ -2,7 +2,6 @@ import {useThousandStore} from "./useThousandStore.jsx";
 
 export const seatAssignment = () => {
 
-    console.log('seatAssignment');
     const orderedPlayers = useThousandStore.getState().situation.orderedPlayers;
     const yourSeat = orderedPlayers[window.MyDramGames.player.name].seat;
     const names = Object.getOwnPropertyNames(orderedPlayers);

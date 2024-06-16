@@ -5,8 +5,6 @@ import {useThousandStore} from "../useThousandStore.jsx";
 
 export const ActionDistribute = ({phase, distribution, disabled = false}) => {
 
-    console.log('ActionDistribute');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

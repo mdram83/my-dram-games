@@ -3,9 +3,6 @@ import {useThousandStore} from "../useThousandStore.jsx";
 
 export const OpponentInfoReady = ({playerName}) => {
 
-    console.log('OpponentInfoReady:' + playerName);
-
-    // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseBidding store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseCountingPoints = phaseKey === 'counting-points';
 

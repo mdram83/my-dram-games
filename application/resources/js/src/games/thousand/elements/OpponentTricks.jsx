@@ -4,8 +4,6 @@ import {CardBack} from "../../../../template/elements/playing-cards/covers/CardB
 
 export const OpponentTricks = ({playerName}) => {
 
-    console.log('OpponentTricks:' + playerName);
-
     const tricksCount = useThousandStore(state => state.situation.orderedPlayers[playerName].tricks);
     const hasTricks = tricksCount > 0;
 

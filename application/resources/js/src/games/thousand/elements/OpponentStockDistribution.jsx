@@ -4,9 +4,6 @@ import {minicardsSvg} from "../../../../template/elements/playing-cards/decks/mi
 
 export const OpponentStockDistribution = ({playerName, fourPlayersGame}) => {
 
-    console.log('OpponentStockDistribution:', playerName);
-
-    // TODO when setting state in Thousand store, check if bidding phase and save it to dedicated isPhaseBidding store value (will not change with each phase and limit rerenders)
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const dealer = useThousandStore(state => state.situation.dealer);
     const activePlayer = useThousandStore(state => state.situation.activePlayer);

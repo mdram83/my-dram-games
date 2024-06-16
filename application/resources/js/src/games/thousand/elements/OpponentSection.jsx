@@ -7,7 +7,6 @@ import {OpponentStockDistribution} from "./OpponentStockDistribution.jsx";
 
 export const OpponentSection = ({playerName, fourPlayersGame}) => {
 
-    console.log('OpponentSection:' + playerName);
     const singleClassName = 'flex justify-center items-center';
 
     return (

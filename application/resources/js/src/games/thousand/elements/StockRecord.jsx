@@ -5,8 +5,6 @@ import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.js
 
 export const StockRecord = () => {
 
-    console.log('StockRecord');
-
     const phaseKey = useThousandStore(state => state.situation.phase.key);
     const isPhaseStockDistribution = phaseKey === 'stock-distribution';
 

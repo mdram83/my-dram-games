@@ -6,8 +6,6 @@ import {TableDistribution} from "./TableDistribution.jsx";
 
 export const Table = () => {
 
-    console.log('Table');
-
     const table = useThousandStore(state => state.situation.table);
 
     const playerName = window.MyDramGames.player.name;

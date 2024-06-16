@@ -6,8 +6,6 @@ import {GameResult} from "./GameResult.jsx";
 
 export const GameInformation = () => {
 
-    console.log('GameInformation');
-
     const isFinished = useThousandStore(state => state.situation.isFinished);
     const pointsSpanClassName = isFinished ? 'col-span-4 sm:col-span-4' : 'col-span-4 sm:col-span-3';
 

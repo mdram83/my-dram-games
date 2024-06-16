@@ -4,8 +4,6 @@ import {configThousand} from "../configThousand.jsx";
 
 export const GameDetails = () => {
 
-    console.log('GameDetails');
-
     const round = useThousandStore(state => state.situation.round);
     const phase = useThousandStore(state => state.situation.phase);
     const player = useThousandStore(state => state.situation.activePlayer);

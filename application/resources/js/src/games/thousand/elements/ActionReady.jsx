@@ -4,8 +4,6 @@ import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.js
 
 export const ActionReady = ({phase, disabled = false}) => {
 
-    console.log('ActionReady');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

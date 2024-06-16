@@ -4,8 +4,6 @@ import {useGamePlayStore} from "../../../game-core/game-play/useGamePlayStore.js
 
 export const ActionDeclare = ({phase, declaration, disabled = false}) => {
 
-    console.log('ActionDeclare');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
