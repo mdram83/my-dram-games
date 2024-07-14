@@ -11,44 +11,48 @@
                 <div class="col-lg-6">
                     <div class="login__form">
                         <h3>Sign Up</h3>
-                        <form method="POST" action="{{ route('register', ['redirect' => $redirect]) }}">
-                            @csrf
 
-                            <!-- Email -->
-                            <div class="input__item">
-                                <x-input-label for="email" class="collapse" :value="__('Email')" />
-                                <input id="email" type="email" name="email" placeholder="Email address" value="{{ old('email') }}" required autocomplete="username">
-                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                                <span class="icon_mail"></span>
-                            </div>
+                        <p>Registration is currently not available</p>
 
-                            <!-- Name -->
-                            <div class="input__item">
-                                <x-input-label for="name" class="collapse" :value="__('Name')" />
-                                <input id="name" type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required autofocus autocomplete="name">
-                                <span class="icon_profile"></span>
-                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                            </div>
+{{--                        commented out until proper security is in place --}}
+{{--                        <form method="POST" action="{{ route('register', ['redirect' => $redirect]) }}">--}}
+{{--                            @csrf--}}
 
-                            <!-- Password -->
-                            <div class="input__item">
-                                <x-input-label for="password" class="collapse" :value="__('Password')" />
-                                <input id="password" type="password" name="password" placeholder="Password" required autocomplete="new-password">
-                                <span class="icon_lock"></span>
-                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                            </div>
+{{--                            <!-- Email -->--}}
+{{--                            <div class="input__item">--}}
+{{--                                <x-input-label for="email" class="collapse" :value="__('Email')" />--}}
+{{--                                <input id="email" type="email" name="email" placeholder="Email address" value="{{ old('email') }}" required autocomplete="username">--}}
+{{--                                <x-input-error :messages="$errors->get('email')" class="mt-2" />--}}
+{{--                                <span class="icon_mail"></span>--}}
+{{--                            </div>--}}
 
-                            <!-- Confirm Password -->
-                            <div class="input__item">
-                                <x-input-label for="password_confirmation" class="collapse" :value="__('Confirm Password')" />
-                                <input id="password_confirmation" type="password" name="password_confirmation" placeholder="Confirm Password" required autocomplete="new-password">
-                                <span class="icon_lock"></span>
-                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                            </div>
+{{--                            <!-- Name -->--}}
+{{--                            <div class="input__item">--}}
+{{--                                <x-input-label for="name" class="collapse" :value="__('Name')" />--}}
+{{--                                <input id="name" type="text" name="name" placeholder="Your Name" value="{{ old('name') }}" required autofocus autocomplete="name">--}}
+{{--                                <span class="icon_profile"></span>--}}
+{{--                                <x-input-error :messages="$errors->get('name')" class="mt-2" />--}}
+{{--                            </div>--}}
 
-                            <button type="submit" class="site-btn">{{ __('Register') }}</button>
+{{--                            <!-- Password -->--}}
+{{--                            <div class="input__item">--}}
+{{--                                <x-input-label for="password" class="collapse" :value="__('Password')" />--}}
+{{--                                <input id="password" type="password" name="password" placeholder="Password" required autocomplete="new-password">--}}
+{{--                                <span class="icon_lock"></span>--}}
+{{--                                <x-input-error :messages="$errors->get('password')" class="mt-2" />--}}
+{{--                            </div>--}}
 
-                        </form>
+{{--                            <!-- Confirm Password -->--}}
+{{--                            <div class="input__item">--}}
+{{--                                <x-input-label for="password_confirmation" class="collapse" :value="__('Confirm Password')" />--}}
+{{--                                <input id="password_confirmation" type="password" name="password_confirmation" placeholder="Confirm Password" required autocomplete="new-password">--}}
+{{--                                <span class="icon_lock"></span>--}}
+{{--                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />--}}
+{{--                            </div>--}}
+
+{{--                            <button type="submit" class="site-btn">{{ __('Register') }}</button>--}}
+
+{{--                        </form>--}}
                         <h5>Already have an account? <a href="{{ route('login', ['redirect' => $redirect]) }}">Log In!</a></h5>
                     </div>
                 </div>
