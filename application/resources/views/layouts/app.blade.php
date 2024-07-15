@@ -106,6 +106,7 @@
     <x-jsfeeds.asset-url />
 
     @stack('custom-scripts')
+    @include('cookie-consent::index')
 
 </body>
 </html>
