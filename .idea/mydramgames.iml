@@ -141,6 +141,8 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/evenement/evenement" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/psr-http-message-bridge" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/ringcentral/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/laravel-cookie-consent" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/laravel-package-tools" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
