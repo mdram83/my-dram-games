@@ -37,7 +37,6 @@ const echoAuthEndpoint = () => {
             return match[2];
         }
     }
-    console.log(authEndpointBase + cookieValue(cookieName)); // TODO remove after testing in prod
     return authEndpointBase + cookieValue(cookieName);
 }
 
