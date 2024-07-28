@@ -48,8 +48,8 @@ return [
      * Leave this empty if you want to accept requests from all hosts.
      */
     'allowed_origins' => [
-        env('PUSHER_HOST'),
-        'wsl.localhost',
+//        env('PUSHER_HOST'),
+//        'wsl.localhost',
     ],
 
     /*
@@ -103,7 +103,7 @@ return [
          * Use an DNS resolver to make the requests to the statistics logger
          * default is to resolve everything to 127.0.0.1.
          */
-        'perform_dns_lookup' => false,
+        'perform_dns_lookup' => true,
     ],
 
     /*
@@ -129,6 +129,8 @@ return [
          * Passphrase for your local_cert file.
          */
         'passphrase' => env('LARAVEL_WEBSOCKETS_SSL_PASSPHRASE', ''),
+
+        'verify_peer' => false,
 
     ],
 

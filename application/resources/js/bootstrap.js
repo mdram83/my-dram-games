@@ -49,4 +49,5 @@ window.Echo = new Echo({
     wssPort: import.meta.env.VITE_PUSHER_PORT,
     forceTLS: true,
     disableStats: true,
+    enabledTransports: ['wss', 'ws'],
 });
