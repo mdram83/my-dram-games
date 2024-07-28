@@ -43,6 +43,10 @@ return [
                 'encrypted' => true,
                 'debug' => true,
                 'useTLS' => env('PUSHER_SCHEME', null) === 'https',
+                'curl_options' => [
+                    81 => 0, // CURLOPT_SSL_VERIFYHOST => 0,
+                    64 => 0, // CURLOPT_SSL_VERIFYPEER => 0,
+                ]
             ],
             'client_options' => [
                 'verify' => false,
