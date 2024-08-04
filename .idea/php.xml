@@ -142,7 +142,6 @@
       <path value="$PROJECT_DIR$/application/vendor/facade/ignition-contracts" />
       <path value="$PROJECT_DIR$/application/vendor/evenement/evenement" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/psr-http-message-bridge" />
-      <path value="$PROJECT_DIR$/application/vendor/ringcentral/psr7" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-package-tools" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-cookie-consent" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/error-solutions" />
