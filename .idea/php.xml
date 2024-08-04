@@ -145,6 +145,7 @@
       <path value="$PROJECT_DIR$/application/vendor/ringcentral/psr7" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-package-tools" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-cookie-consent" />
+      <path value="$PROJECT_DIR$/application/vendor/spatie/error-solutions" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
