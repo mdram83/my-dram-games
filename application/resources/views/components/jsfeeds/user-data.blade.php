@@ -1,3 +1,7 @@
+@php(
+    $appEnv = env('APP_ENV', 'env not set')
+)
+
 <script>
     window.MyDramGames = {...window.MyDramGames,
         'player': {
@@ -8,7 +12,7 @@
 
             // TODO temp to check env vars issues
             'app': {
-                'env': @if(env('APP_ENV') !== null) `{{ env('APP_ENV') }}` @else {{ 'not set' }} @@endif,
+                'env': `{{ $appEnv }}`,
             }
         }
     }
