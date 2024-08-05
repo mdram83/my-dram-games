@@ -4,8 +4,6 @@ import {useThousandStore} from "../../../../src/games/thousand/useThousandStore.
 
 export const PlayingCard = ({cardKey, scale = 1}) => {
 
-    console.log('PlayingCard:', cardKey);
-
     const activeCardKey = useThousandStore(state => state.activeCardKey);
     const setActiveCardKey = useThousandStore(state => state.setActiveCardKey);
     const isActive = cardKey === activeCardKey;

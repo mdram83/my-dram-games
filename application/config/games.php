@@ -32,6 +32,18 @@ if (config('app.env') === 'production') {
                 GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
                 GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
             ],
+
+            'thousand' => [
+                'name' => 'Thousand',
+                'description' => 'Another Classic, a Thousand Schnapsen playing card game.',
+                'durationInMinutes' => 120,
+                'minPlayerAge' => 10,
+                'isActive' => true,
+                GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
+                GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryThousand::class,
+                GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayThousand::class,
+                GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryThousand::class,
+            ],
         ],
     ];
 }
@@ -55,7 +67,7 @@ return [
 
         'thousand' => [
             'name' => 'Thousand',
-            'description' => 'Another classic, a Thousand Schnapsen playing card game.',
+            'description' => 'Another Classic, a Thousand Schnapsen playing card game.',
             'durationInMinutes' => 120,
             'minPlayerAge' => 10,
             'isActive' => true,

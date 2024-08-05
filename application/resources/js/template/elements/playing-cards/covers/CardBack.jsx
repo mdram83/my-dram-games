@@ -2,8 +2,6 @@ import React from "react";
 
 export const CardBack = () => {
 
-    console.log('call CardBack');
-
     const cardBackUrl = window.MyDramGames["asset-url"].img
         + '/core/elements/decks/playing-cards/card-7031432_640.png';
 
