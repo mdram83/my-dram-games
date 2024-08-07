@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Anime Template">
-    <meta name="keywords" content="Anime, unica, creative, html">
+    <meta name="description" content="Online Board Games">
+    <meta name="keywords" content="board, games, tic-tac-toe">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -67,10 +67,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-
+                    <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved</p>
                 </div>
             </div>
         </div>
