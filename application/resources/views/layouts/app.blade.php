@@ -60,14 +60,18 @@
                     <div class="footer__nav">
                         <ul>
                             <li class="active"><a href="/">Homepage</a></li>
-                            <li><a href="./categories.html">Categories</a></li>
-                            <li><a href="./blog.html">Our Blog</a></li>
+
+                            {{--<!-- Categories -->
+                            <li><a href="./categories.html">Categories</a></li>--}}
+
                             <li><a href="#">Contacts</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved</p>
+                    <p class="flex justify-center">
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> mdram83
+                    </p>
                 </div>
             </div>
         </div>

@@ -11,6 +11,8 @@
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li class="active"><a href="/">Homepage</a></li>
+
+                            {{--<!-- Categories Section -->
                             <li><a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
                                 <ul class="dropdown">
                                     <li><a href="./categories.html">Categories</a></li>
@@ -20,8 +22,8 @@
                                     <li><a href="./signup.html">Sign Up</a></li>
                                     <li><a href="./login.html">Login</a></li>
                                 </ul>
-                            </li>
-                            <li><a href="./blog.html">Our Blog</a></li>
+                            </li>--}}
+
                             <li><a href="#">Contacts</a></li>
                         </ul>
                     </nav>
@@ -29,7 +31,9 @@
             </div>
             <div class="col-lg-2">
                 <div class="header__right">
-                    <a href="#" class="search-switch"><span class="icon_search"></span></a>
+
+                    {{--<!-- Search Section -->--}}
+                    {{--<a href="#" class="search-switch"><span class="icon_search"></span></a>--}}
 
                     @auth
                         <a class="fs1 text-white" href="{{ route('logout') }}" aria-hidden="true" data-icon="&#x51;"
