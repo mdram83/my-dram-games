@@ -2,7 +2,7 @@
 
 <x-app-layout>
 
-    <x-template.normal-breadcrumb title="Login" subtitle="Welcome to the official Anime blog." />
+    <x-template.normal-breadcrumb title="Login" subtitle="Welcome to board gaming website." />
 
     <!-- Login Section Begin -->
     <section class="login spad">
