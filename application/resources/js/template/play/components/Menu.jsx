@@ -13,14 +13,14 @@ export const Menu = ({gameInvite}) => {
         const parts = title.split(hasManyWords ? ' ' : '');
 
         if (hasManyWords) {
-            return <>{parts.slice(0, -1).join(' ')} <span className="text-red-600">{parts.slice(-1)}</span></>;
+            return <>{parts.slice(0, -1).join(' ')} <span className="text-red-500">{parts.slice(-1)}</span></>;
         }
 
         if (parts.length < 5) {
             return title;
         }
 
-        return <>{parts.slice(0, -2).join('')}<span className="text-red-600">{parts.slice(-2).join('')}</span></>;
+        return <>{parts.slice(0, -2).join('')}<span className="text-red-500">{parts.slice(-2).join('')}</span></>;
     }
 
     return (

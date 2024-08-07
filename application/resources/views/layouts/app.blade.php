@@ -53,7 +53,7 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="footer__logo">
-                        <a href="/"><img src="{{ asset('img/logo.png') }}" alt=""></a>
+                        <x-template.logo classAlign="align-start" classJustify="justify-center" />
                     </div>
                 </div>
                 <div class="col-lg-6">
