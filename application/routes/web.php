@@ -10,6 +10,7 @@ use App\Http\Controllers\RefreshCsrfTokenController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::view('/about', 'about')->name('about');
 
 Route::middleware('player')->group(function() {
     Route::get('/games/{slug}', [GameBoxController::class, 'show'])->name('games.show');
