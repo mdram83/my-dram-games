@@ -24,7 +24,7 @@
                                 </ul>
                             </li>--}}
 
-                            <li><a href="#">Contacts</a></li>
+                            <li><a href="{{ route('about') }}">About</a></li>
                         </ul>
                     </nav>
                 </div>

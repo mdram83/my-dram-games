@@ -64,7 +64,7 @@
                             {{--<!-- Categories -->
                             <li><a href="./categories.html">Categories</a></li>--}}
 
-                            <li><a href="#">Contacts</a></li>
+                            <li><a href="{{ route('about') }}">About</a></li>
                         </ul>
                     </div>
                 </div>
