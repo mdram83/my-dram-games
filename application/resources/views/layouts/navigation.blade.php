@@ -10,7 +10,9 @@
                 <div class="header__nav">
                     <nav class="header__menu mobile-menu">
                         <ul>
-                            <li class="active"><a href="/">Homepage</a></li>
+
+                            <li @class(['active' => \Illuminate\Support\Facades\Route::is('home')])><a href="{{ route('home') }}">Homepage</a></li>
+                            <li @class(['active' => \Illuminate\Support\Facades\Route::is('about')])><a href="{{ route('about') }}">About</a></li>
 
                             {{--<!-- Categories Section -->
                             <li><a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
@@ -24,7 +26,6 @@
                                 </ul>
                             </li>--}}
 
-                            <li><a href="{{ route('about') }}">About</a></li>
                         </ul>
                     </nav>
                 </div>
