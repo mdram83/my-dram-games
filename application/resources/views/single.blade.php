@@ -1,20 +1,20 @@
 <x-app-layout>
 
-    {{--<!-- Breadcrumb Begin -->
+    <!-- Breadcrumb Begin -->
     <div class="breadcrumb-option">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="{{ route('home') }}"><i class="fa fa-home"></i> Home</a>
-                        <a href="./categories.html">Categories</a>
-                        <span>Romance</span>
+                        {{--<a href="./categories.html">Categories</a>--}}
+                        <span>{{ $gameBox['name'] }}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Breadcrumb End -->--}}
+    <!-- Breadcrumb End -->
 
     <!-- Anime Section Begin -->
     <section class="anime-details spad">
