@@ -669,6 +669,15 @@ ol {
 	top: 10px;
 }
 
+.product__item__pic .link {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
 .product__item__pic .comment {
 	font-size: 13px;
 	color: #ffffff;

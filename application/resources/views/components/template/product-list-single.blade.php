@@ -4,13 +4,20 @@
     <div class="product__item">
 
         <div class="product__item__pic set-bg" data-setbg="{{ asset('img/game-definition/' . $gameBox['slug'] . '.jpg') }}">
+
+            <a href="{{ route('games.show', $gameBox['slug']) }}" class="w-full h-full">
+                <div class="link"></div>
+            </a>
+
             @if($gameBox['isActive'] === true)
                 <div class="ep">
                     <a href="{{ route('games.show', $gameBox['slug']) }}" class="text-white">PLAY</a>
                 </div>
             @endif
+
             <div class="comment"><i class="fa fa-comments"></i> 11</div>
             <div class="view"><i class="fa fa-eye"></i> 9141</div>
+
         </div>
 
         <div class="product__item__text">
