@@ -17,7 +17,7 @@
 
             <x-template.hero-item label="Playing Cards"
                                   title="Thousand Schnapsen"
-                                  description="1000 card games now available"
+                                  description="'1000' card games now available"
                                   img="{{ asset('img/games/thousand.jpg') }}"
                                   link="/games/thousand"
                                   button="Play Now" />
