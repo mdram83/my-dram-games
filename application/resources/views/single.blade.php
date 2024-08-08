@@ -25,16 +25,23 @@
                         <div class="anime__details__pic set-bg"
                              data-setbg="{{ asset('img/games/' . $gameBox['slug'] . '.jpg') }}"
                         >
+
+                            {{--<!-- Comments and Views -->
                             <div class="comment"><i class="fa fa-comments"></i> 11</div>
-                            <div class="view"><i class="fa fa-eye"></i> 9141</div>
+                            <div class="view"><i class="fa fa-eye"></i> 9141</div>--}}
+
                         </div>
                     </div>
                     <div class="col-lg-9">
                         <div class="anime__details__text">
                             <div class="anime__details__title">
                                 <h3>{{ $gameBox['name'] }}</h3>
-                                <span>フェイト／ステイナイト, Feito／sutei naito</span>
+
+                                {{--<!-- Author / subtitle section -->
+                                <span>フェイト／ステイナイト, Feito／sutei naito</span>--}}
+
                             </div>
+
                             {{--<div class="anime__details__rating">
                                 <div class="rating">
                                     <a href="#"><i class="fa fa-star"></i></a>
@@ -45,32 +52,38 @@
                                 </div>
                                 <span>1.029 Votes</span>
                             </div>--}}
+
                             <p>{{ $gameBox['description'] }}</p>
+
                             <div class="anime__details__widget">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6">
                                         <ul>
-                                            <li><span>Type:</span> TV Series</li>
-                                            <li><span>Studios:</span> Lerche</li>
-                                            <li>
-                                                <span>No. players:</span> {{ $gameBox['numberOfPlayersDescription'] }}
-                                            </li>
-                                            <li>
-                                                <span>Status:</span> {{ $gameBox['isActive'] ? 'Active' : 'Inactive' }}
-                                            </li>
-                                            <li><span>Genre:</span> Action, Adventure, Fantasy, Magic</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <ul>
-                                            <li><span>Scores:</span> 7.31 / 1,515</li>
-                                            <li><span>Rating:</span> 8.5 / 161 times</li>
+
+                                            <li><span>No. players:</span> {{ $gameBox['numberOfPlayersDescription'] }}</li>
                                             <li><span>Duration:</span>
                                                 {{ $gameBox['durationInMinutes'] }}
                                                 {{ $gameBox['durationInMinutes'] == 1 ? 'minute' : 'minutes'}}
                                             </li>
+
+                                            {{--<li><span>Genre:</span> Action, Adventure, Fantasy, Magic</li>--}}
+
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <ul>
+
                                             <li><span>Min. age:</span> {{ $gameBox['minPlayerAge'] }}</li>
-                                            <li><span>Views:</span> 131,541</li>
+                                            <li><span>Status:</span>
+                                                <span class="{{ $gameBox['isActive'] ? 'bg-green-500' : 'bg-gray-500' }} rounded-xl text-center text-white">
+                                                    {{ $gameBox['isActive'] ? 'Available' : 'Not Available' }}
+                                                </span>
+                                            </li>
+
+                                            {{--<li><span>Scores:</span> 7.31 / 1,515</li>--}}
+                                            {{--<li><span>Rating:</span> 8.5 / 161 times</li>--}}
+                                            {{--<li><span>Views:</span> 131,541</li>--}}
+
                                         </ul>
                                     </div>
                                 </div>
