@@ -98,7 +98,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+
+            {{--<!-- Reviews and You might like Sections -->--}}
+            {{--<div class="row">
                 <div class="col-lg-8 col-md-8">
                     <div class="anime__details__review">
                         <div class="section-title">
@@ -202,7 +204,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
         </div>
     </section>
     <!-- Anime Section End -->
