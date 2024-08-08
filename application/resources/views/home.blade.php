@@ -8,7 +8,8 @@
             <div class="row">
 
                 <!-- Main Pane -->
-                <div class="col-lg-8">
+                {{--<div class="col-lg-8"> <!-- adjusted from 8 to 12 after hiding top views section -->--}}
+                <div class="col-lg-12">
                     <div class="trending__product">
 
                         <div class="row">
@@ -36,7 +37,7 @@
                     </div>
                 </div>
 
-                <!-- Side Bar -->
+                {{--<!-- Side Bar -->
                 <div class="col-lg-4 col-md-6 col-sm-8">
                     <div class="product__sidebar">
 
@@ -89,7 +90,7 @@
                             </div>
                         </div>
 
-                        {{--<!-- Comments Section -->
+                        --}}{{--<!-- Comments Section -->
                         <div class="product__sidebar__comment">
 
                             <div class="section-title">
@@ -110,10 +111,10 @@
                                     <span><i class="fa fa-eye"></i> 19.141 Viewes</span>
                                 </div>
                             </div>
-                        </div>--}}
+                        </div>--}}{{--
 
                     </div>
-                </div>
+                </div>--}}
 
             </div>
         </div>
