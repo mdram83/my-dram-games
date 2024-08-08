@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <!-- Breadcrumb Begin -->
+    {{--<!-- Breadcrumb Begin -->
     <div class="breadcrumb-option">
         <div class="container">
             <div class="row">
@@ -14,7 +14,7 @@
             </div>
         </div>
     </div>
-    <!-- Breadcrumb End -->
+    <!-- Breadcrumb End -->--}}
 
     <!-- Anime Section Begin -->
     <section class="anime-details spad">
