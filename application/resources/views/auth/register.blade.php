@@ -58,6 +58,7 @@
                 </div>
 
                 <div class="col-lg-6">
+                    {{--<!-- Social login -->
                     <div class="login__social__links">
                         <h3>Login With:</h3>
                         <ul>
@@ -66,7 +67,7 @@
                             <li><a href="#" class="google"><i class="fa fa-google"></i> Sign in With Google</a></li>
                             <li><a href="#" class="twitter"><i class="fa fa-twitter"></i> Sign in With Twitter</a></li>
                         </ul>
-                    </div>
+                    </div>--}}
                 </div>
 
             </div>
