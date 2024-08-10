@@ -41,10 +41,9 @@
             This website is using cookies for core functionalities only.
         "/>
         <x-template.about-paragraph value="
-            Website is not processing your personal data.
-            Limited information (ip address, functional cookies) is collected to ensure core functionality of the website and is not share with others.
+            I am processing your personal data for personal and domestic purposes, not related with professional or marketing purposes.
+            Still I will take appropriate measures so that personal data you provide (e.g. email address) is safe.
             Please do not store your personal data in your username or within messages posted on the website as they may be visible to other website visitors.
-            Still I will take appropriate measures so that any data you provide is safe.
         "/>
         <x-template.about-paragraph value="
             For any questions or issues please contact me: michal dot dramowicz at gmail dot com
