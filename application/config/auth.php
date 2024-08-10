@@ -112,4 +112,6 @@ return [
 
     'password_timeout' => 10800,
 
+    'beta_registration_code' => env('BETA_REGISTRATION_CODE'),
+
 ];
