@@ -48,33 +48,6 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
         }
     }
 
-    const handleTouchStart = (e) => {
-        console.log('TOUCH-START');
-        initialPosition.current = {x: e.touches[0].clientX, y: e.touches[0].clientY};
-        setIsDragging(false);
-    }
-
-    const handleTouchMove = (e) => {
-        console.log('TOUCH-MOVE');
-        const distanceX = Math.abs(e.touches[0].clientX - initialPosition.current.x);
-        const distanceY = Math.abs(e.touches[0].clientY - initialPosition.current.y);
-        checkAndSetDragging(distanceX, distanceY);
-    }
-
-    const handleTouchEnd = () => {
-        console.log('TOUCH-END');
-        if (!isDragging) {
-            toggleActive();
-        }
-    }
-
-    const click = () => {
-        console.log('CLICK');
-        if (!isDragging) {
-            toggleActive();
-        }
-    }
-
     const style = {
         transform: `scale(${(scale * (isActive ? 1.12 : 1.0)).toString()}) translateY(${isActive ? -2.0 : 0.0}vh)`,
     }
@@ -86,15 +59,10 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
     }
 
     return (
-        <div style={style}
-             className={className}
+        <div style={style} className={className}
              onMouseDown={handleMouseDown}
              onMouseMove={handleMouseMove}
              onMouseUp={handleMouseUp}
-             // onTouchStart={handleTouchStart}
-             // onTouchMove={handleTouchMove}
-             // onTouchEnd={handleTouchEnd}
-             // onClick={click} // FIXME adding this and removing mouse event looks ok for mobile but not for PC (card getting active after dragging...)
         >
             {getCard(cardKey)}
         </div>
