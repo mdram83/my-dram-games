@@ -19,12 +19,20 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
-        $response = $this->post('/register', [
+        $registrationPayload = [
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-        ]);
+        ];
+
+        $betaRegistrationCode = config('auth.beta_registration_code');
+
+        if ($betaRegistrationCode !== null) {
+            $registrationPayload['beta_registration_code'] = $betaRegistrationCode;
+        }
+
+        $response = $this->post('/register', $registrationPayload);
 
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
