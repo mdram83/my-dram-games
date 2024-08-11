@@ -13,7 +13,6 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
     const blocked = stockDistributionCardKeys.includes(cardKey);
 
     const toggleActive = () => {
-        console.log('toggleActive');
         if (!blocked) {
             setActiveCardKey(isActive ? null : cardKey);
         }
@@ -30,7 +29,6 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
     }
 
     const handleMouseDown = (e) => {
-        console.log('MOUSE-DOWN');
         initialPosition.current = {x: e.clientX, y: e.clientY};
         setIsDragging(false);
     }
@@ -42,7 +40,6 @@ export const PlayingCard = ({cardKey, scale = 1}) => {
     }
 
     const handleMouseUp = () => {
-        console.log('MOUSE-UP');
         if (!isDragging) {
             toggleActive();
         }

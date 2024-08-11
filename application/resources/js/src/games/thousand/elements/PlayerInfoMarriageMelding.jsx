@@ -41,18 +41,21 @@ export const PlayerInfoMarriageMelding = () => {
         return hand.includes(expectedMarriagePairKey);
     }
 
+    const isFollowingMeldMarriageConditions = () => {
+        return isPhasePlayingFirstCard && isActivePlayer && hasActiveCard && isCardMarriagePart();
+    }
+
     const toggleMeldMarriageDecision = () => {
         setMeldMarriageDecision(!meldMarriageDecision);
     }
 
     useEffect(() => {
-        setMeldMarriageDecision(false);
+        setMeldMarriageDecision(isFollowingMeldMarriageConditions());
     }, [activeCardKey]);
-
 
     const renderMelding = () => {
 
-        if (!isPhasePlayingFirstCard || !isActivePlayer || !hasActiveCard || !isCardMarriagePart()) {
+        if (!isFollowingMeldMarriageConditions()) {
             return <></>;
         }
 
@@ -61,10 +64,10 @@ export const PlayerInfoMarriageMelding = () => {
 
                 <div className={singleClassName}>
                     <div className="w-fit sm:w-[4vh] h-fit sm:h-[4vh] mr-[0.4vh] sm:mr-[2vh] border-[0.5vh] border-solid border-orange-500 shadow-md shadow-orange-500 rounded-lg flex items-center justify-center justify-content-center">
-                        <input type="checkbox" className="accent-orange-500" onClick={toggleMeldMarriageDecision} style={{transform: 'scale(1.5)'}}/>
+                        <input type="checkbox" className="accent-orange-500" onClick={toggleMeldMarriageDecision} style={{transform: 'scale(1.5)'}} defaultChecked={true}/>
                     </div>
                     <div className="w-auto font-sans text-[2.6vh] font-bold text-orange-600 text-center">
-                        Check to Meld Marriage
+                        Meld Marriage
                     </div>
                 </div>
 
