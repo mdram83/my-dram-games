@@ -11,7 +11,7 @@ export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined, gameRe
     const [errorMessage, setErrorMessage] = React.useState(undefined);
     const [recordsModule, setRecordsModule] = React.useState(undefined);
 
-    const joinUrl = window.MyDramGames.routes["game-invites.join"](slug, gameInvite.id);
+    const joinUrl = window.MyDramGames.routes["game-invites.join-redirect"](slug, gameInvite.id);
 
     const copyJoinUrl = () => navigator.clipboard.writeText(joinUrl);
     const showGamePlay = (gamePlayId) => window.location.href = window.MyDramGames.routes["gameplay.show"](gamePlayId);
