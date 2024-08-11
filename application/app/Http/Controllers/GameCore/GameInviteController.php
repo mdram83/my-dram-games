@@ -67,6 +67,11 @@ class GameInviteController extends Controller
         }
     }
 
+    public function joinRedirect(string $slug, int|string $gameInviteId): RedirectResponse
+    {
+        return Redirect::route('game-invites.join', ['slug' => $slug, 'gameInviteId' => $gameInviteId]);
+    }
+
     public function join(
         GameInviteRepository $repository,
         GamePlayRepository $gamePlayRepository,

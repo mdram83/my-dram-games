@@ -29,6 +29,7 @@ class GameInviteControllerTest extends TestCase
     protected bool $commonSetup = false;
     protected string $routeStore = 'ajax.game-invites.store';
     protected string $routeJoin = 'game-invites.join';
+    protected string $routeJoinRedirect = 'game-invites.join-redirect';
     protected string $slug = 'tic-tac-toe';
     protected Player $playerHost;
     protected GameBox $gameBox;
@@ -292,5 +293,14 @@ class GameInviteControllerTest extends TestCase
             'gamePlayId' => $play->getId(),
         ]);
         $response->assertViewHas(['gameRecords']);
+    }
+
+    public function testJoinRedirectReturnsRedirectResponse(): void
+    {
+        $response = $this->get(route($this->routeJoin, [
+            'slug' => $this->slug,
+            'gameInviteId' => 'any-game-invite-id',
+        ]));
+        $response->assertStatus(Response::HTTP_FOUND);
     }
 }
