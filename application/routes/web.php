@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::view('/about', 'about')->name('about');
+Route::get('/join/{gameInviteId}', [GameInviteController::class, 'joinRedirect'])->name('game-invites.join-redirect');
 
 Route::middleware('player')->group(function() {
     Route::get('/games/{slug}', [GameBoxController::class, 'show'])->name('games.show');
