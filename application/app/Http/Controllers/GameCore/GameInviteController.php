@@ -71,10 +71,10 @@ class GameInviteController extends Controller
     public function joinRedirect(string $slug, int|string $gameInviteId): View
     {
         \Illuminate\Support\Facades\View::share('htmlHeadTitle', static::MESSAGE_REDIRECT_TITLE);
-        return view('join-redirect', [
-            'slug' => $slug,
-            'gameInviteId' => $gameInviteId,
-        ]);
+        \Illuminate\Support\Facades\View::share('slug', $slug);
+        \Illuminate\Support\Facades\View::share('gameInviteId', $gameInviteId);
+
+        return view('join-redirect');
     }
 
     public function join(

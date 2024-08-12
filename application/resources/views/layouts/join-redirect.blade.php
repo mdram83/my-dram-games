@@ -40,6 +40,7 @@
     <x-jsfeeds.route-names />
     <x-jsfeeds.user-data />
     <x-jsfeeds.asset-url />
+    <x-jsfeeds.join-redirect />
 
     @stack('custom-scripts')
     @include('cookie-consent::index')

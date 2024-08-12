@@ -21,4 +21,8 @@
         </div>
     </section>
 
+    @push('custom-scripts')
+        @vite('resources/js/src/game-core/game-invite/joinRedirect.jsx')
+    @endpush
+
 </x-join-redirect-layout>
