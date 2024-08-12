@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ $htmlHeadTitle }}</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,6 +37,11 @@
     <script src="{{ asset('js/owl.carousel.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
 
+    <x-jsfeeds.route-names />
+    <x-jsfeeds.user-data />
+    <x-jsfeeds.asset-url />
+
+    @stack('custom-scripts')
     @include('cookie-consent::index')
 
 </body>

@@ -36,6 +36,7 @@ class GameInviteController extends Controller
 {
     public const MESSAGE_PLAYER_JOINED = 'You have joined the game!';
     public const MESSAGE_PLAYER_BACK = 'Welcome back!';
+    public const MESSAGE_REDIRECT_TITLE = 'Join the game!';
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
     public function store(
@@ -67,9 +68,10 @@ class GameInviteController extends Controller
         }
     }
 
-    public function joinRedirect(string $slug, int|string $gameInviteId): RedirectResponse
+    public function joinRedirect(string $slug, int|string $gameInviteId): View
     {
-        return Redirect::route('game-invites.join', ['slug' => $slug, 'gameInviteId' => $gameInviteId]);
+        \Illuminate\Support\Facades\View::share('htmlHeadTitle', static::MESSAGE_REDIRECT_TITLE);
+        return view('join-redirect');
     }
 
     public function join(
