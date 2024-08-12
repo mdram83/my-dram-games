@@ -297,10 +297,15 @@ class GameInviteControllerTest extends TestCase
 
     public function testJoinRedirectReturnsHttpOk(): void
     {
+        $gameInviteId = 'any-game-invite-id';
+
         $response = $this->get(route($this->routeJoinRedirect, [
             'slug' => $this->slug,
-            'gameInviteId' => 'any-game-invite-id',
+            'gameInviteId' => $gameInviteId,
         ]));
+
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertViewHas('slug', $this->slug);
+        $response->assertViewHas('gameInviteId', $gameInviteId);
     }
 }
