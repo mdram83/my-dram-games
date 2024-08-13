@@ -6,6 +6,9 @@ import {GameResult} from "./GameResult.jsx";
 
 export const GameInformation = () => {
 
+    const playerName = window.MyDramGames.player.name;
+    const ready = useThousandStore(state => state.situation.orderedPlayers[playerName].ready);
+
     const isFinished = useThousandStore(state => state.situation.isFinished);
     const pointsSpanClassName = isFinished ? 'col-span-4 sm:col-span-4' : 'col-span-4 sm:col-span-3';
 
@@ -19,6 +22,11 @@ export const GameInformation = () => {
     useEffect(() => {
         setDisplay((isPhaseCountPoints || display) && !isPhaseBidding);
     }, [isPhaseCountPoints, isPhaseBidding]);
+
+    useEffect(() => {
+        setDisplay(!ready);
+    }, [ready]);
+
 
     const renderGamePoints = () => {
 
