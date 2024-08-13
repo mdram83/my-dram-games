@@ -13,6 +13,7 @@ import {PlayerHand} from "./elements/PlayerHand.jsx";
 import {PlayerInfos} from "./elements/PlayerInfos.jsx";
 import {TrumpSuit} from "./elements/TrumpSuit.jsx";
 import {GameInformation} from "./elements/GameInformation.jsx";
+import {GameMessageHandler} from "./elements/GameMessageHandler.jsx";
 
 const playerName = window.MyDramGames.player.name;
 
@@ -136,6 +137,8 @@ controller.getRoot().render(
         <div className="fixed mt-[12vh] sm:mt-[14vh] right-[2vw] z-20">
             <GameInformation />
         </div>
+
+        <GameMessageHandler />
 
         <FlashMessageGamePlay/>
 
