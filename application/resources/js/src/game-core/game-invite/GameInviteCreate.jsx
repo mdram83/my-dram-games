@@ -28,6 +28,11 @@ export const GameInviteCreate = (props) => {
             })
             .then(response => {
                 props.onStore(response.data.gameInvite);
+                window.history.pushState(
+                    {},
+                    'Game Lobby',
+                    window.MyDramGames.routes["game-invites.join"](props.slug, response.data.gameInvite.id)
+                );
             })
             .catch(error => {
                 setErrorMessage(error.response.data.message.message ?? 'Unexpected error');
