@@ -74,10 +74,11 @@
                                         <ul>
 
                                             <li><span>Min. age:</span> {{ $gameBox['minPlayerAge'] }}</li>
-                                            <li><span>Status:</span>
-                                                <span class="{{ $gameBox['isActive'] ? 'bg-green-500' : 'bg-gray-500' }} rounded-xl text-center text-white">
-                                                    {{ $gameBox['isActive'] ? 'Available' : 'Not Available' }}
-                                                </span>
+                                            <li>
+                                                <span>Status:</span>
+                                                <x-template.single.status-span isActive="{{ $gameBox['isActive'] }}"
+                                                                               isPremium="{{ $gameBox['isPremium'] }}"
+                                                />
                                             </li>
 
                                             {{--<li><span>Scores:</span> 7.31 / 1,515</li>--}}

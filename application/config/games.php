@@ -74,7 +74,7 @@ return [
             'durationInMinutes' => 120,
             'minPlayerAge' => 10,
             'isActive' => true,
-            'isPremium' => false,
+            'isPremium' => true,
             GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
             GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryThousand::class,
             GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayThousand::class,
