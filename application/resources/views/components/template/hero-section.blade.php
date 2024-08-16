@@ -25,7 +25,8 @@
             <x-template.hero-item label="Upcoming Game"
                                   title="Netrunners coming soon!"
                                   description="Prepare for a cyber style adventure"
-                                  img="{{ asset('img/games/netrunners.jpg') }}" />
+                                  img="{{ asset('img/games/netrunners.jpg') }}"
+                                  bgPositionTop="{{ true }}" />
 
         </div>
     </div>
