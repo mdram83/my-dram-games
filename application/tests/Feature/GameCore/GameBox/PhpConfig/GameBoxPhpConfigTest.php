@@ -159,7 +159,6 @@ class GameBoxPhpConfigTest extends TestCase
         $this->assertSame($this->setup, $this->gameBox->getGameSetup());
     }
 
-    // TODO adjust also toArray method to return isPremium result
     public function testToArray(): void
     {
         $expected = array_merge(
@@ -170,6 +169,7 @@ class GameBoxPhpConfigTest extends TestCase
                 'durationInMinutes' => $this->box['durationInMinutes'],
                 'minPlayerAge' => $this->box['minPlayerAge'],
                 'isActive' => $this->box['isActive'],
+                'isPremium' => $this->box['isPremium'],
             ],
             ['numberOfPlayersDescription' => '2'],
             ['options' =>

@@ -114,6 +114,7 @@ class GameBoxPhpConfig implements GameBox
             'durationInMinutes' => $this->getDurationInMinutes(),
             'minPlayerAge' => $this->getMinPlayerAge(),
             'isActive' => $this->isActive(),
+            'isPremium' => $this->isPremium(),
 
             'options' => array_map(fn($option) => [
                 'availableValues' => array_map(
