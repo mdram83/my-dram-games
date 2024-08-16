@@ -18,12 +18,14 @@ class DatabaseSeeder extends Seeder
              'name' => 'test1',
              'email' => 'test1@example.com',
              'password' => Hash::make('pwd'),
+             'premium' => true,
          ]);
 
         User::factory()->create([
             'name' => 'test2',
             'email' => 'test2@example.com',
             'password' => Hash::make('pwd'),
+            'premium' => true,
         ]);
 
         User::factory()->create([
