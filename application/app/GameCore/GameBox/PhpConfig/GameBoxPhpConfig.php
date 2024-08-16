@@ -17,6 +17,7 @@ class GameBoxPhpConfig implements GameBox
     private ?int $durationInMinutes;
     private ?int $minPlayerAge;
     private bool $isActive;
+    private bool $isPremium;
 
     /**
      * @throws GameBoxException
@@ -34,6 +35,7 @@ class GameBoxPhpConfig implements GameBox
             !($this->name = $box['name'] ?? '')
             || !($gameSetup->getNumberOfPlayers() ?? [])
             || !isset($box['isActive'])
+            || !isset($box['isPremium'])
         ) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
         }
@@ -43,6 +45,7 @@ class GameBoxPhpConfig implements GameBox
         $this->minPlayerAge = $box['minPlayerAge'] ?? null;
 
         $this->isActive = $box['isActive'];
+        $this->isPremium = $box['isPremium'];
     }
 
     public function getName(): string
@@ -73,6 +76,11 @@ class GameBoxPhpConfig implements GameBox
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->isPremium;
     }
 
     public function getNumberOfPlayersDescription(): string

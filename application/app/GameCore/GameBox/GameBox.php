@@ -13,6 +13,7 @@ interface GameBox
     public function getDurationInMinutes(): ?int;
     public function getMinPlayerAge(): ?int;
     public function isActive(): bool;
+    public function isPremium(): bool;
     public function getGameSetup(): GameSetup;
     public function toArray(): array;
 }

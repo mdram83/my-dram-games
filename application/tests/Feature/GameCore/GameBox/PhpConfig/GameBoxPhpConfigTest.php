@@ -18,6 +18,7 @@ use Tests\TestCase;
 class GameBoxPhpConfigTest extends TestCase
 {
     protected string $slug = 'tic-tac-toe';
+    protected string $premiumSlug = 'netrunners';
     protected array $box;
     protected GameSetup $setup;
     protected GameBoxPhpConfig $gameBox;
@@ -78,6 +79,17 @@ class GameBoxPhpConfigTest extends TestCase
 
         $box = $this->box;
         unset($box['isActive']);
+
+        $this->mockConfigFacade($box);
+        new GameBoxPhpConfig($this->slug, $this->setup);
+    }
+
+    public function testThrowExceptionIfNoIsPremiumInConfig(): void
+    {
+        $this->expectException(GameBoxException::class);
+
+        $box = $this->box;
+        unset($box['isPremium']);
 
         $this->mockConfigFacade($box);
         new GameBoxPhpConfig($this->slug, $this->setup);
@@ -147,6 +159,7 @@ class GameBoxPhpConfigTest extends TestCase
         $this->assertSame($this->setup, $this->gameBox->getGameSetup());
     }
 
+    // TODO adjust also toArray method to return isPremium result
     public function testToArray(): void
     {
         $expected = array_merge(
@@ -187,5 +200,23 @@ class GameBoxPhpConfigTest extends TestCase
         );
 
         $this->assertEquals($expected, $this->gameBox->toArray());
+    }
+
+    public function testIsPremiumOnNonPremiumGame(): void
+    {
+        $this->assertFalse($this->gameBox->isPremium());
+    }
+
+    public function testIsPremiumOnPremiumGame(): void
+    {
+        $this->box = Config::get('games.box.' . $this->premiumSlug);
+        $this->setup = $this->getMockGameSetup([
+            GameOptionValueNumberOfPlayers::Players002,
+            GameOptionValueNumberOfPlayers::Players003,
+            GameOptionValueNumberOfPlayers::Players004,
+        ]);
+        $this->gameBox = new GameBoxPhpConfig($this->premiumSlug, $this->setup);
+
+        $this->assertTrue($this->gameBox->isPremium());
     }
 }
