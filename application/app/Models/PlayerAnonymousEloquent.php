@@ -39,4 +39,9 @@ class PlayerAnonymousEloquent extends Authenticatable implements PlayerAnonymous
     {
         return false;
     }
+
+    public function isPremium(): bool
+    {
+        return false;
+    }
 }

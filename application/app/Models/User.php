@@ -72,4 +72,8 @@ class User extends Authenticatable implements PlayerRegistered
 //    {
 //        return $this->morphMany(GameInviteEloquentModel::class, 'hostable');
 //    }
+    public function isPremium(): bool
+    {
+        return (bool) $this->premium;
+    }
 }

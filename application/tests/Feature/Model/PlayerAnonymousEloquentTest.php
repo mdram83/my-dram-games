@@ -62,4 +62,10 @@ class PlayerAnonymousEloquentTest extends TestCase
         $anonymous = PlayerAnonymousEloquent::where(['hash' => $this->testHash])->first();
         $this->assertEquals($this->testName, $anonymous->getName());
     }
+
+    public function testIsPremiumAlwaysFalse(): void
+    {
+        $anonymous = PlayerAnonymousEloquent::factory()->create(['hash' => $this->testHash, 'name' => $this->testName]);
+        $this->assertFalse($anonymous->isPremium());
+    }
 }
