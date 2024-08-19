@@ -10,6 +10,10 @@ export const GameInviteControls = ({gameBox, loadedGameInvite = undefined, gameP
     const [gameInviteShowOn, setGameInviteShowOn] = React.useState(!!loadedGameInvite);
     const [gameInvite, setGameInvite] = React.useState(loadedGameInvite);
 
+    const isPlayerPremium = MyDramGames.player.premium;
+    const isGamePremium = gameBox.isPremium;
+    const premiumPass = (!isGamePremium ? true : (isPlayerPremium));
+
     const enableForm = () => {
         setButtonCreateOn(false);
         setFormCreateOn(true);
@@ -29,7 +33,7 @@ export const GameInviteControls = ({gameBox, loadedGameInvite = undefined, gameP
 
     return (
         <>
-            {buttonCreateOn && <SiteButton value="New Game" onClick={() => enableForm()} />}
+            {buttonCreateOn && premiumPass && <SiteButton value="New Game" onClick={() => enableForm()} />}
 
             {formCreateOn && <GameInviteCreate {...gameBox}
                                                onCancel={() => cancelForm()}
