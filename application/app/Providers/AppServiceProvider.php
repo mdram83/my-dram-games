@@ -57,6 +57,8 @@ use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\Laravel\CollectionLaravel;
 use App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5;
 use App\GameCore\Services\HashGenerator\HashGenerator;
+use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
+use App\GameCore\Services\PremiumPass\PremiumPass;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -76,6 +78,8 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
 
         app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
+
+        app()->bind(PremiumPass::class, PremiumPassBasic::class);
 
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
