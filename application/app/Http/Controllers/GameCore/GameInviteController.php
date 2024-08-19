@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\GameCore\GameBox\GameBoxException;
+use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
@@ -16,6 +17,8 @@ use App\GameCore\GameSetup\GameSetupException;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
+use App\GameCore\Services\PremiumPass\PremiumPass;
+use App\GameCore\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use Exception;
@@ -39,6 +42,11 @@ class GameInviteController extends Controller
     public const MESSAGE_REDIRECT_TITLE = 'Join the game!';
     public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
+    public function __construct(readonly private PremiumPass $premiumPass)
+    {
+
+    }
+
     public function store(
         Request $request,
         GameInviteFactory $factory,
@@ -47,6 +55,8 @@ class GameInviteController extends Controller
     {
         try {
             $inputs = $this->getValidatedCastedStoreInputs($request, $converter);
+
+            $this->premiumPass->validate($inputs['slug'], $player);
 
             DB::beginTransaction();
             $gameInvite = $factory->create($inputs['slug'], $inputs['options'], $player);
@@ -57,6 +67,9 @@ class GameInviteController extends Controller
 
         } catch (ControllerException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
+
+        } catch (PremiumPassException $e) {
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_FORBIDDEN);
 
         }  catch (GameSetupException|GameBoxException|GameInviteException $e) {
             DB::rollBack();
@@ -89,6 +102,8 @@ class GameInviteController extends Controller
         try {
             $gameInvite = $repository->getOne($gameInviteId);
 
+            $this->premiumPass->validate($gameInvite->getGameBox()->getSlug(), $player);
+
             if (!$gameInvite->isPlayerAdded($player)) {
                 $gameInvite->addPlayer($player);
                 $message = static::MESSAGE_PLAYER_JOINED;
@@ -99,6 +114,9 @@ class GameInviteController extends Controller
             Session::flash('success', ($message ?? static::MESSAGE_PLAYER_BACK));
 
             return view('single', $responseContent);
+
+        } catch (PremiumPassException $e) {
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_FORBIDDEN);
 
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);

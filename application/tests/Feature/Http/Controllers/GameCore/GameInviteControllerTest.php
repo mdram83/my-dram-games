@@ -13,6 +13,10 @@ use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use App\GameCore\Services\PremiumPass\PremiumPassException;
+use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
+use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
+use App\Games\Thousand\GameOptionValueThousandReDealConditions;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
@@ -26,28 +30,24 @@ class GameInviteControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected bool $commonSetup = false;
     protected string $routeStore = 'ajax.game-invites.store';
     protected string $routeJoin = 'game-invites.join';
     protected string $routeJoinRedirect = 'game-invites.join-redirect';
     protected string $slug = 'tic-tac-toe';
     protected Player $playerHost;
+    protected Player $playerJoin;
     protected GameBox $gameBox;
     protected array $options;
 
     public function setUp(): void
     {
         parent::setUp();
-        if ($this->commonSetup === false) {
 
-            $this->playerHost = User::factory()->create();
-            $this->playerJoin = User::factory()->create();
+        $this->playerHost = User::factory()->create();
+        $this->playerJoin = User::factory()->create();
 
-            $this->gameBox = App::make(GameBoxRepository::class)->getOne($this->slug);
-            $this->options = ['numberOfPlayers' => 2, 'autostart' => 0, 'forfeitAfter' => 0];
-
-            $this->commonSetup = true;
-        }
+        $this->gameBox = App::make(GameBoxRepository::class)->getOne($this->slug);
+        $this->options = ['numberOfPlayers' => 2, 'autostart' => 0, 'forfeitAfter' => 0];
     }
 
     protected function getStoreResponse(
@@ -76,6 +76,39 @@ class GameInviteControllerTest extends TestCase
                 'numberOfPlayers' => $numberOfPlayers,
                 'autostart' => $this->options['autostart'],
                 'forfeitAfter' => '0',
+            ],
+        ]));
+    }
+
+    protected function getStoreResponsePremiumGame (
+        string $slug = 'thousand',
+        int|string $numberOfPlayers = 3,
+        bool $nullifySlug = false,
+        bool $nullifyNumberOfPlayers = false,
+        bool $auth = true,
+    ): TestResponse
+    {
+        $slug = $slug ?? ($nullifySlug ? null : $this->slug);
+        $numberOfPlayers = $numberOfPlayers ?? (
+        $nullifyNumberOfPlayers
+            ? null
+            : $this->options['numberOfPlayers']
+        );
+
+        $response = $this->withHeader('X-Requested-With', 'XMLHttpRequest');
+        if ($auth) {
+            $response = $response->actingAs($this->playerHost, 'web');
+        }
+
+        return $response->json('POST', route($this->routeStore, [
+            'slug' => $slug,
+            'options' => [
+                'numberOfPlayers' => $numberOfPlayers,
+                'autostart' => $this->options['autostart'],
+                'forfeitAfter' => '0',
+                'thousand-barrel-points' => GameOptionValueThousandBarrelPoints::Disabled->getValue(),
+                'thousand-number-of-bombs' => GameOptionValueThousandNumberOfBombs::One->getValue(),
+                'thousand-re-deal-conditions' => GameOptionValueThousandReDealConditions::Disabled->getValue(),
             ],
         ]));
     }
@@ -307,5 +340,42 @@ class GameInviteControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertViewHas('slug', $this->slug);
         $response->assertViewHas('gameInviteId', $gameInviteId);
+    }
+
+    public function testForbiddenWhenStoringPremiumGameWithNonPremiumHost(): void
+    {
+        $response = $this->getStoreResponsePremiumGame();
+        $response->assertForbidden();
+        $response->assertSee(PremiumPassException::MESSAGE_MISSING_PREMIUM_PASS);
+    }
+
+    public function testOkWhenStoringPremiumGameWithPremiumHost(): void
+    {
+        $this->playerHost->premium = true;
+        $response = $this->getStoreResponsePremiumGame();
+        $response->assertOk();
+    }
+
+    public function testForbiddenWhenJoiningPremiumGameWithNonPremiumPlayer(): void
+    {
+        $this->playerHost->premium = true;
+        $storeResponse = $this->getStoreResponsePremiumGame();
+        $gameInviteId = $storeResponse->json('gameInvite.id');
+
+        $response = $this->getJoinResponse('thousand', $gameInviteId);
+
+        $response->assertForbidden();
+    }
+
+    public function testOkWhenJoiningPremiumGameWithPremiumPlayer(): void
+    {
+        $this->playerHost->premium = true;
+        $storeResponse = $this->getStoreResponsePremiumGame();
+        $gameInviteId = $storeResponse->json('gameInvite.id');
+        $this->playerJoin->premium = true;
+
+        $response = $this->getJoinResponse('thousand', $gameInviteId);
+
+        $response->assertOk();
     }
 }
