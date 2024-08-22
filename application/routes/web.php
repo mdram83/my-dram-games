@@ -8,9 +8,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RefreshCsrfTokenController;
 use Illuminate\Support\Facades\Route;
-use MyDramGames\Testlib\Upper;
-
-Route::get('/test-private-package', fn() => (new Upper())->convert('test-private-package'));
 
 Route::get('/', HomeController::class)->name('home');
 Route::view('/about', 'about')->name('about');
