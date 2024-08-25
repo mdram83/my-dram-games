@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Games\TicTacToe;
 
-use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteFactory;
@@ -17,7 +16,6 @@ use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
-use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameRecord\GameRecordRepository;
 use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
@@ -28,6 +26,7 @@ use App\Games\TicTacToe\GameResultTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Exceptions\GameBoardException;
 use Tests\TestCase;
 
 class GamePlayTicTacToeTest extends TestCase

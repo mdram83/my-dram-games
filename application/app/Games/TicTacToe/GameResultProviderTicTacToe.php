@@ -2,7 +2,6 @@
 
 namespace App\Games\TicTacToe;
 
-use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\CollectionGameRecord;
 use App\GameCore\GameRecord\GameRecordFactory;
@@ -14,6 +13,7 @@ use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
+use MyDramGames\Utils\Exceptions\GameBoardException;
 
 class GameResultProviderTicTacToe implements GameResultProvider
 {

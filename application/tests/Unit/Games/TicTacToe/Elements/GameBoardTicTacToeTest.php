@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Games\TicTacToe\Elements;
 
-use App\GameCore\GameElements\GameBoard\GameBoard;
-use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
+use MyDramGames\Utils\Exceptions\GameBoardException;
+use MyDramGames\Utils\GameBoard\GameBoard;
 use PHPUnit\Framework\TestCase;
 
 class GameBoardTicTacToeTest extends TestCase

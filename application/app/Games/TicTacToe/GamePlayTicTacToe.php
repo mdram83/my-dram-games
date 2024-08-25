@@ -2,7 +2,6 @@
 
 namespace App\Games\TicTacToe;
 
-use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GamePlay\GamePlay;
@@ -16,6 +15,7 @@ use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
+use MyDramGames\Utils\Exceptions\GameBoardException;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {

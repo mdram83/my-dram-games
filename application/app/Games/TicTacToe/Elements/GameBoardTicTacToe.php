@@ -2,8 +2,8 @@
 
 namespace App\Games\TicTacToe\Elements;
 
-use App\GameCore\GameElements\GameBoard\GameBoard;
-use App\GameCore\GameElements\GameBoard\GameBoardException;
+use MyDramGames\Utils\Exceptions\GameBoardException;
+use MyDramGames\Utils\GameBoard\GameBoard;
 
 class GameBoardTicTacToe implements GameBoard
 {

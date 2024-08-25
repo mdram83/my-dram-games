@@ -5,7 +5,6 @@ namespace App\Http\Controllers\GameCore;
 use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
 use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
-use App\GameCore\GameElements\GameBoard\GameBoardException;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
 use App\GameCore\GameElements\GameMove\GameMoveException;
@@ -35,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use MyDramGames\Utils\Exceptions\GameBoardException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -120,7 +120,7 @@ class GamePlayController extends Controller
                     'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
                     'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
                     'host' => $gamePlay->getGameInvite()->getHost()->getName(),
-                    'options' => $options, // TODO adjust tests
+                    'options' => $options,
                 ],
                 'situation' => $gamePlay->getSituation($player)
             ]);
