@@ -145,7 +145,6 @@
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-package-tools" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-cookie-consent" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/error-solutions" />
-      <path value="$PROJECT_DIR$/application/vendor/mdram83/mdg-testlib" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

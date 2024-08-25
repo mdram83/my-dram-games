@@ -143,7 +143,6 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/laravel-cookie-consent" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/laravel-package-tools" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/error-solutions" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mdg-testlib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
