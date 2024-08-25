@@ -4,7 +4,7 @@ namespace App\Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 abstract class GameMoveThousand implements GameMove
 {

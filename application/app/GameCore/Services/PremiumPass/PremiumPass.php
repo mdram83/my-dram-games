@@ -2,7 +2,7 @@
 
 namespace App\GameCore\Services\PremiumPass;
 
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface PremiumPass
 {

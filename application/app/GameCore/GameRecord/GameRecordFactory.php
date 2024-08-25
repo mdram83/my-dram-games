@@ -3,7 +3,7 @@
 namespace App\GameCore\GameRecord;
 
 use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GameRecordFactory
 {

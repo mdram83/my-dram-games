@@ -3,7 +3,7 @@
 namespace App\Games\Thousand\Tools;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 class PlayerDataThousand
 {

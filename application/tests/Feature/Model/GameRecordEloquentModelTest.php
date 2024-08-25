@@ -9,7 +9,6 @@ use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameRecord\GameRecord;
-use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\GameInviteEloquentModel;
@@ -18,6 +17,7 @@ use App\Models\PlayerAnonymousEloquent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameRecordEloquentModelTest extends TestCase

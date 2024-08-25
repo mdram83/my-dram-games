@@ -6,10 +6,10 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\GameRecord;
 use App\GameCore\GameRecord\GameRecordException;
 use App\GameCore\GameRecord\GameRecordFactory;
-use App\GameCore\Player\Player;
 use App\Models\GameInviteEloquentModel;
 use App\Models\GameRecordEloquentModel;
 use Illuminate\Database\UniqueConstraintViolationException;
+use MyDramGames\Utils\Player\Player;
 
 class GameRecordFactoryEloquent implements GameRecordFactory
 {

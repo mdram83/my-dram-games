@@ -4,7 +4,7 @@ namespace App\Games\Thousand;
 
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 class GameResultThousand implements GameResult
 {

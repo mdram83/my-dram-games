@@ -6,9 +6,9 @@ use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
-use App\GameCore\Player\Player;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use Illuminate\Database\UniqueConstraintViolationException;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectionFactoryEloquent implements GamePlayDisconnectionFactory
 {

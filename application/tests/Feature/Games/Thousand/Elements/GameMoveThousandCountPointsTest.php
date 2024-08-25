@@ -3,9 +3,9 @@
 namespace Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
 use App\Games\Thousand\Elements\GamePhaseThousandCountPoints;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameMoveThousandCountPointsTest extends TestCase

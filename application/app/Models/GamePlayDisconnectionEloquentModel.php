@@ -5,13 +5,13 @@ namespace App\Models;
 use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
-use App\GameCore\Player\Player;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectionEloquentModel extends Model implements GamePlayDisconnection
 {

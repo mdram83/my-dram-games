@@ -11,7 +11,6 @@ use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
 use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
@@ -34,8 +33,8 @@ class GameInviteControllerTest extends TestCase
     protected string $routeJoin = 'game-invites.join';
     protected string $routeJoinRedirect = 'game-invites.join-redirect';
     protected string $slug = 'tic-tac-toe';
-    protected Player $playerHost;
-    protected Player $playerJoin;
+    protected User $playerHost;
+    protected User $playerJoin;
     protected GameBox $gameBox;
     protected array $options;
 

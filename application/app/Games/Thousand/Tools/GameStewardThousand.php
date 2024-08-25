@@ -8,10 +8,10 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GamePhase\GamePhase;
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\Player\Player;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
+use MyDramGames\Utils\Player\Player;
 
 class GameStewardThousand
 {

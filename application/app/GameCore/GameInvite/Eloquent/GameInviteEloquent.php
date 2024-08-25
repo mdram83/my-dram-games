@@ -8,9 +8,9 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameSetup\GameSetup;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\GameInviteEloquentModel;
+use MyDramGames\Utils\Player\Player;
 
 class GameInviteEloquent implements GameInvite
 {

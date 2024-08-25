@@ -2,10 +2,7 @@
 
 namespace Games\Thousand;
 
-use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
-use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
@@ -16,6 +13,7 @@ use App\Games\Thousand\Elements\GameMoveThousandStockDistribution;
 use App\Games\Thousand\GameMoveAbsFactoryThousand;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameMoveAbsFactoryThousandTest extends TestCase

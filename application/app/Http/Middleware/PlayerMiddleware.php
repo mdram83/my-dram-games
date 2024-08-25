@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\GameCore\Services\HashGenerator\HashGenerator;
@@ -14,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\View;
+use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 

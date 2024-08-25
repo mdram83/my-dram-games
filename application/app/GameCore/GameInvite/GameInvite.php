@@ -5,7 +5,7 @@ namespace App\GameCore\GameInvite;
 use App\GameCore\GameBox\GameBox;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameSetup\GameSetup;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GameInvite
 {

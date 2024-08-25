@@ -9,12 +9,12 @@ use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueAutostart;
 use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
 use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameInviteFactoryEloquentTest extends TestCase

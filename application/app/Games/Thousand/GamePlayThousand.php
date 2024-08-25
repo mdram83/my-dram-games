@@ -19,7 +19,6 @@ use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
@@ -36,6 +35,7 @@ use App\Games\Thousand\Tools\CollectionPlayerDataThousand;
 use App\Games\Thousand\Tools\GameDataThousand;
 use App\Games\Thousand\Tools\GameStewardThousand;
 use App\Games\Thousand\Tools\PlayerDataThousand;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayThousand extends GamePlayBase implements GamePlay
 {
@@ -195,6 +195,9 @@ class GamePlayThousand extends GamePlayBase implements GamePlay
         ];
     }
 
+    /**
+     * @throws CollectionException
+     */
     protected function initialize(): void
     {
         $this->initializePlayersData();

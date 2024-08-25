@@ -3,9 +3,9 @@
 namespace App\GameCore\Services\PremiumPass\Basic;
 
 use App\GameCore\GameBox\GameBoxRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
+use MyDramGames\Utils\Player\Player;
 
 class PremiumPassBasic implements PremiumPass
 {

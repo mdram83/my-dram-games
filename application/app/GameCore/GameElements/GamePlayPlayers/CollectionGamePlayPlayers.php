@@ -2,12 +2,12 @@
 
 namespace App\GameCore\GameElements\GamePlayPlayers;
 
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
 use App\GameCore\Services\Collection\CollectionTraitResetByAddingWithoutDirectKeyUse;
 use App\GameCore\Services\Collection\CollectionTraitUniqueKey;
+use MyDramGames\Utils\Player\Player;
 
 class CollectionGamePlayPlayers extends CollectionBase implements Collection
 {

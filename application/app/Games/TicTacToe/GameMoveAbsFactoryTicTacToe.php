@@ -5,7 +5,7 @@ namespace App\Games\TicTacToe;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactory;
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 class GameMoveAbsFactoryTicTacToe implements GameMoveAbsFactory
 {

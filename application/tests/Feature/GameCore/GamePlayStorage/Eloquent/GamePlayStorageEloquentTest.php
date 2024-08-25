@@ -12,11 +12,11 @@ use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GamePlayStorageEloquentTest extends TestCase

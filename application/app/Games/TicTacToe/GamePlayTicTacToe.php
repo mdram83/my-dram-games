@@ -10,12 +10,12 @@ use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use MyDramGames\Utils\Exceptions\GameBoardException;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {

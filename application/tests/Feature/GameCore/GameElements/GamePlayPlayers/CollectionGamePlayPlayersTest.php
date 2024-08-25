@@ -3,13 +3,13 @@
 namespace Tests\Feature\GameCore\GameElements\GamePlayPlayers;
 
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionBase;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class CollectionGamePlayPlayersTest extends TestCase

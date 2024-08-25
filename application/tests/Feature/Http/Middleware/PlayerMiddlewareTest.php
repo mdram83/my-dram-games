@@ -3,11 +3,11 @@
 namespace Tests\Feature\Http\Middleware;
 
 use App\GameCore\GameBox\GameBoxRepository;
-use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use MyDramGames\Utils\Player\PlayerAnonymous;
 use Tests\TestCase;
 
 class PlayerMiddlewareTest extends TestCase

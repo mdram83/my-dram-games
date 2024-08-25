@@ -3,7 +3,7 @@
 namespace App\GameCore\GameInvite;
 
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GameInviteFactory
 {

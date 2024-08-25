@@ -11,11 +11,11 @@ use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
 use App\GameCore\GameRecord\Eloquent\GameRecordFactoryEloquent;
 use App\GameCore\GameRecord\Eloquent\GameRecordRepositoryEloquent;
 use App\GameCore\GameRecord\GameRecordRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameRecordRepositoryEloquentTest extends TestCase

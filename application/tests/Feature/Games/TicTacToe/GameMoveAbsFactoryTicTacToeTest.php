@@ -4,9 +4,9 @@ namespace Tests\Feature\Games\TicTacToe;
 
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactory;
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
 use App\Games\TicTacToe\GameMoveAbsFactoryTicTacToe;
 use App\Games\TicTacToe\GameMoveTicTacToe;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameMoveAbsFactoryTicTacToeTest extends TestCase

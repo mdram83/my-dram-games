@@ -2,6 +2,8 @@
 
 namespace App\GameCore\Player;
 
+use MyDramGames\Utils\Player\PlayerAnonymous;
+
 interface PlayerAnonymousFactory
 {
     /**

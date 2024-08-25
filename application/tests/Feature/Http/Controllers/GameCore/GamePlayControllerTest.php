@@ -16,7 +16,6 @@ use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Models\User;
@@ -25,6 +24,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
+use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 

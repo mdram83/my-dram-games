@@ -50,7 +50,6 @@ use App\GameCore\GameSetup\GameSetupAbsFactoryRepository;
 use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
 use App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent;
 use App\GameCore\Player\Eloquent\PlayerAnonymousRepositoryEloquent;
-use App\GameCore\Player\Player;
 use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\GameCore\Services\Collection\Collection;
@@ -60,6 +59,7 @@ use App\GameCore\Services\HashGenerator\HashGenerator;
 use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use Illuminate\Support\ServiceProvider;
+use MyDramGames\Utils\Player\Player;
 
 class AppServiceProvider extends ServiceProvider
 {

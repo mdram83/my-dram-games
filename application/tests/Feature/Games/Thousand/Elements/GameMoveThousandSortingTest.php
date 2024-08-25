@@ -3,10 +3,10 @@
 namespace Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandSorting;
 use App\Games\Thousand\Elements\GamePhaseThousand;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameMoveThousandSortingTest extends TestCase

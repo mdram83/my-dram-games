@@ -6,8 +6,6 @@ use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveAbsFactory;
 use App\GameCore\GameElements\GameMove\GameMoveException;
 use App\GameCore\GameElements\GamePhase\GamePhaseException;
-use App\GameCore\Player\Player;
-use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
 use App\Games\Thousand\Elements\GameMoveThousandCollectTricks;
 use App\Games\Thousand\Elements\GameMoveThousandCountPoints;
@@ -26,6 +24,7 @@ use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 use App\Games\Thousand\Elements\GamePhaseThousandRepository;
 use App\Games\Thousand\Elements\GamePhaseThousandStockDistribution;
 use App\Games\TicTacToe\GameMoveTicTacToe;
+use MyDramGames\Utils\Player\Player;
 
 class GameMoveAbsFactoryThousand implements GameMoveAbsFactory
 {

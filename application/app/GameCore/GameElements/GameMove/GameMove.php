@@ -2,7 +2,7 @@
 
 namespace App\GameCore\GameElements\GameMove;
 
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GameMove
 {

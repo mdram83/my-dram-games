@@ -4,8 +4,8 @@ namespace Games\Thousand;
 
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
-use App\GameCore\Player\Player;
 use App\Games\Thousand\GameResultThousand;
+use MyDramGames\Utils\Player\Player;
 use PHPUnit\Framework\TestCase;
 
 class GameResultThousandTest extends TestCase

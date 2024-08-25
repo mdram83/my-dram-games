@@ -3,10 +3,10 @@
 namespace Tests\Feature\Games\TicTacToe\Elements;
 
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
-use App\GameCore\Player\Player;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameCharacterTicTacToeTest extends TestCase

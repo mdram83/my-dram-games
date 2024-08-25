@@ -4,10 +4,10 @@ namespace Tests\Feature\Games\TicTacToe;
 
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\Player\Player;
 use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameMoveTicTacToeTest extends TestCase

@@ -16,7 +16,6 @@ use App\GameCore\GamePlay\GamePlayBase;
 use App\GameCore\GamePlay\GamePlayException;
 use App\GameCore\GamePlay\GamePlayRepository;
 use App\GameCore\GamePlayStorage\GamePlayStorageRepository;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GameMoveThousand;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;
@@ -45,6 +44,7 @@ use App\Games\Thousand\GamePlayThousandException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GamePlayThousandTest extends TestCase

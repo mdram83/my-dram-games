@@ -2,7 +2,7 @@
 
 namespace App\GameCore\GameElements\GameCharacter;
 
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GameCharacter
 {

@@ -7,8 +7,8 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameInvite\GameInviteException;
 use App\GameCore\GameInvite\GameInviteFactory;
 use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use MyDramGames\Utils\Player\Player;
 
 class GameInviteFactoryEloquent implements GameInviteFactory
 {

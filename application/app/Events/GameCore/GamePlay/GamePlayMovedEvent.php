@@ -4,12 +4,12 @@ namespace App\Events\GameCore\GamePlay;
 
 use App\Broadcasting\GamePlayPlayerChannel;
 use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\Player\Player;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayMovedEvent implements ShouldBroadcast
 {

@@ -8,9 +8,8 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GameRecord\GameRecordFactory;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GameMoveTicTacToe;
+use MyDramGames\Utils\Player\Player;
 
 abstract class GamePlayBase implements GamePlay
 {

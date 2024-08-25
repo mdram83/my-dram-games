@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Model;
 
-use App\GameCore\Player\Player;
 use App\Models\User;
+use MyDramGames\Utils\Player\Player;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase

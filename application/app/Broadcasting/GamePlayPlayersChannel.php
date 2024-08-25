@@ -2,11 +2,10 @@
 
 namespace App\Broadcasting;
 
-use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
-use App\GameCore\Player\Player;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 
 class GamePlayPlayersChannel
 {

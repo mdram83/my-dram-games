@@ -4,7 +4,7 @@ namespace App\Games\TicTacToe\Elements;
 
 use App\GameCore\GameElements\GameCharacter\GameCharacter;
 use App\GameCore\GameElements\GameCharacter\GameCharacterException;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 class GameCharacterTicTacToe implements GameCharacter
 {

@@ -5,7 +5,7 @@ namespace App\GameCore\GamePlay;
 use App\GameCore\GameElements\GameMove\GameMove;
 use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\Player\Player;
+use MyDramGames\Utils\Player\Player;
 
 interface GamePlay
 {

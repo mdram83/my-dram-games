@@ -12,11 +12,11 @@ use App\GameCore\GameRecord\Eloquent\GameRecordFactoryEloquent;
 use App\GameCore\GameRecord\GameRecord;
 use App\GameCore\GameRecord\GameRecordException;
 use App\GameCore\GameRecord\GameRecordFactory;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameRecordFactoryEloquentTest extends TestCase

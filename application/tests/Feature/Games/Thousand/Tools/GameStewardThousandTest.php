@@ -2,7 +2,6 @@
 
 namespace Games\Thousand\Tools;
 
-use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
@@ -12,7 +11,6 @@ use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\GameSetup\GameSetup;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
@@ -22,6 +20,7 @@ use App\Games\Thousand\Tools\GameDataThousand;
 use App\Games\Thousand\Tools\GameStewardThousand;
 use App\Games\Thousand\Tools\PlayerDataThousand;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameStewardThousandTest extends TestCase

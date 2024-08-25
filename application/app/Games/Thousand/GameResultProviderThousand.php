@@ -10,8 +10,8 @@ use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
+use MyDramGames\Utils\Player\Player;
 
 class GameResultProviderThousand implements GameResultProvider
 {

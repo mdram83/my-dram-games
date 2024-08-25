@@ -9,12 +9,12 @@ use App\GameCore\GameRecord\GameRecord;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\Thousand\GameResultProviderThousand;
 use App\Games\Thousand\GameResultThousand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class GameResultProviderThousandTest extends TestCase

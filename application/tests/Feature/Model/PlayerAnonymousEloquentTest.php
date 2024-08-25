@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Model;
 
-use App\GameCore\Player\Player;
-use App\GameCore\Player\PlayerAnonymous;
 use App\Models\PlayerAnonymousEloquent;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerAnonymous;
 use Tests\TestCase;
 
 class PlayerAnonymousEloquentTest extends TestCase

@@ -2,13 +2,13 @@
 
 namespace GameCore\Services\PremiumPass\Basic;
 
-use App\GameCore\Player\Player;
-use App\GameCore\Player\PlayerAnonymous;
-use App\GameCore\Player\PlayerRegistered;
 use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerAnonymous;
+use MyDramGames\Utils\Player\PlayerRegistered;
 use Tests\TestCase;
 
 class PremiumPassBasicTest extends TestCase

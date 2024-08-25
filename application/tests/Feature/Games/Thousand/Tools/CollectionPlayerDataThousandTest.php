@@ -2,12 +2,12 @@
 
 namespace Games\Thousand\Tools;
 
-use App\GameCore\Player\Player;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\Thousand\Tools\CollectionPlayerDataThousand;
 use App\Games\Thousand\Tools\PlayerDataThousand;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\Player;
 use Tests\TestCase;
 
 class CollectionPlayerDataThousandTest extends TestCase

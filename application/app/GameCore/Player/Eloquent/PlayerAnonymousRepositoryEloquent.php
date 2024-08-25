@@ -2,10 +2,10 @@
 
 namespace App\GameCore\Player\Eloquent;
 
-use App\GameCore\Player\PlayerAnonymous;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\GameCore\Player\PlayerAnonymousRepositoryException;
 use App\Models\PlayerAnonymousEloquent;
+use MyDramGames\Utils\Player\PlayerAnonymous;
 
 class PlayerAnonymousRepositoryEloquent implements PlayerAnonymousRepository
 {
