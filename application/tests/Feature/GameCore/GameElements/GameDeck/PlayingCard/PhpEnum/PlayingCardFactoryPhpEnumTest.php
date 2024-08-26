@@ -1,6 +1,6 @@
 <?php
 
-namespace GameCore\GameElements\GameDeck\PlayingCard\PhpEnum;
+namespace Tests\Feature\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\Generic\PlayingCardGeneric;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PhpEnum\PlayingCardColorPhpEnum;

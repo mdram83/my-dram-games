@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand;
+namespace Tests\Feature\Games\Thousand;
 
 use App\GameCore\GameOption\GameOptionAutostart;
 use App\GameCore\GameOption\GameOptionForfeitAfter;

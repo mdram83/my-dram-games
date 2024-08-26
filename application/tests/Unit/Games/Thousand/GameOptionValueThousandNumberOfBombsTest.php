@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand;
+namespace Tests\Unit\Games\Thousand;
 
 use App\GameCore\GameOptionValue\GameOptionValue;
 use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;

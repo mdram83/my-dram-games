@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand;
+namespace Tests\Unit\Games\Thousand;
 
 use App\GameCore\GameResult\GameResult;
 use App\GameCore\GameResult\GameResultException;

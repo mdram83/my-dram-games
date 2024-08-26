@@ -1,6 +1,6 @@
 <?php
 
-namespace Rules;
+namespace Tests\Feature\Rules;
 
 use App\Rules\BetaRegistrationCode;
 use Illuminate\Contracts\Validation\ValidationRule;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand\Elements;
+namespace Tests\Unit\Games\Thousand\Elements;
 
 use App\Games\Thousand\Elements\GamePhaseThousand;
 use App\Games\Thousand\Elements\GamePhaseThousandBidding;

@@ -2,8 +2,8 @@
 
 namespace App\Games\TicTacToe\Elements;
 
-use App\GameCore\GameElements\GameCharacter\GameCharacter;
-use App\GameCore\GameElements\GameCharacter\GameCharacterException;
+use MyDramGames\Utils\Exceptions\GameCharacterException;
+use MyDramGames\Utils\GameCharacter\GameCharacter;
 use MyDramGames\Utils\Player\Player;
 
 class GameCharacterTicTacToe implements GameCharacter

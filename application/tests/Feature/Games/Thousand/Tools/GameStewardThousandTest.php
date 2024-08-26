@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand\Tools;
+namespace Tests\Feature\Games\Thousand\Tools;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;

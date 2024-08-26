@@ -1,6 +1,6 @@
 <?php
 
-namespace GameCore\GameElements\GameDeck\PlayingCard;
+namespace Tests\Feature\GameCore\GameElements\GameDeck\PlayingCard;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;

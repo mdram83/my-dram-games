@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand\Tools;
+namespace Tests\Feature\Games\Thousand\Tools;
 
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;

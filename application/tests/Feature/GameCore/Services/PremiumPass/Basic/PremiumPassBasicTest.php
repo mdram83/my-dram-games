@@ -1,6 +1,6 @@
 <?php
 
-namespace GameCore\Services\PremiumPass\Basic;
+namespace Tests\Feature\GameCore\Services\PremiumPass\Basic;
 
 use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
 use App\GameCore\Services\PremiumPass\PremiumPass;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand\Elements;
+namespace Tests\Feature\Games\Thousand\Elements;
 
 use App\GameCore\GameElements\GameMove\GameMoveException;
 use App\Games\Thousand\Elements\GameMoveThousandBidding;

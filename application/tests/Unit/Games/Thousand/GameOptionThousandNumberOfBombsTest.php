@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\Thousand;
+namespace Tests\Unit\Games\Thousand;
 
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOption\GameOptionException;

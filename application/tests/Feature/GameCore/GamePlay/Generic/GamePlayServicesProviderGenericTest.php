@@ -1,6 +1,6 @@
 <?php
 
-namespace GameCore\GamePlay\Generic;
+namespace Tests\Feature\GameCore\GamePlay\Generic;
 
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
