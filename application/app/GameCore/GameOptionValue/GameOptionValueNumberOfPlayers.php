@@ -2,11 +2,11 @@
 
 namespace App\GameCore\GameOptionValue;
 
-use App\GameCore\GameOptionValue\PhpEnum\GameOptionValuePhpEnumBackedTrait;
+use MyDramGames\Utils\Php\Enum\GetValueBackedEnumTrait;
 
 enum GameOptionValueNumberOfPlayers: int implements GameOptionValue
 {
-    use GameOptionValuePhpEnumBackedTrait;
+    use GetValueBackedEnumTrait;
 
     case Players002 = 2;
     case Players003 = 3;

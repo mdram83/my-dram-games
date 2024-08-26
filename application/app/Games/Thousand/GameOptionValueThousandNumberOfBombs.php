@@ -3,11 +3,11 @@
 namespace App\Games\Thousand;
 
 use App\GameCore\GameOptionValue\GameOptionValue;
-use App\GameCore\GameOptionValue\PhpEnum\GameOptionValuePhpEnumBackedTrait;
+use MyDramGames\Utils\Php\Enum\GetValueBackedEnumTrait;
 
 enum GameOptionValueThousandNumberOfBombs: int implements GameOptionValue
 {
-    use GameOptionValuePhpEnumBackedTrait;
+    use GetValueBackedEnumTrait;
 
     case Disabled = 0;
     case One = 1;

@@ -2,11 +2,11 @@
 
 namespace App\GameCore\GameOptionValue;
 
-use App\GameCore\GameOptionValue\PhpEnum\GameOptionValuePhpEnumBackedTrait;
+use MyDramGames\Utils\Php\Enum\GetValueBackedEnumTrait;
 
 enum GameOptionValueAutostart: int implements GameOptionValue
 {
-    use GameOptionValuePhpEnumBackedTrait;
+    use GetValueBackedEnumTrait;
 
     case Enabled = 1;
     case Disabled = 0;

@@ -3,11 +3,11 @@
 namespace App\Games\Thousand;
 
 use App\GameCore\GameOptionValue\GameOptionValue;
-use App\GameCore\GameOptionValue\PhpEnum\GameOptionValuePhpEnumBackedTrait;
+use MyDramGames\Utils\Php\Enum\GetValueBackedEnumTrait;
 
 enum GameOptionValueThousandReDealConditions: string implements GameOptionValue
 {
-    use GameOptionValuePhpEnumBackedTrait;
+    use GetValueBackedEnumTrait;
 
     case Disabled = 'Disabled';
     case FourNines = 'Four Nines';

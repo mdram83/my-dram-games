@@ -2,11 +2,11 @@
 
 namespace App\GameCore\GameOptionValue;
 
-use App\GameCore\GameOptionValue\PhpEnum\GameOptionValuePhpEnumBackedTrait;
+use MyDramGames\Utils\Php\Enum\GetValueBackedEnumTrait;
 
 enum GameOptionValueForfeitAfter: int implements GameOptionValue
 {
-    use GameOptionValuePhpEnumBackedTrait;
+    use GetValueBackedEnumTrait;
 
     case Disabled  = 0;
     case Minute    = 60;
