@@ -10,16 +10,16 @@ use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GameResult\GameResultException;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\CollectionException;
-use App\Games\TicTacToe\Elements\CollectionGameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
 use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Exceptions\GameCharacterException;
 use MyDramGames\Utils\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {
-    protected CollectionGameCharacterTicTacToe $characters;
+    protected GameCharacterTicTacToeCollectionGeneric $characters;
     protected GameBoardTicTacToe $board;
     protected ?GameResultTicTacToe $result = null;
 
@@ -139,11 +139,11 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 
     /**
      * @throws GameCharacterException
+     * @throws \MyDramGames\Utils\Exceptions\CollectionException
      */
     private function setCharacters(Player $playerX, Player $playerO): void
     {
-        $this->characters = new CollectionGameCharacterTicTacToe(
-            (clone $this->collectionHandler)->reset(),
+        $this->characters = new GameCharacterTicTacToeCollectionGeneric(
             [new GameCharacterTicTacToe('x', $playerX), new GameCharacterTicTacToe('o', $playerO)],
         );
     }
@@ -160,7 +160,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     private function getPlayerCharacterName(Player $player): string
     {
         return $this->characters
-            ->filter(fn($value, $key) => $value->getPlayer()->getId() === $player->getId())
+            ->filter(fn($value) => $value->getPlayer()->getId() === $player->getId())
             ->pullFirst()
             ->getName();
     }
@@ -168,7 +168,7 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
     private function getNextPlayer(Player $currentPlayer): Player
     {
         return $this->characters
-            ->filter(fn($value, $key) => $value->getPlayer()->getId() !== $currentPlayer->getId())
+            ->filter(fn($value) => $value->getPlayer()->getId() !== $currentPlayer->getId())
             ->pullFirst()
             ->getPlayer();
     }
