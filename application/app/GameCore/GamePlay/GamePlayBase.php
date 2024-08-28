@@ -33,7 +33,7 @@ abstract class GamePlayBase implements GamePlay
         $this->configureGamePlayServices($gamePlayServicesProvider);
         $this->validateStorage();
         $this->setPlayers();
-        $this->configureServicesAfterhooks();
+        $this->configureServicesAfterHooks();
 
         if (!$this->storage->getSetup()) {
             $this->initialize();
@@ -75,6 +75,7 @@ abstract class GamePlayBase implements GamePlay
     {
         $this->collectionHandler = $provider->getCollectionHandler();
         $this->gameRecordFactory = $provider->getGameRecordFactory();
+        $this->players = $provider->getPlayerCollection();
     }
 
     abstract protected function configureOptionalGamePlayServices(GamePlayServicesProvider $provider): void;
@@ -132,17 +133,8 @@ abstract class GamePlayBase implements GamePlay
 
     final protected function setPlayers(): void
     {
-        if (!isset($this->players)) {
-            $this->players = new PlayerCollectionGeneric($this->storage->getGameInvite()->getPlayers());
-
-            // TODO in below I had collection handler set in ServiceProvider
-            // TODO now I need to register new ServiceProvider for Utilities and register each collection separately
-            // TODO then I need to pass required collections in constructor here
-            // TODO and then I need to populate them with data in this setter - instead of hardcoding above class...
-//            $this->players = new CollectionGamePlayPlayers(
-//                clone $this->collectionHandler,
-//                $this->storage->getGameInvite()->getPlayers()
-//            );
+        if ($this->players->isEmpty()) {
+            $this->players->reset($this->storage->getGameInvite()->getPlayers());
         }
     }
 

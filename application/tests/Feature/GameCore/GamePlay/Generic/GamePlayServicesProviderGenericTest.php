@@ -10,6 +10,7 @@ use App\GameCore\GamePlay\Generic\GamePlayServicesProviderGeneric;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Utils\Player\PlayerCollection;
 use Tests\TestCase;
 
 class GamePlayServicesProviderGenericTest extends TestCase
@@ -50,5 +51,10 @@ class GamePlayServicesProviderGenericTest extends TestCase
     public function testGetPlayingCardDealer(): void
     {
         $this->assertInstanceOf(PlayingCardDealer::class, $this->provider->getPlayingCardDealer());
+    }
+
+    public function testGetPlayerCollection(): void
+    {
+        $this->assertInstanceOf(PlayerCollection::class, $this->provider->getPlayerCollection());
     }
 }

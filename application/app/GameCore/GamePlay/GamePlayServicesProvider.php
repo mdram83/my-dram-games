@@ -7,6 +7,7 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
+use MyDramGames\Utils\Player\PlayerCollection;
 
 interface GamePlayServicesProvider
 {
@@ -15,4 +16,5 @@ interface GamePlayServicesProvider
     public function getPlayingCardDeckProvider(): PlayingCardDeckProvider;
     public function getPlayingCardSuitRepository(): PlayingCardSuitRepository;
     public function getPlayingCardDealer(): PlayingCardDealer;
+    public function getPlayerCollection(): PlayerCollection;
 }

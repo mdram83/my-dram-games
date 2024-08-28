@@ -8,6 +8,7 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardSuitRepository;
 use App\GameCore\GamePlay\GamePlayServicesProvider;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
+use MyDramGames\Utils\Player\PlayerCollection;
 
 class GamePlayServicesProviderGeneric implements GamePlayServicesProvider
 {
@@ -17,6 +18,7 @@ class GamePlayServicesProviderGeneric implements GamePlayServicesProvider
         readonly private PlayingCardDeckProvider $playingCardDeckProvider,
         readonly private PlayingCardSuitRepository $playingCardSuitRepository,
         readonly private PlayingCardDealer $playingCardDealer,
+        readonly private PlayerCollection $playerCollection,
     )
     {
 
@@ -45,5 +47,10 @@ class GamePlayServicesProviderGeneric implements GamePlayServicesProvider
     public function getPlayingCardDealer(): PlayingCardDealer
     {
         return $this->playingCardDealer;
+    }
+
+    public function getPlayerCollection(): PlayerCollection
+    {
+        return $this->playerCollection->clone();
     }
 }
