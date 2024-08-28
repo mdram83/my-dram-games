@@ -54,9 +54,7 @@ class GameResultProviderThousandTest extends TestCase
             $this->playersDataNoWin[$player->getId()]['seat'] = $i + 1;
         }
 
-        $this->players = new PlayerCollectionGeneric($players);
-        // TODO above should come from service provider... But how to pass argument then?
-//        $this->players = new CollectionGamePlayPlayers(clone $this->handler, $players);
+        $this->players = App::makeWith(PlayerCollection::class, ['items' => $players]);
     }
 
     public function testInterface(): void

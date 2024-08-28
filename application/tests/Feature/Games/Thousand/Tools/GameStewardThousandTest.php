@@ -51,9 +51,7 @@ class GameStewardThousandTest extends TestCase
             $players[] = $player;
         }
 
-        return new PlayerCollectionGeneric($players);
-        // TODO above should come from service provider... But how to pass argument then?
-//        return new CollectionGamePlayPlayers(App::make(Collection::class), $players);
+        return App::makeWith(PlayerCollection::class, ['items' => $players]);
     }
 
     private function getGameInviteMock(bool $fourPlayers = false, mixed $bombs = 1, mixed $barrel = null): GameInvite
