@@ -1,6 +1,6 @@
 <?php
 
-namespace Games\TicTacToe\Elements;
+namespace Tests\Feature\Games\TicTacToe\Elements;
 
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
