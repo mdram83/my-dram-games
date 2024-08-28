@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\MyDramGamesUtilsServiceProvider::class,
 
         /*
          * Application Service Providers...
