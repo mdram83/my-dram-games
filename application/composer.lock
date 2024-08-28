@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "375e27774bd3bdd116ce087da4b77b91",
+    "content-hash": "fedf50f549e91e61608abe045e426884",
     "packages": [
         {
             "name": "beyondcode/laravel-websockets",
@@ -2251,16 +2251,16 @@
         },
         {
             "name": "mdram83/mydramgames-utils",
-            "version": "v1.1.002",
+            "version": "v1.1.004",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-utils.git",
-                "reference": "496c43fd3f790f99ecd4836553942d9c1448a0dc"
+                "reference": "5101cad3fc3cf89fe5fb42c8b09a6210343ac097"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-utils/zipball/496c43fd3f790f99ecd4836553942d9c1448a0dc",
-                "reference": "496c43fd3f790f99ecd4836553942d9c1448a0dc",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-utils/zipball/5101cad3fc3cf89fe5fb42c8b09a6210343ac097",
+                "reference": "5101cad3fc3cf89fe5fb42c8b09a6210343ac097",
                 "shasum": ""
             },
             "require": {
@@ -2293,10 +2293,10 @@
             ],
             "description": "Utilities for MyDramGames project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-utils/tree/v1.1.002",
+                "source": "https://github.com/mdram83/mydramgames-utils/tree/v1.1.004",
                 "issues": "https://github.com/mdram83/mydramgames-utils/issues"
             },
-            "time": "2024-08-26T14:13:44+00:00"
+            "time": "2024-08-28T06:38:34+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4465,16 +4465,16 @@
         },
         {
             "name": "spatie/laravel-package-tools",
-            "version": "1.16.4",
+            "version": "1.16.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-package-tools.git",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53"
+                "reference": "c7413972cf22ffdff97b68499c22baa04eddb6a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
-                "reference": "ddf678e78d7f8b17e5cdd99c0c3413a4a6592e53",
+                "url": "https://api.github.com/repos/spatie/laravel-package-tools/zipball/c7413972cf22ffdff97b68499c22baa04eddb6a2",
+                "reference": "c7413972cf22ffdff97b68499c22baa04eddb6a2",
                 "shasum": ""
             },
             "require": {
@@ -4513,7 +4513,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-package-tools/issues",
-                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.4"
+                "source": "https://github.com/spatie/laravel-package-tools/tree/1.16.5"
             },
             "funding": [
                 {
@@ -4521,7 +4521,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-20T07:29:11+00:00"
+            "time": "2024-08-27T18:56:10+00:00"
         },
         {
             "name": "symfony/console",
