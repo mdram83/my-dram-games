@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fedf50f549e91e61608abe045e426884",
+    "content-hash": "70a457b1240f5510b4b78219d8227f73",
     "packages": [
         {
             "name": "beyondcode/laravel-websockets",
@@ -2251,16 +2251,16 @@
         },
         {
             "name": "mdram83/mydramgames-utils",
-            "version": "v1.1.004",
+            "version": "v1.1.006",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-utils.git",
-                "reference": "5101cad3fc3cf89fe5fb42c8b09a6210343ac097"
+                "reference": "4bbaea53727052f9b64917245457b1c70bb21760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-utils/zipball/5101cad3fc3cf89fe5fb42c8b09a6210343ac097",
-                "reference": "5101cad3fc3cf89fe5fb42c8b09a6210343ac097",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-utils/zipball/4bbaea53727052f9b64917245457b1c70bb21760",
+                "reference": "4bbaea53727052f9b64917245457b1c70bb21760",
                 "shasum": ""
             },
             "require": {
@@ -2293,10 +2293,10 @@
             ],
             "description": "Utilities for MyDramGames project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-utils/tree/v1.1.004",
+                "source": "https://github.com/mdram83/mydramgames-utils/tree/v1.1.006",
                 "issues": "https://github.com/mdram83/mydramgames-utils/issues"
             },
-            "time": "2024-08-28T06:38:34+00:00"
+            "time": "2024-08-28T11:55:05+00:00"
         },
         {
             "name": "monolog/monolog",
