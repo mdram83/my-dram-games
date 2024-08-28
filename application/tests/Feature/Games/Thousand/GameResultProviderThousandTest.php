@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Games\Thousand;
 
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\CollectionGameRecord;
 use App\GameCore\GameRecord\GameRecord;
@@ -15,6 +14,8 @@ use App\Games\Thousand\GameResultThousand;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerCollection;
+use MyDramGames\Utils\Player\PlayerCollectionGeneric;
 use Tests\TestCase;
 
 class GameResultProviderThousandTest extends TestCase
@@ -26,7 +27,7 @@ class GameResultProviderThousandTest extends TestCase
     private GameInvite $invite;
     private GameResultProviderThousand $provider;
 
-    private CollectionGamePlayPlayers $players;
+    private PlayerCollection $players;
     private array $playersDataWin;
     private array $playersDataNoWin;
 
@@ -53,7 +54,9 @@ class GameResultProviderThousandTest extends TestCase
             $this->playersDataNoWin[$player->getId()]['seat'] = $i + 1;
         }
 
-        $this->players = new CollectionGamePlayPlayers(clone $this->handler, $players);
+        $this->players = new PlayerCollectionGeneric($players);
+        // TODO above should come from service provider... But how to pass argument then?
+//        $this->players = new CollectionGamePlayPlayers(clone $this->handler, $players);
     }
 
     public function testInterface(): void

@@ -3,17 +3,18 @@
 namespace App\GameCore\GamePlay;
 
 use App\GameCore\GameElements\GameMove\GameMove;
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GamePlayStorage\GamePlayStorage;
 use App\GameCore\GamePlayStorage\GamePlayStorageException;
 use App\GameCore\GameRecord\GameRecordFactory;
 use App\GameCore\Services\Collection\Collection;
 use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerCollection;
+use MyDramGames\Utils\Player\PlayerCollectionGeneric;
 
 abstract class GamePlayBase implements GamePlay
 {
-    protected CollectionGamePlayPlayers $players;
+    protected PlayerCollection $players;
     protected Collection $collectionHandler;
     protected GameRecordFactory $gameRecordFactory;
 
@@ -95,7 +96,7 @@ abstract class GamePlayBase implements GamePlay
         return $move->getPlayer()->getId() === $this->getActivePlayer()?->getId();
     }
 
-    final public function getPlayers(): CollectionGamePlayPlayers
+    final public function getPlayers(): PlayerCollection
     {
         return $this->players;
     }
@@ -132,10 +133,16 @@ abstract class GamePlayBase implements GamePlay
     final protected function setPlayers(): void
     {
         if (!isset($this->players)) {
-            $this->players = new CollectionGamePlayPlayers(
-                clone $this->collectionHandler,
-                $this->storage->getGameInvite()->getPlayers()
-            );
+            $this->players = new PlayerCollectionGeneric($this->storage->getGameInvite()->getPlayers());
+
+            // TODO in below I had collection handler set in ServiceProvider
+            // TODO now I need to register new ServiceProvider for Utilities and register each collection separately
+            // TODO then I need to pass required collections in constructor here
+            // TODO and then I need to populate them with data in this setter - instead of hardcoding above class...
+//            $this->players = new CollectionGamePlayPlayers(
+//                clone $this->collectionHandler,
+//                $this->storage->getGameInvite()->getPlayers()
+//            );
         }
     }
 

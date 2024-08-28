@@ -6,12 +6,12 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\CollectionPlayingCardUnique;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GamePhase\GamePhase;
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayFirstCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlaySecondCard;
 use App\Games\Thousand\Elements\GamePhaseThousandPlayThirdCard;
 use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerCollection;
 
 class GameStewardThousand
 {
@@ -24,7 +24,7 @@ class GameStewardThousand
     ];
 
     public function __construct(
-        readonly private CollectionGamePlayPlayers $players,
+        readonly private PlayerCollection $players,
         readonly private GameInvite $invite,
         readonly private PlayingCardDealer $dealer,
     )

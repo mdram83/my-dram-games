@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -341,13 +342,13 @@ class GamePlayController extends Controller
     }
 
     /**
-     * @throws ControllerException
+     * @throws ControllerException|CollectionException
      */
     private function getValidatedDisconnectedPlayer(Request $request, GamePlay $gamePlay): Player
     {
         $singlePlayerCollection = $gamePlay
             ->getPlayers()
-            ->filter(fn($item, $key) => $item->getName() === $request->get('disconnected'));
+            ->filter(fn($item) => $item->getName() === $request->get('disconnected'));
 
         if ($singlePlayerCollection->count() === 0) {
             throw new ControllerException(static::MESSAGE_INCORRECT_INPUTS);

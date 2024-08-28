@@ -2,7 +2,6 @@
 
 namespace App\Games\Thousand;
 
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameRecord\CollectionGameRecord;
 use App\GameCore\GameRecord\GameRecordFactory;
@@ -12,6 +11,7 @@ use App\GameCore\GameResult\GameResultProvider;
 use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
 use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerCollection;
 
 class GameResultProviderThousand implements GameResultProvider
 {
@@ -20,7 +20,7 @@ class GameResultProviderThousand implements GameResultProvider
     private ?Player $winner = null;
     private ?Player $forfeited = null;
 
-    private CollectionGamePlayPlayers $players;
+    private PlayerCollection $players;
     private array $playersData;
 
     public function __construct(
@@ -92,7 +92,7 @@ class GameResultProviderThousand implements GameResultProvider
     {
         if (
             !is_array($data)
-            || !isset($data['players']) || !is_a($data['players'], CollectionGamePlayPlayers::class)
+            || !isset($data['players']) || !is_a($data['players'], PlayerCollection::class)
             || count(array_diff_key($data['players']->toArray(), $data['playersData'])) > 0
             || count(array_diff_key($data['playersData'], $data['players']->toArray())) > 0
             || (isset($data['forfeited']) && !is_a($data['forfeited'], Player::class))

@@ -6,7 +6,6 @@ use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCard;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDealer;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardDeckProvider;
 use App\GameCore\GameElements\GameDeck\PlayingCard\PlayingCardRank;
-use App\GameCore\GameElements\GamePlayPlayers\CollectionGamePlayPlayers;
 use App\GameCore\GameInvite\GameInvite;
 use App\GameCore\GameOption\GameOption;
 use App\GameCore\GameOptionValue\GameOptionValue;
@@ -21,6 +20,8 @@ use App\Games\Thousand\Tools\GameStewardThousand;
 use App\Games\Thousand\Tools\PlayerDataThousand;
 use Illuminate\Support\Facades\App;
 use MyDramGames\Utils\Player\Player;
+use MyDramGames\Utils\Player\PlayerCollection;
+use MyDramGames\Utils\Player\PlayerCollectionGeneric;
 use Tests\TestCase;
 
 class GameStewardThousandTest extends TestCase
@@ -40,7 +41,7 @@ class GameStewardThousandTest extends TestCase
         $this->steward = $this->getSteward();
     }
 
-    private function getPlayersCollectionMock(bool $fourPlayers = false): CollectionGamePlayPlayers
+    private function getPlayersCollectionMock(bool $fourPlayers = false): PlayerCollection
     {
         $players = [];
         for ($i = 0; $i <= 2 + ($fourPlayers ? 1 : 0); $i++) {
@@ -50,7 +51,9 @@ class GameStewardThousandTest extends TestCase
             $players[] = $player;
         }
 
-        return new CollectionGamePlayPlayers(App::make(Collection::class), $players);
+        return new PlayerCollectionGeneric($players);
+        // TODO above should come from service provider... But how to pass argument then?
+//        return new CollectionGamePlayPlayers(App::make(Collection::class), $players);
     }
 
     private function getGameInviteMock(bool $fourPlayers = false, mixed $bombs = 1, mixed $barrel = null): GameInvite
