@@ -12,7 +12,7 @@ use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
-use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionPowered;
 use MyDramGames\Utils\Exceptions\GameBoardException;
 
 class GameResultProviderTicTacToe implements GameResultProvider
@@ -21,7 +21,7 @@ class GameResultProviderTicTacToe implements GameResultProvider
 
     readonly private GameRecordFactory $recordFactory;
     readonly private Collection $handler;
-    private GameCharacterTicTacToeCollectionGeneric $characters;
+    private GameCharacterTicTacToeCollectionPowered $characters;
     private array $winningFields = [];
     private ?string $winningValue = null;
 
@@ -141,7 +141,7 @@ class GameResultProviderTicTacToe implements GameResultProvider
             !isset($data['board'])
             || !($data['board'] instanceof GameBoardTicTacToe)
             || !isset($data['characters'])
-            || !($data['characters'] instanceof GameCharacterTicTacToeCollectionGeneric)
+            || !($data['characters'] instanceof GameCharacterTicTacToeCollectionPowered)
             || !isset($data['nextMoveCharacterName'])
             || !in_array($data['nextMoveCharacterName'], ['x', 'o'])
         ) {
@@ -156,7 +156,7 @@ class GameResultProviderTicTacToe implements GameResultProvider
     {
         if (
             !isset($data['characters'])
-            || !($data['characters'] instanceof GameCharacterTicTacToeCollectionGeneric)
+            || !($data['characters'] instanceof GameCharacterTicTacToeCollectionPowered)
             || !isset($data['forfeitCharacter'])
             || !in_array($data['forfeitCharacter'], ['x', 'o'])
         ) {

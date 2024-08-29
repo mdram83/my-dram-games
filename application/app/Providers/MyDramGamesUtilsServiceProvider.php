@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
+use App\Extensions\Utils\Php\Collection\CollectionEngineLaravel;
 use Illuminate\Support\ServiceProvider;
-use MyDramGames\Utils\Php\Collection\Collection;
-use MyDramGames\Utils\Php\Collection\CollectionGeneric;
+use MyDramGames\Utils\Php\Collection\CollectionEngine;
 use MyDramGames\Utils\Player\PlayerCollection;
-use MyDramGames\Utils\Player\PlayerCollectionGeneric;
+use MyDramGames\Utils\Player\PlayerCollectionPowered;
 
 class MyDramGamesUtilsServiceProvider extends ServiceProvider
 {
     public $bindings = [
-        Collection::class => CollectionGeneric::class,
-        PlayerCollection::class => PlayerCollectionGeneric::class,
+        CollectionEngine::class => CollectionEngineLaravel::class,
+        PlayerCollection::class => PlayerCollectionPowered::class,
     ];
     /**
      * Register services.

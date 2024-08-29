@@ -14,7 +14,7 @@
         "laravel/tinker": "^2.8",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-cookie-consent": "^3.3",
-        "mdram83/mydramgames-utils": "^1.1.006"
+        "mdram83/mydramgames-utils": "^1.1.009"
     },
     "require-dev": {
         "laravel/breeze": "^1.27",

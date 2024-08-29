@@ -2,21 +2,25 @@
 
 namespace App\Extensions\Utils\Php\Collection;
 
-use MyDramGames\Utils\Exceptions\CollectionException;
-use MyDramGames\Utils\Php\Collection\Collection;
 use Illuminate\Support\Collection as IlluminateCollection;
-use MyDramGames\Utils\Php\Collection\CollectionTrait;
+use MyDramGames\Utils\Php\Collection\CollectionEngine;
+use MyDramGames\Utils\Php\Collection\CollectionEngineTrait;
 
 /**
  * To support specific collection types, define TYPE_CLASS or TYPE_PRIMITIVE values in child class.
  * To support specific key mode, define KEY_MODE value (loose, forced, method) in child class.
  * See details in CollectionTrait PHPDoc
  */
-class CollectionLaravel implements Collection
+class CollectionEngineLaravel implements CollectionEngine
 {
-    use CollectionTrait;
+    use CollectionEngineTrait;
 
     protected IlluminateCollection $items;
+
+    final public function __construct(array $items = [])
+    {
+        $this->items = new IlluminateCollection($items);
+    }
 
     /**
      * @inheritDoc
@@ -55,8 +59,8 @@ class CollectionLaravel implements Collection
      */
     final public function each(callable $callback): static
     {
-        $items = $this->items->map($callback);
-        return $this->reset($items->all());
+        $this->items = $this->items->map($callback);
+        return $this;
     }
 
     /**
@@ -71,10 +75,35 @@ class CollectionLaravel implements Collection
     /**
      * @inheritDoc
      */
+    final public function shuffle(): static
+    {
+        $keys = $this->items->keys()->all();
+        shuffle($keys);
+
+        $items = [];
+        foreach ($keys as $key) {
+            $items[$key] = $this->items->get($key);
+        }
+
+        return $this->reset($items);
+    }
+
+    /**
+     * @inheritDoc
+     */
     final public function random(): mixed
     {
         $this->validateNotEmpty();
         return $this->items->random();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    final public function reset(array $items = []): static
+    {
+        $this->items = new IlluminateCollection($items);
+        return $this;
     }
 
     /**
@@ -123,19 +152,10 @@ class CollectionLaravel implements Collection
 
     /**
      * @inheritDoc
-     * @throws CollectionException
      */
     final public function clone(): static
     {
-        return new self($this->items->toArray());
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getItemKey(mixed $item): mixed
-    {
-        return null;
+        return new self($this->items->all());
     }
 
     protected function insert(mixed $item, mixed $key = null): void

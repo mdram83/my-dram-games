@@ -2,9 +2,9 @@
 
 namespace App\Games\TicTacToe\Elements;
 
-use MyDramGames\Utils\Php\Collection\CollectionGeneric;
+use MyDramGames\Utils\Php\Collection\CollectionPoweredExtendable;
 
-class GameCharacterTicTacToeCollectionGeneric extends CollectionGeneric implements GameCharacterTicTacToeCollection
+class GameCharacterTicTacToeCollectionPowered extends CollectionPoweredExtendable implements GameCharacterTicTacToeCollection
 {
     protected const ?string TYPE_CLASS = GameCharacterTicTacToe::class;
     protected const int KEY_MODE = self::KEYS_METHOD;

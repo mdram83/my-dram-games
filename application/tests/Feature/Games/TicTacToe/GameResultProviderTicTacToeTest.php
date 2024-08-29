@@ -16,7 +16,7 @@ use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\Collection;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
-use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionPowered;
 use App\Games\TicTacToe\GameResultProviderTicTacToe;
 use App\Games\TicTacToe\GameResultTicTacToe;
 use App\Models\User;
@@ -30,7 +30,7 @@ class GameResultProviderTicTacToeTest extends TestCase
 
     protected GameResultProviderTicTacToe $provider;
     protected array $players;
-    protected GameCharacterTicTacToeCollectionGeneric $characters;
+    protected GameCharacterTicTacToeCollectionPowered $characters;
     protected GameBoardTicTacToe $board;
 
     public function setUp(): void
@@ -45,7 +45,8 @@ class GameResultProviderTicTacToeTest extends TestCase
         $this->board = new GameBoardTicTacToe();
         $this->players = [User::factory()->create(), User::factory()->create()];
 
-        $this->characters = new GameCharacterTicTacToeCollectionGeneric(
+        $this->characters = new GameCharacterTicTacToeCollectionPowered(
+            null,
             [
                 new GameCharacterTicTacToe('x', $this->players[0]),
                 new GameCharacterTicTacToe('o', $this->players[1]),

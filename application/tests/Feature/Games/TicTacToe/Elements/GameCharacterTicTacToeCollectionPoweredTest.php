@@ -3,12 +3,12 @@
 namespace Tests\Feature\Games\TicTacToe\Elements;
 
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
-use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionPowered;
 use App\Models\User;
 use MyDramGames\Utils\Exceptions\CollectionException;
 use Tests\TestCase;
 
-class GameCharacterTicTacToeCollectionGenericTest extends TestCase
+class GameCharacterTicTacToeCollectionPoweredTest extends TestCase
 {
     protected array $players;
     protected array $characters;
@@ -28,14 +28,14 @@ class GameCharacterTicTacToeCollectionGenericTest extends TestCase
         $this->expectException(CollectionException::class);
         $this->expectExceptionMessage(CollectionException::MESSAGE_DUPLICATE);
 
-        $collection = new GameCharacterTicTacToeCollectionGeneric();
+        $collection = new GameCharacterTicTacToeCollectionPowered();
         $collection->add(new GameCharacterTicTacToe('x', $this->players[0]));
         $collection->add(new GameCharacterTicTacToe('x', $this->players[1]));
     }
 
     public function testCreateWithCorrectSetup(): void
     {
-        $collection = new GameCharacterTicTacToeCollectionGeneric($this->characters);
+        $collection = new GameCharacterTicTacToeCollectionPowered(null, $this->characters);
         $expected = [
             $this->characters[0]->getName() => $this->characters[0]->getPlayer(),
             $this->characters[1]->getName() => $this->characters[1]->getPlayer(),
@@ -49,7 +49,7 @@ class GameCharacterTicTacToeCollectionGenericTest extends TestCase
 
     public function testAddWithCorrectSetup(): void
     {
-        $collection = new GameCharacterTicTacToeCollectionGeneric();
+        $collection = new GameCharacterTicTacToeCollectionPowered();
         $collection->add($this->characters[0]);
         $collection->add($this->characters[1]);
 

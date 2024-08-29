@@ -12,14 +12,14 @@ use App\GameCore\GameResult\GameResultProviderException;
 use App\GameCore\Services\Collection\CollectionException;
 use App\Games\TicTacToe\Elements\GameBoardTicTacToe;
 use App\Games\TicTacToe\Elements\GameCharacterTicTacToe;
-use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionGeneric;
+use App\Games\TicTacToe\Elements\GameCharacterTicTacToeCollectionPowered;
 use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Exceptions\GameCharacterException;
 use MyDramGames\Utils\Player\Player;
 
 class GamePlayTicTacToe extends GamePlayBase implements GamePlay
 {
-    protected GameCharacterTicTacToeCollectionGeneric $characters;
+    protected GameCharacterTicTacToeCollectionPowered $characters;
     protected GameBoardTicTacToe $board;
     protected ?GameResultTicTacToe $result = null;
 
@@ -143,7 +143,8 @@ class GamePlayTicTacToe extends GamePlayBase implements GamePlay
      */
     private function setCharacters(Player $playerX, Player $playerO): void
     {
-        $this->characters = new GameCharacterTicTacToeCollectionGeneric(
+        $this->characters = new GameCharacterTicTacToeCollectionPowered(
+            null,
             [new GameCharacterTicTacToe('x', $playerX), new GameCharacterTicTacToe('o', $playerO)],
         );
     }
