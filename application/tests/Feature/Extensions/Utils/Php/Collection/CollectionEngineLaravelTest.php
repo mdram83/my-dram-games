@@ -214,4 +214,66 @@ class CollectionEngineLaravelTest extends TestCase
         $this->assertEquals(0, $clone->count());
         $this->assertEquals(count($this->items), $this->collection->count());
     }
+
+    public function testKeys(): void
+    {
+        $this->assertSame(array_keys($this->items), $this->collection->keys());
+        $this->assertSame([], $this->collectionEmpty->keys());
+    }
+
+    public function testGetManyThrowExceptionForNotFlatArray(): void
+    {
+        $this->expectException(CollectionException::class);
+        $this->expectExceptionMessage(CollectionException::MESSAGE_KEYS_INPUTS);
+
+        $incompatibleInputStructure = ['A', ['array-not-expected']];
+        $this->collection->getMany($incompatibleInputStructure);
+    }
+
+    public function testGetManyThrowExceptionForMissingElementWithSpecificKey(): void
+    {
+        $this->expectException(CollectionException::class);
+        $this->expectExceptionMessage(CollectionException::MESSAGE_MISSING_KEY);
+
+        $keys = [array_keys($this->items)[0], 'definitely-missing-key-AC(*&S'];
+        $this->collection->getMany($keys);
+    }
+
+    public function testGetMany(): void
+    {
+        $allKeys = array_keys($this->items);
+        $requestedKeys = [$allKeys[0], $allKeys[1]];
+        $requestedCollection = $this->collection->getMany($requestedKeys);
+
+        $this->assertSame($requestedKeys, $requestedCollection->keys());
+        $this->assertEquals(count($this->items), $this->collection->count());
+    }
+
+    public function testSortKeys(): void
+    {
+        $initialKeys = array_keys($this->items);
+        $orderedKeys = [$initialKeys[1], $initialKeys[2], $initialKeys[0]];
+        $this->collection->sortKeys(function($keyOne, $keyTwo) use ($orderedKeys): int {
+            return array_search($keyOne, $orderedKeys) > array_search($keyTwo, $orderedKeys) ? 1 : 0;
+        });
+
+        $this->assertSame($orderedKeys, $this->collection->keys());
+    }
+
+    public function testPullThrowExceptionForMissingKey(): void
+    {
+        $this->expectException(CollectionException::class);
+        $this->expectExceptionMessage(CollectionException::MESSAGE_MISSING_KEY);
+
+        $this->collection->pull('definitely-this-is-123-missing-k3yKHGGS*');
+    }
+
+    public function testPull(): void
+    {
+        $key = array_keys($this->items)[0];
+        $pulled = $this->collection->pull($key);
+
+        $this->assertSame($this->items[$key], $pulled);
+        $this->assertEquals(count($this->items) - 1, $this->collection->count());
+    }
 }

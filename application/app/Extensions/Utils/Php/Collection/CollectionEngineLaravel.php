@@ -49,6 +49,14 @@ class CollectionEngineLaravel implements CollectionEngine
     /**
      * @inheritDoc
      */
+    final public function keys(): array
+    {
+        return $this->items->keys()->toArray();
+    }
+
+    /**
+     * @inheritDoc
+     */
     final public function toArray(): array
     {
         return $this->items->all();
@@ -91,6 +99,15 @@ class CollectionEngineLaravel implements CollectionEngine
     /**
      * @inheritDoc
      */
+    final public function sortKeys(callable $callback): static
+    {
+        $this->items = $this->items->sortKeysUsing($callback);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     final public function random(): mixed
     {
         $this->validateNotEmpty();
@@ -118,6 +135,18 @@ class CollectionEngineLaravel implements CollectionEngine
     /**
      * @inheritDoc
      */
+    final public function getMany(array $keys): static
+    {
+        $this->validateKeysInputArray($keys);
+        $this->validateExistMany($keys);
+
+        $items = $this->items->filter(fn($item, $key) => in_array($key, $keys));
+        return new static($items->all());
+    }
+
+    /**
+     * @inheritDoc
+     */
     final public function removeOne(mixed $key): void
     {
         $this->validateExists($key);
@@ -130,6 +159,15 @@ class CollectionEngineLaravel implements CollectionEngine
     final public function removeAll(): void
     {
         $this->items = new IlluminateCollection();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pull(mixed $key): mixed
+    {
+        $this->validateExists($key);
+        return $this->items->pull($key);
     }
 
     /**
