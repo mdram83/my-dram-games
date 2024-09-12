@@ -14,7 +14,8 @@
         "laravel/tinker": "^2.8",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-cookie-consent": "^3.3",
-        "mdram83/mydramgames-utils": "^1.2.001"
+        "mdram83/mydramgames-utils": "^1.2.001",
+        "mdram83/mydramgames-core": "^1.0"
     },
     "require-dev": {
         "laravel/breeze": "^1.27",
@@ -30,6 +31,12 @@
             "type": "vcs",
             "name": "mdram83/mydramgames-utils",
             "url": "https://github.com/mdram83/mydramgames-utils.git",
+            "branch": "dev-main"
+        },
+        {
+            "type": "vcs",
+            "name": "mdram83/mydramgames-core",
+            "url": "https://github.com/mdram83/mydramgames-core.git",
             "branch": "dev-main"
         }
     ],
