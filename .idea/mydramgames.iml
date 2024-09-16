@@ -144,6 +144,8 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/error-solutions" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-utils" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-core" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-gp-thousand" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-gp-tictactoe" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

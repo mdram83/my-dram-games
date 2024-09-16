@@ -146,6 +146,8 @@
       <path value="$PROJECT_DIR$/application/vendor/spatie/error-solutions" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-utils" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-core" />
+      <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-gp-tictactoe" />
+      <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-gp-thousand" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
