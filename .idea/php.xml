@@ -76,7 +76,6 @@
       <path value="$PROJECT_DIR$/application/vendor/symfony/polyfill-php80" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/event-dispatcher-contracts" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/event-dispatcher" />
-      <path value="$PROJECT_DIR$/application/vendor/symfony/polyfill-php72" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/service-contracts" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/application/vendor/symfony/routing" />
@@ -146,6 +145,7 @@
       <path value="$PROJECT_DIR$/application/vendor/spatie/laravel-cookie-consent" />
       <path value="$PROJECT_DIR$/application/vendor/spatie/error-solutions" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-utils" />
+      <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-core" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />

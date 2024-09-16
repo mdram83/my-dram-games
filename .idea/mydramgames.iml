@@ -74,7 +74,6 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/polyfill-php80" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/event-dispatcher-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/event-dispatcher" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/polyfill-php72" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/service-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/string" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/routing" />
@@ -144,6 +143,7 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/laravel-package-tools" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/spatie/error-solutions" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-utils" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-core" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
