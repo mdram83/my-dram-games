@@ -148,6 +148,7 @@
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-core" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-gp-tictactoe" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-gp-thousand" />
+      <path value="$PROJECT_DIR$/application/vendor/symfony/polyfill-php72" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />

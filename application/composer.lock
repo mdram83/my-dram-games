@@ -2251,16 +2251,16 @@
         },
         {
             "name": "mdram83/mydramgames-core",
-            "version": "v1.0.012",
+            "version": "v1.0.015",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-core.git",
-                "reference": "329a2ccd62ba608af64ea828580dbd122756023b"
+                "reference": "8d56e035c4cafd99f9d6ade12c30ad3ae835933c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-core/zipball/329a2ccd62ba608af64ea828580dbd122756023b",
-                "reference": "329a2ccd62ba608af64ea828580dbd122756023b",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-core/zipball/8d56e035c4cafd99f9d6ade12c30ad3ae835933c",
+                "reference": "8d56e035c4cafd99f9d6ade12c30ad3ae835933c",
                 "shasum": ""
             },
             "require": {
@@ -2294,23 +2294,23 @@
             ],
             "description": "Core features for MyDramGames project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-core/tree/v1.0.012",
+                "source": "https://github.com/mdram83/mydramgames-core/tree/v1.0.015",
                 "issues": "https://github.com/mdram83/mydramgames-core/issues"
             },
-            "time": "2024-09-16T13:08:43+00:00"
+            "time": "2024-09-19T09:21:10+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-thousand",
-            "version": "v1.0.001",
+            "version": "v1.0.003",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-gp-thousand.git",
-                "reference": "93bc0a79e65572e5650dc6c6829e9cc60a8b1493"
+                "reference": "616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-thousand/zipball/93bc0a79e65572e5650dc6c6829e9cc60a8b1493",
-                "reference": "93bc0a79e65572e5650dc6c6829e9cc60a8b1493",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-thousand/zipball/616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7",
+                "reference": "616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7",
                 "shasum": ""
             },
             "require": {
@@ -2345,23 +2345,23 @@
             ],
             "description": "Thousand GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-thousand/tree/v1.0.001",
+                "source": "https://github.com/mdram83/mydramgames-gp-thousand/tree/v1.0.003",
                 "issues": "https://github.com/mdram83/mydramgames-gp-thousand/issues"
             },
-            "time": "2024-09-16T12:24:59+00:00"
+            "time": "2024-09-19T09:58:18+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-tictactoe",
-            "version": "v1.0.002",
+            "version": "v1.0.004",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-gp-tictactoe.git",
-                "reference": "2e1b699a5235ed431abd61bb4d16af344d5839cb"
+                "reference": "8d2c108ab7c66f7c342a680982696e81fab29422"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-tictactoe/zipball/2e1b699a5235ed431abd61bb4d16af344d5839cb",
-                "reference": "2e1b699a5235ed431abd61bb4d16af344d5839cb",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-tictactoe/zipball/8d2c108ab7c66f7c342a680982696e81fab29422",
+                "reference": "8d2c108ab7c66f7c342a680982696e81fab29422",
                 "shasum": ""
             },
             "require": {
@@ -2396,10 +2396,10 @@
             ],
             "description": "Tic Tac Toe GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-tictactoe/tree/v1.0.002",
+                "source": "https://github.com/mdram83/mydramgames-gp-tictactoe/tree/v1.0.004",
                 "issues": "https://github.com/mdram83/mydramgames-gp-tictactoe/issues"
             },
-            "time": "2024-09-16T12:02:52+00:00"
+            "time": "2024-09-19T09:43:52+00:00"
         },
         {
             "name": "mdram83/mydramgames-utils",
@@ -8187,16 +8187,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.34",
+            "version": "10.5.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3c69d315bdf79080c8e115b69d1961c6905b0e18"
+                "reference": "7ac8b4e63f456046dcb4c9787da9382831a1874b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3c69d315bdf79080c8e115b69d1961c6905b0e18",
-                "reference": "3c69d315bdf79080c8e115b69d1961c6905b0e18",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7ac8b4e63f456046dcb4c9787da9382831a1874b",
+                "reference": "7ac8b4e63f456046dcb4c9787da9382831a1874b",
                 "shasum": ""
             },
             "require": {
@@ -8268,7 +8268,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.34"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.35"
             },
             "funding": [
                 {
@@ -8284,7 +8284,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-13T05:19:38+00:00"
+            "time": "2024-09-19T10:52:21+00:00"
         },
         {
             "name": "sebastian/cli-parser",
