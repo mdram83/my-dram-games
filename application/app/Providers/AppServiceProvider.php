@@ -32,10 +32,6 @@ use App\GameCore\GamePlay\Generic\GamePlayRepositoryGeneric;
 use App\GameCore\GamePlay\Generic\GamePlayServicesProviderGeneric;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
 use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageFactoryEloquent;
 use App\GameCore\GamePlayStorage\Eloquent\GamePlayStorageRepositoryEloquent;
@@ -54,63 +50,56 @@ use App\GameCore\Player\PlayerAnonymousFactory;
 use App\GameCore\Player\PlayerAnonymousRepository;
 use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\Laravel\CollectionLaravel;
-use App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5;
-use App\GameCore\Services\HashGenerator\HashGenerator;
 use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use Illuminate\Support\ServiceProvider;
-use MyDramGames\Utils\Player\Player;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public array $bindings = [
+        \App\GameCore\Services\HashGenerator\HashGenerator::class => \App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5::class,
+        \App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory::class => \App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent::class,
+        \App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository::class => \App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent::class,
+    ];
+
     /**
      * Register any application services.
      */
     public function register(): void
     {
         /* Instantiated by PlayerMiddleware middleware */
-        app()->bind(Player::class, fn() => null);
+        app()->bind(\MyDramGames\Utils\Player\Player::class, fn() => null);
 
-        app()->bind(HashGenerator::class, HashGeneratorMd5::class);
+        // TODO cleanup -> below elements will potentially be not required
         app()->bind(Collection::class, CollectionLaravel::class);
-
-        app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
-        app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
-
-        app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
-
-        app()->bind(PremiumPass::class, PremiumPassBasic::class);
-
-        app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
-        app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
-
         app()->bind(GameSetupAbsFactoryRepository::class, GameSetupAbsFactoryRepositoryPhpConfig::class);
-
-        app()->bind(GameOptionClassRepository::class, GameOptionClassClassRepositoryPhpConfig::class);
-        app()->bind(GameOptionValueConverter::class, GameOptionValueConverterEnum::class);
-
-        app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class);
-        app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);
-        app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class);
-        app()->bind(GamePlayAbsFactoryRepository::class, GamePlayAbsFactoryRepositoryPhpConfig::class);
-        app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
-        app()->bind(GamePlayAbsRepository::class, GamePlayAbsRepositoryPhpConfig::class);
-
-        app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
-
-        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
-        app()->bind(GameRecordRepository::class, GameRecordRepositoryEloquent::class);
-
-        app()->bind(GamePlayDisconnectionFactory::class, GamePlayDisconnectionFactoryEloquent::class);
-        app()->bind(GamePlayDisconnectionRepository::class, GamePlayDisconnectionRepositoryEloquent::class);
-
-        app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
         app()->bind(PlayingCardDeckProvider::class, PlayingCardDeckProviderPhpEnum::class);
         app()->bind(PlayingCardSuitRepository::class, PlayingCardSuitRepositoryPhpEnum::class);
         app()->bind(PlayingCardRankRepository::class, PlayingCardRankRepositoryPhpEnum::class);
         app()->bind(PlayingCardDealer::class, PlayingCardDealerGeneric::class);
-
         app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);
+
+        // TODO rewrite? -> not clear if below elements requires rewrite or cleanup or will not be required
+        app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
+        app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
+        app()->bind(GameOptionClassRepository::class, GameOptionClassClassRepositoryPhpConfig::class);
+        app()->bind(GameOptionValueConverter::class, GameOptionValueConverterEnum::class);
+        app()->bind(GamePlayAbsFactoryRepository::class, GamePlayAbsFactoryRepositoryPhpConfig::class);
+        app()->bind(GamePlayAbsRepository::class, GamePlayAbsRepositoryPhpConfig::class);
+        app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
+        app()->bind(GameRecordRepository::class, GameRecordRepositoryEloquent::class);
+        app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
+
+        // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
+        app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
+        app()->bind(PremiumPass::class, PremiumPassBasic::class);
+        app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
+        app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
+        app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class);
+        app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);
+        app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class);
+        app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
+        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
     }
 
     /**
