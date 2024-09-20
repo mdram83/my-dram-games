@@ -61,13 +61,13 @@ class GameBoxPhpConfig implements GameBox
         $this->durationInMinutes = $box['durationInMinutes'] ?? null;
         $this->minPlayerAge = $box['minPlayerAge'] ?? null;
 
-        if (!($gameSetup->getNumberOfPlayers() ?? [])) {
-            throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
-        }
-
         try {
             $this->gameSetup = $gameSetup ?? $this->gameSetupRepository->getOneByClassname($this->gameSetupClassname);
         } catch (GameSetupException) {
+            throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
+        }
+
+        if (!($this->gameSetup->getNumberOfPlayers() ?? [])) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
         }
     }
