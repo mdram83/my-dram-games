@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\GameCore\GameOption\PhpConfig;
 
-use App\GameCore\GameOption\GameOptionException;
 use App\GameCore\GameOption\GameOptionClassRepository;
 use App\GameCore\GameOption\PhpConfig\GameOptionClassClassRepositoryPhpConfig;
+use MyDramGames\Core\Exceptions\GameOptionException;
 use Tests\TestCase;
 
 class GameOptionClassRepositoryPhpConfigTest extends TestCase
@@ -17,7 +17,7 @@ class GameOptionClassRepositoryPhpConfigTest extends TestCase
     public function testGetOneThrowExceptionForNotExistingGameOption(): void
     {
         $this->expectException(GameOptionException::class);
-        $this->expectExceptionMessage(GameOptionException::MESSAGE_OPTION_NOT_EXIST);
+        $this->expectExceptionMessage(GameOptionException::MESSAGE_INCOMPATIBLE_VALUE);
 
         $repository = new GameOptionClassClassRepositoryPhpConfig();
         $repository->getOne('definitely-missing-game-123-option');
