@@ -79,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardDealer::class, PlayingCardDealerGeneric::class);
         app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);
         app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
+        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
 
         // TODO replace -> replace with new implementation
         app()->bind(PremiumPass::class, PremiumPassBasic::class); // replace with PremiumPassCore::class (then remove basic)
@@ -101,7 +102,6 @@ class AppServiceProvider extends ServiceProvider
 
         // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
         app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
-        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
     }
 
     /**

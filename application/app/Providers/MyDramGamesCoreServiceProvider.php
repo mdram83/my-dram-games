@@ -19,10 +19,13 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
         \MyDramGames\Core\GameInvite\GameInviteRepository::class => \App\Extensions\Core\GameInvite\GameInviteRepositoryEloquent::class,
         \MyDramGames\Core\GameInvite\GameInviteFactory::class => \App\Extensions\Core\GameInvite\GameInviteFactoryEloquent::class,
 
+        \MyDramGames\Core\GamePlay\GamePlayRepository::class => \App\Extensions\Core\GamePlay\GamePlayStorableRepository::class,
         \MyDramGames\Core\GamePlay\Services\GamePlayServicesProvider::class => \MyDramGames\Core\GamePlay\Services\GamePlayServicesProviderGeneric::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorage::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageEloquent::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorageFactory::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageFactoryEloquent::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorageRepository::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageRepositoryEloquent::class,
+
+        \MyDramGames\Core\GameRecord\GameRecordFactory::class => \App\Extensions\Core\GameRecord\GameRecordFactoryEloquent::class
     ];
 
     /**
