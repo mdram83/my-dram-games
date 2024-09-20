@@ -21,6 +21,7 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
 
         \MyDramGames\Core\GamePlay\Services\GamePlayServicesProvider::class => \MyDramGames\Core\GamePlay\Services\GamePlayServicesProviderGeneric::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorage::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageEloquent::class,
+        \MyDramGames\Core\GamePlay\Storage\GamePlayStorageFactory::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageFactoryEloquent::class,
     ];
 
     /**

@@ -85,6 +85,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class); // replace with same but Extensions...
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class); // replace with same but Extensions...
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class); // replace with same but Extensions...
+        app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class); // replace with same but Extensions...
 
         // TODO rewrite? -> not clear if below elements requires rewrite or cleanup or will not be required
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
@@ -99,7 +100,6 @@ class AppServiceProvider extends ServiceProvider
 
         // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
         app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);
-        app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class);
         app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
         app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
     }
