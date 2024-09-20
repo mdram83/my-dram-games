@@ -95,7 +95,6 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
 
         // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
-
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class);
