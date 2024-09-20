@@ -82,6 +82,7 @@ class AppServiceProvider extends ServiceProvider
 
         // TODO replace -> replace with new implementation
         app()->bind(PremiumPass::class, PremiumPassBasic::class); // replace with PremiumPassCore::class
+        app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class); // replace with same but Extensions...
 
         // TODO rewrite? -> not clear if below elements requires rewrite or cleanup or will not be required
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
@@ -95,7 +96,6 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
 
         // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
-        app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class);
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class);
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class);
         app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);

@@ -14,6 +14,8 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
         \MyDramGames\Core\GameBox\GameBoxCollection::class => \MyDramGames\Core\GameBox\GameBoxCollectionPowered::class,
         \MyDramGames\Core\GameBox\GameBoxRepository::class => \App\Extensions\Core\GameBox\GameBoxRepositoryPhpConfig::class,
 
+        \MyDramGames\Core\GameInvite\GameInviteRepository::class => \App\Extensions\Core\GameInvite\GameInviteRepositoryEloquent::class,
+
         \MyDramGames\Core\GameSetup\GameSetupRepository::class => \MyDramGames\Core\GameSetup\GameSetupBaseRepository::class,
 
         \MyDramGames\Core\GamePlay\Services\GamePlayServicesProvider::class => \MyDramGames\Core\GamePlay\Services\GamePlayServicesProviderGeneric::class,
