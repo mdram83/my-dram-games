@@ -77,9 +77,6 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardSuitRepository::class, PlayingCardSuitRepositoryPhpEnum::class);
         app()->bind(PlayingCardRankRepository::class, PlayingCardRankRepositoryPhpEnum::class);
         app()->bind(PlayingCardDealer::class, PlayingCardDealerGeneric::class);
-        app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);
-        app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);
-        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);
 
         // TODO replace -> replace with new implementation
         app()->bind(PremiumPass::class, PremiumPassBasic::class); // replace with PremiumPassCore::class (then remove basic)
@@ -88,6 +85,10 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class); // replace with same but Extensions...
         app()->bind(GamePlayStorageFactory::class, GamePlayStorageFactoryEloquent::class); // replace with same but Extensions...
         app()->bind(GamePlayStorageRepository::class, GamePlayStorageRepositoryEloquent::class);  // replace with same but Extensions...
+        app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);  // replace with same but Extensions...
+        app()->bind(GamePlayServicesProvider::class, GamePlayServicesProviderGeneric::class);  // replace with same but Extensions...
+        app()->bind(GameBoxRepository::class, GameBoxRepositoryPhpConfig::class);  // replace with same but Extensions...
+        app()->bind(GameRecordFactory::class, GameRecordFactoryEloquent::class);  // replace with same but Extensions...
 
         // TODO rewrite? -> not clear if below elements requires rewrite or cleanup or will not be required
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
@@ -99,9 +100,6 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);
         app()->bind(GameRecordRepository::class, GameRecordRepositoryEloquent::class);
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
-
-        // TODO rewrite -> below elements requires rewrite to adjust to library interfaces
-        app()->bind(GamePlayRepository::class, GamePlayRepositoryGeneric::class);
     }
 
     /**
