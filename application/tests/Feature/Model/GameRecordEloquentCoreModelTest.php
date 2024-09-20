@@ -123,4 +123,9 @@ class GameRecordEloquentCoreModelTest extends TestCase
         $record = $this->prepareGameRecord($this->invite, $this->playerAnonymous, $this->score);
         $this->assertEquals($this->playerAnonymous->getId(), $record->getPlayer()->getId());
     }
+
+    public function testGetGameInvite(): void
+    {
+        $this->assertEquals($this->invite->getId(), $this->record->getGameInvite()->getId());
+    }
 }

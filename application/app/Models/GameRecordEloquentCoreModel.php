@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteRepository;
 use MyDramGames\Core\GameRecord\GameRecord;
 use MyDramGames\Utils\Player\Player;
 
@@ -44,12 +45,6 @@ class GameRecordEloquentCoreModel extends Model implements GameRecord
 
     public function getGameInvite(): GameInvite
     {
-        return $this->gameInvite;
-
-//        $invite = $this->gameInvite()->first();
-//        if (is_a($invite, GameInvite::class)) {
-//            return $invite;
-//        }
-//        throw new GameRecordException(GameRecordException::MESSAGE_MISSING_INVITE);
+        return app()->make(GameInviteRepository::class)->getOne($this->gameInvite->id);
     }
 }
