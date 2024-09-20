@@ -25,8 +25,9 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorageFactory::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageFactoryEloquent::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorageRepository::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageRepositoryEloquent::class,
 
-        \MyDramGames\Core\GameRecord\GameRecordFactory::class => \App\Extensions\Core\GameRecord\GameRecordFactoryEloquent::class,
         \MyDramGames\Core\GameRecord\GameRecordCollection::class => \MyDramGames\Core\GameRecord\GameRecordCollectionPowered::class,
+        \MyDramGames\Core\GameRecord\GameRecordFactory::class => \App\Extensions\Core\GameRecord\GameRecordFactoryEloquent::class,
+        \MyDramGames\Core\GameRecord\GameRecordRepository::class => \App\Extensions\Core\GameRecord\GameRecordRepositoryEloquent::class,
     ];
 
     /**

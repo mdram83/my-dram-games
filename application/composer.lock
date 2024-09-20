@@ -2251,16 +2251,16 @@
         },
         {
             "name": "mdram83/mydramgames-core",
-            "version": "v1.0.016",
+            "version": "v1.0.017",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-core.git",
-                "reference": "5b8b2d58eb76c472f0290ae3a7738f51438b3169"
+                "reference": "05983f5069b819270e10f5969b9d9193861fcec6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-core/zipball/5b8b2d58eb76c472f0290ae3a7738f51438b3169",
-                "reference": "5b8b2d58eb76c472f0290ae3a7738f51438b3169",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-core/zipball/05983f5069b819270e10f5969b9d9193861fcec6",
+                "reference": "05983f5069b819270e10f5969b9d9193861fcec6",
                 "shasum": ""
             },
             "require": {
@@ -2294,10 +2294,10 @@
             ],
             "description": "Core features for MyDramGames project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-core/tree/v1.0.016",
+                "source": "https://github.com/mdram83/mydramgames-core/tree/v1.0.017",
                 "issues": "https://github.com/mdram83/mydramgames-core/issues"
             },
-            "time": "2024-09-20T07:56:51+00:00"
+            "time": "2024-09-20T16:36:18+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-thousand",
