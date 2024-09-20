@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\GameCore\GameBox\GameBoxRepository;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Core\GameBox\GameBoxRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -14,7 +14,7 @@ class GameBoxControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->slug = App::make(GameBoxRepository::class)->getAll()[0]->getSlug();
+        $this->slug = App::make(GameBoxRepository::class)->getAll()->pullFirst()->getSlug();
     }
 
     public function testResponseOk(): void
