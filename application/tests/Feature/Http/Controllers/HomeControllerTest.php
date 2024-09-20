@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\GameCore\GameBox\GameBoxRepository;
+use MyDramGames\Core\GameBox\GameBoxRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -18,9 +18,10 @@ class HomeControllerTest extends TestCase
     {
         $response = $this->get(route('home'));
 
-        $repository = $this->app->make(GameBoxRepository::class);
-        $gameDefinitionData = array_map(fn($gameDefinition) => $gameDefinition->toArray(), $repository->getAll());
-        $expectedData = ['gameBoxList' => $gameDefinitionData];
+        $expectedData = ['gameBoxList' => array_map(
+            fn($gameDefinition) => $gameDefinition->toArray(),
+            $this->app->make(GameBoxRepository::class)->getAll()->toArray()
+        )];
 
         $response->assertViewHasAll($expectedData);
     }
