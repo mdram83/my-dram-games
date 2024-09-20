@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
+use App\Extensions\Core\GameBox\GameBoxRepositoryPhpConfig;
 use Illuminate\Support\Facades\App;
 use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +33,7 @@ class GameBoxAjaxControllerTest extends TestCase
     {
         $response = $this->getResponse();
         $repository = App::make(GameBoxRepositoryPhpConfig::class);
-        $expectedContent = array_map(fn ($gameBox) => $gameBox->toArray(), $repository->getAll());
+        $expectedContent = array_map(fn ($gameBox) => $gameBox->toArray(), $repository->getAll()->toArray());
 
         $response->assertJsonCount(count($expectedContent));
         $response->assertExactJson($expectedContent);
