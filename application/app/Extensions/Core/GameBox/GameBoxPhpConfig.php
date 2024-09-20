@@ -4,14 +4,15 @@ namespace App\Extensions\Core\GameBox;
 
 use Illuminate\Support\Facades\Config;
 use MyDramGames\Core\Exceptions\GameBoxException;
+use MyDramGames\Core\Exceptions\GameSetupException;
 use MyDramGames\Core\GameBox\GameBox;
 use MyDramGames\Core\GameMove\GameMoveFactory;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GameSetup\GameSetup;
+use MyDramGames\Core\GameSetup\GameSetupRepository;
 
 class GameBoxPhpConfig implements GameBox
 {
-    private string $slug;
     private GameSetup $gameSetup;
 
     private string $name;
@@ -21,41 +22,54 @@ class GameBoxPhpConfig implements GameBox
     private bool $isActive;
     private bool $isPremium;
 
+    private string $gameSetupClassname;
     private string $gamePlayClassname;
     private string $gameMoveFactoryClassname;
 
     /**
      * @throws GameBoxException
      */
-    public function __construct(string $slug, GameSetup $gameSetup)
+    public function __construct(
+        private string $slug,
+        private readonly GameSetupRepository $gameSetupRepository,
+        ?GameSetup $gameSetup = null
+    )
     {
-        $this->slug = $slug;
-        $this->gameSetup = $gameSetup;
-
         if (!$box = Config::get('games.box.' . $this->slug)) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
         }
 
         if (
             !($this->name = $box['name'] ?? '')
-            || !($gameSetup->getNumberOfPlayers() ?? [])
             || !isset($box['isActive'])
             || !isset($box['isPremium'])
+            || !isset($box['gameSetupClassname'])
             || !isset($box['gamePlayClassname'])
             || !isset($box['gameMoveFactoryClassname'])
         ) {
             throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
         }
 
+        $this->isActive = $box['isActive'];
+        $this->isPremium = $box['isPremium'];
+
+        $this->gameSetupClassname = $box['gameSetupClassname'];
+        $this->gamePlayClassname = $box['gamePlayClassname'];
+        $this->gameMoveFactoryClassname = $box['gameMoveFactoryClassname'];
+
         $this->description = $box['description'] ?? null;
         $this->durationInMinutes = $box['durationInMinutes'] ?? null;
         $this->minPlayerAge = $box['minPlayerAge'] ?? null;
 
-        $this->isActive = $box['isActive'];
-        $this->isPremium = $box['isPremium'];
+        if (!($gameSetup->getNumberOfPlayers() ?? [])) {
+            throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
+        }
 
-        $this->gamePlayClassname = $box['gamePlayClassname'];
-        $this->gameMoveFactoryClassname = $box['gameMoveFactoryClassname'];
+        try {
+            $this->gameSetup = $gameSetup ?? $this->gameSetupRepository->getOneByClassname($this->gameSetupClassname);
+        } catch (GameSetupException) {
+            throw new GameBoxException(GameBoxException::MESSAGE_INCORRECT_CONFIGURATION);
+        }
     }
 
     public function getName(): string

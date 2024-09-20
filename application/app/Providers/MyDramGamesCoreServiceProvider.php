@@ -9,6 +9,9 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
     public array $bindings = [
         \MyDramGames\Core\GameOption\GameOptionCollection::class => \MyDramGames\Core\GameOption\GameOptionCollectionPowered::class,
         \MyDramGames\Core\GameOption\GameOptionValueCollection::class => \MyDramGames\Core\GameOption\GameOptionValueCollectionPowered::class,
+
+        \MyDramGames\Core\GameSetup\GameSetupRepository::class => \MyDramGames\Core\GameSetup\GameSetupBaseRepository::class,
+
         \MyDramGames\Core\GamePlay\Services\GamePlayServicesProvider::class => \MyDramGames\Core\GamePlay\Services\GamePlayServicesProviderGeneric::class,
     ];
 

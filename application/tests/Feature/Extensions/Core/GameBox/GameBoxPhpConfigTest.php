@@ -3,6 +3,7 @@
 namespace Tests\Feature\Extensions\Core\GameBox;
 
 use App\Extensions\Core\GameBox\GameBoxPhpConfig;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\GameBox\GameBox;
@@ -14,8 +15,10 @@ use MyDramGames\Core\GameOption\Options\GameOptionNumberOfPlayersGeneric;
 use MyDramGames\Core\GameOption\Values\GameOptionValueNumberOfPlayersGeneric;
 use MyDramGames\Core\GamePlay\GamePlayStorableBase;
 use MyDramGames\Core\GameSetup\GameSetup;
+use MyDramGames\Core\GameSetup\GameSetupRepository;
 use Tests\TestCase;
 use Tests\TestingHelpers\GameMoveFactoryTestingStub;
+use Tests\TestingHelpers\GameSetupBaseTestingStub;
 
 class GameBoxPhpConfigTest extends TestCase
 {
@@ -25,6 +28,7 @@ class GameBoxPhpConfigTest extends TestCase
     protected array $box;
     protected GameOption $option;
     protected GameSetup $setup;
+    protected GameSetupRepository $setupRepository;
     protected GameBoxPhpConfig $gameBox;
 
     public function setUp(): void
@@ -38,14 +42,17 @@ class GameBoxPhpConfigTest extends TestCase
             'minPlayerAge' => 4,
             'isActive' => true,
             'isPremium' => false,
+            'gameSetupClassname' => GameSetupBaseTestingStub::class,
             'gamePlayClassname' => GamePlayStorableBase::class,
             'gameMoveFactoryClassname' => GameMoveFactoryTestingStub::class,
         ];
 
         $this->option = $this->getGameOption();
         $this->setup = $this->getMockGameSetup();
+        $this->setupRepository = App::make(GameSetupRepository::class);
+
         $this->mockConfigFacade();
-        $this->gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $this->gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
     }
 
     protected function mockConfigFacade(?array $box = [], bool $missingSlug = false): void
@@ -102,7 +109,7 @@ class GameBoxPhpConfigTest extends TestCase
         $this->expectException(GameBoxException::class);
 
         $this->mockConfigFacade(null, true);
-        new GameBoxPhpConfig($this->missingSlug, $this->setup);
+        new GameBoxPhpConfig($this->missingSlug, $this->setupRepository, $this->setup);
     }
 
     public function testThrowExceptionIfNoNameInConfig(): void
@@ -113,7 +120,7 @@ class GameBoxPhpConfigTest extends TestCase
         unset($box['name']);
 
         $this->mockConfigFacade($box);
-        new GameBoxPhpConfig($this->slug, $this->setup);
+        new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
     }
 
     public function testThrowExceptionIfNoIsActiveInConfig(): void
@@ -124,7 +131,7 @@ class GameBoxPhpConfigTest extends TestCase
         unset($box['isActive']);
 
         $this->mockConfigFacade($box);
-        new GameBoxPhpConfig($this->slug, $this->setup);
+        new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
     }
 
     public function testThrowExceptionIfNoIsPremiumInConfig(): void
@@ -135,7 +142,7 @@ class GameBoxPhpConfigTest extends TestCase
         unset($box['isPremium']);
 
         $this->mockConfigFacade($box);
-        new GameBoxPhpConfig($this->slug, $this->setup);
+        new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
     }
 
     public function testGetName(): void
@@ -162,7 +169,7 @@ class GameBoxPhpConfigTest extends TestCase
     {
         $setup = $this->getMockGameSetup([2, 3, 4]);
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $setup);
 
         $this->assertEquals('2-4', $gameBox->getNumberOfPlayersDescription());
     }
@@ -171,7 +178,7 @@ class GameBoxPhpConfigTest extends TestCase
     {
         $setup = $this->getMockGameSetup([2, 4, 6]);
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $setup);
 
         $this->assertEquals('2, 4, 6', $gameBox->getNumberOfPlayersDescription());
     }
@@ -234,7 +241,7 @@ class GameBoxPhpConfigTest extends TestCase
     {
         $this->box['isPremium'] = true;
         $this->mockConfigFacade();
-        $this->gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $this->gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
 
         $this->assertTrue($this->gameBox->isPremium());
     }
@@ -246,7 +253,7 @@ class GameBoxPhpConfigTest extends TestCase
 
         $this->box['gamePlayClassname'] = GameBoxException::class;
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
         $gameBox->getGamePlayClassname();
     }
 
@@ -257,7 +264,7 @@ class GameBoxPhpConfigTest extends TestCase
 
         $this->box['gamePlayClassname'] = '';
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
         $gameBox->getGamePlayClassname();
     }
 
@@ -273,7 +280,7 @@ class GameBoxPhpConfigTest extends TestCase
 
         $this->box['gameMoveFactoryClassname'] = GameBoxException::class;
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
         $gameBox->getGameMoveFactoryClassname();
     }
 
@@ -284,7 +291,7 @@ class GameBoxPhpConfigTest extends TestCase
 
         $this->box['gameMoveFactoryClassname'] = '';
         $this->mockConfigFacade();
-        $gameBox = new GameBoxPhpConfig($this->slug, $this->setup);
+        $gameBox = new GameBoxPhpConfig($this->slug, $this->setupRepository, $this->setup);
         $gameBox->getGameMoveFactoryClassname();
     }
 
