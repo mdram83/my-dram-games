@@ -4,5 +4,6 @@ namespace App\GameCore\GameOption;
 
 interface GameOptionClassRepository
 {
-    public function getOne(string $key): string;
+    public function getOptionClassname(string $optionKey): string;
+    public function getValueClassname(string $optionKey): string;
 }
