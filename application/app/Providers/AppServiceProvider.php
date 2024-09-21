@@ -21,9 +21,9 @@ use App\GameCore\GameInvite\GameInviteRepository;
 use App\GameCore\GameBox\GameBoxRepository;
 use App\GameCore\GameBox\PhpConfig\GameBoxRepositoryPhpConfig;
 use App\GameCore\GameOption\GameOptionClassRepository;
-use App\GameCore\GameOption\PhpConfig\GameOptionClassClassRepositoryPhpConfig;
+use App\GameCore\GameOption\PhpConfig\GameOptionClassRepositoryPhpConfig;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GameOptionValue\GameOptionValueConverterEnum;
+use App\GameCore\GameOptionValue\GameOptionValueConverterGeneric;
 use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
 use App\GameCore\GamePlay\GamePlayAbsRepository;
 use App\GameCore\GamePlay\GamePlayRepository;
@@ -52,6 +52,7 @@ use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\Collection\Laravel\CollectionLaravel;
 use App\GameCore\Services\PremiumPass\Basic\PremiumPassBasic;
 use App\GameCore\Services\PremiumPass\PremiumPass;
+use App\GameCore\Services\PremiumPass\PremiumPassCore;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -70,6 +71,9 @@ class AppServiceProvider extends ServiceProvider
         /* Instantiated by PlayerMiddleware middleware */
         app()->bind(\MyDramGames\Utils\Player\Player::class, fn() => null);
 
+        app()->bind(GameOptionClassRepository::class, GameOptionClassRepositoryPhpConfig::class);
+        app()->bind(GameOptionValueConverter::class, GameOptionValueConverterGeneric::class);
+
         // TODO cleanup -> below elements will potentially be not required
         app()->bind(Collection::class, CollectionLaravel::class);
         app()->bind(GameSetupAbsFactoryRepository::class, GameSetupAbsFactoryRepositoryPhpConfig::class);
@@ -80,7 +84,8 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(PlayingCardFactory::class, PlayingCardFactoryPhpEnum::class);
 
         // TODO replace -> replace with new implementation
-        app()->bind(PremiumPass::class, PremiumPassBasic::class); // replace with PremiumPassCore::class (then remove basic)
+        app()->bind(PremiumPass::class, PremiumPassCore::class); // replace with PremiumPassCore::class (then remove basic)
+//        app()->bind(PremiumPass::class, PremiumPassBasic::class); // replace with PremiumPassCore::class (then remove basic)
         app()->bind(GameInviteRepository::class, GameInviteRepositoryEloquent::class); // replace with same but Extensions...
         app()->bind(GameInviteFactory::class, GameInviteFactoryEloquent::class); // replace with same but Extensions...
         app()->bind(GamePlayStorage::class, GamePlayStorageEloquent::class); // replace with same but Extensions...
@@ -95,8 +100,6 @@ class AppServiceProvider extends ServiceProvider
         // TODO rewrite? -> not clear if below elements requires rewrite or cleanup or will not be required
         app()->bind(PlayerAnonymousRepository::class, PlayerAnonymousRepositoryEloquent::class);
         app()->bind(PlayerAnonymousFactory::class, PlayerAnonymousFactoryEloquent::class);
-        app()->bind(GameOptionClassRepository::class, GameOptionClassClassRepositoryPhpConfig::class);
-        app()->bind(GameOptionValueConverter::class, GameOptionValueConverterEnum::class);
         app()->bind(GamePlayAbsFactoryRepository::class, GamePlayAbsFactoryRepositoryPhpConfig::class);
         app()->bind(GamePlayAbsRepository::class, GamePlayAbsRepositoryPhpConfig::class);
         app()->bind(GameMoveAbsFactoryRepository::class, GameMoveAbsFactoryRepositoryPhpConfig::class);

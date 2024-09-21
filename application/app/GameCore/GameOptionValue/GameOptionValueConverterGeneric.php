@@ -6,7 +6,7 @@ use App\GameCore\GameOption\GameOptionClassRepository;
 use MyDramGames\Core\Exceptions\GameOptionValueException;
 use MyDramGames\Core\GameOption\GameOptionValue;
 
-readonly class GameOptionValueConverterEnum implements GameOptionValueConverter
+readonly class GameOptionValueConverterGeneric implements GameOptionValueConverter
 {
     public function __construct(protected GameOptionClassRepository $repository)
     {
@@ -19,8 +19,8 @@ readonly class GameOptionValueConverterEnum implements GameOptionValueConverter
     public function convert(mixed $value, string $gameOptionKey): GameOptionValue
     {
         try {
-            return ($this->repository->getOne($gameOptionKey))::getOptionValueClass()::fromValue($value);
-        } catch (\ValueError) {
+            return ($this->repository->getValueClassname($gameOptionKey))::fromValue($value);
+        } catch (\Exception) {
             throw new GameOptionValueException(GameOptionValueException::MESSAGE_MISSING_VALUE);
         }
     }

@@ -9,6 +9,7 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
     public array $bindings = [
         \MyDramGames\Core\GameOption\GameOptionCollection::class => \MyDramGames\Core\GameOption\GameOptionCollectionPowered::class,
         \MyDramGames\Core\GameOption\GameOptionValueCollection::class => \MyDramGames\Core\GameOption\GameOptionValueCollectionPowered::class,
+        \MyDramGames\Core\GameOption\GameOptionConfiguration::class => \MyDramGames\Core\GameOption\GameOptionConfigurationGeneric::class,
         \MyDramGames\Core\GameOption\GameOptionConfigurationCollection::class => \MyDramGames\Core\GameOption\GameOptionConfigurationCollectionPowered::class,
 
         \MyDramGames\Core\GameSetup\GameSetupRepository::class => \MyDramGames\Core\GameSetup\GameSetupBaseRepository::class,
@@ -20,6 +21,7 @@ class MyDramGamesCoreServiceProvider extends ServiceProvider
         \MyDramGames\Core\GameInvite\GameInviteFactory::class => \App\Extensions\Core\GameInvite\GameInviteFactoryEloquent::class,
 
         \MyDramGames\Core\GamePlay\GamePlayRepository::class => \App\Extensions\Core\GamePlay\GamePlayStorableRepository::class,
+        \MyDramGames\Core\GamePlay\GamePlayFactory::class => \MyDramGames\Core\GamePlay\GamePlayFactoryStorable::class,
         \MyDramGames\Core\GamePlay\Services\GamePlayServicesProvider::class => \MyDramGames\Core\GamePlay\Services\GamePlayServicesProviderGeneric::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorage::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageEloquent::class,
         \MyDramGames\Core\GamePlay\Storage\GamePlayStorageFactory::class => \App\Extensions\Core\GamePlay\Storage\GamePlayStorageFactoryEloquent::class,

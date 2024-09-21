@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\GameCore\GameOptionValue;
 
-use App\GameCore\GameOptionValue\GameOptionValue;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GameOptionValue\GameOptionValueException;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Core\Exceptions\GameOptionValueException;
+use MyDramGames\Core\GameOption\GameOptionValue;
 use Tests\TestCase;
 
-class GameOptionValueConverterEnumTest extends TestCase
+class GameOptionValueConverterGenericTest extends TestCase
 {
     protected GameOptionValueConverter $converter;
 
