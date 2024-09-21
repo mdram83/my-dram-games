@@ -286,8 +286,7 @@ class GameInviteControllerTest extends TestCase
     {
         $gameInvite = $this->getGameInvite();
         $gameInvite->addPlayer($this->playerJoin);
-        $factory = App::make(GamePlayFactory::class);
-        $play = $factory->create($gameInvite->getGameBox()->getGamePlayClassname(), $gameInvite);
+        $play = App::make(GamePlayFactory::class)->create($gameInvite);
 
         $gameInviteId = $gameInvite->getId();
         $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
@@ -306,8 +305,7 @@ class GameInviteControllerTest extends TestCase
     {
         $gameInvite = $this->getGameInvite();
         $gameInvite->addPlayer($this->playerJoin);
-        $factory = App::make(GamePlayFactory::class);
-        $play = $factory->create($gameInvite->getGameBox()->getGamePlayClassname(), $gameInvite);
+        $play = App::make(GamePlayFactory::class)->create($gameInvite);
 
         $play->handleMove(new GameMoveTicTacToe($this->playerHost, 1));
         $play->handleMove(new GameMoveTicTacToe($this->playerJoin, 4));
