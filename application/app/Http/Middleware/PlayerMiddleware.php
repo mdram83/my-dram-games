@@ -20,8 +20,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 readonly class PlayerMiddleware
 {
     public function __construct(
-        private PlayerAnonymousFactory $playerFactory,
-        private PlayerAnonymousRepository $playerRepository,
+        private PlayerAnonymousFactory $playerAnonymousFactory,
+        private PlayerAnonymousRepository $playerAnonymousRepository,
+        private HashGenerator $hashGenerator,
     )
     {
 
@@ -50,7 +51,7 @@ readonly class PlayerMiddleware
 
                 $hash = Cookie::get($cookieName);
 
-                if (isset($hash) && $player = $this->playerRepository->getOne($hash)) {
+                if (isset($hash) && $player = $this->playerAnonymousRepository->getOne($hash)) {
 
                     $player->touch();
 
@@ -58,8 +59,8 @@ readonly class PlayerMiddleware
 
                     $key = session()->getId();
                     $player =
-                        $this->playerRepository->getOne(App::make(HashGenerator::class)->generateHash($key))
-                        ?? $this->playerFactory->create(['key' => $key]);
+                        $this->playerAnonymousRepository->getOne($this->hashGenerator->generateHash($key))
+                        ?? $this->playerAnonymousFactory->create(['key' => $key]);
                 }
 
             } catch (Exception $e) {

@@ -7,13 +7,20 @@ use Closure;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 
-class PlayerAuthMiddleware
+readonly class PlayerAuthMiddleware
 {
+    public function __construct(
+        private PlayerAnonymousRepository $playerAnonymousRepository,
+        private Encrypter $encrypter,
+    )
+    {
+
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -25,10 +32,10 @@ class PlayerAuthMiddleware
     {
         if (!Auth::check()) {
             $hash = $request->query(Config::get('player.playerHashCookieName'));
-            $hash = App::make(Encrypter::class)->decrypt($hash, false);
+            $hash = $this->encrypter->decrypt($hash, false);
             $hash = CookieValuePrefix::remove($hash);
 
-            $player = App::make(PlayerAnonymousRepository::class)->getOne($hash);
+            $player = $this->playerAnonymousRepository->getOne($hash);
             Auth::login($player);
         }
 
