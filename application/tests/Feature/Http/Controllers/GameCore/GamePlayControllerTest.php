@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayMovedEvent;
 use App\Events\GamePlay\GamePlayStoredEvent;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
@@ -34,7 +33,6 @@ class GamePlayControllerTest extends TestCase
     protected Player $player;
     protected Player $notPlayer;
     protected GameInvite $invite;
-    protected GamePlayDisconnectionRepository $disconnectionRepository;
 
     protected string $storeRouteName = 'ajax.gameplay.store';
     protected string $showRouteName = 'gameplay.show';
