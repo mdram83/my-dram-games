@@ -2,10 +2,10 @@
 
 namespace App\GameCore\GamePlayDisconnection\Eloquent;
 
-use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\GamePlayDisconnectionEloquentModel;
+use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectionRepositoryEloquent implements GamePlayDisconnectionRepository

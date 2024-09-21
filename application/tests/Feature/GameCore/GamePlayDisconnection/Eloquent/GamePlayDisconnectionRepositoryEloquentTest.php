@@ -2,25 +2,26 @@
 
 namespace Tests\Feature\GameCore\GamePlayDisconnection\Eloquent;
 
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteFactory;
-use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
-use App\GameCore\GameOptionValue\GameOptionValueAutostart;
-use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
-use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\GamePlay\GamePlay;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\GameCore\Player\PlayerAnonymousFactory;
-use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use App\Models\PlayerAnonymousEloquent;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteFactory;
+use MyDramGames\Core\GameOption\GameOptionConfigurationCollectionPowered;
+use MyDramGames\Core\GameOption\GameOptionConfigurationGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueAutostartGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueNumberOfPlayersGeneric;
+use MyDramGames\Core\GamePlay\GamePlay;
+use MyDramGames\Core\GamePlay\GamePlayFactory;
+use MyDramGames\Utils\Php\Collection\CollectionEngine;
 use Tests\TestCase;
 
 class GamePlayDisconnectionRepositoryEloquentTest extends TestCase
@@ -50,12 +51,21 @@ class GamePlayDisconnectionRepositoryEloquentTest extends TestCase
 
     protected function prepareGameInvite(): GameInvite
     {
-        $options = new CollectionGameOptionValueInput(
-            App::make(Collection::class),
+        $options = new GameOptionConfigurationCollectionPowered(
+            App::make(CollectionEngine::class),
             [
-                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-                'autostart' => GameOptionValueAutostart::Disabled,
-                'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
+                new GameOptionConfigurationGeneric(
+                    'numberOfPlayers',
+                    GameOptionValueNumberOfPlayersGeneric::Players002
+                ),
+                new GameOptionConfigurationGeneric(
+                    'autostart',
+                    GameOptionValueAutostartGeneric::Disabled
+                ),
+                new GameOptionConfigurationGeneric(
+                    'forfeitAfter',
+                    GameOptionValueForfeitAfterGeneric::Disabled
+                ),
             ]
         );
 
@@ -66,7 +76,7 @@ class GamePlayDisconnectionRepositoryEloquentTest extends TestCase
 
     protected function prepareGamePlay(GameInvite $invite): GamePlay
     {
-        return App::make(GamePlayAbsFactoryTicTacToe::class)->create($invite);
+        return App::make(GamePlayFactory::class)->create($invite);
     }
 
     public function testInstance(): void
