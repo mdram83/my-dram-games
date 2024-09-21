@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\GameCore\Player\Eloquent;
+namespace Tests\Feature\Extensions\Utils\Player;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
-use App\GameCore\Player\PlayerAnonymousFactoryException;
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
+use App\Extensions\Utils\Player\PlayerAnonymousFactoryException;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;

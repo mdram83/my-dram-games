@@ -1,9 +1,7 @@
 <?php
 
-namespace App\GameCore\Player\Eloquent;
+namespace App\Extensions\Utils\Player;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
-use App\GameCore\Player\PlayerAnonymousFactoryException;
 use App\GameCore\Services\HashGenerator\HashGenerator;
 use App\Models\PlayerAnonymousEloquent;
 use MyDramGames\Utils\Player\PlayerAnonymous;
@@ -18,7 +16,7 @@ class PlayerAnonymousFactoryEloquent implements PlayerAnonymousFactory
     }
 
     /**
-     * @throws PlayerAnonymousFactoryException
+     * @throws \App\Extensions\Utils\Player\PlayerAnonymousFactoryException
      */
     public function create(array $attributes = []): PlayerAnonymous
     {

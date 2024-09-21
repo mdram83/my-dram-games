@@ -1,9 +1,7 @@
 <?php
 
-namespace App\GameCore\Player\Eloquent;
+namespace App\Extensions\Utils\Player;
 
-use App\GameCore\Player\PlayerAnonymousRepository;
-use App\GameCore\Player\PlayerAnonymousRepositoryException;
 use App\Models\PlayerAnonymousEloquent;
 use MyDramGames\Utils\Player\PlayerAnonymous;
 

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Extensions\Core\GameInvite;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;

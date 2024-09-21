@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\Player;
+namespace App\Extensions\Utils\Player;
 
 use Exception;
 

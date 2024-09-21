@@ -14,8 +14,8 @@ class AppServiceProvider extends ServiceProvider
         \App\Extensions\Core\GameOption\GameOptionClassRepository::class => \App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig::class,
         \App\Extensions\Core\GameOption\GameOptionValueConverter::class => \App\Extensions\Core\GameOption\GameOptionValueConverterGeneric::class,
         \App\GameCore\Services\PremiumPass\PremiumPass::class => \App\GameCore\Services\PremiumPass\PremiumPassCore::class,
-        \App\GameCore\Player\PlayerAnonymousRepository::class => \App\GameCore\Player\Eloquent\PlayerAnonymousRepositoryEloquent::class,
-        \App\GameCore\Player\PlayerAnonymousFactory::class => \App\GameCore\Player\Eloquent\PlayerAnonymousFactoryEloquent::class,
+        \App\Extensions\Utils\Player\PlayerAnonymousRepository::class => \App\Extensions\Utils\Player\PlayerAnonymousRepositoryEloquent::class,
+        \App\Extensions\Utils\Player\PlayerAnonymousFactory::class => \App\Extensions\Utils\Player\PlayerAnonymousFactoryEloquent::class,
     ];
 
     /**

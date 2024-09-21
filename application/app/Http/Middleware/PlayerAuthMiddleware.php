@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\GameCore\Player\PlayerAnonymousRepository;
+use App\Extensions\Utils\Player\PlayerAnonymousRepository;
 use Closure;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Cookie\CookieValuePrefix;

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\GameCore\GamePlayDisconnection\Eloquent;
 
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
-use App\GameCore\Player\PlayerAnonymousFactory;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use App\Models\PlayerAnonymousEloquent;
 use App\Models\User;

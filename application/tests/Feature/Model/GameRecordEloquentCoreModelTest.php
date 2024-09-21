@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Model;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
 use App\Models\GameInviteEloquentModel;
 use App\Models\GameRecordEloquentCoreModel;
 use App\Models\PlayerAnonymousEloquent;

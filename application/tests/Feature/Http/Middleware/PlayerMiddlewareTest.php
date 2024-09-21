@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Middleware;
 
-use App\GameCore\Player\PlayerAnonymousRepository;
+use App\Extensions\Utils\Player\PlayerAnonymousRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;

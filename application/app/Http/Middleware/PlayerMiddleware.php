@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
-use App\GameCore\Player\PlayerAnonymousRepository;
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
+use App\Extensions\Utils\Player\PlayerAnonymousRepository;
 use App\GameCore\Services\HashGenerator\HashGenerator;
 use Closure;
 use Exception;

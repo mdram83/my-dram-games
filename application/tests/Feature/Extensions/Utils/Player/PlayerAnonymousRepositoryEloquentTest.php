@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\GameCore\Player\Eloquent;
+namespace Tests\Feature\Extensions\Utils\Player;
 
-use App\GameCore\Player\PlayerAnonymousFactory;
-use App\GameCore\Player\PlayerAnonymousRepository;
-use App\GameCore\Player\PlayerAnonymousRepositoryException;
+use App\Extensions\Utils\Player\PlayerAnonymousFactory;
+use App\Extensions\Utils\Player\PlayerAnonymousRepository;
+use App\Extensions\Utils\Player\PlayerAnonymousRepositoryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Tests\TestCase;
