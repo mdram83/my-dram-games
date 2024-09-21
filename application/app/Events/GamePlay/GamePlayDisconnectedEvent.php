@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\GameCore\GamePlay;
+namespace App\Events\GamePlay;
 
 use App\Broadcasting\GamePlayPlayerChannel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;
 
-class GamePlayMovedEvent implements ShouldBroadcast
+class GamePlayDisconnectedEvent implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -27,11 +27,6 @@ class GamePlayMovedEvent implements ShouldBroadcast
         $this->channelId =
             GamePlayPlayerChannel::CHANNEL_ROUTE_PREFIX
             . $this->gamePlay->getId() . '.' . $this->player->getId();
-    }
-
-    public function broadcastWith(): array
-    {
-        return ['situation' => $this->gamePlay->getSituation($this->player)];
     }
 
     public function broadcastOn(): array

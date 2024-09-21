@@ -2,8 +2,8 @@
 
 namespace Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
-use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
+use App\Events\GamePlay\GamePlayDisconnectedEvent;
+use App\Events\GamePlay\GamePlayMovedEvent;
 use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\User;

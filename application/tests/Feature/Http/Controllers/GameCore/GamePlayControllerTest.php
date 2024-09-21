@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
-use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
+use App\Events\GamePlay\GamePlayMovedEvent;
+use App\Events\GamePlay\GamePlayStoredEvent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

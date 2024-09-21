@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
+use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;

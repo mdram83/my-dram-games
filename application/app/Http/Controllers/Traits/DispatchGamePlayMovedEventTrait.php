@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Traits;
 
-use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
+use App\Events\GamePlay\GamePlayMovedEvent;
 use MyDramGames\Core\GamePlay\GamePlay;
 
 trait DispatchGamePlayMovedEventTrait

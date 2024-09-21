@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\GameCore\GamePlay;
+namespace App\Events\GamePlay;
 
 use App\Broadcasting\GameInvitePlayersChannel;
 use Illuminate\Broadcasting\InteractsWithSockets;

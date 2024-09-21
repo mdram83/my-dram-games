@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
+use App\Events\GamePlay\GamePlayDisconnectedEvent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
