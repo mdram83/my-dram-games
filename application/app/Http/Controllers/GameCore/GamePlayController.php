@@ -2,27 +2,10 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
-use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
-use App\GameCore\GameElements\GameMove\GameMove;
-use App\GameCore\GameElements\GameMove\GameMoveAbsFactoryRepository;
-use App\GameCore\GameElements\GameMove\GameMoveException;
-use App\GameCore\GameInvite\GameInviteException;
-use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
-use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
-use App\GameCore\GamePlay\GamePlayException;
-use App\GameCore\GamePlay\GamePlayRepository;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
-use App\GameCore\GamePlayStorage\GamePlayStorageException;
-use App\GameCore\GameSetup\GameSetupException;
-use App\GameCore\Services\Collection\Collection;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
+use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +15,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use MyDramGames\Utils\Exceptions\CollectionException;
+use MyDramGames\Core\Exceptions\GameBoxException;
+use MyDramGames\Core\Exceptions\GameInviteException;
+use MyDramGames\Core\Exceptions\GameMoveException;
+use MyDramGames\Core\Exceptions\GamePlayException;
+use MyDramGames\Core\Exceptions\GamePlayStorageException;
+use MyDramGames\Core\GameInvite\GameInviteRepository;
+use MyDramGames\Core\GameMove\GameMove;
+use MyDramGames\Core\GamePlay\GamePlay;
+use MyDramGames\Core\GamePlay\GamePlayFactory;
+use MyDramGames\Core\GamePlay\GamePlayRepository;
 use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -42,19 +34,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
 {
-    public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
-    public const MESSAGE_FINISHED = 'Gameplay already finished';
-    public const MESSAGE_FORFEIT_AFTER_DISABLED = 'Option disabled';
-    public const MESSAGE_FORFEIT_AFTER_EARLY = 'Not yet expired';
+    use DispatchGamePlayMovedEventTrait;
+
+    public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
+    public const string MESSAGE_FINISHED = 'Gameplay already finished';
 
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
-        readonly private GameMoveAbsFactoryRepository $gameMoveAbsFactoryRepository,
-        readonly private GamePlayDisconnectionRepository $gamePlayDisconnectionRepository,
-        readonly private GamePlayDisconnectionFactory $gamePlayDisconnectionFactory,
         readonly private GameInviteRepository $gameInviteRepository,
-        readonly private GamePlayAbsFactoryRepository $gamePlayAbsFactoryRepository,
-        readonly private Collection $collectionHandler,
+        readonly private GamePlayFactory $gamePlayFactory,
     )
     {
 
@@ -67,13 +55,12 @@ class GamePlayController extends Controller
 
             $gameInvite = $this->gameInviteRepository->getOne($request->input('gameInviteId'));
 
-            if (!$gameInvite->isPlayerAdded($player) || !$gameInvite->isHost($player)) {
+            if (!$gameInvite->isPlayer($player) || !$gameInvite->isHost($player)) {
                 DB::rollBack();
                 return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
             }
 
-            $factory = $this->gamePlayAbsFactoryRepository->getOne($gameInvite->getGameBox()->getSlug());
-            $gamePlay = $factory->create($gameInvite);
+            $gamePlay = $this->gamePlayFactory->create($gameInvite);
 
             DB::commit();
 
@@ -108,10 +95,10 @@ class GamePlayController extends Controller
                 ]);
             }
 
-            $options = $this->collectionHandler
-                ->reset($gamePlay->getGameInvite()->getGameSetup()->getAllOptions())
-                ->each(fn($item, $key) => $item->getConfiguredValue())
-                ->toArray();
+            $options = array_map(
+                fn($item) => $item->getConfiguredValue(),
+                $gamePlay->getGameInvite()->getGameSetup()->getAllOptions()->toArray()
+            );
 
             return view('play', [
                 'gamePlayId' => $gamePlayId,
@@ -170,154 +157,6 @@ class GamePlayController extends Controller
         }
     }
 
-    public function disconnect(Player $player, Request $request, int|string $gamePlayId): Response
-    {
-        try {
-            DB::beginTransaction();
-
-            $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
-            $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
-
-            if ($disconnection === null) {
-                $this->gamePlayDisconnectionFactory->create($gamePlay, $disconnectedPlayer);
-            } else {
-                $disconnection->setDisconnectedAt();
-                $disconnection->save();
-            }
-
-            GamePlayDisconnectedEvent::dispatch($gamePlay, $disconnectedPlayer);
-
-            DB::commit();
-
-            return new Response([], 200);
-
-        } catch (GamePlayStorageException|GamePlayDisconnectException) {
-            DB::rollBack();
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
-
-        } catch (ControllerException $e) {
-            DB::rollBack();
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
-        }
-    }
-
-    public function connect(Player $player, int|string $gamePlayId): Response
-    {
-        try {
-
-            DB::beginTransaction();
-
-            $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            $this
-                ->gamePlayDisconnectionRepository
-                ->getOneByGamePlayAndPlayer($gamePlay, $player)
-                ?->remove();
-
-            DB::commit();
-
-            return new Response([], 200);
-
-        } catch (GamePlayStorageException) {
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
-        }
-    }
-
-    public function forfeitAfterDisconnection(Player $player, Request $request, int|string $gamePlayId): Response
-    {
-        try {
-
-            DB::beginTransaction();
-
-            $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            $forfeitAfterOptionValue = $gamePlay
-                ->getGameInvite()
-                ->getGameSetup()
-                ->getOption('forfeitAfter')
-                ->getConfiguredValue();
-
-            if ($forfeitAfterOptionValue === GameOptionValueForfeitAfter::Disabled) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_DISABLED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
-            $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
-
-            if ($disconnection === null) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
-
-            $gamePlay->handleForfeit($disconnectedPlayer);
-
-            $this->dispatchGamePlayMovedEvent($gamePlay);
-
-            DB::commit();
-
-            return new Response([], 200);
-
-        } catch (GamePlayStorageException) {
-            DB::rollBack();
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
-
-        } catch (ControllerException|GameSetupException $e) {
-            DB::rollBack();
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-
-        } catch (Exception) {
-            DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
-        }
-
-    }
-
     /**
      * @throws ControllerException
      * @throws ValidationException
@@ -334,33 +173,11 @@ class GamePlayController extends Controller
         return $validator->validated()['move'];
     }
 
+    /**
+     * @throws GameBoxException
+     */
     private function getMove(Player $player, GamePlay $gamePlay, array $inputs): GameMove
     {
-        return $this->gameMoveAbsFactoryRepository
-            ->getOne($gamePlay->getGameInvite()->getGameBox()->getSlug())
-            ->create($player, $inputs);
-    }
-
-    /**
-     * @throws ControllerException|CollectionException
-     */
-    private function getValidatedDisconnectedPlayer(Request $request, GamePlay $gamePlay): Player
-    {
-        $singlePlayerCollection = $gamePlay
-            ->getPlayers()
-            ->filter(fn($item) => $item->getName() === $request->get('disconnected'));
-
-        if ($singlePlayerCollection->count() === 0) {
-            throw new ControllerException(static::MESSAGE_INCORRECT_INPUTS);
-        }
-
-        return $singlePlayerCollection->pullFirst();
-    }
-
-    private function dispatchGamePlayMovedEvent(GamePlay $gamePlay): void
-    {
-        foreach ($gamePlay->getGameInvite()->getPlayers() as $player) {
-            GamePlayMovedEvent::dispatch($gamePlay, $player);
-        }
+        return ($gamePlay->getGameInvite()->getGameBox()->getGameMoveFactoryClassname())::create($player, $inputs);
     }
 }

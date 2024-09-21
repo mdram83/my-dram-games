@@ -2,28 +2,26 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\Events\GameCore\GamePlay\GamePlayDisconnectedEvent;
 use App\Events\GameCore\GamePlay\GamePlayMovedEvent;
 use App\Events\GameCore\GamePlay\GamePlayStoredEvent;
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteFactory;
-use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
-use App\GameCore\GameOptionValue\GameOptionValueAutostart;
-use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
-use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
-use App\GameCore\GamePlay\GamePlayRepository;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
 use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
-use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Models\User;
-use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteFactory;
+use MyDramGames\Core\GameOption\GameOptionConfigurationCollectionPowered;
+use MyDramGames\Core\GameOption\GameOptionConfigurationGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueAutostartGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueNumberOfPlayersGeneric;
+use MyDramGames\Core\GamePlay\GamePlay;
+use MyDramGames\Core\GamePlay\GamePlayFactory;
+use MyDramGames\Games\TicTacToe\Extensions\Core\GameMoveTicTacToe;
+use MyDramGames\Utils\Php\Collection\Collection;
+use MyDramGames\Utils\Php\Collection\CollectionEngine;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -54,19 +52,25 @@ class GamePlayControllerTest extends TestCase
         $this->notPlayer = User::factory()->create();
 
         $this->invite = $this->prepareGameInvite();
-        $this->disconnectionRepository = App::make(GamePlayDisconnectionRepository::class);
     }
 
     public function prepareGameInvite(bool $complete = true, $forfeitAfter = false): GameInvite
     {
-        $options = new CollectionGameOptionValueInput(
-            App::make(Collection::class),
+        $options = new GameOptionConfigurationCollectionPowered(
+            App::make(CollectionEngine::class),
             [
-                'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-                'autostart' => GameOptionValueAutostart::Disabled,
-                'forfeitAfter' => $forfeitAfter
-                    ? GameOptionValueForfeitAfter::Minute
-                    : GameOptionValueForfeitAfter::Disabled,
+                new GameOptionConfigurationGeneric(
+                    'numberOfPlayers',
+                    GameOptionValueNumberOfPlayersGeneric::Players002
+                ),
+                new GameOptionConfigurationGeneric(
+                    'autostart',
+                    GameOptionValueAutostartGeneric::Disabled
+                ),
+                new GameOptionConfigurationGeneric(
+                    'forfeitAfter',
+                    GameOptionValueForfeitAfterGeneric::Minute
+                ),
             ]
         );
 
@@ -81,7 +85,7 @@ class GamePlayControllerTest extends TestCase
 
     protected function createGamePlay(GameInvite $invite): GamePlay
     {
-        return App::make(GamePlayAbsFactoryRepository::class)->getOne('tic-tac-toe')->create($invite);
+        return App::make(GamePlayFactory::class)->create($invite);
     }
 
     protected function getStoreResponse(Player $player, GameInvite $invite): TestResponse
@@ -108,38 +112,6 @@ class GamePlayControllerTest extends TestCase
                 'POST',
                 route($this->moveRouteName, ['gamePlayId' => $gamePlayId]),
                 $payload === true ? ['move' => ['fieldKey' => $fieldKey]] : $payload
-            );
-    }
-
-    protected function getDisconnectResponse(Player $player, int|string $gamePlayId, Player $disconnected, bool|array $payload = true): TestResponse
-    {
-        return $this
-            ->actingAs($player)
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json(
-                'POST',
-                route($this->disconnectRouteName, ['gamePlayId' => $gamePlayId]),
-                $payload === true ? ['disconnected' => $disconnected->getName()] : $payload
-            );
-    }
-
-    protected function getConnectResponse(Player $player, int|string $gamePlayId): TestResponse
-    {
-        return $this
-            ->actingAs($player)
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json('GET', route($this->connectRouteName, ['gamePlayId' => $gamePlayId]));
-    }
-
-    protected function getDisconnectForfeitResponse(Player $player, int|string $gamePlayId, Player $requestedPlayer, bool|array $payload = true): TestResponse
-    {
-        return $this
-            ->actingAs($player)
-            ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->json(
-                'POST',
-                route($this->requestForfeitRouteName, ['gamePlayId' => $gamePlayId]),
-                $payload === true ? ['disconnected' => $requestedPlayer->getName()] : $payload
             );
     }
 
@@ -237,8 +209,8 @@ class GamePlayControllerTest extends TestCase
             'name' => $play->getGameInvite()->getGameBox()->getName(),
             'host' => $play->getGameInvite()->getHost()->getName(),
             'options' => App::make(Collection::class)
-                ->reset($play->getGameInvite()->getGameSetup()->getAllOptions())
-                ->each(fn($item, $key) => $item->getConfiguredValue())
+                ->reset($play->getGameInvite()->getGameSetup()->getAllOptions()->toArray())
+                ->each(fn($item) => $item->getConfiguredValue())
                 ->toArray(),
         ]]);
         $response->assertViewHas(['situation' => $play->getSituation($this->player)]);
@@ -344,254 +316,5 @@ class GamePlayControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_FOUND);
         Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testDisconnectWrongGameIdError(): void
-    {
-        Event::fake();
-        $response = $this->getDisconnectResponse($this->host, 'some-wrong-id-123T', $this->player);
-
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectByNotPlayerError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->notPlayer, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectForNotParticipantError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->notPlayer);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectMissingPayloadError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->notPlayer, []);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectIncorrectPayloadError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->notPlayer, ['sth' => 'wrong']);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectFinishedGameError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $play->handleForfeit($this->player);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectFirstTime(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertNotNull($this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player));
-        Event::assertDispatched(GamePlayDisconnectedEvent::class);
-    }
-
-    public function testDisconnectSecondTime(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-        $disconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
-
-        sleep(1);
-
-        $nextResponse = $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-        $nextDisconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $nextResponse->assertStatus(Response::HTTP_OK);
-        $this->assertNotNull($disconnection);
-        $this->assertNotNull($nextDisconnection);
-        $this->assertEquals($disconnection->id, $nextDisconnection->id);
-        $this->assertNotEquals($disconnection->disconnected_at, $nextDisconnection->disconnected_at);
-        Event::assertDispatchedTimes(GamePlayDisconnectedEvent::class, 2);
-    }
-
-    public function testConnectWrongGameIdError(): void
-    {
-        $response = $this->getConnectResponse($this->host, 'some-wrong-id-123T');
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-    }
-
-    public function testConnectNotPlayerError(): void
-    {
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getConnectResponse($this->notPlayer, $play->getId());
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testConnectFinishedGameError(): void
-    {
-        $play = $this->createGamePlay($this->invite);
-        $play->handleForfeit($this->player);
-        $response = $this->getConnectResponse($this->host, $play->getId());
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-    }
-
-    public function testConnectAfterDisconnection(): void
-    {
-        $play = $this->createGamePlay($this->invite);
-        $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-        $disconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
-        $response = $this->getConnectResponse($this->player, $play->getId());
-        $refreshedDisconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertNotNull($disconnection);
-        $this->assertNull($refreshedDisconnection);
-    }
-
-    public function testConnectWithoutDisconnection(): void
-    {
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getConnectResponse($this->player, $play->getId());
-        $disconnection = $this->disconnectionRepository->getOneByGamePlayAndPlayer($play, $this->player);
-
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertNull($disconnection);
-    }
-
-    public function testRequestForfeitWrongGameError(): void
-    {
-        Event::fake();
-        $response = $this->getDisconnectForfeitResponse($this->host, 'some-wrong-id-123T', $this->player);
-
-        $response->assertStatus(Response::HTTP_NOT_FOUND);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitForNotPlayerError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->notPlayer);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitByNotPlayerError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectForfeitResponse($this->notPlayer, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitMissingPayloadError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player, []);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitWrongPayloadError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player, ['sth' => 'wrong']);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitFinishedGameplayError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $play->handleForfeit($this->player);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitOptionDisabledError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->invite);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitTooSoonError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->prepareGameInvite(true, true));
-        $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitWithoutDisconnectionError(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->prepareGameInvite(true, true));
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        Event::assertNotDispatched(GamePlayMovedEvent::class);
-    }
-
-    public function testRequestForfeitOk(): void
-    {
-        Event::fake();
-        $play = $this->createGamePlay($this->prepareGameInvite(true, true));
-        $this->getDisconnectResponse($this->host, $play->getId(), $this->player);
-
-        $disconnection = App::make(GamePlayDisconnectionRepositoryEloquent::class)
-            ->getOneByGamePlayAndPlayer($play, $this->player);
-        $disconnection->disconnected_at = (new DateTimeImmutable())->modify('-2 minutes');
-        $disconnection->save();
-
-        $response = $this->getDisconnectForfeitResponse($this->host, $play->getId(), $this->player);
-
-        $loadedPlay = App::make(GamePlayRepository::class)->getOne($play->getId());
-
-        $this->assertTrue($loadedPlay->isFinished());
-        $response->assertStatus(Response::HTTP_OK);
-        Event::assertDispatched(GamePlayMovedEvent::class);
     }
 }

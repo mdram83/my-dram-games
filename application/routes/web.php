@@ -4,6 +4,7 @@ use App\Http\Controllers\GameCore\GameInviteController;
 use App\Http\Controllers\GameCore\GameBoxAjaxController;
 use App\Http\Controllers\GameCore\GameBoxController;
 use App\Http\Controllers\GameCore\GamePlayController;
+use App\Http\Controllers\GameCore\GamePlayDisconnectionController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RefreshCsrfTokenController;
@@ -30,13 +31,13 @@ Route::middleware(['ajax', 'player'])->group(function() {
     Route::post('/ajax/gameplay/{gamePlayId}', [GamePlayController::class, 'move'])
         ->name('ajax.gameplay.move');
 
-    Route::post('/ajax/gameplay/disconnect/{gamePlayId}', [GamePlayController::class, 'disconnect'])
+    Route::post('/ajax/gameplay/disconnect/{gamePlayId}', [GamePlayDisconnectionController::class, 'disconnect'])
         ->name('ajax.gameplay.disconnect');
 
-    Route::get('/ajax/gameplay/connect/{gamePlayId}', [GamePlayController::class, 'connect'])
+    Route::get('/ajax/gameplay/connect/{gamePlayId}', [GamePlayDisconnectionController::class, 'connect'])
         ->name('ajax.gameplay.connect');
 
-    Route::post('/ajax/gameplay/disconnect-forfeit/{gamePlayId}', [GamePlayController::class, 'forfeitAfterDisconnection'])
+    Route::post('/ajax/gameplay/disconnect-forfeit/{gamePlayId}', [GamePlayDisconnectionController::class, 'forfeitAfterDisconnection'])
         ->name('ajax.gameplay.disconnect-forfeit');
 });
 
