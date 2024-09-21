@@ -1,18 +1,11 @@
 <?php
 
-use App\GameCore\GameElements\GameMove\PhpConfig\GameMoveAbsFactoryRepositoryPhpConfig;
-use App\GameCore\GamePlay\PhpConfig\GamePlayAbsFactoryRepositoryPhpConfig;
-use App\GameCore\GamePlay\PhpConfig\GamePlayAbsRepositoryPhpConfig;
-use App\GameCore\GameSetup\PhpConfig\GameSetupAbsFactoryRepositoryPhpConfig;
-use App\Games\Thousand\GameMoveAbsFactoryThousand;
-use App\Games\Thousand\GamePlayAbsFactoryThousand;
-use App\Games\Thousand\GamePlayThousand;
-use App\Games\Thousand\GameSetupAbsFactoryThousand;
-use App\Games\TicTacToe\GameMoveAbsFactoryTicTacToe;
-use App\Games\TicTacToe\GameMoveTicTacToe;
-use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
-use App\Games\TicTacToe\GamePlayTicTacToe;
-use App\Games\TicTacToe\GameSetupAbsFactoryTicTacToe;
+use MyDramGames\Games\Thousand\Extensions\Core\GameMove\GameMoveFactoryThousand;
+use MyDramGames\Games\Thousand\Extensions\Core\GamePlay\GamePlayThousand;
+use MyDramGames\Games\Thousand\Extensions\Core\GameSetup\GameSetupThousand;
+use MyDramGames\Games\TicTacToe\Extensions\Core\GameMoveTicTacToe;
+use MyDramGames\Games\TicTacToe\Extensions\Core\GamePlayTicTacToe;
+use MyDramGames\Games\TicTacToe\Extensions\Core\GameSetupTicTacToe;
 
 if (config('app.env') === 'production') {
 
@@ -28,13 +21,9 @@ if (config('app.env') === 'production') {
                 'minPlayerAge' => 4,
                 'isActive' => true,
                 'isPremium' => false,
-                'gameSetupClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GameSetupTicTacToe::class,
-                'gamePlayClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GamePlayTicTacToe::class,
+                'gameSetupClassname' => GameSetupTicTacToe::class,
+                'gamePlayClassname' => GamePlayTicTacToe::class,
                 'gameMoveFactoryClassname' => GameMoveTicTacToe::class,
-                GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
-                GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
-                GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
-                GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
             ],
 
             'thousand' => [
@@ -44,13 +33,9 @@ if (config('app.env') === 'production') {
                 'minPlayerAge' => 10,
                 'isActive' => true,
                 'isPremium' => false,
-                'gameSetupClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GameSetup\GameSetupThousand::class,
-                'gamePlayClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GamePlay\GamePlayThousand::class,
-                'gameMoveFactoryClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GameMove\GameMoveFactoryThousand::class,
-                GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
-                GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryThousand::class,
-                GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayThousand::class,
-                GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryThousand::class,
+                'gameSetupClassname' => GameSetupThousand::class,
+                'gamePlayClassname' => GamePlayThousand::class,
+                'gameMoveFactoryClassname' => GameMoveFactoryThousand::class,
             ],
         ],
     ];
@@ -68,13 +53,9 @@ return [
             'minPlayerAge' => 4,
             'isActive' => true,
             'isPremium' => false,
-            'gameSetupClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GameSetupTicTacToe::class,
-            'gamePlayClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GamePlayTicTacToe::class,
+            'gameSetupClassname' => GameSetupTicTacToe::class,
+            'gamePlayClassname' => GamePlayTicTacToe::class,
             'gameMoveFactoryClassname' => GameMoveTicTacToe::class,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
-            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
-            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
         ],
 
         'thousand' => [
@@ -84,13 +65,9 @@ return [
             'minPlayerAge' => 10,
             'isActive' => true,
             'isPremium' => true,
-            'gameSetupClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GameSetup\GameSetupThousand::class,
-            'gamePlayClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GamePlay\GamePlayThousand::class,
-            'gameMoveFactoryClassname' => \MyDramGames\Games\Thousand\Extensions\Core\GameMove\GameMoveFactoryThousand::class,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryThousand::class,
-            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryThousand::class,
-            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayThousand::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryThousand::class,
+            'gameSetupClassname' => GameSetupThousand::class,
+            'gamePlayClassname' => GamePlayThousand::class,
+            'gameMoveFactoryClassname' => GameMoveFactoryThousand::class,
         ],
 
         'turbo' => [
@@ -100,13 +77,9 @@ return [
             'minPlayerAge' => 10,
             'isActive' => false,
             'isPremium' => true,
-            'gameSetupClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GameSetupTicTacToe::class,
-            'gamePlayClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GamePlayTicTacToe::class,
+            'gameSetupClassname' => GameSetupTicTacToe::class,
+            'gamePlayClassname' => GamePlayTicTacToe::class,
             'gameMoveFactoryClassname' => GameMoveTicTacToe::class,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
-            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
-            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
         ],
 
         'netrunners' => [
@@ -116,13 +89,9 @@ return [
             'minPlayerAge' => 10,
             'isActive' => false,
             'isPremium' => true,
-            'gameSetupClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GameSetupTicTacToe::class,
-            'gamePlayClassname' => \MyDramGames\Games\TicTacToe\Extensions\Core\GamePlayTicTacToe::class,
+            'gameSetupClassname' => GameSetupTicTacToe::class,
+            'gamePlayClassname' => GamePlayTicTacToe::class,
             'gameMoveFactoryClassname' => GameMoveTicTacToe::class,
-            GameSetupAbsFactoryRepositoryPhpConfig::GAME_SETUP_ABS_FACTORY_KEY => GameSetupAbsFactoryTicTacToe::class,
-            GamePlayAbsFactoryRepositoryPhpConfig::GAME_PLAY_ABS_FACTORY_KEY => GamePlayAbsFactoryTicTacToe::class,
-            GamePlayAbsRepositoryPhpConfig::GAME_PLAY_ABS_CLASS_KEY => GamePlayTicTacToe::class,
-            GameMoveAbsFactoryRepositoryPhpConfig::GAME_MOVE_ABS_FACTORY_KEY => GameMoveAbsFactoryTicTacToe::class,
         ],
 
     ],
