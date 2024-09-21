@@ -3,20 +3,21 @@
 namespace Tests\Feature\Broadcasting;
 
 use App\Broadcasting\GamePlayPlayersChannel;
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteFactory;
-use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
-use App\GameCore\GameOptionValue\GameOptionValueAutostart;
-use App\GameCore\GameOptionValue\GameOptionValueForfeitAfter;
-use App\GameCore\GameOptionValue\GameOptionValueNumberOfPlayers;
-use App\GameCore\GamePlay\GamePlay;
-use App\GameCore\Services\Collection\Collection;
-use App\Games\TicTacToe\GamePlayAbsFactoryTicTacToe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Testing\TestResponse;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteFactory;
+use MyDramGames\Core\GameOption\GameOptionConfigurationCollectionPowered;
+use MyDramGames\Core\GameOption\GameOptionConfigurationGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueAutostartGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
+use MyDramGames\Core\GameOption\Values\GameOptionValueNumberOfPlayersGeneric;
+use MyDramGames\Core\GamePlay\GamePlay;
+use MyDramGames\Core\GamePlay\GamePlayFactory;
+use MyDramGames\Utils\Php\Collection\CollectionEngine;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -43,19 +44,28 @@ class GamePlayPlayersChannelTest extends TestCase
 
         $this->gameInvite = App::make(GameInviteFactory::class)->create(
             'tic-tac-toe',
-            new CollectionGameOptionValueInput(
-                App::make(Collection::class),
+            new GameOptionConfigurationCollectionPowered(
+                App::make(CollectionEngine::class),
                 [
-                    'numberOfPlayers' => GameOptionValueNumberOfPlayers::Players002,
-                    'autostart' => GameOptionValueAutostart::Disabled,
-                    'forfeitAfter' => GameOptionValueForfeitAfter::Disabled,
+                    new GameOptionConfigurationGeneric(
+                        'numberOfPlayers',
+                        GameOptionValueNumberOfPlayersGeneric::Players002
+                    ),
+                    new GameOptionConfigurationGeneric(
+                        'autostart',
+                        GameOptionValueAutostartGeneric::Disabled
+                    ),
+                    new GameOptionConfigurationGeneric(
+                        'forfeitAfter',
+                        GameOptionValueForfeitAfterGeneric::Disabled
+                    ),
                 ]
             ),
             $this->host
         );
         $this->gameInvite->addPlayer($this->player);
 
-        $this->gamePlay = App::make(GamePlayAbsFactoryTicTacToe::class)->create($this->gameInvite);
+        $this->gamePlay = App::make(GamePlayFactory::class)->create($this->gameInvite);
     }
 
     public function getResponse(

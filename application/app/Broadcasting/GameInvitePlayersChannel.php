@@ -2,15 +2,15 @@
 
 namespace App\Broadcasting;
 
-use App\GameCore\GameInvite\GameInviteRepository;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\App;
+use MyDramGames\Core\GameInvite\GameInviteRepository;
 use MyDramGames\Utils\Player\Player;
 
 class GameInvitePlayersChannel
 {
-    public const CHANNEL_ROUTE_PREFIX = 'game-invite-players.';
-    public const CHANNEL_ROUTE_PARAM = '{gameId}';
+    public const string CHANNEL_ROUTE_PREFIX = 'game-invite-players.';
+    public const string CHANNEL_ROUTE_PARAM = '{gameId}';
 
     public static function getRouteName(): string
     {
@@ -21,7 +21,7 @@ class GameInvitePlayersChannel
     {
         $gameInvite = App::make(GameInviteRepository::class)->getOne($gameInviteId);
 
-        if ($gameInvite->isPlayerAdded($player)) {
+        if ($gameInvite->isPlayer($player)) {
             return ['name' => $player->getName()];
         }
 
