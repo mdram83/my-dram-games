@@ -272,7 +272,7 @@ class GameInviteEloquentTest extends TestCase
             'id' => $this->gameInvite->getId(),
             'host' => ['name' => $this->gameInvite->getHost()->getName()],
             'options' => array_map(fn($option) => $option->getConfiguredValue(), $this->gameInvite->getGameSetup()->getAllOptions()->toArray()),
-            'players' => array_map(fn($player) => ['name' => $player->getName()], $this->gameInvite->getPlayers()->toArray()),
+            'players' => array_values(array_map(fn($player) => ['name' => $player->getName()], $this->gameInvite->getPlayers()->toArray())),
         ];
 
         var_dump($this->gameInvite->toArray());

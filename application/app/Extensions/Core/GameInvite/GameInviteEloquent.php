@@ -205,7 +205,7 @@ class GameInviteEloquent implements GameInvite
             'id' => $this->getId(),
             'host' => ['name' => $this->getHost()->getName()],
             'options' => array_map(fn($option) => $option->getConfiguredValue(), $this->getGameSetup()->getAllOptions()->toArray()),
-            'players' => array_map(fn($player) => ['name' => $player->getName()], $this->getPlayers()->toArray()),
+            'players' => array_values(array_map(fn($player) => ['name' => $player->getName()], $this->getPlayers()->toArray())),
         ];
     }
 

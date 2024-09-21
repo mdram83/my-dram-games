@@ -2,19 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\GameCore\GameBox\GameBoxException;
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteException;
-use App\GameCore\GameInvite\GameInviteFactory;
-use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GameOptionValue\GameOptionValueException;
-use App\GameCore\GamePlay\GamePlayRepository;
-use App\GameCore\GameRecord\GameRecordRepository;
-use App\GameCore\GameSetup\GameSetupException;
-use App\GameCore\Services\Collection\Collection;
-use App\GameCore\Services\Collection\CollectionException;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
@@ -30,16 +18,28 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use MyDramGames\Core\Exceptions\GameBoxException;
+use MyDramGames\Core\Exceptions\GameInviteException;
+use MyDramGames\Core\Exceptions\GameOptionValueException;
+use MyDramGames\Core\Exceptions\GameSetupException;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteFactory;
+use MyDramGames\Core\GameInvite\GameInviteRepository;
+use MyDramGames\Core\GameOption\GameOptionConfiguration;
+use MyDramGames\Core\GameOption\GameOptionConfigurationCollection;
+use MyDramGames\Core\GamePlay\GamePlayRepository;
+use MyDramGames\Core\GameRecord\GameRecordRepository;
+use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GameInviteController extends Controller
 {
-    public const MESSAGE_PLAYER_JOINED = 'You have joined the game!';
-    public const MESSAGE_PLAYER_BACK = 'Welcome back!';
-    public const MESSAGE_REDIRECT_TITLE = 'Join the game!';
-    public const MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
+    public const string MESSAGE_PLAYER_JOINED = 'You have joined the game!';
+    public const string MESSAGE_PLAYER_BACK = 'Welcome back!';
+    public const string MESSAGE_REDIRECT_TITLE = 'Join the game!';
+    public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
     public function __construct(readonly private PremiumPass $premiumPass)
     {
@@ -50,10 +50,12 @@ class GameInviteController extends Controller
         Request $request,
         GameInviteFactory $factory,
         Player $player,
-        GameOptionValueConverter $converter): Response
+        GameOptionValueConverter $converter,
+        GameOptionConfigurationCollection $configurations,
+    ): Response
     {
         try {
-            $inputs = $this->getValidatedCastedStoreInputs($request, $converter);
+            $inputs = $this->getValidatedCastedStoreInputs($request, $converter, $configurations);
 
             $this->premiumPass->validate($inputs['slug'], $player);
 
@@ -71,7 +73,6 @@ class GameInviteController extends Controller
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_FORBIDDEN);
 
         }  catch (GameSetupException|GameBoxException|GameInviteException $e) {
-            DB::rollBack();
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
         } catch (Exception) {
@@ -103,7 +104,7 @@ class GameInviteController extends Controller
 
             $this->premiumPass->validate($gameInvite->getGameBox()->getSlug(), $player);
 
-            if (!$gameInvite->isPlayerAdded($player)) {
+            if (!$gameInvite->isPlayer($player)) {
                 $gameInvite->addPlayer($player);
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
@@ -128,7 +129,11 @@ class GameInviteController extends Controller
     /**
      * @throws ControllerException|ValidationException
      */
-    private function getValidatedCastedStoreInputs(Request $request, GameOptionValueConverter $converter): array
+    private function getValidatedCastedStoreInputs(
+        Request $request,
+        GameOptionValueConverter $converter,
+        GameOptionConfigurationCollection $configurations,
+    ): array
     {
         $validator = Validator::make($request->all(), [
             'slug' => 'required|string|max:255',
@@ -147,17 +152,19 @@ class GameInviteController extends Controller
             'options' => array_merge($request->get('options'), $validated['options']),
         ];
 
-        $options = new CollectionGameOptionValueInput(App::make(Collection::class));
-
         try {
+            $configurations->reset();
             foreach ($inputs['options'] as $key => $value) {
-                $options->add($converter->convert($value, $key), $key);
+                $configuration = App::makeWith(GameOptionConfiguration::class, [
+                    'optionKey' => $key, 'optionValue' => $converter->convert($value, $key)
+                ]);
+                $configurations->add($configuration);
             }
         } catch (GameOptionValueException|CollectionException $e) {
             throw new ControllerException(json_encode(['message' => $e->getMessage()]));
         }
 
-        $inputs['options'] = $options;
+        $inputs['options'] = $configurations;
 
         return $inputs;
     }

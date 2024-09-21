@@ -2,26 +2,25 @@
 
 namespace Tests\Feature\Http\Controllers\GameCore;
 
-use App\GameCore\GameBox\GameBox;
-use App\GameCore\GameBox\GameBoxRepository;
-use App\GameCore\GameInvite\Eloquent\GameInviteFactoryEloquent;
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GameInvite\GameInviteException;
-use App\GameCore\GameInvite\GameInviteRepository;
-use App\GameCore\GameOptionValue\CollectionGameOptionValueInput;
+use App\Extensions\Core\GameInvite\GameInviteFactoryEloquent;
 use App\GameCore\GameOptionValue\GameOptionValueConverter;
-use App\GameCore\GamePlay\GamePlayAbsFactoryRepository;
-use App\GameCore\Services\Collection\Collection;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
-use App\Games\Thousand\GameOptionValueThousandBarrelPoints;
-use App\Games\Thousand\GameOptionValueThousandNumberOfBombs;
-use App\Games\Thousand\GameOptionValueThousandReDealConditions;
-use App\Games\TicTacToe\GameMoveTicTacToe;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Testing\TestResponse;
+use MyDramGames\Core\Exceptions\GameInviteException;
+use MyDramGames\Core\GameBox\GameBox;
+use MyDramGames\Core\GameBox\GameBoxRepository;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GameInvite\GameInviteRepository;
+use MyDramGames\Core\GameOption\GameOptionConfigurationCollection;
+use MyDramGames\Core\GameOption\GameOptionConfigurationGeneric;
+use MyDramGames\Core\GamePlay\GamePlayFactory;
+use MyDramGames\Games\Thousand\Extensions\Core\GameOption\Values\GameOptionValueThousandBarrelPointsGeneric;
+use MyDramGames\Games\Thousand\Extensions\Core\GameOption\Values\GameOptionValueThousandNumberOfBombsGeneric;
+use MyDramGames\Games\TicTacToe\Extensions\Core\GameMoveTicTacToe;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -105,9 +104,8 @@ class GameInviteControllerTest extends TestCase
                 'numberOfPlayers' => $numberOfPlayers,
                 'autostart' => $this->options['autostart'],
                 'forfeitAfter' => '0',
-                'thousand-barrel-points' => GameOptionValueThousandBarrelPoints::Disabled->getValue(),
-                'thousand-number-of-bombs' => GameOptionValueThousandNumberOfBombs::One->getValue(),
-                'thousand-re-deal-conditions' => GameOptionValueThousandReDealConditions::Disabled->getValue(),
+                'thousand-barrel-points' => GameOptionValueThousandBarrelPointsGeneric::Disabled->getValue(),
+                'thousand-number-of-bombs' => GameOptionValueThousandNumberOfBombsGeneric::One->getValue(),
             ],
         ]));
     }
@@ -175,7 +173,7 @@ class GameInviteControllerTest extends TestCase
     {
         $maxNumberOfPlayers = max(array_map(
             fn($optionValue) => $optionValue->value,
-            $this->gameBox->getGameSetup()->getNumberOfPlayers()->getAvailableValues()
+            $this->gameBox->getGameSetup()->getNumberOfPlayers()->getAvailableValues()->toArray()
         ));
         $response = $this->getStoreResponse(numberOfPlayers: $maxNumberOfPlayers + 1);
 
@@ -207,9 +205,12 @@ class GameInviteControllerTest extends TestCase
 
     public function testJoinGuestReceiveOkResponse(): void
     {
-        $options = new CollectionGameOptionValueInput(App::make(Collection::class));
+        $options = App::make(GameOptionConfigurationCollection::class);
         foreach ($this->options as $key => $value) {
-            $options->add(App::make(GameOptionValueConverter::class)->convert($value, $key), $key);
+            $options->add(new GameOptionConfigurationGeneric(
+                $key,
+                App::make(GameOptionValueConverter::class)->convert($value, $key))
+            );
         }
 
         $gameInvite = App::make(GameInviteFactoryEloquent::class)
@@ -285,8 +286,8 @@ class GameInviteControllerTest extends TestCase
     {
         $gameInvite = $this->getGameInvite();
         $gameInvite->addPlayer($this->playerJoin);
-        $factory = App::make(GamePlayAbsFactoryRepository::class)->getOne($gameInvite->getGameBox()->getSlug());
-        $play = $factory->create($gameInvite);
+        $factory = App::make(GamePlayFactory::class);
+        $play = $factory->create($gameInvite->getGameBox()->getGamePlayClassname(), $gameInvite);
 
         $gameInviteId = $gameInvite->getId();
         $response = $this->getJoinResponse(gameInviteId: $gameInviteId);
@@ -305,8 +306,9 @@ class GameInviteControllerTest extends TestCase
     {
         $gameInvite = $this->getGameInvite();
         $gameInvite->addPlayer($this->playerJoin);
-        $factory = App::make(GamePlayAbsFactoryRepository::class)->getOne($gameInvite->getGameBox()->getSlug());
-        $play = $factory->create($gameInvite);
+        $factory = App::make(GamePlayFactory::class);
+        $play = $factory->create($gameInvite->getGameBox()->getGamePlayClassname(), $gameInvite);
+
         $play->handleMove(new GameMoveTicTacToe($this->playerHost, 1));
         $play->handleMove(new GameMoveTicTacToe($this->playerJoin, 4));
         $play->handleMove(new GameMoveTicTacToe($this->playerHost, 2));
