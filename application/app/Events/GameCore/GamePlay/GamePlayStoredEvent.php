@@ -3,13 +3,13 @@
 namespace App\Events\GameCore\GamePlay;
 
 use App\Broadcasting\GameInvitePlayersChannel;
-use App\GameCore\GameInvite\GameInvite;
-use App\GameCore\GamePlay\GamePlay;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use MyDramGames\Core\GameInvite\GameInvite;
+use MyDramGames\Core\GamePlay\GamePlay;
 
 class GamePlayStoredEvent implements ShouldBroadcast
 {

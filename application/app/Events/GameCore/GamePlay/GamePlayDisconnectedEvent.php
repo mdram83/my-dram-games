@@ -3,12 +3,12 @@
 namespace App\Events\GameCore\GamePlay;
 
 use App\Broadcasting\GamePlayPlayerChannel;
-use App\GameCore\GamePlay\GamePlay;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectedEvent implements ShouldBroadcast
