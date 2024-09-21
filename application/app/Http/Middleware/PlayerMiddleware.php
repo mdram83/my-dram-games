@@ -17,8 +17,16 @@ use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class PlayerMiddleware
+readonly class PlayerMiddleware
 {
+    public function __construct(
+        private PlayerAnonymousFactory $playerFactory,
+        private PlayerAnonymousRepository $playerRepository,
+    )
+    {
+
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -40,10 +48,9 @@ class PlayerMiddleware
 
             try {
 
-                $repository = App::make(PlayerAnonymousRepository::class);
                 $hash = Cookie::get($cookieName);
 
-                if (isset($hash) && $player = $repository->getOne($hash)) {
+                if (isset($hash) && $player = $this->playerRepository->getOne($hash)) {
 
                     $player->touch();
 
@@ -51,8 +58,8 @@ class PlayerMiddleware
 
                     $key = session()->getId();
                     $player =
-                        $repository->getOne(App::make(HashGenerator::class)->generateHash($key))
-                        ?? App::make(PlayerAnonymousFactory::class)->create(['key' => $key]);
+                        $this->playerRepository->getOne(App::make(HashGenerator::class)->generateHash($key))
+                        ?? $this->playerFactory->create(['key' => $key]);
                 }
 
             } catch (Exception $e) {
