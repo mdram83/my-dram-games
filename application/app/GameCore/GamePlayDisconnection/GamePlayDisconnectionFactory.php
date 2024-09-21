@@ -2,7 +2,7 @@
 
 namespace App\GameCore\GamePlayDisconnection;
 
-use App\GameCore\GamePlay\GamePlay;
+use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;
 
 interface GamePlayDisconnectionFactory
