@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\Extensions\Core\GameInvite\GameInviteFactoryEloquent;
 use App\Extensions\Core\GameOption\GameOptionValueConverter;
-use App\GameCore\Services\PremiumPass\PremiumPassException;
+use App\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

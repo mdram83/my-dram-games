@@ -3,8 +3,8 @@
 namespace Tests\Feature\Model;
 
 use App\Extensions\Utils\Player\PlayerAnonymousFactory;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
+use App\Services\GamePlayDisconnection\GamePlayDisconnection;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use App\Models\PlayerAnonymousEloquent;
 use App\Models\User;

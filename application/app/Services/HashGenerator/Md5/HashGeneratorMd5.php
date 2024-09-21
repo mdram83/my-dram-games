@@ -1,9 +1,9 @@
 <?php
 
-namespace App\GameCore\Services\HashGenerator\Md5;
+namespace App\Services\HashGenerator\Md5;
 
-use App\GameCore\Services\HashGenerator\HashGenerator;
-use App\GameCore\Services\HashGenerator\HashGeneratorException;
+use App\Services\HashGenerator\HashGenerator;
+use App\Services\HashGenerator\HashGeneratorException;
 
 class HashGeneratorMd5 implements HashGenerator
 {

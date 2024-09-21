@@ -1,9 +1,9 @@
 <?php
 
-namespace App\GameCore\GamePlayDisconnection\Eloquent;
+namespace App\Services\GamePlayDisconnection\Eloquent;
 
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
+use App\Services\GamePlayDisconnection\GamePlayDisconnection;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;

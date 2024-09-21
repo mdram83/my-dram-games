@@ -7,13 +7,14 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     public array $bindings = [
-        \App\GameCore\Services\HashGenerator\HashGenerator::class => \App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5::class,
-        \App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory::class => \App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent::class,
-        \App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository::class => \App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent::class,
+
+        \App\Services\HashGenerator\HashGenerator::class => \App\Services\HashGenerator\Md5\HashGeneratorMd5::class,
+        \App\Services\PremiumPass\PremiumPass::class => \App\Services\PremiumPass\PremiumPassCore::class,
+        \App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory::class => \App\Services\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent::class,
+        \App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository::class => \App\Services\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent::class,
 
         \App\Extensions\Core\GameOption\GameOptionClassRepository::class => \App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig::class,
         \App\Extensions\Core\GameOption\GameOptionValueConverter::class => \App\Extensions\Core\GameOption\GameOptionValueConverterGeneric::class,
-        \App\GameCore\Services\PremiumPass\PremiumPass::class => \App\GameCore\Services\PremiumPass\PremiumPassCore::class,
         \App\Extensions\Utils\Player\PlayerAnonymousRepository::class => \App\Extensions\Utils\Player\PlayerAnonymousRepositoryEloquent::class,
         \App\Extensions\Utils\Player\PlayerAnonymousFactory::class => \App\Extensions\Utils\Player\PlayerAnonymousFactoryEloquent::class,
     ];

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;

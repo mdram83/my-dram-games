@@ -4,8 +4,8 @@ namespace Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
 use App\Events\GamePlay\GamePlayMovedEvent;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
+use App\Services\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\User;
 use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,7 +2,7 @@
 
 namespace App\Extensions\Utils\Player;
 
-use App\GameCore\Services\HashGenerator\HashGenerator;
+use App\Services\HashGenerator\HashGenerator;
 use App\Models\PlayerAnonymousEloquent;
 use MyDramGames\Utils\Player\PlayerAnonymous;
 

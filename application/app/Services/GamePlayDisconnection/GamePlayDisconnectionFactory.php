@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GamePlayDisconnection;
+namespace App\Services\GamePlayDisconnection;
 
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;

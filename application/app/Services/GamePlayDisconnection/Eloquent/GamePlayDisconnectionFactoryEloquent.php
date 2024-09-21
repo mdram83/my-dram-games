@@ -1,10 +1,10 @@
 <?php
 
-namespace App\GameCore\GamePlayDisconnection\Eloquent;
+namespace App\Services\GamePlayDisconnection\Eloquent;
 
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
+use App\Services\GamePlayDisconnection\GamePlayDisconnection;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use Illuminate\Database\UniqueConstraintViolationException;
 use MyDramGames\Core\GamePlay\GamePlay;

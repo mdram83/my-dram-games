@@ -6,5 +6,5 @@ use Exception;
 
 class PlayerAnonymousFactoryException extends Exception
 {
-    public const MESSAGE_WRONG_ATTRIBUTES = 'Incomplete or incorrect attributes';
+    public const string MESSAGE_WRONG_ATTRIBUTES = 'Incomplete or incorrect attributes';
 }

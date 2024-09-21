@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectException;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnection;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
+use App\Services\GamePlayDisconnection\GamePlayDisconnection;
 use DateTimeImmutable;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

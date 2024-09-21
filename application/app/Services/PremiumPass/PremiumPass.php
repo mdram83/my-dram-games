@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\Services\PremiumPass;
+namespace App\Services\PremiumPass;
 
 use MyDramGames\Utils\Player\Player;
 

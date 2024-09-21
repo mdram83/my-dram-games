@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\GameCore\Services\HashGenerator\Md5;
+namespace Tests\Unit\Services\HashGenerator\Md5;
 
-use App\GameCore\Services\HashGenerator\HashGeneratorException;
-use App\GameCore\Services\HashGenerator\Md5\HashGeneratorMd5;
+use App\Services\HashGenerator\HashGeneratorException;
+use App\Services\HashGenerator\Md5\HashGeneratorMd5;
 use PHPUnit\Framework\TestCase;
 
 class HashGeneratorMd5Test extends TestCase

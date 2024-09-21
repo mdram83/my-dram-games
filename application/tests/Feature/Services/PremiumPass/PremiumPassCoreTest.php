@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\GameCore\Services\PremiumPass;
+namespace Tests\Feature\Services\PremiumPass;
 
-use App\GameCore\Services\PremiumPass\PremiumPass;
-use App\GameCore\Services\PremiumPass\PremiumPassCore;
-use App\GameCore\Services\PremiumPass\PremiumPassException;
+use App\Services\PremiumPass\PremiumPass;
+use App\Services\PremiumPass\PremiumPassCore;
+use App\Services\PremiumPass\PremiumPassException;
 use MyDramGames\Core\GameBox\GameBox;
 use MyDramGames\Core\GameBox\GameBoxRepository;
 use MyDramGames\Utils\Player\Player;

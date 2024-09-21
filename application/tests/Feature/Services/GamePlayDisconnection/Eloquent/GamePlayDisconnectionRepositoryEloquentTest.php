@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\GameCore\GamePlayDisconnection\Eloquent;
+namespace Tests\Feature\Services\GamePlayDisconnection\Eloquent;
 
 use App\Extensions\Utils\Player\PlayerAnonymousFactory;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
-use App\GameCore\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionFactory;
-use App\GameCore\GamePlayDisconnection\GamePlayDisconnectionRepository;
+use App\Services\GamePlayDisconnection\Eloquent\GamePlayDisconnectionRepositoryEloquent;
+use App\Services\GamePlayDisconnection\Eloquent\GamePlayDisconnectionFactoryEloquent;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Models\GamePlayDisconnectionEloquentModel;
 use App\Models\PlayerAnonymousEloquent;
 use App\Models\User;

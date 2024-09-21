@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Extensions\Utils\Player\PlayerAnonymousFactory;
 use App\Extensions\Utils\Player\PlayerAnonymousRepository;
-use App\GameCore\Services\HashGenerator\HashGenerator;
+use App\Services\HashGenerator\HashGenerator;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GamePlayDisconnection;
+namespace App\Services\GamePlayDisconnection;
 
 use Exception;
 

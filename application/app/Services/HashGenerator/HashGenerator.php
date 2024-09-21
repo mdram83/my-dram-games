@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\Services\HashGenerator;
+namespace App\Services\HashGenerator;
 
 interface HashGenerator
 {

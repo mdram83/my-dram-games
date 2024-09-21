@@ -275,8 +275,6 @@ class GameInviteEloquentTest extends TestCase
             'players' => array_values(array_map(fn($player) => ['name' => $player->getName()], $this->gameInvite->getPlayers()->toArray())),
         ];
 
-        var_dump($this->gameInvite->toArray());
-
         $this->assertEquals($expected, $this->gameInvite->toArray());
     }
 }

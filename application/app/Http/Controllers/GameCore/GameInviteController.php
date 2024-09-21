@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Extensions\Core\GameOption\GameOptionValueConverter;
-use App\GameCore\Services\PremiumPass\PremiumPass;
-use App\GameCore\Services\PremiumPass\PremiumPassException;
+use App\Services\PremiumPass\PremiumPass;
+use App\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use Exception;
