@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\GameCore\GameOption\PhpConfig;
+namespace Extensions\Core\GameOption;
 
-use App\GameCore\GameOption\GameOptionClassRepository;
-use App\GameCore\GameOption\PhpConfig\GameOptionClassRepositoryPhpConfig;
+use App\Extensions\Core\GameOption\GameOptionClassRepository;
+use App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig;
 use MyDramGames\Core\Exceptions\GameOptionException;
 use Tests\TestCase;
 
@@ -14,7 +14,7 @@ class GameOptionClassRepositoryPhpConfigTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->repository = new GameOptionClassRepositoryPhpConfig();
+        $this->repository = new \App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig();
     }
     public function testInstanceOfGameOptionRepository(): void
     {

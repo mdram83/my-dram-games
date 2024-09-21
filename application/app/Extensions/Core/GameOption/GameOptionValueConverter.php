@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GameOptionValue;
+namespace App\Extensions\Core\GameOption;
 
 use MyDramGames\Core\GameOption\GameOptionValue;
 

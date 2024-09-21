@@ -1,8 +1,7 @@
 <?php
 
-namespace App\GameCore\GameOption\PhpConfig;
+namespace App\Extensions\Core\GameOption;
 
-use App\GameCore\GameOption\GameOptionClassRepository;
 use Illuminate\Support\Facades\Config;
 use MyDramGames\Core\Exceptions\GameOptionException;
 

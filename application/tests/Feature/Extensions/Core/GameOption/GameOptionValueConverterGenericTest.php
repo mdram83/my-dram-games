@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\GameCore\GameOptionValue;
+namespace Extensions\Core\GameOption;
 
-use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\Extensions\Core\GameOption\GameOptionValueConverter;
 use Illuminate\Support\Facades\App;
 use MyDramGames\Core\Exceptions\GameOptionValueException;
 use MyDramGames\Core\GameOption\GameOptionValue;
@@ -15,12 +15,12 @@ class GameOptionValueConverterGenericTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->converter = App::make(GameOptionValueConverter::class);
+        $this->converter = App::make(\App\Extensions\Core\GameOption\GameOptionValueConverter::class);
     }
 
     public function testInstanceOfGameOptionValueConverter(): void
     {
-        $this->assertInstanceOf(GameOptionValueConverter::class, $this->converter);
+        $this->assertInstanceOf(\App\Extensions\Core\GameOption\GameOptionValueConverter::class, $this->converter);
     }
 
     public function testThrowExceptionWhenValueIsMissing(): void

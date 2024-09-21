@@ -3,7 +3,7 @@
 namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\Extensions\Core\GameInvite\GameInviteFactoryEloquent;
-use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\Extensions\Core\GameOption\GameOptionValueConverter;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\GameCore\GameInviteController;
 use App\Models\User;

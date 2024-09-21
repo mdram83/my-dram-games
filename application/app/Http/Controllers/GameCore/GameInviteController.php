@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\GameCore;
 
-use App\GameCore\GameOptionValue\GameOptionValueConverter;
+use App\Extensions\Core\GameOption\GameOptionValueConverter;
 use App\GameCore\Services\PremiumPass\PremiumPass;
 use App\GameCore\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;

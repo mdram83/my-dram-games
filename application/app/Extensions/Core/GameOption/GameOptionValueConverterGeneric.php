@@ -1,8 +1,7 @@
 <?php
 
-namespace App\GameCore\GameOptionValue;
+namespace App\Extensions\Core\GameOption;
 
-use App\GameCore\GameOption\GameOptionClassRepository;
 use MyDramGames\Core\Exceptions\GameOptionValueException;
 use MyDramGames\Core\GameOption\GameOptionValue;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\GameCore\GameOption;
+namespace App\Extensions\Core\GameOption;
 
 interface GameOptionClassRepository
 {
