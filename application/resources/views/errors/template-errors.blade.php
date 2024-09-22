@@ -2,7 +2,7 @@
 
 
     <div class="h-[61px] bg-[rgb(7,7,32)]"></div>
-    <x-template.normal-breadcrumb title="{{ $__env->yieldContent('code') }} | {{ $__env->yieldContent('title') }}" subtitle="Something went wrong." />
+    <x-template.normal-breadcrumb title="{{ $__env->yieldContent('code') }} | {{ $__env->yieldContent('title') }}" subtitle="{{ $__env->yieldContent('message') ?: 'Something went wrong.' }}" />
 
     <section class="login spad sm:-mt-[40px] -mt-[100px] pb-0">
         <div class="container">

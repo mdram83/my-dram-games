@@ -70,7 +70,7 @@ class GameInviteController extends Controller
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
         } catch (PremiumPassException $e) {
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_FORBIDDEN);
+            return response()->view('errors.403', ['exception' => $e], 403);
 
         }  catch (GameSetupException|GameBoxException|GameInviteException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
@@ -116,7 +116,7 @@ class GameInviteController extends Controller
             return view('single', $responseContent);
 
         } catch (PremiumPassException $e) {
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_FORBIDDEN);
+            return response()->view('errors.403', ['exception' => $e], 403);
 
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
