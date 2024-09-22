@@ -72,10 +72,10 @@ export default class GamePlayController {
 
     #playerChannelSetup = (setupMoveEvent) =>
         Echo.private(`game-play-player.${this.#gamePlayId}.${window.MyDramGames.player.id}`)
-            .listen('GameCore\\GamePlay\\GamePlayMovedEvent', (e) =>
+            .listen('GamePlay\\GamePlayMovedEvent', (e) =>
                 setupMoveEvent(e)
             )
-            .listen('GameCore\\GamePlay\\GamePlayDisconnectedEvent', () =>
+            .listen('GamePlay\\GamePlayDisconnectedEvent', () =>
                 ConnectionsManager.confirmConnection(this.#gamePlayId)
             )
             .error((error) => {
