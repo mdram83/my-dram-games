@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Controllers\GameCore;
+namespace Tests\Feature\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
 use App\Events\GamePlay\GamePlayMovedEvent;

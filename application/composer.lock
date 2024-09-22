@@ -2301,16 +2301,16 @@
         },
         {
             "name": "mdram83/mydramgames-gp-thousand",
-            "version": "v1.0.003",
+            "version": "v1.0.004",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-gp-thousand.git",
-                "reference": "616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7"
+                "reference": "c07edee74a49f91d5be23c291b53c472668d7ac3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-thousand/zipball/616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7",
-                "reference": "616fb2f1e65e1cf9200d1d9a54aa66d982e0e0c7",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-thousand/zipball/c07edee74a49f91d5be23c291b53c472668d7ac3",
+                "reference": "c07edee74a49f91d5be23c291b53c472668d7ac3",
                 "shasum": ""
             },
             "require": {
@@ -2345,23 +2345,23 @@
             ],
             "description": "Thousand GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-thousand/tree/v1.0.003",
+                "source": "https://github.com/mdram83/mydramgames-gp-thousand/tree/v1.0.004",
                 "issues": "https://github.com/mdram83/mydramgames-gp-thousand/issues"
             },
-            "time": "2024-09-19T09:58:18+00:00"
+            "time": "2024-09-22T09:34:23+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-tictactoe",
-            "version": "v1.0.004",
+            "version": "v1.0.005",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mdram83/mydramgames-gp-tictactoe.git",
-                "reference": "8d2c108ab7c66f7c342a680982696e81fab29422"
+                "reference": "f124e83ddda6cfec6cb54729d7656007875fb4cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-tictactoe/zipball/8d2c108ab7c66f7c342a680982696e81fab29422",
-                "reference": "8d2c108ab7c66f7c342a680982696e81fab29422",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-tictactoe/zipball/f124e83ddda6cfec6cb54729d7656007875fb4cb",
+                "reference": "f124e83ddda6cfec6cb54729d7656007875fb4cb",
                 "shasum": ""
             },
             "require": {
@@ -2396,10 +2396,10 @@
             ],
             "description": "Tic Tac Toe GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-tictactoe/tree/v1.0.004",
+                "source": "https://github.com/mdram83/mydramgames-gp-tictactoe/tree/v1.0.005",
                 "issues": "https://github.com/mdram83/mydramgames-gp-tictactoe/issues"
             },
-            "time": "2024-09-19T09:43:52+00:00"
+            "time": "2024-09-22T09:32:36+00:00"
         },
         {
             "name": "mdram83/mydramgames-utils",

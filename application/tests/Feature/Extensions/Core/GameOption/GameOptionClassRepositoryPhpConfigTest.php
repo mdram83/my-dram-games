@@ -1,6 +1,6 @@
 <?php
 
-namespace Extensions\Core\GameOption;
+namespace Tests\Feature\Extensions\Core\GameOption;
 
 use App\Extensions\Core\GameOption\GameOptionClassRepository;
 use App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig;
