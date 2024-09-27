@@ -144,6 +144,14 @@ class CollectionEngineLaravel implements CollectionEngine
         return new static($items->all());
     }
 
+    final public function getNth(int $nth): mixed
+    {
+        $this->validateNotEmpty();
+        $this->validateEnoughElements($nth + 1);
+
+        return $this->getOne($this->keys()[$nth]);
+    }
+
     /**
      * @inheritDoc
      */
