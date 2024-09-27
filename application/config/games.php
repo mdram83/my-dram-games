@@ -1,5 +1,8 @@
 <?php
 
+use MyDramGames\Games\Netrunners\GameMove\GameMoveNetrunnersFactory;
+use MyDramGames\Games\Netrunners\GamePlay\GamePlayNetrunners;
+use MyDramGames\Games\Netrunners\GameSetup\GameSetupNetrunners;
 use MyDramGames\Games\Thousand\Extensions\Core\GameMove\GameMoveFactoryThousand;
 use MyDramGames\Games\Thousand\Extensions\Core\GamePlay\GamePlayThousand;
 use MyDramGames\Games\Thousand\Extensions\Core\GameSetup\GameSetupThousand;
@@ -87,11 +90,11 @@ return [
             'description' => 'Fight evil corporate and become a new netrunners legend.',
             'durationInMinutes' => 90,
             'minPlayerAge' => 10,
-            'isActive' => false,
-            'isPremium' => true,
-            'gameSetupClassname' => GameSetupTicTacToe::class,
-            'gamePlayClassname' => GamePlayTicTacToe::class,
-            'gameMoveFactoryClassname' => GameMoveTicTacToe::class,
+            'isActive' => true,
+            'isPremium' => false,
+            'gameSetupClassname' => GameSetupNetrunners::class,
+            'gamePlayClassname' => GamePlayNetrunners::class,
+            'gameMoveFactoryClassname' => GameMoveNetrunnersFactory::class,
         ],
 
     ],
