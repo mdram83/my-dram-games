@@ -18,13 +18,13 @@ export const PlayersList = () => {
     });
 
     const listItems = seats.map(seat =>
-        <div className='border border-solid border-green-600 mt-0 sm:mt-4' key={seat.seat}>
+        <div className='border border-solid border-green-600 mt-0 sm:mt-[2vh]' key={seat.seat}>
             <Avatar playerName={seat.name} character={seat.character ?? undefined} />
         </div>
     );
 
     const classGrid = ' grid grid-cols-' + numberOfPlayers + ' sm:grid-cols-1 ';
-    const classGap = ' gap-' + (6 - numberOfPlayers) + ' sm:gap-2 '; // TODO can I make gap in vh?
+    const classGap = ' gap-' + (6 - numberOfPlayers) + ' sm:gap-[1vh] ';
     const classDiv = classGrid + classGap + ' flex items-center justify-items-center ';
 
     return (
