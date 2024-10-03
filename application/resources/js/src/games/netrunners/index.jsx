@@ -69,8 +69,8 @@ controller.getRoot().render(
             {/* Consider 'console' section with player tips and info here */}
         </div>
 
-        <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit">
-            <div className="flex justify-center sm:justify-start border border-solid border-red-600">
+        <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit left-0 sm:left-[2vh]">
+            <div className="flex justify-center sm:justify-start">
                 <PlayersList />
             </div>
         </div>

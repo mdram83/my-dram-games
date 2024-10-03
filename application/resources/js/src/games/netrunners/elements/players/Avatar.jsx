@@ -8,6 +8,7 @@ export const Avatar = ({playerName, character = undefined}) => {
     const activePlayer = useGamePlayStore((state) => state.activePlayer);
     const isCurrent = activePlayer === playerName;
 
+    const isYou = playerName === MyDramGames.player.name;
     const initials = playerName.charAt(0).toUpperCase();
 
     const borderColorClass = character ? configNetrunners.characters[character].classAvatarBorder : ' border-orange-600 ';
@@ -20,7 +21,8 @@ export const Avatar = ({playerName, character = undefined}) => {
     };
 
     const circleClass =
-        ' flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full border-[0.6vh] border-solid '
+        ' flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full '
+        + (isYou ? ' border-[1.2vh] border-double ' : ' border-[0.6vh] border-solid')
         + borderColorClass
         + (isConnected ? ' ' : ' animate-pulse bg-gray-200 ')
         + (isCurrent ? ' bg-white ' : ' bg-gray-200 ');
@@ -29,8 +31,10 @@ export const Avatar = ({playerName, character = undefined}) => {
         + (isCurrent ? ' font-black ' : ' font-bold ');
 
     return (
-        <div className={circleClass + ' bg-bottom bg-no-repeat bg-cover '} style={style}>
-            <span className={initialsClass}>{character ? '' : initials}</span>
+        <div className={circleClass}>
+            <div className='bg-bottom bg-no-repeat bg-cover w-full h-full rounded-full' style={style}>
+                <span className={initialsClass}>{character ? '' : initials}</span>
+            </div>
         </div>
     );
 }
