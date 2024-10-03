@@ -9,7 +9,7 @@ export const CharactersGrid = () => {
 
     const gridItems = (new Array(6).fill(null)).map((_, index) => {
         return (
-            <div key={index} className=' flex items-center justify-center border border-solid border-green-500 '>
+            <div key={index} className=' flex items-center justify-center '>
                 <GridAvatar gridKey={index} />
             </div>
         );

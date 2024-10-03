@@ -6,8 +6,7 @@ import {Menu} from "../../../template/play/components/Menu.jsx";
 import {FlashMessageGamePlay} from "../../game-core/game-play/FlashMessageGamePlay.jsx";
 import {useNetrunnersStore} from "./useNetrunnersStore.jsx";
 import {PlayersList} from "./elements/players/PlayersList.jsx";
-
-// const playerName = window.MyDramGames.player.name;
+import {CharactersGrid} from "./elements/players/CharactersGrid.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -15,14 +14,14 @@ const setupSituation = (situation) => unstable_batchedUpdates(() => useNetrunner
 
 const setupMoveEvent = (e) => {
 
-    const previousSituation = useNetrunnersStore().getState().situation;
+    const previousSituation = useNetrunnersStore.getState().situation;
     const hasSwitchedPlayerToActive = () => (
         e.situation.activePlayer === window.MyDramGames.player.name
         && previousSituation.activePlayer !== e.situation.activePlayer
     );
 
     unstable_batchedUpdates(() => {
-        useNetrunnersStore().getState().setSituation(e.situation);
+        useNetrunnersStore.getState().setSituation(e.situation);
 
         if (e.situation.isFinished) {
 
@@ -41,9 +40,9 @@ const setupMoveEvent = (e) => {
 
 const controller = new GamePlayController(getPlayersNames, setupSituation, setupMoveEvent);
 
-console.log(useNetrunnersStore.getState().situation); // TODO remove after testing
 
-
+// Remove after testing
+console.log(useNetrunnersStore.getState().situation);
 
 
 
@@ -58,33 +57,23 @@ controller.getRoot().render(
         {/*Scrollable*/}
         {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
         {/*Fixed*/}
-        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-bottom bg-no-repeat bg-cover"
-             // style={{ backgroundImage: `url(${window.MyDramGames["asset-url"].img + '/games/thousand/pexels-marta-wave-5875935-medium.jpg'})` }}
-        >
+        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-gray-900">
 
-            {/*In thousand this was central game section...*/}
-            {/*<div className="grid grid-cols-3 gap-1 content-stretch h-full">*/}
-            {/*    */}
-            {/*</div>*/}
+            {/*Add more sections as needed*/}
+
+            <CharactersGrid />
 
         </div>
 
         <div className="fixed -bottom-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800">
-            {/*in thousand this was player section*/}
+            {/* Consider 'console' section with player tips and info here */}
         </div>
 
-        <div className="fixed bottom-[10vh] sm:top-[12vh] w-full z-10">
+        <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit">
             <div className="flex justify-center sm:justify-start border border-solid border-red-600">
                 <PlayersList />
             </div>
         </div>
-
-        {/*in thousand below I had some fixed positioned elemenets*/}
-        {/*<div className="fixed bottom-[10vh] w-full z-10">*/}
-        {/*    <div className="flex justify-center">*/}
-        {/*        */}
-        {/*    </div>*/}
-        {/*</div>*/}
 
         <FlashMessageGamePlay/>
 

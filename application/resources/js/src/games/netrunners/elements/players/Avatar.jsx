@@ -12,7 +12,7 @@ export const Avatar = ({playerName, character = undefined}) => {
 
     const borderColorClass = character ? configNetrunners.characters[character].classAvatarBorder : ' border-orange-600 ';
     const avatarTextClass = character ? configNetrunners.characters[character].classAvatarText : ' text-orange-600 ';
-    const imageAvatar = character ? configNetrunners.characters[character].imageAvatar : undefined;
+    const imageAvatar = character ? configNetrunners.characters[character].imageAvatarS : undefined;
 
     const style = {
         backgroundImage: imageAvatar ?? '',

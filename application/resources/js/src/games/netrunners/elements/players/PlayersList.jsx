@@ -17,9 +17,6 @@ export const PlayersList = () => {
         };
     });
 
-    // TODO next make a Grid...
-    // TODO next make Avatar clickable (open Player/Character view)...
-
     const listItems = seats.map(seat =>
         <div className='border border-solid border-green-600 mt-0 sm:mt-4' key={seat.seat}>
             <Avatar playerName={seat.name} character={seat.character ?? undefined} />
@@ -27,7 +24,7 @@ export const PlayersList = () => {
     );
 
     const classGrid = ' grid grid-cols-' + numberOfPlayers + ' sm:grid-cols-1 ';
-    const classGap = ' gap-' + (6 - numberOfPlayers) + ' sm:gap-2 ';
+    const classGap = ' gap-' + (6 - numberOfPlayers) + ' sm:gap-2 '; // TODO can I make gap in vh?
     const classDiv = classGrid + classGap + ' flex items-center justify-items-center ';
 
     return (
