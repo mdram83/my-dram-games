@@ -23,6 +23,10 @@ export default {
                     to: { opacity: 0 },
                 },
             },
+            boxShadow: {
+                actionSm: '0 0 2.4vh -0.25vh #f97316',
+                actionLg: '0 0 3.6vh -0.50vh #f97316',
+            }
         },
     },
 

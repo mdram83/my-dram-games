@@ -7,9 +7,12 @@ import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore
 export const GridAvatar = ({gridKey}) => {
 
     const characterName = useNetrunnersStore(state => state.situation.charactersGrid[gridKey].name);
+    const phase = useNetrunnersStore(state => state.situation.phase.key);
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
-    const phase = useNetrunnersStore(state => state.situation.phase.key);
+    const activePlayer = useGamePlayStore(state => state.activePlayer);
+
+    const isActivePlayer = activePlayer === MyDramGames.player.name;
 
     const image = characterName !== null
         ? configNetrunners.characters[characterName].imageAvatarM
@@ -17,24 +20,35 @@ export const GridAvatar = ({gridKey}) => {
 
     const style = {
         backgroundImage: image ?? '',
-        filter: characterName !== null ? 'grayscale(100%)' : 'grayscale(0)',
+        filter: characterName !== null ? 'grayscale(0)' : 'grayscale(100%)',
     };
 
-    const classDiv = ' h-[16vh] sm:h-[20vh] w-[16vh] sm:w-[20vh] bg-contain rounded-xl '
-        + ' border-solid border-[0.5vh] shadow-md '
-        + (characterName === null ? ' border-orange-500 shadow-orange-500 cursor-pointer ' : ' ');
+    const classDivCommon = ' rounded-[4vh] ';
+
+    const classDivAction = ' h-[16vh] sm:h-[20vh] w-[16vh] sm:w-[20vh] '
+        + classDivCommon
+        + ((characterName === null && isActivePlayer)
+                ? ' border-solid border-[0.5vh] border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
+                : ' '
+        );
+
+    const classDivAvatar = ' bg-contain w-full h-full '
+        + classDivCommon;
 
     const onClick = () => {
-        if (characterName !== null) {
+        if (characterName !== null || !isActivePlayer) {
             return;
         }
         submitMove({gridElement: gridKey}, gamePlayId, setMessage, phase);
     }
 
     return (
-        <div className={classDiv}
-             style={style}
-             onClick={() => onClick()}
-        ></div>
+        <div className={classDivAction}>
+            <div className={classDivAvatar}
+                 style={style}
+                 onClick={() => onClick()}
+            ></div>
+        </div>
+
     );
 }
