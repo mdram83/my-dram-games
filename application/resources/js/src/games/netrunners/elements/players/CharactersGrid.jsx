@@ -12,7 +12,6 @@ export const CharactersGrid = () => {
     const gridItems = (new Array(6).fill(null)).map((_, index) =>
         <div key={index} className='flex items-center justify-center'>
             <CharactersGridItem gridKey={index} />
-            {/*<Proto />*/}
         </div>
     );
 
