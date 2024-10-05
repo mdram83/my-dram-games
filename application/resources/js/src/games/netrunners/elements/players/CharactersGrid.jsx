@@ -4,16 +4,16 @@ import {GridAvatar} from "./GridAvatar.jsx";
 
 export const CharactersGrid = () => {
 
+    console.log('players/CharactersGrid');
+
     const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
     const isPhaseValid = phaseKey === 'character';
 
-    const gridItems = (new Array(6).fill(null)).map((_, index) => {
-        return (
-            <div key={index} className=' flex items-center justify-center '>
-                <GridAvatar gridKey={index} />
-            </div>
-        );
-    });
+    const gridItems = (new Array(6).fill(null)).map((_, index) =>
+        <div key={index} className='flex items-center justify-center'>
+            <GridAvatar gridKey={index} />
+        </div>
+    );
 
     return (
         isPhaseValid &&

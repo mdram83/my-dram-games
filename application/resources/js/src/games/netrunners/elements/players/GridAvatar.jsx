@@ -6,6 +6,8 @@ import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore
 
 export const GridAvatar = ({gridKey}) => {
 
+    console.log('players/GridAvatar', gridKey);
+
     const characterName = useNetrunnersStore(state => state.situation.charactersGrid[gridKey].name);
     const phase = useNetrunnersStore(state => state.situation.phase.key);
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
@@ -19,21 +21,21 @@ export const GridAvatar = ({gridKey}) => {
         : configNetrunners.covers.character.imageCoverM;
 
     const style = {
-        backgroundImage: image ?? '',
+        backgroundImage: image,
         filter: characterName !== null ? 'grayscale(0)' : 'grayscale(100%)',
     };
 
-    const classDivCommon = ' rounded-[4vh] ';
+    const classPartDivCommon = ' rounded-[4vh] ';
 
     const classDivAction = ' h-[16vh] sm:h-[20vh] w-[16vh] sm:w-[20vh] '
-        + classDivCommon
+        + classPartDivCommon
         + ((characterName === null && isActivePlayer)
                 ? ' border-solid border-[0.5vh] border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
                 : ' '
         );
 
     const classDivAvatar = ' bg-contain w-full h-full '
-        + classDivCommon;
+        + classPartDivCommon;
 
     const onClick = () => {
         if (characterName !== null || !isActivePlayer) {
@@ -49,6 +51,5 @@ export const GridAvatar = ({gridKey}) => {
                  onClick={() => onClick()}
             ></div>
         </div>
-
     );
 }
