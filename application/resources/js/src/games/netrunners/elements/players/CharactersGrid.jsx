@@ -1,6 +1,7 @@
 import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
-import {GridAvatar} from "./GridAvatar.jsx";
+import {CharactersGridItem} from "./CharactersGridItem.jsx";
+import {Proto} from "./Proto.jsx";
 
 export const CharactersGrid = () => {
 
@@ -11,7 +12,8 @@ export const CharactersGrid = () => {
 
     const gridItems = (new Array(6).fill(null)).map((_, index) =>
         <div key={index} className='flex items-center justify-center'>
-            <GridAvatar gridKey={index} />
+            <CharactersGridItem gridKey={index} />
+            {/*<Proto />*/}
         </div>
     );
 
