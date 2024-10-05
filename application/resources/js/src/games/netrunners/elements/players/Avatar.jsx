@@ -20,12 +20,17 @@ export const Avatar = ({playerName, character = undefined}) => {
 
     const classDivCircle =
         ' relative flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full '
-        + (isYou ? ' border-[0.75vh] border-dashed ' : ' border-[0.6vh] border-solid')
+        + (isYou ? ' border-[0.5vh] border-dashed ' : ' border-[0.5vh] border-solid')
         + (character ? configNetrunners.characters[character].classAvatarBorder : ' border-lime-600 ')
+        + (character ? ' cursor-pointer ' : ' ')
         + (isActivePlayer ? ' bg-white animate-pulse ' : ' bg-gray-200 ');
 
+    const onClick = () => {
+        // show Player/Character card
+    }
+
     return (
-        <div className={classDivCircle}>
+        <div className={classDivCircle} onClick={onClick}>
 
             <div className='flex items-center justify-center bg-bottom bg-no-repeat bg-cover w-full h-full rounded-full'
                  style={style}

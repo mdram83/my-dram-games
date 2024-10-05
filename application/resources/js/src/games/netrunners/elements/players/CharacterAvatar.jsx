@@ -4,7 +4,7 @@ import {a, useSpring} from "@react-spring/web";
 
 export const CharacterAvatar = ({characterName, classPartCommon, classPartSize}) => {
 
-    console.log('players/CharacterAvatar', characterName, classPartCommon);
+    console.log('players/CharacterAvatar', characterName);
 
     const [flipped, setFlipped] = useState(false);
     const { transform, opacity } = useSpring({
@@ -16,7 +16,7 @@ export const CharacterAvatar = ({characterName, classPartCommon, classPartSize})
     const classDivAnimated = ' absolute cursor-pointer bg-contain ' + classPartSize + classPartCommon;
 
     const onClick = () => {
-
+        // show Character/Player card
     }
 
     useEffect(() => {
