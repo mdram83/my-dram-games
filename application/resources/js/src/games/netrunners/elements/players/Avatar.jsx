@@ -41,7 +41,7 @@ export const Avatar = ({playerName, character = undefined}) => {
             {
                 !isConnected &&
                 <div className="absolute pt-[0.5vh]">
-                    <i className="fa fa-wifi text-[3.0vh] text-red-600 animate-ping"></i>
+                    <i className="fa fa-wifi text-[4.0vh] text-red-600 animate-ping"></i>
                 </div>
             }
 
