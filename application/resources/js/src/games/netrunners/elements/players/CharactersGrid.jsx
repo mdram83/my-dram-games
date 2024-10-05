@@ -1,7 +1,6 @@
 import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {CharactersGridItem} from "./CharactersGridItem.jsx";
-import {Proto} from "./Proto.jsx";
 
 export const CharactersGrid = () => {
 
