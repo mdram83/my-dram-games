@@ -7,6 +7,7 @@ import {FlashMessageGamePlay} from "../../game-core/game-play/FlashMessageGamePl
 import {useNetrunnersStore} from "./useNetrunnersStore.jsx";
 import {PlayersList} from "./elements/players/PlayersList.jsx";
 import {CharactersGrid} from "./elements/character/CharactersGrid.jsx";
+import {PlayerInfo} from "./elements/players/PlayerInfo.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -63,6 +64,7 @@ controller.getRoot().render(
             {/*Add more sections as needed*/}
 
             {onLoadPhaseKey === 'character' && <CharactersGrid />}
+            <PlayerInfo />
 
         </div>
 
