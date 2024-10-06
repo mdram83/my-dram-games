@@ -13,9 +13,10 @@ export const CharacterSelection = ({gridKey, classPartCommon, classPartSize}) =>
     const activePlayer = useGamePlayStore(state => state.activePlayer);
 
     const isActivePlayer = activePlayer === MyDramGames.player.name;
+    const isSelectionAvailable = (isActivePlayer && phase === 'character');
 
     const classDivAction = classPartSize + classPartCommon + (
-        isActivePlayer
+        isSelectionAvailable
             ? ' border-solid border-[0.5vh] -mt-[0.5vh] -ml-[0.5vh] border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
             : ' '
     );
@@ -26,7 +27,7 @@ export const CharacterSelection = ({gridKey, classPartCommon, classPartSize}) =>
     };
 
     const onClick = () => {
-        if (!isActivePlayer) {
+        if (!isSelectionAvailable) {
             return;
         }
         submitMove({gridElement: gridKey}, gamePlayId, setMessage, phase);

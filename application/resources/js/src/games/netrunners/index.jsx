@@ -44,6 +44,7 @@ const controller = new GamePlayController(getPlayersNames, setupSituation, setup
 // Remove after testing
 console.log(useNetrunnersStore.getState().situation);
 
+const onLoadPhaseKey = useNetrunnersStore.getState().situation.phase.key;
 
 
 controller.getRoot().render(
@@ -61,7 +62,7 @@ controller.getRoot().render(
 
             {/*Add more sections as needed*/}
 
-            <CharactersGrid />
+            {onLoadPhaseKey === 'character' && <CharactersGrid />}
 
         </div>
 
