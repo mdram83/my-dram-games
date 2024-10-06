@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {CharactersGridItem} from "./CharactersGridItem.jsx";
+import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const CharactersGrid = () => {
 
@@ -14,8 +15,8 @@ export const CharactersGrid = () => {
 
     useEffect(() => {
         if (!isPhaseCharacterSelection) {
-            setTimeout(() => setFade(true), 1000);
-            setTimeout(() => setHidden(true), 1000 + 430);
+            setTimeout(() => setFade(true), configNetrunners.engine.phaseFadeTimeout);
+            setTimeout(() => setHidden(true), configNetrunners.engine.phaseFadeTimeout + 430);
         }
     }, [isPhaseCharacterSelection]);
 

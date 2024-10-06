@@ -42,5 +42,8 @@ export const configNetrunners = {
             imageCoverM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-m.jpg'})`,
             imageCoverS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-s.jpg'})`,
         }
+    },
+    engine: {
+        phaseFadeTimeout: 1000,
     }
 }
