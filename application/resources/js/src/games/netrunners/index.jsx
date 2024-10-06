@@ -78,9 +78,11 @@ controller.getRoot().render(
         </div>
 
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-fit z-10">
-            <PlayerInfo/>
-        </div>
+            <div className="flex justify-center">
+                <PlayerInfo/>
+            </div>
 
+        </div>
 
 
         <FlashMessageGamePlay/>
