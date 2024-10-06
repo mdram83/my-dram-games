@@ -24,11 +24,12 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
     };
 
     const classDivCircle =
-        ' relative flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full '
-        + (isYou ? ' border-[0.5vh] border-dashed ' : ' border-[0.5vh] border-solid')
+        ' relative flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full bg-gray-900 '
+        + (isYou ? ' border-[0.5vh] border-solid ' : ' border-[0.4vh] border-dotted')
         + (character ? configNetrunners.characters[character].classAvatarBorder : ' border-lime-600 ')
         + (character ? ' cursor-pointer ' : ' ')
-        + (isActivePlayer ? ' bg-white animate-pulse ' : ' bg-gray-200 ');
+        + (isActivePlayer ? ' animate-pulse ' : ' ')
+        + (isActivePlayer && !character ? ' bg-white ' : ' bg-gray-200 ');
 
     const onClick = () => {
         if (character) {
