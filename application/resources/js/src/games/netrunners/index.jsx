@@ -43,7 +43,7 @@ const controller = new GamePlayController(getPlayersNames, setupSituation, setup
 
 
 // Remove after testing
-console.log(useNetrunnersStore.getState().situation);
+console.log(useNetrunnersStore.getState());
 
 const onLoadPhaseKey = useNetrunnersStore.getState().situation.phase.key;
 
@@ -63,8 +63,7 @@ controller.getRoot().render(
 
             {/*Add more sections as needed*/}
 
-            {onLoadPhaseKey === 'character' && <CharactersGrid />}
-            <PlayerInfo />
+            {onLoadPhaseKey === 'character' && <CharactersGrid/>}
 
         </div>
 
@@ -74,9 +73,15 @@ controller.getRoot().render(
 
         <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit left-0 sm:left-[2vh]">
             <div className="flex justify-center sm:justify-start">
-                <PlayersList />
+                <PlayersList/>
             </div>
         </div>
+
+        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-fit z-10">
+            <PlayerInfo/>
+        </div>
+
+
 
         <FlashMessageGamePlay/>
 
