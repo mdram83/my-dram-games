@@ -1,10 +1,15 @@
 import React from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
+import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const PlayerAvatar = ({playerName, character = undefined}) => {
 
     console.log('players/Avatar', playerName, character);
+
+    const display = useNetrunnersStore(state => state.playerInfoScreen.display);
+    const displayPlayerName = useNetrunnersStore(state => state.playerInfoScreen.playerName);
+    const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
 
     const isConnected = useGamePlayStore((state) => state.players[playerName]);
     const activePlayer = useGamePlayStore((state) => state.activePlayer);
@@ -26,7 +31,17 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
         + (isActivePlayer ? ' bg-white animate-pulse ' : ' bg-gray-200 ');
 
     const onClick = () => {
-        // show Player/Character card
+        if (character) {
+
+            if (display) {
+                setPlayerInfoScreen(displayPlayerName !== playerName, displayPlayerName === playerName ? undefined : playerName);
+            } else {
+                setPlayerInfoScreen(true, playerName);
+            }
+
+        } else {
+            setPlayerInfoScreen(false);
+        }
     }
 
     return (
