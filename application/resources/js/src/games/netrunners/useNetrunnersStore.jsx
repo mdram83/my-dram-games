@@ -5,14 +5,16 @@ export const useNetrunnersStore = create((set, get) => ({
     situation: {},
     setSituation: (situation) => set(() => ({ situation: situation })),
 
-    playerDetails: {
+    playerInfoScreen: {
+        display: false,
         playerName: undefined,
-        playerMode: false,
+        characterPriority: false,
     },
-    setPlayerDetails: (playerName, playerMode) =>
-        set(() => ({ playerDetails: {
+    setPlayerInfoScreen: (display, playerName = undefined, characterPriority = false) =>
+        set(() => ({ playerInfoScreen: {
+            display: display,
             playerName: playerName,
-            playerMode: playerMode
+            characterPriority: characterPriority,
         }})),
 
 }));
