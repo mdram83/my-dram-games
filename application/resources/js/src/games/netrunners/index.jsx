@@ -6,7 +6,7 @@ import {Menu} from "../../../template/play/components/Menu.jsx";
 import {FlashMessageGamePlay} from "../../game-core/game-play/FlashMessageGamePlay.jsx";
 import {useNetrunnersStore} from "./useNetrunnersStore.jsx";
 import {PlayersList} from "./elements/players/PlayersList.jsx";
-import {CharactersGrid} from "./elements/players/CharactersGrid.jsx";
+import {CharactersGrid} from "./elements/character/CharactersGrid.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 

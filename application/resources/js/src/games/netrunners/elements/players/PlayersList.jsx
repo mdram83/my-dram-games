@@ -1,6 +1,6 @@
 import React from 'react';
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
-import {Avatar} from "./Avatar.jsx";
+import {PlayerAvatar} from "./PlayerAvatar.jsx";
 
 export const PlayersList = () => {
 
@@ -21,7 +21,7 @@ export const PlayersList = () => {
 
     const listItems = seats.map(seat =>
         <div className='mt-0 sm:mt-[2vh]' key={seat.seat}>
-            <Avatar playerName={seat.name} character={seat.character ?? undefined} />
+            <PlayerAvatar playerName={seat.name} character={seat.character ?? undefined} />
         </div>
     );
 

@@ -2,7 +2,7 @@ import React from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 
-export const Avatar = ({playerName, character = undefined}) => {
+export const PlayerAvatar = ({playerName, character = undefined}) => {
 
     console.log('players/Avatar', playerName, character);
 
