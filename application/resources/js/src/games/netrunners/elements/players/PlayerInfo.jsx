@@ -1,5 +1,6 @@
 import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
+import {CharacterDetails} from "../character/CharactedDetails.jsx";
 
 export const PlayerInfo = () => {
 
@@ -26,7 +27,6 @@ export const PlayerInfo = () => {
 
     const classDivMobileTabPlayer = classDivMobileTabCommon
         + (characterPriority ? classDivMobileTabInactive : classDivMobileTabActive);
-
     const classDivMobileTabCharacter = classDivMobileTabCommon
         + (!characterPriority ? classDivMobileTabInactive : classDivMobileTabActive);
 
@@ -66,17 +66,19 @@ export const PlayerInfo = () => {
                         </div>
                     </div>
 
-                    <div className='flex bg-neutral-800/95'>
-                        <div className='grow'>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
-                            <p>Example paragraph</p>
+                    {/*DETAILS SECTION*/}
+                    <div className='flex grid grid-cols-1 sm:grid-cols-2 gap-0 w-full h-[60vh] sm:h-[65.5vh] bg-neutral-800/95 rounded-b-[2vh]'>
+
+                        {/*CHARACTER DETAILS SECTION*/}
+                        <div className='p-[4%] w-[92%] h-[95%] '>
+                            <CharacterDetails playerName={playerName}/>
                         </div>
+
+                        {/*PLAYER DETAILS SECTION*/}
+                        <div className='p-[4%] w-[92%] h-[95%] hidden sm:block'>
+                            <CharacterDetails playerName={playerName}/>
+                        </div>
+
                     </div>
 
                 </div>
