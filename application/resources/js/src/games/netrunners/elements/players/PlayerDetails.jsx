@@ -1,6 +1,4 @@
 import React from "react";
-import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
-import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const PlayerDetails = ({playerName}) => {
 
