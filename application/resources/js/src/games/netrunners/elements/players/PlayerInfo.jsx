@@ -12,9 +12,6 @@ export const PlayerInfo = () => {
     const characterPriority = useNetrunnersStore(state => state.playerInfoScreen.characterPriority);
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
 
-    // TODO fadeout (quicker than character grid)
-    // TODO character actual name (display) next to technical name must be available for display
-
     const classDivContainer = ' h-[70vh] w-[50vh] sm:w-[100vh] mt-[2vh] shadow-xl shadow-black text-white '
         + ' border-[0.3vh] sm:border-[0.25vh] border-solid border-fuchsia-500 rounded-[2vh] ';
 
