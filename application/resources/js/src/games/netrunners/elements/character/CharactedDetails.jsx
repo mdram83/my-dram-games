@@ -28,7 +28,7 @@ export const CharacterDetails = ({playerName}) => {
             <div className='flex items-end justify-center bg-top bg-no-repeat bg-cover w-[100%] h-[80%] rounded-[1vh]'
                  style={style}
             >
-                <div className='w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none sm:leading-normal bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-[1.5vh] font-mono'>
+                <div className='w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-xs font-mono'>
                     {abilitiesItems}
                 </div>
 
