@@ -126,7 +126,6 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/pusher/pusher-php-server" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/ratchet/rfc6455" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/paragonie/sodium_compat" />
-      <excludeFolder url="file://$MODULE_DIR$/application/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/dns" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/http" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/stream" />

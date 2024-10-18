@@ -22,6 +22,9 @@ export default {
                 fadeOut: {
                     to: { opacity: 0 },
                 },
+                fadeIn: {
+                    to: { opacity: 1 },
+                },
             },
             boxShadow: {
                 actionSm: '0 0 2.4vh -0.25vh #f97316',

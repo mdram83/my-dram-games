@@ -128,7 +128,6 @@
       <path value="$PROJECT_DIR$/application/vendor/pusher/pusher-php-server" />
       <path value="$PROJECT_DIR$/application/vendor/ratchet/rfc6455" />
       <path value="$PROJECT_DIR$/application/vendor/paragonie/sodium_compat" />
-      <path value="$PROJECT_DIR$/application/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/application/vendor/react/dns" />
       <path value="$PROJECT_DIR$/application/vendor/react/http" />
       <path value="$PROJECT_DIR$/application/vendor/react/stream" />

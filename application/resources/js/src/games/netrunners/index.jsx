@@ -8,10 +8,21 @@ import {useNetrunnersStore} from "./useNetrunnersStore.jsx";
 import {PlayersList} from "./elements/players/PlayersList.jsx";
 import {CharactersGrid} from "./elements/character/CharactersGrid.jsx";
 import {PlayerInfo} from "./elements/players/PlayerInfo.jsx";
+import {GameMap} from "./elements/map/GameMap.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
-const setupSituation = (situation) => unstable_batchedUpdates(() => useNetrunnersStore.getState().setSituation(situation));
+const setMapSize = (map) => {
+    const rows = Object.keys(map).length;
+    const columns = Object.keys(map[100]).length;
+    const size = rows * columns;
+    useNetrunnersStore.getState().setMapSize(size);
+}
+
+const setupSituation = (situation) => unstable_batchedUpdates(() => {
+    useNetrunnersStore.getState().setSituation(situation);
+    setMapSize(situation.map);
+});
 
 const setupMoveEvent = (e) => {
 
@@ -35,6 +46,8 @@ const setupMoveEvent = (e) => {
             if (hasSwitchedPlayerToActive()) {
                 useGamePlayStore.getState().setMessage('Your turn', false, 0.5);
             }
+
+            setMapSize(e.situation.map);
         }
     });
 }
@@ -63,7 +76,8 @@ controller.getRoot().render(
 
             {/*Add more sections as needed*/}
 
-            {onLoadPhaseKey === 'character' && <CharactersGrid/>}
+            {onLoadPhaseKey === 'character' && <CharactersGrid />}
+            <GameMap />
 
         </div>
 

@@ -17,4 +17,7 @@ export const useNetrunnersStore = create((set, get) => ({
             characterPriority: characterPriority,
         }})),
 
+    mapSize: 0,
+    setMapSize: (mapSize) => set(() => ({ mapSize: mapSize})),
+
 }));
