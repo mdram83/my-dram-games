@@ -26,6 +26,7 @@ export const useNetrunnersStore = create((set, get) => ({
                 const isLocation = situation.map[row][column] !== null;
                 const cellContent = {
                     isLocation: isLocation,
+                    hasNode: isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null,
                     allowedTargetLocation: isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation,
                 };
                 Object.defineProperty(locationsMap[row], column, {value: cellContent});

@@ -13,10 +13,13 @@ export const Location = ({row, column}) => {
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
     const isLocation = useNetrunnersStore(state => state.locationsMap[row][column].isLocation);
+    const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
     const allowedTargetLocation = useNetrunnersStore(state => state.locationsMap[row][column].allowedTargetLocation);
 
+    console.log(isLocation, allowedTargetLocation);
+
     const style = {
-        backgroundImage: isLocation ? configNetrunners.covers.character.imageCoverS : configNetrunners.covers.location.imageCoverM,
+        backgroundImage: hasNode ? configNetrunners.covers.character.imageCoverS : configNetrunners.covers.location.imageCoverM,
     };
 
     const classDiv = ' bg-contain w-full h-full rounded-md '
@@ -30,7 +33,7 @@ export const Location = ({row, column}) => {
     }
 
     const render = () => {
-        if (!isLocation && !allowedTargetLocation) {
+        if (!hasNode && !allowedTargetLocation) {
             return;
         }
         return (
