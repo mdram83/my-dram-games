@@ -41,6 +41,9 @@ export const configNetrunners = {
         character: {
             imageCoverM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-m.jpg'})`,
             imageCoverS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-s.jpg'})`,
+        },
+        location: {
+            imageCoverM: 'url(https://images.pexels.com/photos/343457/pexels-photo-343457.jpeg)',
         }
     },
     engine: {

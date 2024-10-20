@@ -12,17 +12,7 @@ import {GameMap} from "./elements/map/GameMap.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
-const setMapSize = (map) => {
-    const rows = Object.keys(map).length;
-    const columns = Object.keys(map[100]).length;
-    const size = rows * columns;
-    useNetrunnersStore.getState().setMapSize(size);
-}
-
-const setupSituation = (situation) => unstable_batchedUpdates(() => {
-    useNetrunnersStore.getState().setSituation(situation);
-    setMapSize(situation.map);
-});
+const setupSituation = (situation) => unstable_batchedUpdates(() => useNetrunnersStore.getState().setSituation(situation));
 
 const setupMoveEvent = (e) => {
 
@@ -47,7 +37,6 @@ const setupMoveEvent = (e) => {
                 useGamePlayStore.getState().setMessage('Your turn', false, 0.5);
             }
 
-            setMapSize(e.situation.map);
         }
     });
 }
