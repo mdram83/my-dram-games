@@ -29,6 +29,8 @@ export default {
             boxShadow: {
                 actionSm: '0 0 2.4vh -0.25vh #f97316',
                 actionLg: '0 0 3.6vh -0.50vh #f97316',
+                actionSmOp: '0 0 2.4vh -0.25vh #06b6d4',
+                actionLgOp: '0 0 3.6vh -0.50vh #06b6d4',
             }
         },
     },

@@ -15,8 +15,9 @@ export const useNetrunnersStore = create((set, get) => ({
             startingRow: parseInt(rows.find(() => true)),
             startingColumn: parseInt(columns.find(() => true)),
         };
+        const locationsMap = {};
+        const yourTurn = MyDramGames.player.name === situation.activePlayer;
 
-        let locationsMap = {};
         for (let row = mapSize.startingRow; row < (mapSize.startingRow + mapSize.rows); row++) {
 
             Object.defineProperty(locationsMap, row, {value: {}});
@@ -24,12 +25,14 @@ export const useNetrunnersStore = create((set, get) => ({
             for (let column = mapSize.startingColumn; column < (mapSize.startingColumn + mapSize.columns); column++) {
 
                 const isLocation = situation.map[row][column] !== null;
-                const cellContent = {
+                const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
+
+                Object.defineProperty(locationsMap[row], column, {value: {
                     isLocation: isLocation,
                     hasNode: isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null,
-                    allowedTargetLocation: isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation,
-                };
-                Object.defineProperty(locationsMap[row], column, {value: cellContent});
+                    allowedTargetLocation: allowedTargetLocation,
+                    yourTargetLocation: allowedTargetLocation && yourTurn,
+                }});
             }
         }
 
