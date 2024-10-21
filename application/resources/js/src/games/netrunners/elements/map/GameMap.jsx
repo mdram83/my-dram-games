@@ -1,6 +1,8 @@
 import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {Location} from "./Location.jsx";
+import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
+import {Controls} from "./Controls.jsx";
 
 export const GameMap = () => {
 
@@ -28,7 +30,7 @@ export const GameMap = () => {
             for (let column = mapSize.startingColumn; column < (mapSize.startingColumn + mapSize.columns); column++) {
 
                 locations.push(
-                    <div key={row + '.' + column} className='w-[80px] h-[80px]'>
+                    <div key={row + '.' + column} className='w-[64px] sm:w-[128px] h-[64px] sm:h-[128px]'>
                         <Location row={row} column={column} />
                     </div>
                 );
@@ -44,11 +46,18 @@ export const GameMap = () => {
             return;
         }
         return (
-            <div className=' text-white animate-fadein h-full w-full flex items-center justify-center'>
-                <div className='grid gap-2' style={styleGrid}>
-                    {locations()}
-                </div>
-            </div>
+            <TransformWrapper limitToBounds={false} minScale={0.2} maxScale={2} smooth={false}>
+                <Controls />
+                <TransformComponent wrapperStyle={{height: "100%", width: "100%",}} contentStyle={{height: "100%", width: "100%",}}>
+
+                    <div className=' text-white animate-fadein h-full w-full flex items-center justify-center '>
+                        <div className='grid gap-2 shrink-0' style={styleGrid}>
+                            {locations()}
+                        </div>
+                    </div>
+
+                </TransformComponent>
+            </TransformWrapper>
         );
     }
 
