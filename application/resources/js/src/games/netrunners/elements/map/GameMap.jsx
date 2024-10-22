@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {Location} from "./Location.jsx";
 import {TransformComponent, TransformWrapper} from "react-zoom-pan-pinch";
@@ -23,10 +23,22 @@ export const GameMap = () => {
         gridTemplateColumns: `repeat(${mapSize.columns}, minmax(0, 1fr))`,
     };
 
-    const registerMapMovement = () => {
-        console.log('registerMapMovement');
+    const transformComponentRef = useRef(null);
+    const panningStartPositionX = useRef(null);
+    const panningStartPositionY = useRef(null);
 
-        setFollowActivePlayer(false);
+    const startMapPanning = (transformComponentRef) => {
+        panningStartPositionX.current = transformComponentRef.state.positionX;
+        panningStartPositionY.current = transformComponentRef.state.positionY;
+    }
+
+    const stopMapPanning = (transformComponentRef) => {
+        if (
+            Math.abs(transformComponentRef.state.positionX - panningStartPositionX.current) > 10
+            || Math.abs(transformComponentRef.state.positionY - panningStartPositionY) > 10
+        ) {
+            setFollowActivePlayer(false);
+        }
     }
 
     const locations = () => {
@@ -68,9 +80,11 @@ export const GameMap = () => {
                 smooth={false}
                 wheel={{step: 0.1}}
                 doubleClick={{disabled: true}}
-                onWheelStart={() => registerMapMovement()}
-                onPanningStart={() => registerMapMovement()}
-                onPinchingStart={() => registerMapMovement()}
+                onWheelStart={() => setFollowActivePlayer(false)}
+                onPanningStart={(transformComponentRef) => startMapPanning(transformComponentRef)}
+                onPanningStop={(transformComponentRef) => stopMapPanning(transformComponentRef)}
+                onPinchingStart={() => setFollowActivePlayer(false)}
+                ref={transformComponentRef}
             >
                 <Controls />
                 <TransformComponent wrapperStyle={{height: "100%", width: "100%",}} contentStyle={{height: "100%", width: "100%",}}>

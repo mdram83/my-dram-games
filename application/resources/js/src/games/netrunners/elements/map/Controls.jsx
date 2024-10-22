@@ -10,7 +10,6 @@ export const Controls = () => {
     const {
         zoomIn,
         zoomOut,
-        resetTransform,
         zoomToElement,
     } = useControls();
 
@@ -24,7 +23,6 @@ export const Controls = () => {
 
     useEffect(() => {
         if (followActivePlayer) {
-            console.log('useEffect on Controls to followActivePlayer');
             setTimeout(() => centerLocation(), 0);
         }
     }, [activePlayerCoordinates]);
@@ -40,11 +38,16 @@ export const Controls = () => {
         }
     }
 
-    const centerLocation = (coordinates = undefined) => {
+    const centerHome = () => {
+        centerLocation('100.100', true);
+        setFollowActivePlayer(false);
+    }
+
+    const centerLocation = (coordinates = undefined, resetScale = false) => {
         if (coordinates === undefined) {
             coordinates = activePlayerCoordinates.row + '.' + activePlayerCoordinates.column;
         }
-        zoomToElement(coordinates, scale);
+        zoomToElement(coordinates, resetScale ? 1 : scale);
     };
 
     const classFollowIcon = 'fa fa-regular fa-eye' + (!followActivePlayer ? '-slash' : '');
@@ -61,7 +64,7 @@ export const Controls = () => {
 
                 <button className={classnameButton + ' pb-[0.5vh] '} onClick={() => zoomIn()}>{'\uFF0B'}</button>
                 <button className={classnameButton} onClick={() => zoomOut()}>{'\u2212'}</button>
-                <button className={classnameButton} onClick={() => resetTransform()}>{'\u21BA'}</button>
+                <button className={classnameButton} onClick={() => centerHome()}>{'\u2302'}</button>
                 <button className={classnameButton} onClick={() => toggleFollowActivePlayer()}><i className={classFollowIcon}></i></button>
 
             </div>
