@@ -10,6 +10,7 @@ export const GameMap = () => {
 
     const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
     const isPhaseCharacterSelection = phaseKey === 'character';
+    const setFollowActivePlayer = useNetrunnersStore(state => state.setFollowActivePlayer);
 
     const mapSize = {
             rows: useNetrunnersStore(state => state.mapSize.rows),
@@ -22,6 +23,12 @@ export const GameMap = () => {
         gridTemplateColumns: `repeat(${mapSize.columns}, minmax(0, 1fr))`,
     };
 
+    const registerMapMovement = () => {
+        console.log('registerMapMovement');
+
+        setFollowActivePlayer(false);
+    }
+
     const locations = () => {
 
         const locations = [];
@@ -29,8 +36,10 @@ export const GameMap = () => {
         for (let row = mapSize.startingRow; row < (mapSize.startingRow + mapSize.rows); row++) {
             for (let column = mapSize.startingColumn; column < (mapSize.startingColumn + mapSize.columns); column++) {
 
+                const coordinates = `${row}.${column}`;
+
                 locations.push(
-                    <div key={row + '.' + column} className='w-[64px] sm:w-[128px] h-[64px] sm:h-[128px]'>
+                    <div key={coordinates} id={coordinates} className='w-[64px] sm:w-[128px] h-[64px] sm:h-[128px]'>
                         <Location row={row} column={column} />
                     </div>
                 );
@@ -38,7 +47,13 @@ export const GameMap = () => {
             }
         }
 
-        return locations;
+        return (
+            <div className=' text-white animate-fadein h-full w-full flex items-center justify-center '>
+                <div className='grid gap-2 shrink-0' style={styleGrid}>
+                    {locations}
+                </div>
+            </div>
+        );
     }
 
     const render = () => {
@@ -46,15 +61,21 @@ export const GameMap = () => {
             return;
         }
         return (
-            <TransformWrapper limitToBounds={false} minScale={0.2} maxScale={2} smooth={false}>
+            <TransformWrapper
+                limitToBounds={false}
+                minScale={0.2}
+                maxScale={2}
+                smooth={false}
+                wheel={{step: 0.1}}
+                doubleClick={{disabled: true}}
+                onWheelStart={() => registerMapMovement()}
+                onPanningStart={() => registerMapMovement()}
+                onPinchingStart={() => registerMapMovement()}
+            >
                 <Controls />
                 <TransformComponent wrapperStyle={{height: "100%", width: "100%",}} contentStyle={{height: "100%", width: "100%",}}>
 
-                    <div className=' text-white animate-fadein h-full w-full flex items-center justify-center '>
-                        <div className='grid gap-2 shrink-0' style={styleGrid}>
-                            {locations()}
-                        </div>
-                    </div>
+                    {locations()}
 
                 </TransformComponent>
             </TransformWrapper>

@@ -55,4 +55,7 @@ export const useNetrunnersStore = create((set, get) => ({
             characterPriority: characterPriority,
         }})),
 
+    followActivePlayer: true,
+    setFollowActivePlayer: (follow) => set(() => ({ followActivePlayer: follow})),
+
 }));

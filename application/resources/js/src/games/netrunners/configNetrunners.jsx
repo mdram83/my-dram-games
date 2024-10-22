@@ -44,6 +44,7 @@ export const configNetrunners = {
         },
         location: {
             imageCoverM: 'url(https://images.pexels.com/photos/343457/pexels-photo-343457.jpeg)',
+            CrossroadRegular: 'url(https://images.pexels.com/photos/19804230/pexels-photo-19804230/free-photo-of-top-view-of-a-large-intersection.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
         }
     },
     engine: {

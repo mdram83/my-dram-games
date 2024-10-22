@@ -17,7 +17,7 @@ export const Location = ({row, column}) => {
     const yourTargetLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourTargetLocation);
 
     const style = {
-        backgroundImage: hasNode ? configNetrunners.covers.character.imageCoverS : configNetrunners.covers.location.imageCoverM,
+        backgroundImage: hasNode ? configNetrunners.covers.location.CrossroadRegular : configNetrunners.covers.location.imageCoverM,
     };
 
     const classDiv = ' bg-contain w-full h-full rounded-md '
