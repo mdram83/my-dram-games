@@ -25,13 +25,21 @@ export const useNetrunnersStore = create((set, get) => ({
             for (let column = mapSize.startingColumn; column < (mapSize.startingColumn + mapSize.columns); column++) {
 
                 const isLocation = situation.map[row][column] !== null;
+                const hasNode = isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null;
+                const nodeRotation = hasNode ? situation.map[row][column].nodeRotation : null;
                 const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
+                const setDirectionLocation = hasNode && nodeRotation === null;
+                const actionableLocation = allowedTargetLocation || setDirectionLocation;
+                const actionablePhaseKey = actionableLocation ? situation.phase.key : null;
 
                 Object.defineProperty(locationsMap[row], column, {value: {
                     isLocation: isLocation,
-                    hasNode: isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null,
-                    allowedTargetLocation: allowedTargetLocation,
-                    yourTargetLocation: allowedTargetLocation && yourTurn,
+                    hasNode: hasNode,
+                    nodeKey: hasNode ? situation.map[row][column].node.key : null,
+                    nodeRotation: nodeRotation,
+                    actionableLocation: actionableLocation,
+                    yourActionableLocation: actionableLocation && yourTurn,
+                    actionablePhaseKey: actionablePhaseKey,
                 }});
             }
         }
