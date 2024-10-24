@@ -8,35 +8,52 @@ export const Location = ({row, column}) => {
 
     console.log('Location', row, column);
 
-    const phase = useNetrunnersStore(state => state.situation.phase.key);
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 
     const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
-    const allowedTargetLocation = useNetrunnersStore(state => state.locationsMap[row][column].allowedTargetLocation);
-    const yourTargetLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourTargetLocation);
+    const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
+    const nodeRotation = useNetrunnersStore(state => state.locationsMap[row][column].nodeRotation);
+
+    // FIXME something wrong with nodeStock, they are not shuffled... Possibly on load...?
+    // TODO then add rotation div (to rotate/direction) and fixed button, hell yeah!
+    // TODO then on display (after setting and refresh) utilize nodeRotation to show proper rotation of locations with nodeRotation already given.
+
+    const actionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].actionableLocation);
+    const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
+    const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
 
     const style = {
-        backgroundImage: hasNode ? configNetrunners.covers.location.CrossroadRegular : configNetrunners.covers.location.imageCoverM,
+        backgroundImage: hasNode ? configNetrunners.covers.location[nodeKey] : configNetrunners.covers.location.imageCoverM,
     };
 
-    const classDiv = ' bg-contain w-full h-full rounded-md '
-        + (allowedTargetLocation
+    const classDiv = ' bg-cover bg-center bg-no-repeat w-full h-full rounded-md '
+        + (actionableLocation
             ? ' border-solid border-[2px] -mt-[2px] -ml-[2px] '
-                + (yourTargetLocation
+                + (yourActionableLocation
                     ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
                     : ' border-cyan-500 shadow-actionSmOp ')
             : ' ');
 
     const onClick = () => {
-        if (!allowedTargetLocation || !yourTargetLocation) {
+        if (!actionableLocation || !yourActionableLocation) {
             return;
         }
-        submitMove({row: row, column: column}, gamePlayId , setMessage, phase);
+        switch (actionablePhaseKey) {
+            case 'location':
+                submitMove({row: row, column: column}, gamePlayId , setMessage, actionablePhaseKey);
+                return;
+            case 'direction':
+                // FIXME actually on click I should rotate and submitMove only on Done/Save/Confirm button
+                submitMove({row: row, column: column, direction: 0}, gamePlayId , setMessage, actionablePhaseKey);
+                return;
+            default:
+                return;
+        }
     }
 
     const render = () => {
-        if (!hasNode && !allowedTargetLocation) {
+        if (!hasNode && !actionableLocation) {
             return;
         }
         return (
