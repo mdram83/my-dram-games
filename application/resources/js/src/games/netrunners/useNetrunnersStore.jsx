@@ -60,6 +60,7 @@ export const useNetrunnersStore = create((set, get) => ({
         phase: null,
     },
     setMoveData: (moveData) => set(() => ({moveData: moveData})),
+    resetMoveData: () => set(() => ({moveData: {payload: {}, phase: null}})),
 
     playerInfoScreen: {
         display: false,
