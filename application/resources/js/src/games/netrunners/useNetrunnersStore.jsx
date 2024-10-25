@@ -5,6 +5,7 @@ export const useNetrunnersStore = create((set, get) => ({
     situation: {},
     mapSize: {},
     locationsMap: {},
+    yourTurn: false,
     setSituation: (situation) => set(() => {
 
         const rows = Object.keys(situation.map);
@@ -50,6 +51,7 @@ export const useNetrunnersStore = create((set, get) => ({
             situation: situation,
             mapSize: mapSize,
             locationsMap: locationsMap,
+            yourTurn: yourTurn,
         };
     }),
 

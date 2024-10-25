@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {submitMove} from "../../submitMove.jsx";
@@ -25,33 +25,46 @@ export const Location = ({row, column}) => {
     const [rotation, setRotation] = useState(nodeRotation * 30);
 
     const handleRotate = () => {
+
+        const newRotation = rotation + 90;
         setRotation((prev) => prev + 90);
+
         if (yourActionableLocation) {
             setMoveData({
-                payload: {row: row, column: column, direction: ((rotation / 30) % 12)},
+                payload: {row: row, column: column, direction: ((newRotation / 30) % 12)},
                 phase: actionablePhaseKey,
             });
         }
     }
 
+    const opponentRotationInterval = useRef(undefined);
+    const opponentRotationTimeout = useRef(undefined);
+
     useEffect(() => {
         if (actionablePhaseKey === 'direction' && !yourActionableLocation) {
-            const rotateInterval = setInterval(() => {
-                const rotateTimeout = setTimeout(() => {
+            opponentRotationInterval.current = setInterval(() => {
+                opponentRotationTimeout.current = setTimeout(() => {
                     for (let i = 0; i <= Math.floor(Math.random() * 2); i++) {
                         handleRotate();
                     }
                 }, Math.floor(Math.random() * 20) * 100);
             }, 2000);
+        } else {
+            clearInterval(opponentRotationInterval.current);
+            clearTimeout(opponentRotationTimeout.current);
+            setRotation(nodeRotation * 30);
         }
-        return () => {
-            clearInterval(rotateInterval);
-            clearTimeout(rotateTimeout);
-        };
-    }, []);
 
-    // TODO then add action/move fixed button but more universal then below submitMove function, hell yeah!
-    // submitMove({row: row, column: column, direction: nodeRotation}, gamePlayId , setMessage, actionablePhaseKey);
+        if (actionablePhaseKey === 'direction' && yourActionableLocation) {
+            setMoveData({
+                payload: {row: row, column: column, direction: nodeRotation},
+                phase: actionablePhaseKey,
+            });
+        }
+
+    }, [actionablePhaseKey, yourActionableLocation]);
+
+    // TODO add uncover when going from location to direction (similar like selecting character)
 
     const springStyle = useSpring({
         transform: `rotate(${rotation}deg)`,
