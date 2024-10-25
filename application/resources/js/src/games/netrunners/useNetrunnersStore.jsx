@@ -27,8 +27,10 @@ export const useNetrunnersStore = create((set, get) => ({
                 const isLocation = situation.map[row][column] !== null;
                 const hasNode = isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null;
                 const nodeRotation = hasNode ? situation.map[row][column].nodeRotation : null;
+
                 const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
                 const setDirectionLocation = hasNode && nodeRotation === null;
+
                 const actionableLocation = allowedTargetLocation || setDirectionLocation;
                 const actionablePhaseKey = actionableLocation ? situation.phase.key : null;
 
@@ -36,7 +38,7 @@ export const useNetrunnersStore = create((set, get) => ({
                     isLocation: isLocation,
                     hasNode: hasNode,
                     nodeKey: hasNode ? situation.map[row][column].node.key : null,
-                    nodeRotation: nodeRotation,
+                    nodeRotation: nodeRotation ?? 0,
                     actionableLocation: actionableLocation,
                     yourActionableLocation: actionableLocation && yourTurn,
                     actionablePhaseKey: actionablePhaseKey,
@@ -50,6 +52,12 @@ export const useNetrunnersStore = create((set, get) => ({
             locationsMap: locationsMap,
         };
     }),
+
+    moveData: {
+        payload: {},
+        phase: null,
+    },
+    setMoveData: (moveData) => set(() => ({moveData: moveData})),
 
     playerInfoScreen: {
         display: false,
