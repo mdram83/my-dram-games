@@ -13,7 +13,7 @@ export const CharacterAvatar = ({characterName, classPartCommon, classPartSize})
     const [flipped, setFlipped] = useState(false);
     const { transform, opacity } = useSpring({
         opacity: flipped ? 1 : 0,
-        transform: `perspective(50vh) rotateY(${flipped ? 170 : 0}deg)`,
+        transform: `perspective(50vh) rotateY(${flipped ? 180 : 0}deg)`,
         config: { mass: 10, tension: 500, friction: 80 },
     });
 
