@@ -66,6 +66,10 @@ export const Location = ({row, column}) => {
     }, [actionablePhaseKey, yourActionableLocation]);
 
     // TODO add uncover when going from location to direction (similar like selecting character)
+    // see CharactersGritItem lines 16-18 and generally CharacterAvatar...
+    // I should probably flip only once when changing from (location w/o node w/o direction) to (location w/ node, w/o direction)
+    // I should also not flip on initial render (for all locations w/ node and w/o direction).
+    // so kind of useEffect on node and location-direction attributes with IF...
 
     const springStyle = useSpring({
         transform: `rotate(${rotation}deg)`,
