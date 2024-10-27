@@ -1,10 +1,10 @@
 import React, {useEffect, useRef, useState} from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
-import {submitMove} from "../../submitMove.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {animated, useSpring} from "@react-spring/web";
 import {Rotation} from "./Rotation.jsx";
+import {LocationSelection} from "./LocationSelection.jsx";
 
 export const Location = ({row, column}) => {
 
@@ -81,22 +81,18 @@ export const Location = ({row, column}) => {
         ...springStyle
     };
 
-    const classDiv = ' bg-cover bg-center bg-no-repeat w-full h-full rounded-md '
-        + (actionableLocation
-            ? ' border-solid border-[2px] -mt-[2px] -ml-[2px] '
-                + (yourActionableLocation
-                    ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
-                    : ' border-cyan-500 shadow-actionSmOp ')
-            : ' ');
+    const classDivCommon = ' bg-cover bg-center bg-no-repeat w-full h-full rounded-md ';
+    const classDivAction = classDivCommon
+        + (actionableLocation && (' border-solid border-[2px] -mt-[2px] -ml-[2px] '
+            + (yourActionableLocation
+                ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
+                : ' border-cyan-500 shadow-actionSmOp ')));
 
     const onClick = () => {
         if (!actionableLocation || !yourActionableLocation) {
             return;
         }
         switch (actionablePhaseKey) {
-            case 'location':
-                submitMove({row: row, column: column}, gamePlayId , setMessage, actionablePhaseKey);
-                return;
             case 'direction':
                 handleRotate();
                 return;
@@ -109,12 +105,19 @@ export const Location = ({row, column}) => {
         if (!hasNode && !actionableLocation) {
             return;
         }
+        if (!hasNode && actionableLocation) {
+            return <LocationSelection classDivCommon={classDivCommon} classDivAction={classDivAction}
+                                      enabled={yourActionableLocation} row={row} column={column}
+                                      gamePlayId={gamePlayId} setMessage={setMessage} />
+        }
         return (
-            <animated.div className={classDiv} style={style} onClick={() => onClick()}>
-                {row}.{column}
+            <animated.div className={classDivAction} style={style} onClick={() => onClick()}>
+                {row}.{column} {/*See comment bellow*/}
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
             </animated.div>
         );
+
+    //     {row}.{column} >> this should be returned in render always as absolute div called Coordinates or something like that...
     }
 
     return render();
