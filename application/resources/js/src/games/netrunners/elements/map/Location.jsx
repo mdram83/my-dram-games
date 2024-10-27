@@ -4,6 +4,7 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {submitMove} from "../../submitMove.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {animated, useSpring} from "@react-spring/web";
+import {Rotation} from "./Rotation.jsx";
 
 export const Location = ({row, column}) => {
 
@@ -107,6 +108,7 @@ export const Location = ({row, column}) => {
         return (
             <animated.div className={classDiv} style={style} onClick={() => onClick()}>
                 {row}.{column}
+                {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
             </animated.div>
         );
     }
