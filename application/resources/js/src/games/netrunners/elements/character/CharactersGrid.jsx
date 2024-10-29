@@ -7,8 +7,7 @@ export const CharactersGrid = () => {
 
     console.log('players/CharactersGrid');
 
-    const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
-    const isPhaseCharacterSelection = phaseKey === 'character';
+    const isPhaseCharacterSelection = useNetrunnersStore(state => state.isPhaseCharacterSelection);
 
     const [fade, setFade] = React.useState(false);
     const [hidden, setHidden] = React.useState(false);

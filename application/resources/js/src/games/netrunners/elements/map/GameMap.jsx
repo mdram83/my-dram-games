@@ -8,8 +8,7 @@ export const GameMap = () => {
 
     console.log('GameMap');
 
-    const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
-    const isPhaseCharacterSelection = phaseKey === 'character';
+    const isPhaseCharacterSelection = useNetrunnersStore(state => state.isPhaseCharacterSelection);
     const setFollowActivePlayer = useNetrunnersStore(state => state.setFollowActivePlayer);
 
     const mapSize = {
