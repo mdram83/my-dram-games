@@ -1,17 +1,9 @@
 import React from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
-import {submitMove} from "../../submitMove.jsx";
 
-export const LocationSelection = ({classDivCommon, classDivAction, enabled, row, column, gamePlayId, setMessage}) => {
+export const LocationSelection = ({classDivCommon, classDivAction, row, column, onClick}) => {
 
-    console.log('LocationSelection', row, column, enabled);
-
-    const onClick = () => {
-        if (!enabled) {
-            return;
-        }
-        submitMove({row: row, column: column}, gamePlayId , setMessage, 'location');
-    }
+    console.log('LocationSelection', row, column);
 
     const style = {
         backgroundImage: configNetrunners.covers.location.imageCoverM,
@@ -21,7 +13,6 @@ export const LocationSelection = ({classDivCommon, classDivAction, enabled, row,
     return (
         <div className={classDivAction} onClick={onClick}>
             <div className={classDivCommon} style={style}>
-
             </div>
         </div>
     );

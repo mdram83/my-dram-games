@@ -5,7 +5,7 @@ import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore
 import {animated, useSpring} from "@react-spring/web";
 import {Rotation} from "./Rotation.jsx";
 import {LocationSelection} from "./LocationSelection.jsx";
-import {DirectionSelection} from "./DirectionSelection.jsx";
+import {submitMove} from "../../submitMove.jsx";
 
 export const Location = ({row, column}) => {
 
@@ -94,6 +94,9 @@ export const Location = ({row, column}) => {
             return;
         }
         switch (actionablePhaseKey) {
+            case 'location':
+                submitMove({row: row, column: column}, gamePlayId , setMessage, actionablePhaseKey);
+                return;
             case 'direction':
                 handleRotate();
                 return;
@@ -107,9 +110,7 @@ export const Location = ({row, column}) => {
             return;
         }
         if (!hasNode && actionableLocation) {
-            return <LocationSelection classDivCommon={classDivCommon} classDivAction={classDivAction}
-                                      enabled={yourActionableLocation} row={row} column={column}
-                                      gamePlayId={gamePlayId} setMessage={setMessage} />;
+            return <LocationSelection classDivCommon={classDivCommon} classDivAction={classDivAction} row={row} column={column} onClick={() => onClick()}/>;
         }
         // TODO continue with separating elements?. Next - Direction/Rotation, including flip from "processor" picture.
         return (
