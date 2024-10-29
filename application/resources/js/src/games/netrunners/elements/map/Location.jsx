@@ -16,8 +16,6 @@ export const Location = ({row, column}) => {
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const setMoveData = useNetrunnersStore(state => state.setMoveData);
 
-
-
     const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
     const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
     const nodeRotation = useNetrunnersStore(state => state.locationsMap[row][column].nodeRotation);
@@ -25,8 +23,6 @@ export const Location = ({row, column}) => {
     const actionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].actionableLocation);
     const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
     const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
-
-
 
     const [rotation, setRotation] = useState(nodeRotation * 30);
 
@@ -42,6 +38,7 @@ export const Location = ({row, column}) => {
             });
         }
     }
+
 
     const opponentRotationInterval = useRef(undefined);
     const opponentRotationTimeout = useRef(undefined);
@@ -70,11 +67,6 @@ export const Location = ({row, column}) => {
 
     }, [actionablePhaseKey, yourActionableLocation]);
 
-    // TODO add uncover when going from location to direction (similar like selecting character)
-    // see CharactersGritItem lines 16-18 and generally CharacterAvatar...
-    // I should probably flip only once when changing from (location w/o node w/o direction) to (location w/ node, w/o direction)
-    // I should also not flip on initial render (for all locations w/ node and w/o direction).
-    // so kind of useEffect on node and location-direction attributes with IF...
 
     const springStyle = useSpring({
         transform: `rotate(${rotation}deg)`,
@@ -86,12 +78,14 @@ export const Location = ({row, column}) => {
         ...springStyle
     };
 
+
     const classDivCommon = ' bg-cover bg-center bg-no-repeat w-full h-full rounded-md ';
     const classDivAction = classDivCommon
         + (actionableLocation && (' border-solid border-[2px] -mt-[2px] -ml-[2px] '
             + (yourActionableLocation
                 ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
                 : ' border-cyan-500 shadow-actionSmOp ')));
+
 
     const onClick = () => {
         if (!actionableLocation || !yourActionableLocation) {
@@ -109,15 +103,20 @@ export const Location = ({row, column}) => {
         }
     }
 
+    // TODO fade in/out from null to location selection
+    // TODO flip from location selection to rotate
+    // TODO later think if not too complex, too much seems to be going on in this single component
+
     const render = () => {
+
         if (!hasNode && !actionableLocation) {
             return;
         }
+
         if (!hasNode && actionableLocation) {
             return <LocationSelection classDivCommon={classDivCommon} classDivAction={classDivAction} row={row} column={column} onClick={() => onClick()}/>;
         }
-        // TODO continue with separating elements?. Next - Direction/Rotation, including flip from "processor" picture
-        // TODO getting bit too much complicated...
+
         return (
             <animated.div className={classDivAction} style={style} onClick={() => onClick()}>
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
