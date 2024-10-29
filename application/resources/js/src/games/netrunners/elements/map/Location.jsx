@@ -6,6 +6,7 @@ import {animated, useSpring} from "@react-spring/web";
 import {Rotation} from "./Rotation.jsx";
 import {LocationSelection} from "./LocationSelection.jsx";
 import {submitMove} from "../../submitMove.jsx";
+import {Coordinates} from "./Coordinates.jsx";
 
 export const Location = ({row, column}) => {
 
@@ -13,8 +14,9 @@ export const Location = ({row, column}) => {
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
-
     const setMoveData = useNetrunnersStore(state => state.setMoveData);
+
+
 
     const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
     const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
@@ -23,6 +25,8 @@ export const Location = ({row, column}) => {
     const actionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].actionableLocation);
     const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
     const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
+
+
 
     const [rotation, setRotation] = useState(nodeRotation * 30);
 
@@ -112,15 +116,14 @@ export const Location = ({row, column}) => {
         if (!hasNode && actionableLocation) {
             return <LocationSelection classDivCommon={classDivCommon} classDivAction={classDivAction} row={row} column={column} onClick={() => onClick()}/>;
         }
-        // TODO continue with separating elements?. Next - Direction/Rotation, including flip from "processor" picture.
+        // TODO continue with separating elements?. Next - Direction/Rotation, including flip from "processor" picture
+        // TODO getting bit too much complicated...
         return (
             <animated.div className={classDivAction} style={style} onClick={() => onClick()}>
-                {row}.{column} {/*See comment bellow*/}
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
+                <Coordinates row={row} column={column} rotation={rotation} />
             </animated.div>
         );
-
-    //     {row}.{column} >> this should be returned in render always as absolute div called Coordinates or something like that...
     }
 
     return render();
