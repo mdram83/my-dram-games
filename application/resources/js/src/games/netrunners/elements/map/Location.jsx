@@ -68,14 +68,14 @@ export const Location = ({row, column}) => {
     }, [actionablePhaseKey, yourActionableLocation]);
 
 
-    const springStyle = useSpring({
+    const springRotation = useSpring({
         transform: `rotate(${rotation}deg)`,
-        config: { tension: 170, friction: 20 },
+        config: {tension: 170, friction: 20},
     });
 
     const style = {
-        backgroundImage: hasNode ? configNetrunners.covers.location[nodeKey] : configNetrunners.covers.location.imageCoverM,
-        ...springStyle
+        backgroundImage: hasNode ? configNetrunners.covers.location[nodeKey] : null,
+        ...springRotation
     };
 
 
@@ -102,10 +102,6 @@ export const Location = ({row, column}) => {
                 return;
         }
     }
-
-    // TODO fade in/out from null to location selection
-    // TODO flip from location selection to rotate
-    // TODO later think if not too complex, too much seems to be going on in this single component
 
     const render = () => {
 
