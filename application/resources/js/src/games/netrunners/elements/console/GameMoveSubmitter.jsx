@@ -29,7 +29,7 @@ export const GameMoveSubmitter = () => {
 
     return (
         <>{active &&
-            <div className=' flex justify-center items-center w-full h-full'>
+            <div className=' flex justify-center items-center w-full h-full bg-neutral-900/50 '>
                 <div className={classButtonDiv} onClick={onClick}>
                     <div>Continue</div>
                 </div>

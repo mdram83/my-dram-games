@@ -10,6 +10,7 @@ import {CharactersGrid} from "./elements/character/CharactersGrid.jsx";
 import {PlayerInfo} from "./elements/players/PlayerInfo.jsx";
 import {GameMap} from "./elements/map/GameMap.jsx";
 import {GameMoveSubmitter} from "./elements/console/GameMoveSubmitter.jsx";
+import {Console} from "./elements/console/Console.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -73,7 +74,9 @@ controller.getRoot().render(
 
         <div className="fixed -bottom-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800">
             <GameMoveSubmitter />
-            {/* Consider 'console' section with player tips and info here */}
+            <Console />
+            {/*Considering messages using console instead of normal message...*/}
+            {/*Later allow for console commands: netrunners --help, netrunners show, etc. Completely unnecessary but to make some climate*/}
         </div>
 
         <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit h-fit left-0 sm:left-[2vh] z-20">
