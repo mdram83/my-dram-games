@@ -13,11 +13,13 @@ export const GameMoveSubmitter = () => {
     const moveData = useNetrunnersStore(state => state.moveData);
     const resetMoveData = useNetrunnersStore(state => state.resetMoveData);
     const yourTurn = useNetrunnersStore(state => state.yourTurn);
+    const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
 
     const active = yourTurn && moveData.payload !== {} && moveData.phase !== null;
 
     const onClick = () => {
         submitMove(moveData.payload, gamePlayId, setMessage, moveData.phase);
+        setPlayerInfoScreen(false);
         resetMoveData();
     }
 
@@ -31,7 +33,7 @@ export const GameMoveSubmitter = () => {
         <>{active &&
             <div className=' flex justify-center items-center w-full h-full bg-neutral-900/50 '>
                 <div className={classButtonDiv} onClick={onClick}>
-                    <div>Continue</div>
+                    <div>{moveData.label ?? 'Continue'}</div>
                 </div>
             </div>
         }</>

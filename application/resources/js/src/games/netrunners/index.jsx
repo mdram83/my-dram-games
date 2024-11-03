@@ -45,40 +45,32 @@ const setupMoveEvent = (e) => {
 
 const controller = new GamePlayController(getPlayersNames, setupSituation, setupMoveEvent);
 
-
 // Remove after testing
 console.log(useNetrunnersStore.getState());
 
 const onLoadPhaseKey = useNetrunnersStore.getState().situation.phase.key;
 
-
 controller.getRoot().render(
     <div className="relative w-full h-full">
 
+        {/*Top Bar*/}
         <div className="fixed top-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800 z-10">
             <Menu gameInvite={controller.getGameInvite()}/>
         </div>
 
-        {/*--- Board ---*/}
-        {/*Scrollable*/}
-        {/*<div className="relative mt-[10vh] sm:mt-[12vh] pt-[2vh] w-full">*/}
-        {/*Fixed*/}
+        {/*Main Area*/}
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-gray-900">
-
-            {/*Add more sections as needed*/}
-
             {onLoadPhaseKey === 'character' && <CharactersGrid />}
             <GameMap />
-
         </div>
 
+        {/*Bottom Bar*/}
         <div className="fixed -bottom-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800">
             <GameMoveSubmitter />
             <Console />
-            {/*Considering messages using console instead of normal message...*/}
-            {/*Later allow for console commands: netrunners --help, netrunners show, etc. Completely unnecessary but to make some climate*/}
         </div>
 
+        {/*All Others*/}
         <div className="fixed bottom-[10vh] sm:top-[12vh] w-full sm:w-fit h-fit left-0 sm:left-[2vh] z-20">
             <div className="flex justify-center sm:justify-start">
                 <PlayersList/>
@@ -89,9 +81,7 @@ controller.getRoot().render(
             <div className="flex justify-center">
                 <PlayerInfo/>
             </div>
-
         </div>
-
 
         <FlashMessageGamePlay/>
 

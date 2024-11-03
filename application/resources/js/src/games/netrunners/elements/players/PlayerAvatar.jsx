@@ -10,6 +10,9 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
     const display = useNetrunnersStore(state => state.playerInfoScreen.display);
     const displayPlayerName = useNetrunnersStore(state => state.playerInfoScreen.playerName);
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
+    const actionablePlayer = useNetrunnersStore(state => state.situation.canSwitchMapLocation);
+    const yourTurn = useNetrunnersStore(state => state.yourTurn);
+    const yourActionablePlayer = actionablePlayer && yourTurn;
 
     const isConnected = useGamePlayStore((state) => state.players[playerName]);
     const activePlayer = useGamePlayStore((state) => state.activePlayer);
@@ -26,7 +29,10 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
     const classDivCircle =
         ' relative flex items-center justify-center w-[8vh] sm:w-[10vh] h-[8vh] sm:h-[10vh] rounded-full bg-gray-900 '
         + (isYou ? ' border-[0.5vh] border-solid ' : ' border-[0.4vh] border-dotted')
-        + (character ? configNetrunners.characters[character].classAvatarBorder : ' border-lime-600 ')
+        + (actionablePlayer
+            ? (yourActionablePlayer ? ' border-orange-500 shadow-actionSm hover:shadow-actionLg ' : ' border-teal-500 shadow-actionSmOp ')
+            : (character ? configNetrunners.characters[character].classAvatarBorder : ' border-lime-600 ')
+        )
         + (character ? ' cursor-pointer ' : ' ')
         + (isActivePlayer ? ' animate-pulse ' : ' ')
         + (isActivePlayer && !character ? ' bg-white ' : ' bg-gray-200 ');

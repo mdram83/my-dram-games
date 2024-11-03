@@ -60,9 +60,10 @@ export const useNetrunnersStore = create((set, get) => ({
     moveData: {
         payload: {},
         phase: null,
+        label: null,
     },
     setMoveData: (moveData) => set(() => ({moveData: moveData})),
-    resetMoveData: () => set(() => ({moveData: {payload: {}, phase: null}})),
+    resetMoveData: () => set(() => ({moveData: {payload: {}, phase: null, label: null}})),
 
     playerInfoScreen: {
         display: false,
@@ -70,11 +71,24 @@ export const useNetrunnersStore = create((set, get) => ({
         characterPriority: false,
     },
     setPlayerInfoScreen: (display, playerName = undefined, characterPriority = false) =>
-        set(() => ({ playerInfoScreen: {
-            display: display,
-            playerName: playerName,
-            characterPriority: characterPriority,
-        }})),
+        set(() => {
+
+            const updatedStoreProperties = {
+                playerInfoScreen: {
+                    display: display,
+                    playerName: playerName,
+                    characterPriority: characterPriority,
+                },
+            };
+
+            if (get().situation.canSwitchMapLocation && get().yourTurn) {
+                updatedStoreProperties['moveData'] = display
+                    ? {payload: {targetPlayerName: playerName}, phase: 'switch', label: 'Switch'}
+                    : {payload: {}, phase: null, label: null}
+            }
+
+            return updatedStoreProperties;
+        }),
 
     followActivePlayer: true,
     setFollowActivePlayer: (follow) => set(() => ({ followActivePlayer: follow})),
