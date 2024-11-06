@@ -19,6 +19,7 @@ export const useNetrunnersStore = create((set, get) => ({
         };
         const locationsMap = {};
         const yourTurn = MyDramGames.player.name === situation.activePlayer;
+        const activePlayerCoordinates = situation.players[situation.activePlayer].coordinates;
 
         for (let row = mapSize.startingRow; row < (mapSize.startingRow + mapSize.rows); row++) {
 
@@ -32,8 +33,9 @@ export const useNetrunnersStore = create((set, get) => ({
 
                 const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
                 const setDirectionLocation = hasNode && nodeRotation === null;
+                const activePlayerChargerLocation = situation.canRecharge && row === activePlayerCoordinates.row && column === activePlayerCoordinates.column;
 
-                const actionableLocation = allowedTargetLocation || setDirectionLocation;
+                const actionableLocation = allowedTargetLocation || setDirectionLocation || activePlayerChargerLocation;
                 const actionablePhaseKey = actionableLocation ? situation.phase.key : null;
 
                 Object.defineProperty(locationsMap[row], column, {value: {
@@ -44,17 +46,24 @@ export const useNetrunnersStore = create((set, get) => ({
                     actionableLocation: actionableLocation,
                     yourActionableLocation: actionableLocation && yourTurn,
                     actionablePhaseKey: actionablePhaseKey,
+                    activePlayerChargerLocation: activePlayerChargerLocation,
                 }});
             }
         }
 
-        return {
+        const updatedStoreProperties = {
             situation: situation,
             mapSize: mapSize,
             locationsMap: locationsMap,
             yourTurn: yourTurn,
             isPhaseCharacterSelection: situation.phase.key === 'character',
         };
+
+        if (situation.canRecharge && yourTurn) {
+            updatedStoreProperties['rechargeInfoScreen'] = {display: situation.players[situation.activePlayer].remainingMoves !== 4}
+        }
+
+        return updatedStoreProperties;
     }),
 
     moveData: {
@@ -87,8 +96,18 @@ export const useNetrunnersStore = create((set, get) => ({
                     : {payload: {}, phase: null, label: null}
             }
 
+            if (get().rechargeInfoScreen.display) {
+                updatedStoreProperties['rechargeInfoScreen'] = {display: false}
+            }
+
             return updatedStoreProperties;
         }),
+
+    rechargeInfoScreen: {
+        display: false
+    },
+    setRechargeInfoScreen: (display) => set(() => ({rechargeInfoScreen: {display: display}})),
+
 
     followActivePlayer: true,
     setFollowActivePlayer: (follow) => set(() => ({ followActivePlayer: follow})),

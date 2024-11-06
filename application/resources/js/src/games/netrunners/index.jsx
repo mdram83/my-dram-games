@@ -11,6 +11,7 @@ import {PlayerInfo} from "./elements/players/PlayerInfo.jsx";
 import {GameMap} from "./elements/map/GameMap.jsx";
 import {GameMoveSubmitter} from "./elements/console/GameMoveSubmitter.jsx";
 import {Console} from "./elements/console/Console.jsx";
+import {RechargeInfo} from "./elements/actions/RechargeInfo.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -60,14 +61,14 @@ controller.getRoot().render(
 
         {/*Main Area*/}
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-[80vh] sm:h-[76vh] bg-gray-900">
-            {onLoadPhaseKey === 'character' && <CharactersGrid />}
-            <GameMap />
+            {onLoadPhaseKey === 'character' && <CharactersGrid/>}
+            <GameMap/>
         </div>
 
         {/*Bottom Bar*/}
         <div className="fixed -bottom-0 w-full h-[10vh] sm:h-[12vh] bg-gray-800">
-            <GameMoveSubmitter />
-            <Console />
+            <GameMoveSubmitter/>
+            <Console/>
         </div>
 
         {/*All Others*/}
@@ -80,6 +81,12 @@ controller.getRoot().render(
         <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-fit z-10">
             <div className="flex justify-center">
                 <PlayerInfo/>
+            </div>
+        </div>
+
+        <div className="fixed mt-[10vh] sm:mt-[12vh] w-full h-fit z-10">
+            <div className="flex justify-center">
+                <RechargeInfo />
             </div>
         </div>
 

@@ -14,7 +14,10 @@ export const Location = ({row, column}) => {
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
+
     const setMoveData = useNetrunnersStore(state => state.setMoveData);
+    const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
+    const setRechargeInfoScreen = useNetrunnersStore(state => state.setRechargeInfoScreen);
 
     const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
     const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
@@ -23,6 +26,7 @@ export const Location = ({row, column}) => {
     const actionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].actionableLocation);
     const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
     const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
+    const activePlayerChargerLocation = useNetrunnersStore(state => state.locationsMap[row][column].activePlayerChargerLocation);
 
     const [rotation, setRotation] = useState(nodeRotation * 30);
 
@@ -88,16 +92,26 @@ export const Location = ({row, column}) => {
 
 
     const onClick = () => {
+
         if (!actionableLocation || !yourActionableLocation) {
             return;
         }
+
         switch (actionablePhaseKey) {
+
             case 'location':
-                submitMove({row: row, column: column}, gamePlayId , setMessage, actionablePhaseKey);
+                if (activePlayerChargerLocation) {
+                    setPlayerInfoScreen(false);
+                    setRechargeInfoScreen(true);
+                } else {
+                    submitMove({row: row, column: column}, gamePlayId , setMessage, actionablePhaseKey);
+                }
                 return;
+
             case 'direction':
                 handleRotate();
                 return;
+
             default:
                 return;
         }
