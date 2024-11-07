@@ -56,7 +56,7 @@ export const RechargeInfo = () => {
                         {/*BATTERY SECTION*/}
                         <div className={classDivDetails + classDivSpan}>
                             <div className=' flex justify-center items-center w-full h-full '>
-                                <Battery points={3} />
+                                <Battery playerName={playerName} targetPoints={5} />
                             </div>
                         </div>
 

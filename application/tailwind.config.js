@@ -17,6 +17,7 @@ export default {
             },
             animation: {
                 fadeout: 'fadeOut .5s ease-in-out',
+                pulseFast: 'pulse .25s linear infinite',
             },
             keyframes: {
                 fadeOut: {
