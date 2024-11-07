@@ -3,6 +3,7 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {submitMove} from "../../submitMove.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {ActionButton} from "./ActionButton.jsx";
+import {Battery} from "../misc/Battery.jsx";
 
 export const RechargeInfo = () => {
 
@@ -55,7 +56,7 @@ export const RechargeInfo = () => {
                         {/*BATTERY SECTION*/}
                         <div className={classDivDetails + classDivSpan}>
                             <div className=' flex justify-center items-center w-full h-full '>
-                                <div>Battery Animation</div>
+                                <Battery points={3} />
                             </div>
                         </div>
 
