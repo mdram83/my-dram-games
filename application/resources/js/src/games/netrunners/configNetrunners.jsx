@@ -55,7 +55,8 @@ export const configNetrunners = {
             TurnEncounter : 'url(https://www.matech.com.pl/media/amasty/webp/catalog/product/cache/067e632235bbc3ec7310f5f350b3960e/z/n/znak-drogowy-a-1_1_jpg.webp)',
             TShapeRegular : 'url(https://www.matech.com.pl/media/amasty/webp/catalog/product/cache/067e632235bbc3ec7310f5f350b3960e/z/n/znak-drogowy-c-6-nakaz-jazdy-prosto-lub-w-prawo_1_jpg.webp)',
             TShapeEncounter: 'url(https://www.matech.com.pl/media/amasty/webp/catalog/product/cache/067e632235bbc3ec7310f5f350b3960e/z/n/znak-drogowy-a-6b-skrzy_owanie-z-drog_-podporz_dkowan_-wyst_puj_c_-po-prawej-stronie_1_jpg.webp)',
-        }
+        },
+        hacked: 'url(https://images.pexels.com/photos/14019734/pexels-photo-14019734.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
     },
     engine: {
         phaseFadeTimeout: 1000,

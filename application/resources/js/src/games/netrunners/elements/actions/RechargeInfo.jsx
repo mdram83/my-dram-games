@@ -4,6 +4,7 @@ import {submitMove} from "../../submitMove.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {ActionButton} from "./ActionButton.jsx";
 import {Battery} from "../misc/Battery.jsx";
+import {Hacked} from "../misc/Hacked.jsx";
 
 export const RechargeInfo = () => {
 
@@ -23,7 +24,7 @@ export const RechargeInfo = () => {
 
     const classDivContainer = ' h-[70vh] w-[50vh] sm:w-[100vh] mt-[2vh] shadow-xl shadow-black text-white '
         + ' border-[0.3vh] sm:border-[0.25vh] border-solid border-fuchsia-500 rounded-[2vh] ';
-    const classDivDetails = ' p-[4%] w-[92%] h-[95%] ';
+    const classDivDetails = ' p-[4%] ';
     const classDivSpan = ' col-span-2 sm:col-span-1 ';
 
     return (
@@ -63,7 +64,7 @@ export const RechargeInfo = () => {
                         {/*HACK SECTION*/}
                         <div className={classDivDetails + classDivSpan}>
                             <div className=' flex justify-center items-center w-full h-full '>
-                                <div>Hack Animation</div>
+                                <Hacked playerName={playerName} toBeHacked={false} />
                             </div>
                         </div>
 
