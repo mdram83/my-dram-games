@@ -63,6 +63,10 @@ export const useNetrunnersStore = create((set, get) => ({
             updatedStoreProperties['rechargeInfoScreen'] = {display: situation.players[situation.activePlayer].remainingMoves !== 4}
         }
 
+        if (situation.phase.key === 'finish' && yourTurn) {
+            updatedStoreProperties['moveData'] = {payload: {finish: true}, phase: 'finish', label: 'End Turn'}
+        }
+
         return updatedStoreProperties;
     }),
 
