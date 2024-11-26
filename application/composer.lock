@@ -2305,16 +2305,16 @@
         },
         {
             "name": "mdram83/mydramgames-gp-netrunners",
-            "version": "v0.0.013",
+            "version": "v0.0.015",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mdram83/mydramgames-gp-netrunners.git",
-                "reference": "062c4dc8760696682cf8812d5bd88f2eaf49be6e"
+                "reference": "63cb214f68edcfefdaad1b600e88718f1021b675"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-netrunners/zipball/062c4dc8760696682cf8812d5bd88f2eaf49be6e",
-                "reference": "062c4dc8760696682cf8812d5bd88f2eaf49be6e",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-netrunners/zipball/63cb214f68edcfefdaad1b600e88718f1021b675",
+                "reference": "63cb214f68edcfefdaad1b600e88718f1021b675",
                 "shasum": ""
             },
             "require": {
@@ -2350,10 +2350,10 @@
             ],
             "description": "Netrunners GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-netrunners/tree/v0.0.013",
+                "source": "https://github.com/mdram83/mydramgames-gp-netrunners/tree/v0.0.015",
                 "issues": "https://github.com/mdram83/mydramgames-gp-netrunners/issues"
             },
-            "time": "2024-11-23T09:51:06+00:00"
+            "time": "2024-11-26T07:44:19+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-thousand",
