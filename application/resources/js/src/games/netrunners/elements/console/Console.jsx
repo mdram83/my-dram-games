@@ -9,9 +9,9 @@ export const Console = () => {
     const activePlayer = useNetrunnersStore(state => state.situation.activePlayer);
     const remainingMoves = useNetrunnersStore(state => state.situation.players[activePlayer].remainingMoves);
     const remainingNodes = useNetrunnersStore(state => state.situation.remainingNodes);
-    const remainingEnconters = useNetrunnersStore(state => state.situation.remainingEncounters);
+    const remainingEncounters = useNetrunnersStore(state => state.situation.remainingEncounters);
 
-    const text = `  ${activePlayer} | Moves ${remainingMoves} | Nodes ${remainingNodes} | Encounters ${remainingEnconters} `;
+    const text = `  ${activePlayer} | Moves ${remainingMoves} | Nodes ${remainingNodes} | Encounters ${remainingEncounters} `;
     const displayText = useTypewriter(text, 10, 1000);
 
     return (
