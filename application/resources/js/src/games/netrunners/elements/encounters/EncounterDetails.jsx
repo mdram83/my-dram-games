@@ -25,7 +25,7 @@ export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, p
 
             <div className={classDivDetails} style={style} onClick={action}>
 
-                <div className=' absolute bottom-0 w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-normal sm:leading-normal bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2.5vh] sm:text-sm font-mono'>
+                <div className=' absolute bottom-0 w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none sm:leading-normal bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2.2vh] sm:text-sm font-mono'>
                     {description}
                 </div>
 
