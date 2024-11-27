@@ -1,33 +1,28 @@
 import React from "react";
+import {useMediaQuery} from "../../../../customHooks/useMediaQuery.jsx";
 
 export const Attribute = ({className, children, sizeVh = 4, sizeVhSm = 7}) => {
 
     console.log('Attribute', sizeVh, sizeVhSm);
 
-    const sizeLg = Math.round(sizeVh).toString();
-    const sizeSm = Math.round(sizeVhSm).toString();
-    const borderLg = (sizeVh * 0.12).toPrecision(1);
-    const borderSm = (sizeVhSm * 0.16).toPrecision(1);
-    const textLg = (sizeVh * 0.65).toPrecision(1);
-    const textSm = (sizeVhSm * 0.5).toPrecision(1);
+    const isSm = useMediaQuery('(min-width: 640px)');
 
-    const classDivFromSize = ' aspect-square '
-        + ` h-[${sizeLg}vh] border-[${borderLg}vh] text-[${textLg}vh] `
-        + ` sm:h-[${sizeSm}vh] sm:border-[${borderSm}vh] sm:text-[${textSm}vh] `;
-
-    const classDivBase = className + classDivFromSize
+    const classDivBase = className
+        + ' aspect-square '
         + ' flex justify-center items-center '
         + ' bg-white/50 '
-        + ' border border-solid rounded-full border-orange-500 '
+        + ' border-solid rounded-full border-orange-500 '
         + ' text-orange-500 font-sans font-semibold leading-none ';
 
-    console.log(classDivBase);
-
-    const classContent = ' pb-[10%] sm:pb-[6%] ';
+    const styles = {
+        height: `${isSm ? sizeVhSm : sizeVh}vh`,
+        borderWidth: `${isSm ? sizeVhSm * 0.08 : sizeVh * 0.12}vh`,
+        fontSize: `${isSm ? sizeVhSm * 0.6 : sizeVh * 0.7}vh`,
+    }
 
     return (
-        <div className={classDivBase}>
-            <div className={classContent}>
+        <div className={classDivBase} style={styles}>
+            <div className= ' pb-[10%] sm:pb-[6%] '>
                 {children}
             </div>
         </div>

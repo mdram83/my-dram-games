@@ -25,14 +25,14 @@ export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, p
 
             <div className={classDivDetails} style={style} onClick={action}>
 
-                <div className=' absolute bottom-0 w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-xs font-mono'>
+                <div className=' absolute bottom-0 w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-normal sm:leading-normal bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2.5vh] sm:text-sm font-mono'>
                     {description}
                 </div>
 
                 {power > 0 &&
                     <Attribute className=' absolute top-[1vh] right-[1vh] border-pink-600 text-pink-600 '
-                               sizeVh={4}
-                               sizeVhSm={7}>
+                               sizeVh={8}
+                               sizeVhSm={6}>
                         {power}
                     </Attribute>
                 }
