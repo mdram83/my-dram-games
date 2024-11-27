@@ -38,8 +38,12 @@ export const configNetrunners = {
         },
     },
     encounters: {
+
         classEnemyText: ' text-pink-400 ',
+        classEnemyBorder: ' border-pink-600 ',
         classItemText: ' text-blue-400 ',
+        classItemBorder: ' border-blue-600 ',
+
         KeySentinel: {
             imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
             imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,

@@ -30,7 +30,7 @@ export const useNetrunnersStore = create((set, get) => ({
                 const isLocation = situation.map[row][column] !== null;
                 const hasNode = isLocation && situation.map[row][column].hasOwnProperty('node') && situation.map[row][column].node !== null;
                 const nodeRotation = hasNode ? situation.map[row][column].nodeRotation : null;
-                const hasEncounter = hasNode && situation.map[row][column].hasOwnProperty('encounter');
+                const hasEncounter = hasNode && !!situation.map[row][column].encounter;
                 const encounter = hasEncounter ? situation.map[row][column].encounter : null;
 
                 const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
@@ -45,12 +45,15 @@ export const useNetrunnersStore = create((set, get) => ({
                     hasNode: hasNode,
                     nodeKey: hasNode ? situation.map[row][column].node.key : null,
                     nodeRotation: nodeRotation ?? 0,
+                    hasEncounter: hasEncounter,
                     encounter: encounter,
                     actionableLocation: actionableLocation,
                     yourActionableLocation: actionableLocation && yourTurn,
                     actionablePhaseKey: actionablePhaseKey,
                     activePlayerChargerLocation: activePlayerChargerLocation,
                 }});
+
+
             }
         }
 
