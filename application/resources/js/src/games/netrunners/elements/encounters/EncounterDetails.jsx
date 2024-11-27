@@ -1,12 +1,13 @@
 import React from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
+import {Attribute} from "../misc/Attribute.jsx";
 
-export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, itemType = null, description = null, action = undefined}) => {
+export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, power, itemType = null, description = null, action = undefined}) => {
 
     console.log('EncounterDetails', itemKey, name, itemType, description !== null);
 
     const classDivDetails = classDetails
-        + ' flex items-end justify-center bg-top bg-no-repeat bg-cover '
+        + ' relative items-end justify-center bg-top bg-no-repeat bg-cover '
         + ' w-[100%] h-[80%] rounded-[1vh] border-solid border-[2px] '
         + (action !== undefined
             ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
@@ -23,9 +24,19 @@ export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, i
         <div className={classEncounter}>
 
             <div className={classDivDetails} style={style} onClick={action}>
-                <div className='w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-xs font-mono'>
+
+                <div className=' absolute bottom-0 w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-xs font-mono'>
                     {description}
                 </div>
+
+                {power > 0 &&
+                    <Attribute className=' absolute top-[1vh] right-[1vh] border-pink-600 text-pink-600 '
+                               sizeVh={4}
+                               sizeVhSm={7}>
+                        {power}
+                    </Attribute>
+                }
+
             </div>
 
             <div className={classDivName}>

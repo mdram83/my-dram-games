@@ -40,6 +40,7 @@ export const EncounterSelection = () => {
             name={encounter.name}
             itemType={encounter.itemType}
             description={encounter.description}
+            power={encounter.power}
         />
     );
 
