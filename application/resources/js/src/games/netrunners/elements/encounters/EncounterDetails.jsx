@@ -1,0 +1,37 @@
+import React from "react";
+import {configNetrunners} from "../../configNetrunners.jsx";
+
+export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, itemType = null, description = null, action = undefined}) => {
+
+    console.log('EncounterDetails', itemKey, name, itemType, description !== null);
+
+    const classDivDetails = classDetails
+        + ' flex items-end justify-center bg-top bg-no-repeat bg-cover '
+        + ' w-[100%] h-[80%] rounded-[1vh] border-solid border-[2px] '
+        + (action !== undefined
+            ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
+            : ' border-cyan-500 shadow-actionSmOp ');
+
+    const style = {
+        backgroundImage: configNetrunners.encounters[itemKey].imageM,
+    };
+
+    const classDivName = ' flex items-center justify-center h-[20%] text-[5vh] font-mono lowercase '
+        + (!!itemType ? configNetrunners.encounters.classItemText : configNetrunners.encounters.classEnemyText);
+
+    return (
+        <div className={classEncounter}>
+
+            <div className={classDivDetails} style={style} onClick={action}>
+                <div className='w-[98%] px-[1%] sm:w-[96%] sm:px-[2%] leading-none bg-neutral-900/90 rounded-b-[0.8vh] text-lime-500 text-[2vh] sm:text-xs font-mono'>
+                    {description}
+                </div>
+            </div>
+
+            <div className={classDivName}>
+                {name}
+            </div>
+
+        </div>
+    );
+}

@@ -37,6 +37,78 @@ export const configNetrunners = {
             imageAvatarM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/avatars/tank-m.jpg'})`,
         },
     },
+    encounters: {
+        classEnemyText: ' text-pink-400 ',
+        classItemText: ' text-blue-400 ',
+        KeySentinel: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        WirePixie: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        NeonStrider:{
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        ByteFiend: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        BladePulse: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        IronPhantom: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        DigitalDemon: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        DominionCore: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Encrypted: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Decrypted: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        SuperDecrypted: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Small: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Medium: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Large: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Overclock: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        Charger: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+        key: {
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+        },
+    },
     covers: {
         character: {
             imageCoverM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-m.jpg'})`,
