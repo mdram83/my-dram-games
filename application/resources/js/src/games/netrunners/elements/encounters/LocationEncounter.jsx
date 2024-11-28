@@ -2,6 +2,7 @@ import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {calculateRotation} from "../../../../customFunctions/calculateRotation.jsx";
+import {Attribute} from "../misc/Attribute.jsx";
 
 export const LocationEncounter = ({row, column, parentRotation = 0}) => {
 
@@ -9,9 +10,10 @@ export const LocationEncounter = ({row, column, parentRotation = 0}) => {
 
     const key = useNetrunnersStore(state => state.locationsMap[row][column].encounter.key);
     const isEnemy = useNetrunnersStore(state => state.locationsMap[row][column].encounter.isEnemy);
+    const power = useNetrunnersStore(state => state.locationsMap[row][column].encounter.power);
 
     const classDivCommon =
-        ' bg-cover bg-center bg-no-repeat w-[50%] h-[50%] '
+        ' bg-cover bg-center bg-no-repeat w-[65%] sm:w-[50%] h-[65%] sm:h-[50%]'
         + ' border border-solid border-[0.4vh] rounded-lg '
         + (isEnemy ? configNetrunners.encounters.classEnemyBorder : configNetrunners.encounters.classItemBorder);
 
@@ -25,5 +27,15 @@ export const LocationEncounter = ({row, column, parentRotation = 0}) => {
         transform: ` translate(-50%, -50%)  rotate(${rotation}deg) `,
     };
 
-    return <div className={classDivCommon} style={styles}></div>;
+    return (
+        <div className={classDivCommon} style={styles}>
+            {power > 0 &&
+                <Attribute className=' absolute top-[0.1vh] right-[0.1vh] text-pink-600 border-neutral-300 sm:border-pink-600 '
+                           sizeVh={3}
+                           sizeVhSm={2.5}>
+                    {power}
+                </Attribute>
+            }
+        </div>
+    );
 }
