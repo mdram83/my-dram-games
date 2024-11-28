@@ -8,6 +8,7 @@ import {LocationSelection} from "./LocationSelection.jsx";
 import {submitMove} from "../../submitMove.jsx";
 import {Coordinates} from "./Coordinates.jsx";
 import {LocationEncounter} from "../encounters/LocationEncounter.jsx";
+import {LocationPlayers} from "../players/LocationPlayers.jsx";
 
 export const Location = ({row, column}) => {
 
@@ -24,6 +25,7 @@ export const Location = ({row, column}) => {
     const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
     const nodeRotation = useNetrunnersStore(state => state.locationsMap[row][column].nodeRotation);
     const hasEncounter = useNetrunnersStore(state => state.locationsMap[row][column].hasEncounter);
+    const playersCount = useNetrunnersStore(state => state.locationsMap[row][column].playersCount);
 
     const actionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].actionableLocation);
     const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
@@ -134,6 +136,7 @@ export const Location = ({row, column}) => {
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
                 <Coordinates row={row} column={column} rotation={rotation} />
                 {hasEncounter && <LocationEncounter row={row} column={column} parentRotation={rotation} />}
+                {playersCount && <LocationPlayers row={row} column={column} parentRotation={rotation} hasEncounter={hasEncounter} />}
             </animated.div>
         );
     }

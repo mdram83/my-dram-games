@@ -17,7 +17,7 @@ export const LocationEncounter = ({row, column, parentRotation = 0}) => {
         + ' border border-solid border-[0.4vh] rounded-lg '
         + (isEnemy ? configNetrunners.encounters.classEnemyBorder : configNetrunners.encounters.classItemBorder);
 
-    const rotation = -parentRotation + calculateRotation(-10, 10, row, column, key, parentRotation);
+    const rotation = -parentRotation + calculateRotation(-20, 20, row, column, key, parentRotation);
 
     const styles = {
         backgroundImage: configNetrunners.encounters[key].imageS,

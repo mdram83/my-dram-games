@@ -1,5 +1,7 @@
 export const configNetrunners = {
+
     characters: {
+
         Analyst: {
             classAvatarBorder: ' border-blue-600 ',
             classAvatarText: ' text-blue-400 ',
@@ -37,6 +39,7 @@ export const configNetrunners = {
             imageAvatarM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/avatars/tank-m.jpg'})`,
         },
     },
+
     encounters: {
 
         classEnemyText: ' text-pink-400 ',
@@ -113,11 +116,14 @@ export const configNetrunners = {
             imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
         },
     },
+
     covers: {
+
         character: {
             imageCoverM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-m.jpg'})`,
             imageCoverS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/random-s.jpg'})`,
         },
+
         location: {
             imageCoverM: 'url(https://images.pexels.com/photos/343457/pexels-photo-343457.jpeg)',
             Start: 'url(https://images.pexels.com/photos/19804230/pexels-photo-19804230/free-photo-of-top-view-of-a-large-intersection.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
@@ -132,8 +138,10 @@ export const configNetrunners = {
             TShapeRegular : 'url(https://www.matech.com.pl/media/amasty/webp/catalog/product/cache/067e632235bbc3ec7310f5f350b3960e/z/n/znak-drogowy-c-6-nakaz-jazdy-prosto-lub-w-prawo_1_jpg.webp)',
             TShapeEncounter: 'url(https://www.matech.com.pl/media/amasty/webp/catalog/product/cache/067e632235bbc3ec7310f5f350b3960e/z/n/znak-drogowy-a-6b-skrzy_owanie-z-drog_-podporz_dkowan_-wyst_puj_c_-po-prawej-stronie_1_jpg.webp)',
         },
+
         hacked: 'url(https://images.pexels.com/photos/14019734/pexels-photo-14019734.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
     },
+
     engine: {
         phaseFadeTimeout: 1000,
     }
