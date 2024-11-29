@@ -85,6 +85,7 @@ export const Location = ({row, column}) => {
 
     const style = {
         backgroundImage: hasNode ? configNetrunners.covers.location[nodeKey] : null,
+        filter: ` saturate(${hasPlayers ? 160 : 100}%) brightness(${hasPlayers ? 140 : 100}%) `,
         ...springRotation
     };
 

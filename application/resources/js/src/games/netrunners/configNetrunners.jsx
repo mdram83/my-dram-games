@@ -126,8 +126,8 @@ export const configNetrunners = {
 
         location: {
             imageCoverM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/location-m.jpg'})`,
-            Start: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/start-m.jpg'})`,
-            Charger: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/charger-m.jpeg'})`,
+            Start: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/start2-m.jpg'})`,
+            Charger: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/charger2-m.jpg'})`,
             CrossroadRegular: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/crossroadRegular-m.jpg'})`,
             CrossroadEncounter : `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/crossroadEncounter-m.jpg'})`,
             StraightRegular: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/straightRegular-m.jpeg'})`,
