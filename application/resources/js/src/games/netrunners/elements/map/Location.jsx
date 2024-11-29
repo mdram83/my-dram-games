@@ -32,6 +32,8 @@ export const Location = ({row, column}) => {
     const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
     const activePlayerChargerLocation = useNetrunnersStore(state => state.locationsMap[row][column].activePlayerChargerLocation);
 
+    const hasPlayers = playersCount > 0;
+
     const [rotation, setRotation] = useState(nodeRotation * 30);
 
     const handleRotate = () => {
@@ -136,7 +138,7 @@ export const Location = ({row, column}) => {
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
                 <Coordinates row={row} column={column} rotation={rotation} />
                 {hasEncounter && <LocationEncounter row={row} column={column} parentRotation={rotation} />}
-                {playersCount && <LocationPlayers row={row} column={column} parentRotation={rotation} hasEncounter={hasEncounter} />}
+                {hasPlayers && <LocationPlayers row={row} column={column} parentRotation={rotation} hasEncounter={hasEncounter} />}
             </animated.div>
         );
     }

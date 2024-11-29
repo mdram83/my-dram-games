@@ -7,7 +7,6 @@ export const LocationSelection = ({classDivCommon, classDivAction, row, column, 
 
     const style = {
         backgroundImage: configNetrunners.covers.location.imageCoverM,
-        filter: 'grayscale(100%)',
     };
 
     return (
