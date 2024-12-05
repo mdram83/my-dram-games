@@ -7,8 +7,9 @@ export const ConflictController = () => {
     console.log('ConflictController');
 
     const isPhaseConflict = useNetrunnersStore(state => state.isPhaseConflict);
+    const isPhaseBattle = useNetrunnersStore(state => state.isPhaseBattle);
 
     return (
-        <>{isPhaseConflict && <ConflictModal />}</>
+        <>{(isPhaseConflict || isPhaseBattle) && <ConflictModal />}</>
     );
 }
