@@ -13,6 +13,7 @@ import {GameMoveSubmitter} from "./elements/console/GameMoveSubmitter.jsx";
 import {Console} from "./elements/console/Console.jsx";
 import {RechargeInfo} from "./elements/actions/RechargeInfo.jsx";
 import {EncounterSelection} from "./elements/encounters/EncounterSelection.jsx";
+import {ConflictController} from "./elements/battle/ConflictController.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -89,6 +90,7 @@ controller.getRoot().render(
             <div className="flex justify-center">
                 <RechargeInfo />
                 <EncounterSelection />
+                <ConflictController />
             </div>
         </div>
 

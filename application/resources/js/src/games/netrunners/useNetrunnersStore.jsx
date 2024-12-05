@@ -7,6 +7,7 @@ export const useNetrunnersStore = create((set, get) => ({
     locationsMap: {},
     yourTurn: false,
     isPhaseCharacterSelection: false,
+    isPhaseConflict: false,
     setSituation: (situation) => set(() => {
 
         const rows = Object.keys(situation.map);
@@ -63,6 +64,7 @@ export const useNetrunnersStore = create((set, get) => ({
             locationsMap: locationsMap,
             yourTurn: yourTurn,
             isPhaseCharacterSelection: situation.phase.key === 'character',
+            isPhaseConflict: situation.phase.key === 'conflict',
         };
 
         if (situation.canRecharge && yourTurn) {
