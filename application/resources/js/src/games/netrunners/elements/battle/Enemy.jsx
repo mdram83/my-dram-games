@@ -9,7 +9,7 @@ export const Enemy = ({enemyKey, power}) => {
         backgroundImage: configNetrunners.encounters[enemyKey].imageM,
     };
 
-    const classImage = ' aspect-square bg-top bg-no-repeat bg-cover rounded-lg ';
+    const classImage = ' aspect-square bg-top bg-no-repeat bg-cover rounded-lg border border-solid border-[0.4vh] border-pink-600 ';
     const classPower = ' aspect-square flex items-center justify-center text-pink-600 font-sans font-semibold text-[10vh] ';
 
     return (
