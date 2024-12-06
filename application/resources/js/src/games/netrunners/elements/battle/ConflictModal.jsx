@@ -25,9 +25,6 @@ export const ConflictModal = () => {
         ' h-[70vh] w-[50vh] mt-[2vh] shadow-xl shadow-black text-white '
         + ' border-[0.3vh] sm:border-[0.25vh] border-solid border-fuchsia-500 rounded-[2vh] ';
 
-    const classDice = displayHide ? ' row-span-1 ' : ' row-span-2 ';
-    const classAddDice = displayHide ? ' ' : ' mb-[5vh] ';
-
     const fight = () => {
         if (yourTurn) {
             submitMove({fight: true}, gamePlayId , setMessage, 'conflict');
@@ -49,20 +46,18 @@ export const ConflictModal = () => {
             </div>
 
             {/*DETAILS SECTION*/}
-            <div className='flex grid grid-rows-3 gap-0 w-full h-[65.5vh] bg-neutral-800/95 rounded-b-[2vh]'>
+            <div className='flex grid grid-rows-4 gap-0 w-full h-[65.5vh] bg-neutral-800/95 rounded-b-[2vh]'>
 
                 <div className='p-[4%]'>
                     <Enemy enemyKey={encounter.key} power={encounter.power} />
                 </div>
 
-                {displayHide &&
-                    <div className='p-[4%]'>
-                        <Hide onClick={hide} />
-                    </div>
-                }
+                <div className='p-[4%]'>
+                    {displayHide && <Hide onClick={hide} />}
+                </div>
 
-                <div className={` p-[4%] ${classDice}`}>
-                    <Fight gamePlayId={gamePlayId} setMessage={setMessage} yourTurn={yourTurn} addClass={classAddDice} onClick={fight} />
+                <div className='p-[4%] row-span-2'>
+                    <Fight gamePlayId={gamePlayId} setMessage={setMessage} yourTurn={yourTurn} onClick={fight} />
                 </div>
 
             </div>

@@ -14,7 +14,7 @@ export const Fight = ({onClick, yourTurn, addClass = ''}) => {
         + addClass;
 
     return (
-        <div className='flex size-full justify-center items-end'>
+        <div className='flex size-full justify-center items-center'>
             <div className={classDiv} style={styleImage} onClick={onClick}></div>
         </div>
     );
