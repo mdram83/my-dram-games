@@ -10,6 +10,7 @@ export const ConflictModal = () => {
 
     console.log('ConflictModal');
 
+    const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
     const activePlayer = useNetrunnersStore(state => state.situation.activePlayer);
     const coordinates = useNetrunnersStore(state => state.situation.players[activePlayer].coordinates);
     const encounter = useNetrunnersStore(state => state.situation.map[coordinates.row][coordinates.column].encounter);
@@ -25,14 +26,10 @@ export const ConflictModal = () => {
         ' h-[70vh] w-[50vh] mt-[2vh] shadow-xl shadow-black text-white '
         + ' border-[0.3vh] sm:border-[0.25vh] border-solid border-fuchsia-500 rounded-[2vh] ';
 
-    const fight = () => {
+    const fight = (hide = false) => {
         if (yourTurn) {
-            submitMove({fight: true}, gamePlayId , setMessage, 'conflict');
+            submitMove({fight: !hide}, gamePlayId , setMessage, phaseKey);
         }
-    }
-
-    const hide = () => {
-        submitMove({fight: false}, gamePlayId , setMessage, 'conflict');
     }
 
     return (
@@ -52,13 +49,21 @@ export const ConflictModal = () => {
                     <Enemy enemyKey={encounter.key} power={encounter.power} />
                 </div>
 
-                <div className='p-[4%]'>
-                    {displayHide && <Hide onClick={hide} />}
-                </div>
+                {phaseKey === 'conflict' && <div className='p-[4%]'>
+                    {displayHide && <Hide onClick={() => fight(true)} />}
+                </div>}
 
-                <div className='p-[4%] row-span-2'>
-                    <Fight gamePlayId={gamePlayId} setMessage={setMessage} yourTurn={yourTurn} onClick={fight} />
-                </div>
+                {phaseKey === 'conflict' && <div className='p-[4%] row-span-2'>
+                    <Fight yourTurn={yourTurn} onClick={() => fight()}/>
+                </div>}
+
+                {phaseKey === 'battle' && <div className='p-[4%] row-span-2'>
+                    Battle Rows
+                </div>}
+
+                {phaseKey === 'battle' && <div className='p-[4%]'>
+                    Score
+                </div>}
 
             </div>
 
