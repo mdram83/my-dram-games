@@ -14,14 +14,14 @@ export const Outcome = ({player}) => {
         backgroundImage: configNetrunners.characters[character].imageAvatarS,
     };
 
-    const classOutcome = battleOutcome < 0 ? ' text-pink-600 ' : (battleOutcome > 0 ? ' text-green-600 ' : '  text-orange-600 ');
+    const classOutcome = ' text-green-600 ';
     const labelOutcome = battleOutcome < 0 ? 'lost' : (battleOutcome > 0 ? 'win' : 'draw');
 
     const classImage = ' aspect-square bg-top bg-no-repeat bg-cover rounded-lg border border-solid border-[0.4vh] '
         + configNetrunners.characters[character].classAvatarBorder;
     const classPower = ' aspect-square flex items-center justify-center font-sans font-semibold text-[10vh] '
         + classOutcome;
-    const classLabel = ' flex items-center justify-center font-sans font-semibold text-[6vh] capitalize -mr-[4vh] '
+    const classLabel = ' flex items-center justify-center font-sans font-semibold text-[5vh] uppercase -mr-[4vh] '
         + classOutcome;
 
     return (
