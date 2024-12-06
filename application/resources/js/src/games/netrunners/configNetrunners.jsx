@@ -140,7 +140,8 @@ export const configNetrunners = {
         },
 
         hacked: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-        dice: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/dice-m.jpg'})`,
+        diceM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/dice-m.jpg'})`,
+        diceS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/dice-s.jpg'})`,
     },
 
     engine: {

@@ -6,7 +6,7 @@ export const Fight = ({onClick, yourTurn, addClass = ''}) => {
     console.log('Fight');
 
     const styleImage = {
-        backgroundImage: configNetrunners.covers.dice,
+        backgroundImage: configNetrunners.covers.diceM,
     };
 
     const classDiv = ' h-full max-h-[20vh] bg-center bg-no-repeat bg-cover aspect-square rounded-full border-[0.4vh] border-solid '
