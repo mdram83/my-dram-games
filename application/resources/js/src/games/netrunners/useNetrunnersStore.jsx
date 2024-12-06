@@ -75,6 +75,10 @@ export const useNetrunnersStore = create((set, get) => ({
             updatedStoreProperties['moveData'] = {payload: {finish: true}, phase: 'finish', label: 'End Turn'}
         }
 
+        if (situation.phase.key === 'battle' && yourTurn) {
+            updatedStoreProperties['moveData'] = {payload: {finish: true}, phase: 'battle', label: 'Continue'}
+        }
+
         return updatedStoreProperties;
     }),
 
