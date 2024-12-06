@@ -6,10 +6,9 @@ export const ConflictController = () => {
 
     console.log('ConflictController');
 
-    const isPhaseConflict = useNetrunnersStore(state => state.isPhaseConflict);
-    const isPhaseBattle = useNetrunnersStore(state => state.isPhaseBattle);
+    const isValidPhase = useNetrunnersStore(state => state.isPhaseConflictOrBattle);
 
     return (
-        <>{(isPhaseConflict || isPhaseBattle) && <ConflictModal />}</>
+        <>{isValidPhase && <ConflictModal />}</>
     );
 }
