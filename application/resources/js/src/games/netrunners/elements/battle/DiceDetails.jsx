@@ -34,10 +34,6 @@ export const DiceDetails = ({player, addClass}) => {
     const classDiv = ' h-[70%] bg-center bg-no-repeat bg-cover aspect-square rounded-lg mr-[2vh] border-[0.4vh] border-solid '
         + (canUseDiceAbility ? ' border-orange-500 shadow-actionSm hover:shadow-actionLg hover:cursor-pointer ' : ' border-neutral-500 ');
 
-    //
-    // + (yourTurn ? ' border-orange-500 shadow-actionSm hover:shadow-actionLg hover:cursor-pointer ' : ' border-cyan-500 shadow-actionSmOp ')
-    //     + addClass;
-
     return (
         <div className={addClass}>
             <div className='flex h-full items-center justify-center'>
