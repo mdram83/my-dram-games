@@ -5,6 +5,7 @@ import {Fight} from "./Fight.jsx";
 import {Hide} from "./Hide.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {submitMove} from "../../submitMove.jsx";
+import {Outcome} from "./Outcome.jsx";
 
 export const ConflictModal = () => {
 
@@ -62,7 +63,7 @@ export const ConflictModal = () => {
                 </div>}
 
                 {phaseKey === 'battle' && <div className='p-[4%]'>
-                    Score
+                    <Outcome player={activePlayer} />
                 </div>}
 
             </div>
