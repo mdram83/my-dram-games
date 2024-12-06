@@ -15,7 +15,7 @@ export const Outcome = ({player}) => {
     };
 
     const classOutcome = battleOutcome < 0 ? ' text-pink-600 ' : (battleOutcome > 0 ? ' text-green-600 ' : '  text-orange-600 ');
-    const labelOutcome = 'draw'; //battleOutcome < 0 ? 'lost' : (battleOutcome > 0 ? 'win' : 'draw');
+    const labelOutcome = battleOutcome < 0 ? 'lost' : (battleOutcome > 0 ? 'win' : 'draw');
 
     const classImage = ' aspect-square bg-top bg-no-repeat bg-cover rounded-lg border border-solid border-[0.4vh] '
         + configNetrunners.characters[character].classAvatarBorder;
