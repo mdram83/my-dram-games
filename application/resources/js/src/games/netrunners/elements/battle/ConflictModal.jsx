@@ -59,7 +59,7 @@ export const ConflictModal = () => {
                     <Fight yourTurn={yourTurn} onClick={() => fight()}/>
                 </div>}
 
-                {phaseKey === 'battle' && <div className='p-[4%] row-span-2'>
+                {phaseKey === 'battle' && <div className='px-[4%] row-span-2'>
                     <BattleDetails player={activePlayer} />
                 </div>}
 

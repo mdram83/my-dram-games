@@ -3,17 +3,17 @@ import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {PowerDetails} from "./PowerDetails.jsx";
 
-export const HardwareDetails = ({player, addClass}) => {
+export const SoftwareDetails = ({player, addClass}) => {
 
-    console.log('HardwareDetails', player);
+    console.log('SoftwareDetails', player);
 
-    const hardwarePower = useNetrunnersStore(state => state.situation.battle.hardwarePower);
-    const hardwareItems = useNetrunnersStore(state => state.situation.players[player].hardwareItems);
+    const softwarePower = useNetrunnersStore(state => state.situation.battle.softwarePower);
+    const softwareItems = useNetrunnersStore(state => state.situation.players[player].softwareItems);
 
     const classDiv = ' h-[70%] bg-center bg-no-repeat bg-cover aspect-square rounded-lg mr-[2vh] border-[0.4vh] border-solid '
         + ' border-neutral-500 ';
 
-    const renderHardwareItems = () => hardwareItems.map((item, index) => {
+    const renderItems = () => softwareItems.map((item, index) => {
         const styles = item === null
         ? {backgroundColor: 'rgb(23 23 23)'}
         : {backgroundImage: configNetrunners.covers.hacked} // add proper picture when you have one and when you test further
@@ -24,9 +24,9 @@ export const HardwareDetails = ({player, addClass}) => {
     return (
         <div className={addClass}>
             <div className='flex h-full items-center justify-center'>
-                {renderHardwareItems()}
+                {renderItems()}
             </div>
-            <PowerDetails power={hardwarePower}/>
+            <PowerDetails power={softwarePower}/>
         </div>
     );
 }
