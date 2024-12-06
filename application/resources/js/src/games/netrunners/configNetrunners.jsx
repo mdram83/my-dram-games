@@ -139,6 +139,21 @@ export const configNetrunners = {
             TShapeEncounter: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/locations/tShapeEncounter-m.jpeg'})`,
         },
 
+        abilities: {
+            SaveSoftwareAttack: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            MoveThroughWalls: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            AttackLosingPower: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            SwitchLocation: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            Hide: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            WinDraw: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            ReRollDices: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            RestorePower: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            ReRollOne: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            ContinueMoveOnSix: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            FirstMoveAttackBonus: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            SeeTwoNodeElements: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+        },
+
         hacked: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
         diceM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/dice-m.jpg'})`,
         diceS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/covers/dice-s.jpg'})`,
