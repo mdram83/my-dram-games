@@ -16,7 +16,7 @@ export const HardwareDetails = ({player, addClass}) => {
     const renderHardwareItems = () => hardwareItems.map((item, index) => {
         const styles = item === null
         ? {backgroundColor: 'rgb(23 23 23)'}
-        : {backgroundImage: configNetrunners.covers.hacked} // add proper picture when you have one and when you test further
+        : {backgroundImage: configNetrunners.covers.inventory[item.key].imageS};
 
         return <div key={index} className={classDiv} style={styles}></div>;
     });

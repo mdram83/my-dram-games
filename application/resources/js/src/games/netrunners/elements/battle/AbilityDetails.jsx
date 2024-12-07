@@ -36,7 +36,7 @@ export const AbilityDetails = ({player, addClass}) => {
     const styles = !hasPowerAbility
         ? {}
         : {
-            backgroundImage: configNetrunners.covers.abilities[abilityKey],
+            backgroundImage: configNetrunners.covers.abilities[abilityKey].imageS,
             filter: (abilityInUse ? 'grayscale(0)' : 'grayscale(100%)'),
         };
 

@@ -140,18 +140,81 @@ export const configNetrunners = {
         },
 
         abilities: {
-            SaveSoftwareAttack: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            MoveThroughWalls: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            AttackLosingPower: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            SwitchLocation: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            Hide: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            WinDraw: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            ReRollDices: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            RestorePower: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            ReRollOne: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            ContinueMoveOnSix: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            FirstMoveAttackBonus: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
-            SeeTwoNodeElements: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
+            SaveSoftwareAttack: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SaveSoftwareAttack-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SaveSoftwareAttack-m.jpg'})`,
+            },
+            MoveThroughWalls: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/MoveThroughWalls-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/MoveThroughWalls-m.jpg'})`,
+            },
+            AttackLosingPower: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/AttackLosingPower-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/AttackLosingPower-m.jpg'})`,
+            },
+            SwitchLocation: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SwitchLocation-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SwitchLocation-m.jpg'})`,
+            },
+            Hide: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/Hide-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/Hide-m.jpg'})`,
+            },
+            WinDraw: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/WinDraw-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/WinDraw-m.jpg'})`,
+            },
+            ReRollDices: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ReRollDices-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ReRollDices-m.jpg'})`,
+            },
+            RestorePower: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/RestorePower-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/RestorePower-m.jpg'})`,
+            },
+            ReRollOne: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ReRollOne-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ReRollOne-m.jpg'})`,
+            },
+            ContinueMoveOnSix: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ContinueMoveOnSix-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/ContinueMoveOnSix-m.jpg'})`,
+            },
+            FirstMoveAttackBonus: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/FirstMoveAttackBonus-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/FirstMoveAttackBonus-m.jpg'})`,
+            },
+            SeeTwoNodeElements: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SeeTwoNodeElements-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/abilities/SeeTwoNodeElements-m.jpg'})`,
+            },
+        },
+
+        inventory: {
+            Charger: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Charger-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Charger-m.jpg'})`,
+            },
+            Key: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Key-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Key-m.jpg'})`,
+            },
+            Large: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Large-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Large-m.jpg'})`,
+            },
+            Medium: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Medium-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Medium-m.jpg'})`,
+            },
+            Overclock: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Overclock-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Overclock-m.jpg'})`,
+            },
+            Small: {
+                imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Small-s.jpg'})`,
+                imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Small-m.jpg'})`,
+            },
         },
 
         hacked: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/hacked.jpg'})`,
