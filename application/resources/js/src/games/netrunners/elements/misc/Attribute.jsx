@@ -12,7 +12,7 @@ export const Attribute = ({className, children, sizeVh = 4, sizeVhSm = 7, additi
         + ' flex justify-center items-center '
         + ' bg-white/50 '
         + ' border-solid rounded-full '
-        + ' text-orange-500 font-sans font-semibold leading-none ';
+        + ' font-sans font-semibold leading-none ';
 
     const styles = {
         height: `${isSm ? sizeVhSm : sizeVh}vh`,

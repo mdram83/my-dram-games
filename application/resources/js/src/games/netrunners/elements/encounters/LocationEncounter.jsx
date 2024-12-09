@@ -17,6 +17,9 @@ export const LocationEncounter = ({row, column, parentRotation = 0}) => {
         + ' border border-solid border-[0.4vh] rounded-lg '
         + (isEnemy ? configNetrunners.encounters.classEnemyBorder : configNetrunners.encounters.classItemBorder);
 
+    const classDivAttribute = ' absolute top-[0.1vh] right-[0.1vh] border-neutral-300 '
+        + (isEnemy ? ' text-pink-600 sm:border-pink-600 ' : ' text-green-800 sm:border-green-800 ');
+
     const rotation = -parentRotation + calculateRotation(-20, 20, row, column, key, parentRotation);
 
     const styles = {
@@ -27,12 +30,12 @@ export const LocationEncounter = ({row, column, parentRotation = 0}) => {
         transform: ` translate(-50%, -50%)  rotate(${rotation}deg) `,
     };
 
+
+
     return (
         <div className={classDivCommon} style={styles}>
             {power > 0 &&
-                <Attribute className=' absolute top-[0.1vh] right-[0.1vh] text-pink-600 border-neutral-300 sm:border-pink-600 '
-                           sizeVh={3}
-                           sizeVhSm={2.5}>
+                <Attribute className={classDivAttribute} sizeVh={3} sizeVhSm={2.5}>
                     {power}
                 </Attribute>
             }

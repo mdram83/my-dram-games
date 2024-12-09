@@ -92,28 +92,28 @@ export const configNetrunners = {
             imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
         },
         Small: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Small-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Small-m.jpg'})`,
         },
         Medium: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Medium-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Medium-m.jpg'})`,
         },
         Large: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Large-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Large-m.jpg'})`,
         },
         Overclock: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Overclock-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Overclock-m.jpg'})`,
         },
         Charger: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Charger-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Charger-m.jpg'})`,
         },
         key: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Key-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Key-m.jpg'})`,
         },
     },
 
