@@ -2,6 +2,7 @@ import React from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
+import {BatteryChange} from "./BatteryChange.jsx";
 
 export const PlayerAvatar = ({playerName, character = undefined}) => {
 
@@ -71,6 +72,8 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
                     <i className="fa fa-wifi text-[4.0vh] text-red-600 animate-ping"></i>
                 </div>
             }
+
+            {character && <BatteryChange playerName={playerName} />}
 
         </div>
     );
