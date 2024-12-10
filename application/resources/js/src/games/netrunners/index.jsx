@@ -94,9 +94,6 @@ controller.getRoot().render(
             </div>
         </div>
 
-        {/*TODO locate and apply battery up/down effect on Player Avatars*/}
-        {/*TODO fix bug that Speerunner ca continue on six when 0 moves remaining*/}
-
         <FlashMessageGamePlay/>
 
     </div>
