@@ -1714,13 +1714,13 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                },
                 "laravel": {
                     "providers": [
                         "Laravel\\Sanctum\\SanctumServiceProvider"
                     ]
+                },
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
@@ -2306,16 +2306,16 @@
         },
         {
             "name": "mdram83/mydramgames-gp-netrunners",
-            "version": "v0.0.020",
+            "version": "v0.0.021",
             "source": {
                 "type": "git",
                 "url": "git@github.com:mdram83/mydramgames-gp-netrunners.git",
-                "reference": "248a219826a172cd31d0c10116964906130ab488"
+                "reference": "7e5b40d97a4a41188ba5a04673fef23a37a6f780"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-netrunners/zipball/248a219826a172cd31d0c10116964906130ab488",
-                "reference": "248a219826a172cd31d0c10116964906130ab488",
+                "url": "https://api.github.com/repos/mdram83/mydramgames-gp-netrunners/zipball/7e5b40d97a4a41188ba5a04673fef23a37a6f780",
+                "reference": "7e5b40d97a4a41188ba5a04673fef23a37a6f780",
                 "shasum": ""
             },
             "require": {
@@ -2351,10 +2351,10 @@
             ],
             "description": "Netrunners GamePlay implementation for My Dram Games project",
             "support": {
-                "source": "https://github.com/mdram83/mydramgames-gp-netrunners/tree/v0.0.020",
+                "source": "https://github.com/mdram83/mydramgames-gp-netrunners/tree/v0.0.021",
                 "issues": "https://github.com/mdram83/mydramgames-gp-netrunners/issues"
             },
-            "time": "2024-12-10T12:02:38+00:00"
+            "time": "2024-12-10T21:01:00+00:00"
         },
         {
             "name": "mdram83/mydramgames-gp-thousand",
@@ -5746,8 +5746,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
@@ -5912,8 +5912,8 @@
             "type": "library",
             "extra": {
                 "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
                 }
             },
             "autoload": {
