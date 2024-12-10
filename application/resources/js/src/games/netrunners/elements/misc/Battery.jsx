@@ -1,12 +1,10 @@
 import React from "react";
-import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {BatteryPoint} from "./BatteryPoint.jsx";
 
-export const Battery = ({playerName, targetPoints = undefined, smallSize = false}) => {
+export const Battery = ({points, targetPoints = undefined, smallSize = false}) => {
 
-    console.log('Battery', playerName, targetPoints);
+    console.log('Battery', points, targetPoints);
 
-    const points = useNetrunnersStore(state => state.situation.players[playerName].battery);
     targetPoints = targetPoints === undefined ? points : targetPoints;
 
     const renderPoints = () => {

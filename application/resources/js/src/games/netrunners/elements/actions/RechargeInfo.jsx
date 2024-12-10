@@ -16,6 +16,7 @@ export const RechargeInfo = () => {
     const setRechargeInfoScreen = useNetrunnersStore(state => state.setRechargeInfoScreen);
 
     const playerName = MyDramGames.player.name;
+    const points = useNetrunnersStore(state => state.situation.players[playerName].battery);
 
     const onClick = () => {
         submitMove({recharge: true}, gamePlayId , setMessage, 'recharge');
@@ -57,7 +58,7 @@ export const RechargeInfo = () => {
                         {/*BATTERY SECTION*/}
                         <div className={classDivDetails + classDivSpan}>
                             <div className=' flex justify-center items-center w-full h-full '>
-                                <Battery playerName={playerName} targetPoints={5} />
+                                <Battery points={points} targetPoints={5} />
                             </div>
                         </div>
 
