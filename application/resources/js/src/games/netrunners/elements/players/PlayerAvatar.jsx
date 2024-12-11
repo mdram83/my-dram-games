@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
@@ -13,6 +13,7 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
     const actionablePlayer = useNetrunnersStore(state => state.situation.canSwitchMapLocation);
     const yourTurn = useNetrunnersStore(state => state.yourTurn);
+    const battery = useNetrunnersStore(state => state.situation.players[playerName].battery);
     const yourActionablePlayer = actionablePlayer && yourTurn;
 
     const isConnected = useGamePlayStore((state) => state.players[playerName]);
@@ -21,6 +22,37 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
 
     const isYou = playerName === MyDramGames.player.name;
     const initials = playerName.charAt(0).toUpperCase();
+
+
+    const [glitch, setGlitch] = useState(false);
+
+    const interval = useRef(undefined);
+    const timeout = useRef(undefined);
+
+    useEffect(() => {
+
+        if (battery === 0) {
+
+            interval.current = setInterval(() => {
+                setGlitch(true);
+                timeout.current = setTimeout(() => {
+                    setGlitch(false);
+                }, Math.floor(Math.random() * 5) * 100);
+            }, 1600);
+
+        } else {
+            setGlitch(false);
+            clearInterval(interval.current);
+            clearTimeout(timeout.current);
+        }
+
+        return () => {
+            clearInterval(interval.current);
+            clearTimeout(timeout.current);
+        }
+
+    }, [battery]);
+
 
     const style = {
         backgroundImage: character ? configNetrunners.characters[character].imageAvatarS : '',
@@ -52,10 +84,12 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
         }
     }
 
+
+
     return (
         <div className={classDivCircle} onClick={onClick}>
 
-            <div className='flex items-center justify-center bg-bottom bg-no-repeat bg-cover w-full h-full rounded-full'
+            <div className={' flex items-center justify-center bg-bottom bg-no-repeat bg-cover w-full h-full rounded-full ' + (glitch ? ' animate-glitch ' : ' ')}
                  style={style}
             >
                 {
