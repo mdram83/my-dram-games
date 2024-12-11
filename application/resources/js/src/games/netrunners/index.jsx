@@ -14,6 +14,7 @@ import {Console} from "./elements/console/Console.jsx";
 import {RechargeInfo} from "./elements/actions/RechargeInfo.jsx";
 import {EncounterSelection} from "./elements/encounters/EncounterSelection.jsx";
 import {ConflictController} from "./elements/battle/ConflictController.jsx";
+import {RestartInfo} from "./elements/actions/RestartInfo.jsx";
 
 const getPlayersNames = (situation) => Object.getOwnPropertyNames(situation.players);
 
@@ -91,6 +92,7 @@ controller.getRoot().render(
                 <RechargeInfo />
                 <EncounterSelection />
                 <ConflictController />
+                <RestartInfo />
             </div>
         </div>
 
