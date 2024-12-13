@@ -119,6 +119,10 @@ export const Location = ({row, column}) => {
                 handleRotate();
                 return;
 
+            case 'finish':
+                submitMove({row: row, column: column, software: false}, gamePlayId, setMessage, 'charger');
+                return;
+
             default:
                 return;
         }

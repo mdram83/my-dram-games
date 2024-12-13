@@ -39,8 +39,9 @@ export const useNetrunnersStore = create((set, get) => ({
                 const allowedTargetLocation = isLocation && situation.map[row][column].hasOwnProperty('allowedTargetLocation') && situation.map[row][column].allowedTargetLocation;
                 const setDirectionLocation = hasNode && nodeRotation === null;
                 const activePlayerChargerLocation = situation.canRecharge && row === activePlayerCoordinates.row && column === activePlayerCoordinates.column;
+                const canRestorePowerLocation = situation.canRestorePower && hasNode && situation.map[row][column].node.type === 'Charger';
 
-                const actionableLocation = allowedTargetLocation || setDirectionLocation || activePlayerChargerLocation;
+                const actionableLocation = allowedTargetLocation || setDirectionLocation || activePlayerChargerLocation || canRestorePowerLocation;
                 const actionablePhaseKey = actionableLocation ? situation.phase.key : null;
 
                 Object.defineProperty(locationsMap[row], column, {value: {
