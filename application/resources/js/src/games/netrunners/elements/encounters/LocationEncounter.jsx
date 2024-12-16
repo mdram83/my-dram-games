@@ -9,15 +9,18 @@ export const LocationEncounter = ({row, column, activeItem = false, yourActiveIt
     console.log('LocationEncounter', row, column);
 
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
+    const setItemPickUpType = useNetrunnersStore(state => state.setItemPickUpType);
 
     const key = useNetrunnersStore(state => state.locationsMap[row][column].encounter.key);
     const isEnemy = useNetrunnersStore(state => state.locationsMap[row][column].encounter.isEnemy);
     const power = useNetrunnersStore(state => state.locationsMap[row][column].encounter.power);
+    const itemType = useNetrunnersStore(state => state.locationsMap[row][column].encounter.itemType);
 
     const onClick = () => {
         if (!yourActiveItem) {
             return;
         }
+        setItemPickUpType(itemType);
         setPlayerInfoScreen(true, MyDramGames.player.name);
     }
 

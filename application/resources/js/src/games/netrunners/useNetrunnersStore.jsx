@@ -85,6 +85,8 @@ export const useNetrunnersStore = create((set, get) => ({
             updatedStoreProperties['moveData'] = {payload: {finish: true}, phase: 'battle', label: 'Continue'}
         }
 
+        updatedStoreProperties['itemPickUpType'] = undefined;
+
         return updatedStoreProperties;
     }),
 
@@ -122,14 +124,18 @@ export const useNetrunnersStore = create((set, get) => ({
                 updatedStoreProperties['rechargeInfoScreen'] = {display: false}
             }
 
+            updatedStoreProperties['itemPickUpType'] = undefined;
+
             return updatedStoreProperties;
         }),
+
+    itemPickUpType: undefined,
+    setItemPickUpType: (type) => set(() => ({itemPickUpType: type})),
 
     rechargeInfoScreen: {
         display: false
     },
     setRechargeInfoScreen: (display) => set(() => ({rechargeInfoScreen: {display: display}})),
-
 
     followActivePlayer: true,
     setFollowActivePlayer: (follow) => set(() => ({ followActivePlayer: follow})),
