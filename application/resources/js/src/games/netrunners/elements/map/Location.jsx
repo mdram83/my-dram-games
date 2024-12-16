@@ -31,6 +31,8 @@ export const Location = ({row, column}) => {
     const yourActionableLocation = useNetrunnersStore(state => state.locationsMap[row][column].yourActionableLocation);
     const actionablePhaseKey = useNetrunnersStore(state => state.locationsMap[row][column].actionablePhaseKey);
     const activePlayerChargerLocation = useNetrunnersStore(state => state.locationsMap[row][column].activePlayerChargerLocation);
+    const activeItem = useNetrunnersStore(state => state.locationsMap[row][column].activeItem);
+    const yourActiveItem = useNetrunnersStore(state => state.locationsMap[row][column].yourActiveItem);
 
     const hasPlayers = playersCount > 0;
 
@@ -142,7 +144,7 @@ export const Location = ({row, column}) => {
             <animated.div className={classDivAction} style={style} onClick={() => onClick()}>
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
                 <Coordinates row={row} column={column} rotation={rotation} />
-                {hasEncounter && <LocationEncounter row={row} column={column} parentRotation={rotation} />}
+                {hasEncounter && <LocationEncounter row={row} column={column} activeItem={activeItem} yourActiveItem={yourActiveItem} parentRotation={rotation} />}
                 {hasPlayers && <LocationPlayers row={row} column={column} parentRotation={rotation} hasEncounter={hasEncounter} />}
             </animated.div>
         );

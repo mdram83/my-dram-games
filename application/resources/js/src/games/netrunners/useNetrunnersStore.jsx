@@ -40,6 +40,7 @@ export const useNetrunnersStore = create((set, get) => ({
                 const setDirectionLocation = hasNode && nodeRotation === null;
                 const activePlayerChargerLocation = situation.canRecharge && row === activePlayerCoordinates.row && column === activePlayerCoordinates.column;
                 const canRestorePowerLocation = situation.canRestorePower && hasNode && situation.map[row][column].node.type === 'Charger';
+                const canPickUpItem = hasEncounter && situation.canPickUpItem && row === activePlayerCoordinates.row && column === activePlayerCoordinates.column;
 
                 const actionableLocation = allowedTargetLocation || setDirectionLocation || activePlayerChargerLocation || canRestorePowerLocation;
                 const actionablePhaseKey = actionableLocation ? situation.phase.key : null;
@@ -56,6 +57,8 @@ export const useNetrunnersStore = create((set, get) => ({
                     yourActionableLocation: actionableLocation && yourTurn,
                     actionablePhaseKey: actionablePhaseKey,
                     activePlayerChargerLocation: activePlayerChargerLocation,
+                    activeItem: canPickUpItem,
+                    yourActiveItem: canPickUpItem && yourTurn,
                 }});
             }
         }
