@@ -124,7 +124,9 @@ export const useNetrunnersStore = create((set, get) => ({
                 updatedStoreProperties['rechargeInfoScreen'] = {display: false}
             }
 
-            updatedStoreProperties['itemPickUpType'] = undefined;
+            if (display === false) {
+                updatedStoreProperties['itemPickUpType'] = undefined;
+            }
 
             return updatedStoreProperties;
         }),
