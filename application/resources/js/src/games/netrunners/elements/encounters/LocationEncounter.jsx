@@ -3,10 +3,15 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {configNetrunners} from "../../configNetrunners.jsx";
 import {calculateRotation} from "../../../../customFunctions/calculateRotation.jsx";
 import {Attribute} from "../misc/Attribute.jsx";
+import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
+import {submitMove} from "../../submitMove.jsx";
 
 export const LocationEncounter = ({row, column, activeItem = false, yourActiveItem = false, parentRotation = 0}) => {
 
     console.log('LocationEncounter', row, column);
+
+    const gamePlayId = useGamePlayStore(state => state.gamePlayId);
+    const setMessage = useGamePlayStore((state) => state.setMessage);
 
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
     const setItemPickUpType = useNetrunnersStore(state => state.setItemPickUpType);
@@ -20,6 +25,12 @@ export const LocationEncounter = ({row, column, activeItem = false, yourActiveIt
         if (!yourActiveItem) {
             return;
         }
+
+        if (itemType === 'Data') {
+            submitMove({data: true}, gamePlayId, setMessage, 'item');
+            return;
+        }
+
         setItemPickUpType(itemType);
         setPlayerInfoScreen(true, MyDramGames.player.name);
     }
