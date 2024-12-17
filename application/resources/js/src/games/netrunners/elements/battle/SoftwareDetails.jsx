@@ -41,7 +41,7 @@ export const SoftwareDetails = ({player, addClass}) => {
             : ' border-orange-500 shadow-actionSm hover:shadow-actionLg hover:cursor-pointer ';
 
         return (
-            <div key={index} className={classDiv + classDivBorder} onClick={() => toggleSoftware(index, softwareInUse[index])}>
+            <div key={index} className={classDiv + classDivBorder} onClick={() => toggleSoftware(index, !softwareInUse[index])}>
                 <div className='h-full bg-center bg-no-repeat bg-cover aspect-square rounded-lg' style={styles}></div>
             </div>
         );
