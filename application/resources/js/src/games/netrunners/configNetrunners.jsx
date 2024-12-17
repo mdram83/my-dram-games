@@ -84,12 +84,12 @@ export const configNetrunners = {
             imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounters/encrypted-m.jpg'})`,
         },
         Decrypted: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounters/decrypted-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounters/decrypted-m.jpg'})`,
         },
         SuperDecrypted: {
-            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
-            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounter.jpg'})`,
+            imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounters/superDecrypted-s.jpg'})`,
+            imageM: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/encounters/superDecrypted-m.jpg'})`,
         },
         Small: {
             imageS: `url(${window.MyDramGames["asset-url"].img + '/games/netrunners/inventory/Small-s.jpg'})`,
