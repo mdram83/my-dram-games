@@ -3,6 +3,7 @@ import {Battery} from "../misc/Battery.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {Hacked} from "../misc/Hacked.jsx";
 import {KeySlot} from "../inventory/KeySlot.jsx";
+import {InventorySlot} from "../inventory/InventorySlot.jsx";
 
 export const PlayerDetails = ({playerName}) => {
 
@@ -11,6 +12,8 @@ export const PlayerDetails = ({playerName}) => {
     const battery = useNetrunnersStore(state => state.situation.players[playerName].battery);
     const score = useNetrunnersStore(state => state.situation.players[playerName].score);
     const hasDatabaseKey = useNetrunnersStore(state => state.situation.players[playerName].hasDatabaseKey);
+    const hardwareItems = useNetrunnersStore(state => state.situation.players[playerName].hardwareItems);
+    const softwareItems = useNetrunnersStore(state => state.situation.players[playerName].softwareItems);
     const itemPickUpType = useNetrunnersStore(state => state.itemPickUpType);
 
     const classDivCollectedPoints = ' flex items-center justify-center h-[20%] text-[5vh] font-mono uppercase ';
@@ -18,7 +21,7 @@ export const PlayerDetails = ({playerName}) => {
     const classSlotElement = ' h-full md:h-[80%] sm:h-[70%] aspect-square border border-solid border-[0.4vh] rounded-lg ';
 
     const renderHardware = () => Array(2).fill(null).map((_, index) =>
-        <div key={index} className={classSlotElement}>H {index}</div>
+        <InventorySlot key={index} classAdd={classSlotElement} slotKey={index} item={hardwareItems[index]} itemType='Hardware' pickUp={itemPickUpType === 'Hardware'} />
     );
 
     const renderDatabaseKey = () => Array(1).fill(null).map((_, index) =>
@@ -26,7 +29,7 @@ export const PlayerDetails = ({playerName}) => {
     );
 
     const renderSoftware = () => Array(3).fill(null).map((_, index) =>
-        <div key={index} className={classSlotElement}>S {index}</div>
+        <InventorySlot key={index} classAdd={classSlotElement} slotKey={index} item={softwareItems[index]} itemType='Software' pickUp={itemPickUpType === 'Software'} />
     );
 
     return (
