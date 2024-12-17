@@ -14,7 +14,7 @@ export const KeySlot = ({classAdd, hasDatabaseKey, pickUp = false}) => {
         if (!pickUp) {
             return;
         }
-        submitMove({key: true}, gamePlayId, setMessage, 'location'); // not working as I miss proper entry in Netrunners lib GamePhaseNetrunnersRepository...
+        submitMove({key: true}, gamePlayId, setMessage, 'item');
     }
 
     const styles = {
