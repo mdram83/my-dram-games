@@ -9,6 +9,7 @@ export const useNetrunnersStore = create((set, get) => ({
     isPhaseCharacterSelection: false,
     isPhaseConflictOrBattle: false,
     isPhaseRestart: false,
+    isPhaseHack: false,
     setSituation: (situation) => set(() => {
 
         const rows = Object.keys(situation.map);
@@ -71,6 +72,7 @@ export const useNetrunnersStore = create((set, get) => ({
             isPhaseCharacterSelection: situation.phase.key === 'character',
             isPhaseConflictOrBattle: situation.phase.key === 'conflict' || situation.phase.key === 'battle',
             isPhaseRestart: situation.phase.key === 'restart',
+            isPhaseHack: situation.phase.key === 'hack',
         };
 
         if (situation.canRecharge && yourTurn) {
@@ -117,6 +119,12 @@ export const useNetrunnersStore = create((set, get) => ({
             if (get().situation.canSwitchMapLocation && get().yourTurn) {
                 updatedStoreProperties['moveData'] = display
                     ? {payload: {targetPlayerName: playerName}, phase: 'switch', label: 'Switch'}
+                    : {payload: {}, phase: null, label: null}
+            }
+
+            if (get().situation.phase.key === 'hack' && get().yourTurn) {
+                updatedStoreProperties['moveData'] = display
+                    ? {payload: {playerName: playerName}, phase: 'hack', label: 'Hack'}
                     : {payload: {}, phase: null, label: null}
             }
 

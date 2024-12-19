@@ -11,9 +11,12 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
     const display = useNetrunnersStore(state => state.playerInfoScreen.display);
     const displayPlayerName = useNetrunnersStore(state => state.playerInfoScreen.playerName);
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
-    const actionablePlayer = useNetrunnersStore(state => state.situation.canSwitchMapLocation);
+    const canSwitchMapLocation = useNetrunnersStore(state => state.situation.canSwitchMapLocation);
+    const isPhaseHack = useNetrunnersStore(state => state.isPhaseHack);
     const yourTurn = useNetrunnersStore(state => state.yourTurn);
     const battery = useNetrunnersStore(state => state.situation.players[playerName].battery);
+
+    const actionablePlayer = canSwitchMapLocation || isPhaseHack;
     const yourActionablePlayer = actionablePlayer && yourTurn;
 
     const isConnected = useGamePlayStore((state) => state.players[playerName]);
