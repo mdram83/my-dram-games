@@ -3,6 +3,7 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {BatteryChange} from "./BatteryChange.jsx";
+import {HackChange} from "./HackChange.jsx";
 
 export const PlayerAvatar = ({playerName, character = undefined}) => {
 
@@ -111,6 +112,8 @@ export const PlayerAvatar = ({playerName, character = undefined}) => {
             }
 
             {character && <BatteryChange playerName={playerName} />}
+            {character && <HackChange playerName={playerName} />}
+
 
         </div>
     );
