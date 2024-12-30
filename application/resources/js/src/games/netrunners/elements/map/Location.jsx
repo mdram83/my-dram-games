@@ -22,6 +22,7 @@ export const Location = ({row, column}) => {
     const setRechargeInfoScreen = useNetrunnersStore(state => state.setRechargeInfoScreen);
 
     const hasNode = useNetrunnersStore(state => state.locationsMap[row][column].hasNode);
+    const isCharger = useNetrunnersStore(state => state.locationsMap[row][column].isCharger);
     const nodeKey = useNetrunnersStore(state => state.locationsMap[row][column].nodeKey);
     const nodeRotation = useNetrunnersStore(state => state.locationsMap[row][column].nodeRotation);
     const hasEncounter = useNetrunnersStore(state => state.locationsMap[row][column].hasEncounter);
@@ -33,6 +34,10 @@ export const Location = ({row, column}) => {
     const activePlayerChargerLocation = useNetrunnersStore(state => state.locationsMap[row][column].activePlayerChargerLocation);
     const activeItem = useNetrunnersStore(state => state.locationsMap[row][column].activeItem);
     const yourActiveItem = useNetrunnersStore(state => state.locationsMap[row][column].yourActiveItem);
+    const useChargerSoftware = useNetrunnersStore(state => state.useChargerSoftware);
+    const setUseChargerSoftware = useNetrunnersStore(state => state.setUseChargerSoftware);
+
+    const isChargerSoftwareTarget = isCharger && useChargerSoftware !== undefined;
 
     const hasPlayers = playersCount > 0;
 
@@ -94,13 +99,19 @@ export const Location = ({row, column}) => {
 
     const classDivCommon = ' bg-cover bg-center bg-no-repeat w-full h-full rounded-md ';
     const classDivAction = classDivCommon
-        + (actionableLocation && (' border-solid border-[2px] -mt-[2px] -ml-[2px] '
-            + (yourActionableLocation
+        + ((actionableLocation || isChargerSoftwareTarget) && (' border-solid border-[2px] -mt-[2px] -ml-[2px] '
+            + ((yourActionableLocation || isChargerSoftwareTarget)
                 ? ' border-orange-500 cursor-pointer shadow-actionSm hover:shadow-actionLg '
                 : ' border-cyan-500 shadow-actionSmOp ')));
 
 
     const onClick = () => {
+
+        if (isChargerSoftwareTarget) {
+            submitMove({row: row, column: column, software: useChargerSoftware}, gamePlayId, setMessage, 'charger');
+            setUseChargerSoftware(undefined);
+            return;
+        }
 
         if (!actionableLocation || !yourActionableLocation) {
             return;

@@ -29,7 +29,7 @@ export const PlayerDetails = ({playerName}) => {
     );
 
     const renderSoftware = () => Array(3).fill(null).map((_, index) =>
-        <InventorySlot key={index} classAdd={classSlotElement} slotKey={index} item={softwareItems[index]} itemType='Software' pickUp={itemPickUpType === 'Software'} />
+        <InventorySlot key={index} classAdd={classSlotElement} slotKey={index} item={softwareItems[index]} itemType='Software' pickUp={itemPickUpType === 'Software'} playerName={playerName}/>
     );
 
     return (

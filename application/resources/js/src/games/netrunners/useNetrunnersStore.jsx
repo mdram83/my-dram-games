@@ -48,6 +48,7 @@ export const useNetrunnersStore = create((set, get) => ({
 
                 Object.defineProperty(locationsMap[row], column, {value: {
                     isLocation: isLocation,
+                    isCharger: hasNode ? situation.map[row][column].node.type === 'Charger' : false,
                     hasNode: hasNode,
                     nodeKey: hasNode ? situation.map[row][column].node.key : null,
                     nodeRotation: nodeRotation ?? 0,
@@ -141,6 +142,9 @@ export const useNetrunnersStore = create((set, get) => ({
 
     itemPickUpType: undefined,
     setItemPickUpType: (type) => set(() => ({itemPickUpType: type})),
+
+    useChargerSoftware: undefined,
+    setUseChargerSoftware: (value) => set(() => ({useChargerSoftware: value})),
 
     rechargeInfoScreen: {
         display: false

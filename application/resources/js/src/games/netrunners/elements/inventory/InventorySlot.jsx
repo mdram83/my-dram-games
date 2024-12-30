@@ -3,16 +3,31 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {submitMove} from "../../submitMove.jsx";
 import {Attribute} from "../misc/Attribute.jsx";
+import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
-export const InventorySlot = ({classAdd, slotKey, item, itemType, pickUp = false}) => {
+export const InventorySlot = ({classAdd, slotKey, item, itemType, pickUp = false, playerName = undefined}) => {
 
     console.log('InventorySlot');
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
+    const activePlayer = useGamePlayStore(state => state.activePlayer);
+
+    const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
+    const useChargerSoftware = useNetrunnersStore(state => state.useChargerSoftware);
+    const setUseChargerSoftware = useNetrunnersStore(state => state.setUseChargerSoftware);
+    const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
 
     const itemKey = item !== null ? item.key : null;
     const power = item !== null ? item.power : 0;
+
+    const canUseChargerSoftware =
+        (phaseKey === 'location' || phaseKey === 'finish')
+        && itemKey === 'Charger'
+        && pickUp === false
+        && playerName === activePlayer
+        && playerName === window.MyDramGames.player.name
+    ;
 
     const config = {
         Hardware: {
@@ -26,6 +41,13 @@ export const InventorySlot = ({classAdd, slotKey, item, itemType, pickUp = false
     };
 
     const onClick = () => {
+
+        if (canUseChargerSoftware) {
+            setUseChargerSoftware(useChargerSoftware === undefined ? slotKey : undefined);
+            setPlayerInfoScreen(false);
+            return;
+        }
+
         if (!pickUp) {
             return;
         }
@@ -42,7 +64,7 @@ export const InventorySlot = ({classAdd, slotKey, item, itemType, pickUp = false
         filter: ` grayscale(${!!itemKey ? 0 : 100}%) brightness(${!!itemKey ? 100 : 200}%) `,
     };
 
-    const classDiv = pickUp ? ' border-orange-500 shadow-actionSm hover:shadow-actionLg hover:cursor-pointer ' : 'border-neutral-500 ';
+    const classDiv = (pickUp || canUseChargerSoftware) ? ' border-orange-500 shadow-actionSm hover:shadow-actionLg hover:cursor-pointer ' : 'border-neutral-500 ';
 
 
     return (
