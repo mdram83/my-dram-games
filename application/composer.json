@@ -18,7 +18,7 @@
         "mdram83/mydramgames-core": "^1.0",
         "mdram83/mydramgames-gp-tictactoe": "^1.0",
         "mdram83/mydramgames-gp-thousand": "^1.0",
-        "mdram83/mydramgames-gp-netrunners": "^0.0"
+        "mdram83/mydramgames-gp-netrunners": "^1.0"
     },
     "require-dev": {
         "laravel/breeze": "^1.27",
