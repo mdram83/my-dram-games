@@ -4,8 +4,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const CharacterDetails = ({playerName}) => {
 
-    console.log('character/CharacterDetails', playerName);
-
     const characterName = useNetrunnersStore(state => state.situation.players[playerName].character);
     const character = useNetrunnersStore(state => state.situation.characters[characterName]);
     const abilityNames = Object.getOwnPropertyNames(character.abilities);

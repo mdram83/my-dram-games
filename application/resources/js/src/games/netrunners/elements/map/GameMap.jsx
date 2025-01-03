@@ -6,8 +6,6 @@ import {Controls} from "./Controls.jsx";
 
 export const GameMap = () => {
 
-    console.log('GameMap');
-
     const isPhaseCharacterSelection = useNetrunnersStore(state => state.isPhaseCharacterSelection);
     const setFollowActivePlayer = useNetrunnersStore(state => state.setFollowActivePlayer);
 

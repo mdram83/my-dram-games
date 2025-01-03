@@ -6,13 +6,10 @@ import {animated, useSpring} from "@react-spring/web";
 import {Rotation} from "./Rotation.jsx";
 import {LocationSelection} from "./LocationSelection.jsx";
 import {submitMove} from "../../submitMove.jsx";
-import {Coordinates} from "./Coordinates.jsx";
 import {LocationEncounter} from "../encounters/LocationEncounter.jsx";
 import {LocationPlayers} from "../players/LocationPlayers.jsx";
 
 export const Location = ({row, column}) => {
-
-    console.log('Location', row, column);
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
@@ -154,7 +151,6 @@ export const Location = ({row, column}) => {
         return (
             <animated.div className={classDivAction} style={style} onClick={() => onClick()}>
                 {yourActionableLocation && actionablePhaseKey === 'direction' && <Rotation />}
-                <Coordinates row={row} column={column} rotation={rotation} />
                 {hasEncounter && <LocationEncounter row={row} column={column} activeItem={activeItem} yourActiveItem={yourActiveItem} parentRotation={rotation} />}
                 {hasPlayers && <LocationPlayers row={row} column={column} parentRotation={rotation} hasEncounter={hasEncounter} />}
             </animated.div>

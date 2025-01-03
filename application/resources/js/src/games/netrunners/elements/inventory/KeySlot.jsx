@@ -5,8 +5,6 @@ import {submitMove} from "../../submitMove.jsx";
 
 export const KeySlot = ({classAdd, hasDatabaseKey, pickUp = false}) => {
 
-    console.log('KeySlot');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

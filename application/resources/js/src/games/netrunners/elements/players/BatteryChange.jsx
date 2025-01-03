@@ -5,8 +5,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const BatteryChange = ({playerName}) => {
 
-    console.log('BatteryChange');
-
     const points = useNetrunnersStore(state => state.situation.players[playerName].battery);
 
     const [prevPoints, setPrevPoints] = useState(points);

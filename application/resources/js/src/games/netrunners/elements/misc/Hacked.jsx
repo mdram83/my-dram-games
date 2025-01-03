@@ -4,8 +4,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const Hacked = ({playerName, toBeHacked = undefined}) => {
 
-    console.log('Hacked');
-
     const isHacked = useNetrunnersStore(state => state.situation.players[playerName].isHacked);
 
     const classCommon = ' rounded-full ';

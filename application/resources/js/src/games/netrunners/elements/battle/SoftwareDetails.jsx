@@ -7,8 +7,6 @@ import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore
 
 export const SoftwareDetails = ({player, addClass}) => {
 
-    console.log('SoftwareDetails', player);
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const yourTurn = useNetrunnersStore(state => state.yourTurn);

@@ -5,8 +5,6 @@ import {PlayerDetails} from "./PlayerDetails.jsx";
 
 export const PlayerInfo = () => {
 
-    console.log('player/PlayerInfo');
-
     const display = useNetrunnersStore(state => state.playerInfoScreen.display);
     const playerName = useNetrunnersStore(state => state.playerInfoScreen.playerName);
     const characterPriority = useNetrunnersStore(state => state.playerInfoScreen.characterPriority);

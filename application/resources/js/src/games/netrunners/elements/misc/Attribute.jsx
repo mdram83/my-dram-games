@@ -3,8 +3,6 @@ import {useMediaQuery} from "../../../../customHooks/useMediaQuery.jsx";
 
 export const Attribute = ({className, children, sizeVh = 4, sizeVhSm = 7, additionalStyles = {}, classPadding = undefined}) => {
 
-    console.log('Attribute', sizeVh, sizeVhSm);
-
     const isSm = useMediaQuery('(min-width: 640px)');
 
     const classDivBase = (className === undefined ? '' : className)

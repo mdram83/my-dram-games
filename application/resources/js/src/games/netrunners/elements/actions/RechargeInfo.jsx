@@ -8,8 +8,6 @@ import {Hacked} from "../misc/Hacked.jsx";
 
 export const RechargeInfo = () => {
 
-    console.log('RechargeInfo');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const display = useNetrunnersStore(state => state.rechargeInfoScreen.display);

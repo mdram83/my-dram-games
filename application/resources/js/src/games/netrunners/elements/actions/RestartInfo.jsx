@@ -7,8 +7,6 @@ import {ActionButton} from "./ActionButton.jsx";
 
 export const RestartInfo = () => {
 
-    console.log('RestartInfo');
-
     const isPhaseRestart = useNetrunnersStore(state => state.isPhaseRestart);
 
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);

@@ -4,8 +4,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const Outcome = ({player}) => {
 
-    console.log('Outcome');
-
     const character = useNetrunnersStore(state => state.situation.players[player].character);
     const totalPower = useNetrunnersStore(state => state.situation.battle.totalPower);
     const battleOutcome = useNetrunnersStore(state => state.situation.battle.battleOutcome);

@@ -3,8 +3,6 @@ import {BatteryPoint} from "./BatteryPoint.jsx";
 
 export const Battery = ({points, targetPoints = undefined, smallSize = false}) => {
 
-    console.log('Battery', points, targetPoints);
-
     targetPoints = targetPoints === undefined ? points : targetPoints;
 
     const renderPoints = () => {

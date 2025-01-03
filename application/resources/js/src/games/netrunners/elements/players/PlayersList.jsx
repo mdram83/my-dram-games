@@ -4,8 +4,6 @@ import {PlayerAvatar} from "./PlayerAvatar.jsx";
 
 export const PlayersList = () => {
 
-    console.log('players/PlayersList');
-
     const players = useNetrunnersStore(state => state.situation.players);
     const names = Object.getOwnPropertyNames(players);
     const numberOfPlayers = names.length;

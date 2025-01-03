@@ -7,8 +7,6 @@ import {InventorySlot} from "../inventory/InventorySlot.jsx";
 
 export const PlayerDetails = ({playerName}) => {
 
-    console.log('player/PlayerDetails', playerName);
-
     const battery = useNetrunnersStore(state => state.situation.players[playerName].battery);
     const score = useNetrunnersStore(state => state.situation.players[playerName].score);
     const hasDatabaseKey = useNetrunnersStore(state => state.situation.players[playerName].hasDatabaseKey);

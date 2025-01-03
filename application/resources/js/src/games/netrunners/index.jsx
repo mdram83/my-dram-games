@@ -50,9 +50,6 @@ const setupMoveEvent = (e) => {
 
 const controller = new GamePlayController(getPlayersNames, setupSituation, setupMoveEvent);
 
-// Remove after testing
-console.log(useNetrunnersStore.getState());
-
 const onLoadPhaseKey = useNetrunnersStore.getState().situation.phase.key;
 
 controller.getRoot().render(

@@ -2,8 +2,6 @@ import React from "react";
 
 export const Rotation = () => {
 
-    console.log('Rotation');
-
     return (
         <div className='fixed top-0 left-0 w-full h-full text-orange-500'>
             <div className='flex items-center justify-center h-full w-full'>

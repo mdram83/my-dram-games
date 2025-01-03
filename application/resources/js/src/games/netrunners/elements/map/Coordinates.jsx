@@ -2,8 +2,6 @@ import React from "react";
 
 export const Coordinates = ({row, column, rotation}) => {
 
-    console.log('Coordinates', row, column, rotation);
-
     const style = {
         transform: `rotate(${-rotation}deg)`,
     };

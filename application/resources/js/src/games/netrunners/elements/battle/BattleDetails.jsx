@@ -6,8 +6,6 @@ import {AbilityDetails} from "./AbilityDetails.jsx";
 
 export const BattleDetails = ({player}) => {
 
-    console.log('BattleDetails', player);
-
     const classBattleLine = ' flex h-full w-[95%] justify-between items-center ';
 
     return (

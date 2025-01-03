@@ -7,8 +7,6 @@ import {HackChange} from "./HackChange.jsx";
 
 export const PlayerAvatar = ({playerName, character = undefined}) => {
 
-    console.log('players/Avatar', playerName, character);
-
     const display = useNetrunnersStore(state => state.playerInfoScreen.display);
     const displayPlayerName = useNetrunnersStore(state => state.playerInfoScreen.playerName);
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);

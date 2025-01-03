@@ -5,8 +5,6 @@ import {submitMove} from "../../submitMove.jsx";
 
 export const GameMoveSubmitter = () => {
 
-    console.log('GameMoveSubmitter');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

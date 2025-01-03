@@ -7,8 +7,6 @@ import {submitMove} from "../../submitMove.jsx";
 
 export const DiceDetails = ({player, addClass}) => {
 
-    console.log('DiceDetails', player);
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const yourTurn = useNetrunnersStore(state => state.yourTurn);

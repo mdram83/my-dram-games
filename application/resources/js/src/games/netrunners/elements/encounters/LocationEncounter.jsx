@@ -8,8 +8,6 @@ import {submitMove} from "../../submitMove.jsx";
 
 export const LocationEncounter = ({row, column, activeItem = false, yourActiveItem = false, parentRotation = 0}) => {
 
-    console.log('LocationEncounter', row, column);
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

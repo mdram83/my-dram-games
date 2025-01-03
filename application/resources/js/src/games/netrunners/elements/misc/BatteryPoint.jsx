@@ -2,8 +2,6 @@ import React from "react";
 
 export const BatteryPoint = ({order, points, targetPoints, classAdd = ''}) => {
 
-    console.log('BatteryPoint', order, points, targetPoints);
-
     let classDiv = classAdd + ' size-full ';
 
     switch (true) {

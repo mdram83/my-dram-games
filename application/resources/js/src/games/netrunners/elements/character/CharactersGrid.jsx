@@ -5,8 +5,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const CharactersGrid = () => {
 
-    console.log('players/CharactersGrid');
-
     const isPhaseCharacterSelection = useNetrunnersStore(state => state.isPhaseCharacterSelection);
 
     const [fade, setFade] = React.useState(false);

@@ -10,8 +10,6 @@ import {BattleDetails} from "./BattleDetails.jsx";
 
 export const ConflictModal = () => {
 
-    console.log('ConflictModal');
-
     const phaseKey = useNetrunnersStore(state => state.situation.phase.key);
     const activePlayer = useNetrunnersStore(state => state.situation.activePlayer);
     const coordinates = useNetrunnersStore(state => state.situation.players[activePlayer].coordinates);

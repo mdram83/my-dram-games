@@ -5,8 +5,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const CharacterAvatar = ({characterName, classPartCommon, classPartSize}) => {
 
-    console.log('players/CharacterAvatar', characterName);
-
     const playerName = useNetrunnersStore(state => state.situation.characters[characterName].player);
     const setPlayerInfoScreen = useNetrunnersStore(state => state.setPlayerInfoScreen);
 

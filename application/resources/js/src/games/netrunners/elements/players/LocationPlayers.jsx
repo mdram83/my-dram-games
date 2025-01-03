@@ -5,8 +5,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const LocationPlayers = ({row, column, parentRotation, hasEncounter}) => {
 
-    console.log('LocationPlayers', row, column, hasEncounter);
-
     const locationPlayers = useNetrunnersStore(state => state.situation.map[row][column].players);
     const players = useNetrunnersStore(state => state.situation.players);
 

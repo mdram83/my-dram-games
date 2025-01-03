@@ -4,8 +4,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const HackChange = ({playerName}) => {
 
-    console.log('HackChange');
-
     const isHacked = useNetrunnersStore(state => state.situation.players[playerName].isHacked);
 
     const style = {

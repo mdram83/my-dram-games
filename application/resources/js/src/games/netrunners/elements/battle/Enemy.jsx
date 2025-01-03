@@ -4,8 +4,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const Enemy = ({enemyKey, power}) => {
 
-    console.log('Enemy');
-
     const battle = useNetrunnersStore(state => state.situation.battle);
     const isBattle = battle !== null;
     const battleOutcome = isBattle ? battle.battleOutcome : undefined;

@@ -5,8 +5,6 @@ import {PowerDetails} from "./PowerDetails.jsx";
 
 export const HardwareDetails = ({player, addClass}) => {
 
-    console.log('HardwareDetails', player);
-
     const hardwarePower = useNetrunnersStore(state => state.situation.battle.hardwarePower);
     const hardwareItems = useNetrunnersStore(state => state.situation.players[player].hardwareItems);
 

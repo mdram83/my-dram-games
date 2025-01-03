@@ -4,8 +4,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const ResultDetails = () => {
 
-    console.log('ResultDetails');
-
     const result = useNetrunnersStore(state => state.situation.result);
     const players = useNetrunnersStore(state => state.situation.players);
 

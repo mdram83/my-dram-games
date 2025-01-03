@@ -6,8 +6,6 @@ import {EncounterDetails} from "./EncounterDetails.jsx";
 
 export const EncounterSelection = () => {
 
-    console.log('EncounterSelection');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
 

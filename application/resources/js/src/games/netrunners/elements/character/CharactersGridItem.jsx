@@ -5,8 +5,6 @@ import {CharacterSelection} from "./CharacterSelection.jsx";
 
 export const CharactersGridItem = ({gridKey}) => {
 
-    console.log('players/CharactersGridItem', gridKey);
-
     const characterName = useNetrunnersStore(state => state.situation.charactersGrid[gridKey].name);
 
     const classPartCommon = ' rounded-[4vh] ';

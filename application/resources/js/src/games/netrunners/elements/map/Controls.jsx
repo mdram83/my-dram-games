@@ -4,8 +4,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const Controls = () => {
 
-    console.log('Controls');
-
     const {
         zoomIn,
         zoomOut,

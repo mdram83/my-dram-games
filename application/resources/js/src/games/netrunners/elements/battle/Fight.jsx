@@ -3,8 +3,6 @@ import {configNetrunners} from "../../configNetrunners.jsx";
 
 export const Fight = ({onClick, yourTurn, addClass = ''}) => {
 
-    console.log('Fight');
-
     const styleImage = {
         backgroundImage: configNetrunners.covers.diceM,
     };

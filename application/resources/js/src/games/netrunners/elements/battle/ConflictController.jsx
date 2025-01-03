@@ -4,8 +4,6 @@ import {ConflictModal} from "./ConflictModal.jsx";
 
 export const ConflictController = () => {
 
-    console.log('ConflictController');
-
     const isValidPhase = useNetrunnersStore(state => state.isPhaseConflictOrBattle);
 
     return (

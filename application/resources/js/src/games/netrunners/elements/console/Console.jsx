@@ -4,8 +4,6 @@ import {useTypewriter} from "../../../../customHooks/useTypewriter.jsx";
 
 export const Console = () => {
 
-    console.log('Console');
-
     const activePlayer = useNetrunnersStore(state => state.situation.activePlayer);
     const remainingMoves = useNetrunnersStore(state => state.situation.players[activePlayer].remainingMoves);
     const remainingNodes = useNetrunnersStore(state => state.situation.remainingNodes);

@@ -4,8 +4,6 @@ import {Attribute} from "../misc/Attribute.jsx";
 
 export const EncounterDetails = ({classEncounter, classDetails, itemKey, name, power, itemType = null, description = null, action = undefined}) => {
 
-    console.log('EncounterDetails', itemKey, name, itemType, description !== null);
-
     const classDivDetails = classDetails
         + ' relative items-end justify-center bg-top bg-no-repeat bg-cover '
         + ' w-[100%] h-[80%] rounded-[1vh] border-solid border-[2px] '

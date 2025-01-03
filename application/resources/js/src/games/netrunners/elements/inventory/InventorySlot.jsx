@@ -7,8 +7,6 @@ import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const InventorySlot = ({classAdd, slotKey, item, itemType, pickUp = false, playerName = undefined}) => {
 
-    console.log('InventorySlot');
-
     const gamePlayId = useGamePlayStore(state => state.gamePlayId);
     const setMessage = useGamePlayStore((state) => state.setMessage);
     const activePlayer = useGamePlayStore(state => state.activePlayer);
