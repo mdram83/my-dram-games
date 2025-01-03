@@ -39,13 +39,13 @@ class RegistrationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_new_users_can_register_and_is_not_premium(): void
+    public function test_new_users_can_register_and_is_premium(): void
     {
         $response = $this->post('/register', $this->getRegistrationPayload());
         $user = User::where('name', '=', $this->name)->first();
 
         $this->assertAuthenticated();
-        $this->assertFalse((bool) $user->premium);
+        $this->assertTrue((bool) $user->premium);
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 }

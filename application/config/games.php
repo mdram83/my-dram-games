@@ -40,6 +40,18 @@ if (config('app.env') === 'production') {
                 'gamePlayClassname' => GamePlayThousand::class,
                 'gameMoveFactoryClassname' => GameMoveFactoryThousand::class,
             ],
+
+            'netrunners' => [
+                'name' => 'Netrunners',
+                'description' => 'Fight evil corporate and become a new netrunners legend.',
+                'durationInMinutes' => 90,
+                'minPlayerAge' => 10,
+                'isActive' => true,
+                'isPremium' => true,
+                'gameSetupClassname' => GameSetupNetrunners::class,
+                'gamePlayClassname' => GamePlayNetrunners::class,
+                'gameMoveFactoryClassname' => GameMoveNetrunnersFactory::class,
+            ],
         ],
     ];
 }

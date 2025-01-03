@@ -22,11 +22,13 @@
                                   link="/games/thousand"
                                   button="Play Now" />
 
-            <x-template.hero-item label="Upcoming Game"
-                                  title="Netrunners coming soon!"
+            <x-template.hero-item label="New Game"
+                                  title="Netrunners game available for premium users!"
                                   description="Prepare for a cyber style adventure"
                                   img="{{ asset('img/games/netrunners.jpg') }}"
-                                  bgPositionTop="{{ true }}" />
+                                  bgPositionTop="{{ true }}"
+                                  link="/games/netrunners"
+                                  button="Play Now" />
 
         </div>
     </div>
