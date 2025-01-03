@@ -1,7 +1,6 @@
 import React from "react";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 import {configNetrunners} from "../../configNetrunners.jsx";
-import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 
 export const ResultDetails = () => {
 
@@ -10,15 +9,7 @@ export const ResultDetails = () => {
     const result = useNetrunnersStore(state => state.situation.result);
     const players = useNetrunnersStore(state => state.situation.players);
 
-    // TODO temp
-    const situation = useNetrunnersStore(state => state.situation);
-    const gplay = useGamePlayStore(state => state);
-
     const renderResult = () => {
-        console.log(result); // TODO temp
-        console.log(situation);
-        console.log(gplay);
-
         return result.data.map((detail) => <div key={detail.player}>{renderPlayer(detail.player, detail.position, detail.score)}</div>);
     }
 

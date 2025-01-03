@@ -1,6 +1,5 @@
 import {useControls, useTransformEffect} from "react-zoom-pan-pinch";
 import React, {useEffect, useState} from "react";
-import {useGamePlayStore} from "../../../../game-core/game-play/useGamePlayStore.jsx";
 import {useNetrunnersStore} from "../../useNetrunnersStore.jsx";
 
 export const Controls = () => {
