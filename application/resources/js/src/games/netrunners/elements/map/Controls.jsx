@@ -18,7 +18,7 @@ export const Controls = () => {
     const followActivePlayer = useNetrunnersStore(state => state.followActivePlayer);
     const setFollowActivePlayer = useNetrunnersStore(state => state.setFollowActivePlayer);
 
-    const activePlayer = useGamePlayStore(state => state.activePlayer);
+    const activePlayer = useNetrunnersStore(state => state.situation.activePlayer);
     const activePlayerCoordinates = useNetrunnersStore(state => state.situation.players[activePlayer].coordinates);
 
     useEffect(() => {
