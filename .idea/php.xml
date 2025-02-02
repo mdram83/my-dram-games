@@ -155,6 +155,10 @@
       <path value="$PROJECT_DIR$/application/vendor/symfony/polyfill-php72" />
       <path value="$PROJECT_DIR$/application/vendor/mdram83/mydramgames-gp-netrunners" />
       <path value="$PROJECT_DIR$/application/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/application/vendor/clue/redis-protocol" />
+      <path value="$PROJECT_DIR$/application/vendor/clue/redis-react" />
+      <path value="$PROJECT_DIR$/application/vendor/react/promise-timer" />
+      <path value="$PROJECT_DIR$/application/vendor/laravel/reverb" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />

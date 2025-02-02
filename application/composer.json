@@ -10,15 +10,16 @@
         "fakerphp/faker": "*",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.47",
+        "laravel/reverb": "^1.4",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
-        "pusher/pusher-php-server": "^7.2",
-        "spatie/laravel-cookie-consent": "^3.3",
-        "mdram83/mydramgames-utils": "^1.2.003",
         "mdram83/mydramgames-core": "^1.0",
-        "mdram83/mydramgames-gp-tictactoe": "^1.0",
+        "mdram83/mydramgames-gp-netrunners": "^1.0",
         "mdram83/mydramgames-gp-thousand": "^1.0",
-        "mdram83/mydramgames-gp-netrunners": "^1.0"
+        "mdram83/mydramgames-gp-tictactoe": "^1.0",
+        "mdram83/mydramgames-utils": "^1.2.003",
+        "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-cookie-consent": "^3.3"
     },
     "require-dev": {
         "laravel/breeze": "^1.27",

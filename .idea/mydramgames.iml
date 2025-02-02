@@ -146,6 +146,10 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-gp-thousand" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-gp-tictactoe" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/mdram83/mydramgames-gp-netrunners" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/clue/redis-protocol" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/clue/redis-react" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/laravel/reverb" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/promise-timer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
