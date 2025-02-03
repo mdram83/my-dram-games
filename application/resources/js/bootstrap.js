@@ -40,15 +40,30 @@ const echoAuthEndpoint = () => {
     return authEndpointBase + cookieValue(cookieName);
 }
 
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     authEndpoint: echoAuthEndpoint(),
+//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+//     wsHost: window.location.hostname,
+//     wssPort: import.meta.env.VITE_PUSHER_PORT,
+//     forceTLS: true,
+//     disableStats: true,
+//     enabledTransports: ['wss', 'ws'],
+//     encrypted: true,
+// });
+
 window.Echo = new Echo({
-    broadcaster: 'pusher',
+    broadcaster: 'reverb',
     authEndpoint: echoAuthEndpoint(),
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    wsHost: window.location.hostname,
-    wssPort: import.meta.env.VITE_PUSHER_PORT,
-    forceTLS: true,
-    disableStats: true,
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    //wsHost: window.location.hostname,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT,
+    wssPort: import.meta.env.VITE_REVERB_PORT,
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+    // forceTLS: false,
     enabledTransports: ['wss', 'ws'],
-    encrypted: true,
+    // enabledTransports: ['ws'],
+    //encrypted: true,
 });
