@@ -36,9 +36,9 @@ return [
                 'tls' => [
                     'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
                     'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
-//                    'verify_peer' => false, // TODO remove if not needed in prod
-//                    'verify_peer_name' => false, // TODO remove if not needed in prod
-//                    'allow_self_signed' => true, // TODO remove if not needed in prod
+//                    'verify_peer' => false,
+//                    'verify_peer_name' => false,
+//                    'allow_self_signed' => true,
                 ],
             ],
             'max_request_size' => env('REVERB_MAX_REQUEST_SIZE', 10_000),
