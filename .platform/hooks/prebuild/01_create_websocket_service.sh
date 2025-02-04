@@ -6,7 +6,7 @@ sudo chmod 644 /opt/elasticbeanstalk/deployment/env
 
 cat <<EOF | sudo tee /etc/systemd/system/websockets.service
 [Unit]
-Description=Laravel WebSockets Server
+Description=Laravel Reverb Server
 After=network.target
 
 [Service]
