@@ -10,7 +10,7 @@ Description=Laravel WebSockets Server
 After=network.target
 
 [Service]
-ExecStart=/bin/bash -c 'while read -r line; do export "\$line"; done < /opt/elasticbeanstalk/deployment/env && /usr/bin/php /var/app/current/application/artisan websockets:serve'
+ExecStart=/bin/bash -c 'while read -r line; do export "\$line"; done < /opt/elasticbeanstalk/deployment/env && /usr/bin/php /var/app/current/application/artisan reverb:start'
 Restart=always
 User=webapp
 Group=webapp
