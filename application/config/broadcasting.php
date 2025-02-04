@@ -47,30 +47,6 @@ return [
             ],
         ],
 
-        'pusher' => [
-            'driver' => 'pusher',
-            'key' => env('PUSHER_APP_KEY'),
-            'secret' => env('PUSHER_APP_SECRET'),
-            'app_id' => env('PUSHER_APP_ID'),
-            'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'host' => env('PUSHER_HOST'),
-                'port' => env('PUSHER_PORT'),
-                'scheme' => env('PUSHER_SCHEME'),
-                'encrypted' => true,
-                'debug' => true,
-                'useTLS' => env('PUSHER_SCHEME', null) === 'https',
-                'curl_options' => [
-                    81 => 0, // CURLOPT_SSL_VERIFYHOST => 0,
-                    64 => 0, // CURLOPT_SSL_VERIFYPEER => 0,
-                ]
-            ],
-            'client_options' => [
-                'verify' => false,
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
-            ],
-        ],
-
         'ably' => [
             'driver' => 'ably',
             'key' => env('ABLY_KEY'),
