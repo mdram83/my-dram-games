@@ -153,6 +153,15 @@
       <path value="$PROJECT_DIR$/application/vendor/clue/redis-react" />
       <path value="$PROJECT_DIR$/application/vendor/react/promise-timer" />
       <path value="$PROJECT_DIR$/application/vendor/laravel/reverb" />
+      <path value="$PROJECT_DIR$/application/vendor/cboden/ratchet" />
+      <path value="$PROJECT_DIR$/application/vendor/react/http" />
+      <path value="$PROJECT_DIR$/application/vendor/beyondcode/laravel-websockets" />
+      <path value="$PROJECT_DIR$/application/vendor/fig/http-message-util" />
+      <path value="$PROJECT_DIR$/application/vendor/facade/ignition-contracts" />
+      <path value="$PROJECT_DIR$/application/vendor/symfony/psr-http-message-bridge" />
+      <path value="$PROJECT_DIR$/application/vendor/symfony/clock" />
+      <path value="$PROJECT_DIR$/application/vendor/league/uri-interfaces" />
+      <path value="$PROJECT_DIR$/application/vendor/league/uri" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />

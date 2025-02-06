@@ -144,6 +144,9 @@
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/clue/redis-react" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/laravel/reverb" />
       <excludeFolder url="file://$MODULE_DIR$/application/vendor/react/promise-timer" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/league/uri" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/league/uri-interfaces" />
+      <excludeFolder url="file://$MODULE_DIR$/application/vendor/symfony/clock" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

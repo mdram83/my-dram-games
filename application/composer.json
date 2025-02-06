@@ -8,9 +8,9 @@
         "php": "^8.3",
         "fakerphp/faker": "*",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^10.47",
+        "laravel/framework": "^11.0",
         "laravel/reverb": "^1.4",
-        "laravel/sanctum": "^3.3",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
         "mdram83/mydramgames-core": "^1.0",
         "mdram83/mydramgames-gp-netrunners": "^1.0",
@@ -21,11 +21,11 @@
         "spatie/laravel-cookie-consent": "^3.3"
     },
     "require-dev": {
-        "laravel/breeze": "^1.27",
+        "laravel/breeze": "^2.0",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.1",
         "spatie/laravel-ignition": "^2.0"
     },
