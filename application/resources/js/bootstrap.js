@@ -40,6 +40,7 @@ const echoAuthEndpoint = () => {
     return authEndpointBase + cookieValue(cookieName);
 }
 
+
 window.Echo = new Echo({
     broadcaster: 'reverb',
     authEndpoint: echoAuthEndpoint(),
