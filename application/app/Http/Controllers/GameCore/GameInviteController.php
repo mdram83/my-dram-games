@@ -32,7 +32,6 @@ use MyDramGames\Core\GameRecord\GameRecordRepository;
 use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GameInviteController extends Controller
 {
@@ -100,6 +99,7 @@ class GameInviteController extends Controller
     ): View|Response|RedirectResponse
     {
         try {
+
             $gameInvite = $repository->getOne($gameInviteId);
 
             $this->premiumPass->validate($gameInvite->getGameBox()->getSlug(), $player);
@@ -121,8 +121,6 @@ class GameInviteController extends Controller
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
 
-        } catch (Exception) {
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
     }
 

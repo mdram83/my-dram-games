@@ -48,6 +48,9 @@ class GamePlayController extends Controller
 
     }
 
+    /**
+     * @throws Exception
+     */
     public function store(Player $player, Request $request): View|Response|RedirectResponse
     {
         try {
@@ -72,12 +75,15 @@ class GamePlayController extends Controller
             DB::rollBack();
             throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
 
-        } catch (Exception) {
+        } catch (Exception $e) {
             DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+            throw $e;
         }
     }
 
+    /**
+     * @throws GameBoxException
+     */
     public function show(Player $player, int|string $gamePlayId): Response|View|RedirectResponse
     {
         try {
@@ -118,11 +124,14 @@ class GamePlayController extends Controller
         } catch (GamePlayStorageException $e) {
             throw new NotFoundHttpException(static::MESSAGE_NOT_FOUND);
 
-        } catch (Exception $e) {
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
         }
     }
 
+    /**
+     * @throws GameBoxException
+     * @throws ControllerException
+     * @throws ValidationException
+     */
     public function move(Player $player, Request $request, int|string $gamePlayId): Response
     {
         try {
@@ -151,9 +160,9 @@ class GamePlayController extends Controller
             DB::rollBack();
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
-        } catch (Exception) {
+        } catch (Exception $e) {
             DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+            throw  $e;
         }
     }
 

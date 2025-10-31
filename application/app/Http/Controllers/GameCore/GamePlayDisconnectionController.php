@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use MyDramGames\Core\Exceptions\GameOptionException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\Exceptions\GameSetupException;
 use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
@@ -21,7 +22,6 @@ use MyDramGames\Core\GamePlay\GamePlayRepository;
 use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GamePlayDisconnectionController extends Controller
 {
@@ -41,6 +41,10 @@ class GamePlayDisconnectionController extends Controller
 
     }
 
+    /**
+     * @throws ControllerException
+     * @throws CollectionException
+     */
     public function disconnect(Player $player, Request $request, int|string $gamePlayId): Response
     {
         try {
@@ -84,10 +88,13 @@ class GamePlayDisconnectionController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+            throw $e;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function connect(Player $player, int|string $gamePlayId): Response
     {
         try {
@@ -120,10 +127,15 @@ class GamePlayDisconnectionController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+            throw $e;
         }
     }
 
+    /**
+     * @throws GameOptionException
+     * @throws ControllerException
+     * @throws CollectionException
+     */
     public function forfeitAfterDisconnection(Player $player, Request $request, int|string $gamePlayId): Response
     {
         try {
@@ -182,9 +194,9 @@ class GamePlayDisconnectionController extends Controller
             DB::rollBack();
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
-        } catch (Exception) {
+        } catch (Exception $e) {
             DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, static::MESSAGE_INTERNAL_ERROR);
+            throw $e;
         }
 
     }
