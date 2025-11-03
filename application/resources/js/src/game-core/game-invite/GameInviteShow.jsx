@@ -19,7 +19,7 @@ export const GameInviteShow = ({gameInvite, slug, gamePlayId = undefined, gameRe
     const storeGamePlay = () => {
         axios.post(window.MyDramGames.routes["ajax.gameplay.store"], {gameInviteId: gameInvite.id})
             .then(() => { })
-            .catch(error => setErrorMessage(error.response.data.message.message ?? 'Unexpected error'));
+            .catch(error => setErrorMessage(error.response.data.message ?? 'Unexpected error'));
     }
 
     useEffect(() => {

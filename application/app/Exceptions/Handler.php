@@ -3,6 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
+use MyDramGames\Core\Exceptions\GameBoxException;
+use MyDramGames\Core\Exceptions\GameInviteException;
+use MyDramGames\Core\Exceptions\GameSetupException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -25,6 +29,14 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (GameSetupException|GameBoxException $e) {
+            return new Response(['message' => $e->getMessage()], 400);
+        });
+
+        $this->renderable(function (GameInviteException $e) {
+            return new Response(['message' => $e->getMessage()], 500);
         });
     }
 }

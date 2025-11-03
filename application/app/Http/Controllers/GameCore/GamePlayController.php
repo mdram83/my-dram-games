@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use MyDramGames\Core\Exceptions\GameBoxException;
-use MyDramGames\Core\Exceptions\GameInviteException;
 use MyDramGames\Core\Exceptions\GameMoveException;
 use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
@@ -29,7 +28,6 @@ use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
@@ -70,10 +68,6 @@ class GamePlayController extends Controller
             GamePlayStoredEvent::dispatch($gameInvite, $gamePlay);
 
             return new Response([], 200);
-
-        } catch (GameInviteException $e) {
-            DB::rollBack();
-            throw new HttpException(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
 
         } catch (Exception $e) {
             DB::rollBack();

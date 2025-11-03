@@ -18,10 +18,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GameInviteException;
 use MyDramGames\Core\Exceptions\GameOptionValueException;
-use MyDramGames\Core\Exceptions\GameSetupException;
 use MyDramGames\Core\GameInvite\GameInvite;
 use MyDramGames\Core\GameInvite\GameInviteFactory;
 use MyDramGames\Core\GameInvite\GameInviteRepository;
@@ -45,6 +43,11 @@ class GameInviteController extends Controller
 
     }
 
+    /**
+     * @throws ControllerException
+     * @throws PremiumPassException
+     * @throws ValidationException
+     */
     public function store(
         Request $request,
         GameInviteFactory $factory,
@@ -71,12 +74,9 @@ class GameInviteController extends Controller
         } catch (PremiumPassException $e) {
             return response()->view('errors.403', ['exception' => $e], 403);
 
-        }  catch (GameSetupException|GameBoxException|GameInviteException $e) {
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-
-        } catch (Exception) {
+        } catch (Exception $e) {
             DB::rollBack();
-            return new Response(['message' => static::MESSAGE_INTERNAL_ERROR], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
+            throw $e;
         }
     }
 
