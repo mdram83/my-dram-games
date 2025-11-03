@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
 use App\Services\PremiumPass\PremiumPassException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
@@ -46,7 +47,7 @@ class Handler extends ExceptionHandler
             return new Response(['message' => $e->getMessage()], 500);
         });
 
-        $this->renderable(function (GamePlayStorageException $e) {
+        $this->renderable(function (GamePlayStorageException|GamePlayDisconnectException $e) {
             return new Response(['message' => static::MESSAGE_NOT_FOUND], 404);
         });
     }

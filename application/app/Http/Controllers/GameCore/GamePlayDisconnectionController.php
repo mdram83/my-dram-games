@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
-use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
@@ -76,10 +75,6 @@ class GamePlayDisconnectionController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GamePlayDisconnectException) {
-            DB::rollBack();
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
 
         } catch (ControllerException $e) {
             DB::rollBack();
