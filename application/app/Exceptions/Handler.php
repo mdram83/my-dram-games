@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\PremiumPass\PremiumPassException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use MyDramGames\Core\Exceptions\GameBoxException;
@@ -29,6 +30,10 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (PremiumPassException $e) {
+            return response()->view('errors.403', ['exception' => $e], 403);
         });
 
         $this->renderable(function (GameSetupException|GameBoxException $e) {

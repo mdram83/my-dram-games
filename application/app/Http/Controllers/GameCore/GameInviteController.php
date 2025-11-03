@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GameInviteException;
 use MyDramGames\Core\Exceptions\GameOptionValueException;
 use MyDramGames\Core\GameInvite\GameInvite;
@@ -71,9 +72,6 @@ class GameInviteController extends Controller
         } catch (ControllerException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
-        } catch (PremiumPassException $e) {
-            return response()->view('errors.403', ['exception' => $e], 403);
-
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;
@@ -89,6 +87,10 @@ class GameInviteController extends Controller
         return view('join-redirect');
     }
 
+    /**
+     * @throws GameBoxException
+     * @throws PremiumPassException
+     */
     public function join(
         GameInviteRepository $repository,
         GamePlayRepository $gamePlayRepository,
@@ -114,9 +116,6 @@ class GameInviteController extends Controller
             Session::flash('success', ($message ?? static::MESSAGE_PLAYER_BACK));
 
             return view('single', $responseContent);
-
-        } catch (PremiumPassException $e) {
-            return response()->view('errors.403', ['exception' => $e], 403);
 
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
