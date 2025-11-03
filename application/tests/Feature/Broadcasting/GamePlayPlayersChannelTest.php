@@ -96,7 +96,7 @@ class GamePlayPlayersChannelTest extends TestCase
     public function testWrongGameIdFails(): void
     {
         $response = $this->getResponse(gamePlayId: 'definitely-not-existing-game-id');
-        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     public function testMissingGameIdFails(): void

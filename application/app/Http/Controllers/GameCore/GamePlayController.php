@@ -29,7 +29,6 @@ use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
 {
@@ -69,6 +68,9 @@ class GamePlayController extends Controller
             GamePlayStoredEvent::dispatch($gameInvite, $gamePlay);
 
             return new Response([], 200);
+
+        } catch (GamePlayStorageException $e) {
+            throw new Exception($e->getMessage(), previous: $e);
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -116,9 +118,6 @@ class GamePlayController extends Controller
         } catch (AccessDeniedHttpException $e) {
             return response()->view('errors.403', ['exception' => $e], 403);
 
-        } catch (GamePlayStorageException $e) {
-            throw new NotFoundHttpException(static::MESSAGE_NOT_FOUND);
-
         }
     }
 
@@ -146,10 +145,6 @@ class GamePlayController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GamePlayStorageException $e) {
-            DB::rollBack();
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
 
         } catch (ControllerException|GameMoveException|GameBoardException|GamePlayException $e) {
             DB::rollBack();

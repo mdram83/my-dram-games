@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use MyDramGames\Core\Exceptions\GameOptionException;
-use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\Exceptions\GameSetupException;
 use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
 use MyDramGames\Core\GamePlay\GamePlay;
@@ -78,7 +77,7 @@ class GamePlayDisconnectionController extends Controller
 
             return new Response([], 200);
 
-        } catch (GamePlayStorageException|GamePlayDisconnectException) {
+        } catch (GamePlayDisconnectException) {
             DB::rollBack();
             return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
 
@@ -121,9 +120,6 @@ class GamePlayDisconnectionController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GamePlayStorageException) {
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -185,10 +181,6 @@ class GamePlayDisconnectionController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GamePlayStorageException) {
-            DB::rollBack();
-            return new Response(static::MESSAGE_NOT_FOUND, SymfonyResponse::HTTP_NOT_FOUND);
 
         } catch (ControllerException|GameSetupException $e) {
             DB::rollBack();
