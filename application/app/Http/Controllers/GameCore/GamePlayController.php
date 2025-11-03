@@ -21,6 +21,7 @@ use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\GameInvite\GameInviteRepository;
 use MyDramGames\Core\GameMove\GameMove;
+use MyDramGames\Core\GameMove\GameMoveFactory;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayFactory;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
@@ -181,6 +182,8 @@ class GamePlayController extends Controller
      */
     private function getMove(Player $player, GamePlay $gamePlay, array $inputs): GameMove
     {
-        return ($gamePlay->getGameInvite()->getGameBox()->getGameMoveFactoryClassname())::create($player, $inputs);
+        /** @var GameMoveFactory $className */
+        $className = $gamePlay->getGameInvite()->getGameBox()->getGameMoveFactoryClassname();
+        return $className::create($player, $inputs);
     }
 }
