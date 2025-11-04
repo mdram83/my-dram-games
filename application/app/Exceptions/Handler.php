@@ -9,8 +9,11 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GameInviteException;
+use MyDramGames\Core\Exceptions\GameMoveException;
+use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\Exceptions\GameSetupException;
+use MyDramGames\Utils\Exceptions\GameBoardException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -52,16 +55,22 @@ class Handler extends ExceptionHandler
             return response()->view('errors.403', ['exception' => $e], SymfonyResponse::HTTP_FORBIDDEN);
         });
 
-        $this->renderable(function (GameSetupException|GameBoxException|ControllerException $e) {
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-        });
-
         $this->renderable(function (GameInviteException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         });
 
         $this->renderable(function (GamePlayStorageException|GamePlayDisconnectException $e) {
             return new Response(['message' => static::MESSAGE_NOT_FOUND], SymfonyResponse::HTTP_NOT_FOUND);
+        });
+
+        $this->renderable(function (ControllerException $e) {
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
+        });
+
+        $this->renderable(function (
+            GameSetupException|GameBoxException|GameMoveException|GameBoardException|GamePlayException $e
+        ) {
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
         });
     }
 }

@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use MyDramGames\Core\Exceptions\GameBoxException;
-use MyDramGames\Core\Exceptions\GameMoveException;
 use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\GameInvite\GameInviteRepository;
@@ -26,9 +25,7 @@ use MyDramGames\Core\GameMove\GameMoveFactory;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayFactory;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
-use MyDramGames\Utils\Exceptions\GameBoardException;
 use MyDramGames\Utils\Player\Player;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class GamePlayController extends Controller
@@ -70,7 +67,7 @@ class GamePlayController extends Controller
 
             return new Response([], 200);
 
-        } catch (GamePlayStorageException $e) {
+        } catch (GamePlayStorageException|GamePlayException $e) {
             throw new Exception($e->getMessage(), previous: $e);
 
         } catch (Exception $e) {
@@ -141,10 +138,6 @@ class GamePlayController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GameMoveException|GameBoardException|GamePlayException $e) {
-            DB::rollBack();
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
         } catch (Exception $e) {
             DB::rollBack();

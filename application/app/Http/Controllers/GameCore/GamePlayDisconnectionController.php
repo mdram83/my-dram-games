@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use MyDramGames\Core\Exceptions\GameOptionException;
-use MyDramGames\Core\Exceptions\GameSetupException;
 use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
@@ -165,10 +164,6 @@ class GamePlayDisconnectionController extends Controller
             DB::commit();
 
             return new Response([], 200);
-
-        } catch (GameSetupException $e) {
-            DB::rollBack();
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
         } catch (Exception $e) {
             DB::rollBack();
