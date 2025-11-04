@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
+use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class GamePlayDisconnectionController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
+    use ValidateGamePlayPlayerTrait;
 
     public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
     public const string MESSAGE_FINISHED = 'Gameplay already finished';
@@ -50,10 +52,7 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
+            $this->validateGamePlayPlayer($gamePlay, $player);
 
             if ($gamePlay->isFinished()) {
                 DB::rollBack();
@@ -97,10 +96,7 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
+            $this->validateGamePlayPlayer($gamePlay, $player);
 
             if ($gamePlay->isFinished()) {
                 DB::rollBack();
@@ -135,10 +131,7 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
+            $this->validateGamePlayPlayer($gamePlay, $player);
 
             if ($gamePlay->isFinished()) {
                 DB::rollBack();

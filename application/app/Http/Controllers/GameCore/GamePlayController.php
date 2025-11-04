@@ -6,6 +6,7 @@ use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
+use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class GamePlayController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
+    use ValidateGamePlayPlayerTrait;
 
     public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
     public const string MESSAGE_FINISHED = 'Gameplay already finished';
@@ -57,8 +59,7 @@ class GamePlayController extends Controller
             $gameInvite = $this->gameInviteRepository->getOne($request->input('gameInviteId'));
 
             if (!$gameInvite->isPlayer($player) || !$gameInvite->isHost($player)) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
+                throw new AccessDeniedHttpException();
             }
 
             $gamePlay = $this->gamePlayFactory->create($gameInvite);
@@ -87,9 +88,7 @@ class GamePlayController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                throw new AccessDeniedHttpException(static::MESSAGE_FORBIDDEN);
-            }
+            $this->validateGamePlayPlayer($gamePlay, $player);
 
             if ($gamePlay->isFinished()) {
                 return Redirect::route('game-invites.join', [
@@ -134,10 +133,7 @@ class GamePlayController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            if (!$gamePlay->getPlayers()->exist($player->getId())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
-            }
+            $this->validateGamePlayPlayer($gamePlay, $player);
 
             $gamePlay->handleMove($this->getMove($player, $gamePlay, $this->getValidatedMoveInputs($request)));
             $this->dispatchGamePlayMovedEvent($gamePlay);

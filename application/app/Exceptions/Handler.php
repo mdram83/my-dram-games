@@ -10,11 +10,14 @@ use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GameInviteException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\Exceptions\GameSetupException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
     public const string MESSAGE_NOT_FOUND = 'Not found';
+    public const string MESSAGE_FORBIDDEN = 'Forbidden';
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -33,6 +36,10 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (AccessDeniedHttpException $e) {
+            return new Response(static::MESSAGE_FORBIDDEN, SymfonyResponse::HTTP_FORBIDDEN);
         });
 
         $this->renderable(function (PremiumPassException $e) {
