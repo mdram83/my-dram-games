@@ -27,6 +27,7 @@ use MyDramGames\Core\GamePlay\GamePlayFactory;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
 {
@@ -110,6 +111,10 @@ class GamePlayController extends Controller
                 ],
                 'situation' => $gamePlay->getSituation($player)
             ]);
+
+
+        } catch (GamePlayStorageException $e) {
+            return response()->view('errors.404', ['exception' => $e], 404);
 
         } catch (AccessDeniedHttpException $e) {
             return response()->view('errors.403', ['exception' => $e], 403);
