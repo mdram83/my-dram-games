@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
+use App\Http\Controllers\Traits\ValidateGamePlayNotFinishedTrait;
 use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
@@ -19,15 +20,14 @@ use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
 use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Player\Player;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class GamePlayDisconnectionController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
     use ValidateGamePlayPlayerTrait;
+    USE ValidateGamePlayNotFinishedTrait;
 
     public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
-    public const string MESSAGE_FINISHED = 'Gameplay already finished';
     public const string MESSAGE_FORFEIT_AFTER_DISABLED = 'Option disabled';
     public const string MESSAGE_FORFEIT_AFTER_EARLY = 'Not yet expired';
 
@@ -52,11 +52,7 @@ class GamePlayDisconnectionController extends Controller
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
             $this->validateGamePlayPlayer($gamePlay, $player);
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
+            $this->validateGamePlayNotFinished($gamePlay);
 
             $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
             $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
@@ -92,11 +88,7 @@ class GamePlayDisconnectionController extends Controller
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
             $this->validateGamePlayPlayer($gamePlay, $player);
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
+            $this->validateGamePlayNotFinished($gamePlay);
 
             $this
                 ->gamePlayDisconnectionRepository
@@ -127,11 +119,7 @@ class GamePlayDisconnectionController extends Controller
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
             $this->validateGamePlayPlayer($gamePlay, $player);
-
-            if ($gamePlay->isFinished()) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FINISHED, SymfonyResponse::HTTP_BAD_REQUEST);
-            }
+            $this->validateGamePlayNotFinished($gamePlay);
 
             $forfeitAfterOptionValue = $gamePlay
                 ->getGameInvite()
@@ -140,21 +128,18 @@ class GamePlayDisconnectionController extends Controller
                 ->getConfiguredValue();
 
             if ($forfeitAfterOptionValue === GameOptionValueForfeitAfterGeneric::Disabled) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_DISABLED, SymfonyResponse::HTTP_BAD_REQUEST);
+                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_DISABLED);
             }
 
             $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
             $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
 
             if ($disconnection === null) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
+                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
-                DB::rollBack();
-                return new Response(static::MESSAGE_FORFEIT_AFTER_EARLY, SymfonyResponse::HTTP_BAD_REQUEST);
+                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             $gamePlay->handleForfeit($disconnectedPlayer);

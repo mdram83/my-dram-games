@@ -12,4 +12,5 @@ class Controller extends BaseController
     use ValidatesRequests;
 
     public const MESSAGE_UNAUTHORIZED = 'Unauthorized';
+    public const string MESSAGE_FINISHED = 'Game already finished';
 }
