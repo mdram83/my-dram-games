@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Http\Controllers\ControllerException;
+use App\Http\Controllers\ControllerValidationException;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
 use App\Services\PremiumPass\PremiumPassException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
             return new Response(['message' => static::MESSAGE_NOT_FOUND], SymfonyResponse::HTTP_NOT_FOUND);
         });
 
-        $this->renderable(function (ControllerException $e) {
+        $this->renderable(function (ControllerValidationException $e) {
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
         });
 

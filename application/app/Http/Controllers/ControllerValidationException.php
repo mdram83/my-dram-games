@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 
-class ControllerException extends Exception
+class ControllerValidationException extends Exception
 {
 
 }

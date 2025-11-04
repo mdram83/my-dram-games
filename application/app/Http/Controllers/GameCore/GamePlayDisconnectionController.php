@@ -8,7 +8,7 @@ use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ControllerException;
+use App\Http\Controllers\ControllerValidationException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -41,7 +41,7 @@ class GamePlayDisconnectionController extends Controller
     }
 
     /**
-     * @throws ControllerException
+     * @throws ControllerValidationException
      * @throws CollectionException
      */
     public function disconnect(Player $player, Request $request, int|string $gamePlayId): Response
@@ -107,7 +107,7 @@ class GamePlayDisconnectionController extends Controller
 
     /**
      * @throws GameOptionException
-     * @throws ControllerException
+     * @throws ControllerValidationException
      * @throws CollectionException
      */
     public function forfeitAfterDisconnection(Player $player, Request $request, int|string $gamePlayId): Response
@@ -128,18 +128,18 @@ class GamePlayDisconnectionController extends Controller
                 ->getConfiguredValue();
 
             if ($forfeitAfterOptionValue === GameOptionValueForfeitAfterGeneric::Disabled) {
-                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_DISABLED);
+                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_DISABLED);
             }
 
             $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
             $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
 
             if ($disconnection === null) {
-                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_EARLY);
+                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
-                throw new ControllerException(static::MESSAGE_FORFEIT_AFTER_EARLY);
+                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             $gamePlay->handleForfeit($disconnectedPlayer);
@@ -158,7 +158,7 @@ class GamePlayDisconnectionController extends Controller
     }
 
     /**
-     * @throws ControllerException|CollectionException
+     * @throws ControllerValidationException|CollectionException
      */
     private function getValidatedDisconnectedPlayer(Request $request, GamePlay $gamePlay): Player
     {
@@ -167,7 +167,7 @@ class GamePlayDisconnectionController extends Controller
             ->filter(fn($item) => $item->getName() === $request->get('disconnected'));
 
         if ($singlePlayerCollection->count() === 0) {
-            throw new ControllerException(static::MESSAGE_INCORRECT_INPUTS);
+            throw new ControllerValidationException(static::MESSAGE_INCORRECT_INPUTS);
         }
 
         return $singlePlayerCollection->pullFirst();

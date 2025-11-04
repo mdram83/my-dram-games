@@ -4,7 +4,7 @@ namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ControllerException;
+use App\Http\Controllers\ControllerValidationException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
 use Exception;
@@ -120,7 +120,7 @@ class GamePlayController extends Controller
 
     /**
      * @throws GameBoxException
-     * @throws ControllerException
+     * @throws ControllerValidationException
      * @throws ValidationException
      */
     public function move(Player $player, Request $request, int|string $gamePlayId): Response
@@ -147,7 +147,7 @@ class GamePlayController extends Controller
     }
 
     /**
-     * @throws ControllerException
+     * @throws ControllerValidationException
      * @throws ValidationException
      */
     private function getValidatedMoveInputs(Request $request): array
@@ -156,7 +156,7 @@ class GamePlayController extends Controller
 
         if ($validator->fails()) {
             $message = json_encode(['message' => static::MESSAGE_INCORRECT_INPUTS, 'errors' => $validator->errors()]);
-            throw new ControllerException($message);
+            throw new ControllerValidationException($message);
         }
 
         return $validator->validated()['move'];

@@ -6,7 +6,7 @@ use App\Extensions\Core\GameOption\GameOptionValueConverter;
 use App\Services\PremiumPass\PremiumPass;
 use App\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ControllerException;
+use App\Http\Controllers\ControllerValidationException;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -45,7 +45,7 @@ class GameInviteController extends Controller
     }
 
     /**
-     * @throws ControllerException
+     * @throws ControllerValidationException
      * @throws PremiumPassException
      * @throws ValidationException
      */
@@ -121,7 +121,7 @@ class GameInviteController extends Controller
     }
 
     /**
-     * @throws ControllerException|ValidationException
+     * @throws ControllerValidationException|ValidationException
      */
     private function getValidatedCastedStoreInputs(
         Request $request,
@@ -137,7 +137,7 @@ class GameInviteController extends Controller
 
         if ($validator->fails()) {
             $message = json_encode(['message' => static::MESSAGE_INCORRECT_INPUTS, 'errors' => $validator->errors()]);
-            throw new ControllerException($message);
+            throw new ControllerValidationException($message);
         }
 
         $validated = $validator->validated();
@@ -155,7 +155,7 @@ class GameInviteController extends Controller
                 $configurations->add($configuration);
             }
         } catch (GameOptionValueException|CollectionException $e) {
-            throw new ControllerException(json_encode(['message' => $e->getMessage()]));
+            throw new ControllerValidationException(json_encode(['message' => $e->getMessage()]));
         }
 
         $inputs['options'] = $configurations;
