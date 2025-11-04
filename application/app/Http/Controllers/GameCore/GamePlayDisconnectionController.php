@@ -10,11 +10,9 @@ use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerValidationException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use MyDramGames\Core\Exceptions\GameOptionException;
 use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
@@ -40,14 +38,9 @@ class GamePlayDisconnectionController extends Controller
 
     }
 
-    /**
-     * @throws ControllerValidationException
-     * @throws CollectionException
-     */
     public function disconnect(Player $player, Request $request, int|string $gamePlayId): Response
     {
-        try {
-            DB::beginTransaction();
+        [$gamePlay, $disconnectedPlayer] = DB::transaction(function () use ($player, $request, $gamePlayId) {
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
@@ -64,57 +57,32 @@ class GamePlayDisconnectionController extends Controller
                 $disconnection->save();
             }
 
-            GamePlayDisconnectedEvent::dispatch($gamePlay, $disconnectedPlayer);
+            return [$gamePlay, $disconnectedPlayer];
+        });
 
-            DB::commit();
+        GamePlayDisconnectedEvent::dispatch($gamePlay, $disconnectedPlayer);
 
-            return new Response([], 200);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return new Response([], 200);
     }
 
-    /**
-     * @throws Exception
-     */
     public function connect(Player $player, int|string $gamePlayId): Response
     {
-        try {
-
-            DB::beginTransaction();
+        DB::transaction(function () use ($player, $gamePlayId) {
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
             $this->validateGamePlayPlayer($gamePlay, $player);
             $this->validateGamePlayNotFinished($gamePlay);
 
-            $this
-                ->gamePlayDisconnectionRepository
-                ->getOneByGamePlayAndPlayer($gamePlay, $player)
-                ?->remove();
+            $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $player)?->remove();
+        });
 
-            DB::commit();
-
-            return new Response([], 200);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return new Response([], 200);
     }
 
-    /**
-     * @throws GameOptionException
-     * @throws ControllerValidationException
-     * @throws CollectionException
-     */
     public function forfeitAfterDisconnection(Player $player, Request $request, int|string $gamePlayId): Response
     {
-        try {
-
-            DB::beginTransaction();
+        $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
@@ -144,17 +112,12 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay->handleForfeit($disconnectedPlayer);
 
-            $this->dispatchGamePlayMovedEvent($gamePlay);
+            return $gamePlay;
+        });
 
-            DB::commit();
+        $this->dispatchGamePlayMovedEvent($gamePlay);
 
-            return new Response([], 200);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
-
+        return new Response([], 200);
     }
 
     /**

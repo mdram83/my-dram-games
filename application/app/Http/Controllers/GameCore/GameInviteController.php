@@ -7,7 +7,6 @@ use App\Services\PremiumPass\PremiumPass;
 use App\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerValidationException;
-use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -57,22 +56,12 @@ class GameInviteController extends Controller
         GameOptionConfigurationCollection $configurations,
     ): Response
     {
-        try {
-            $inputs = $this->getValidatedCastedStoreInputs($request, $converter, $configurations);
+        $inputs = $this->getValidatedCastedStoreInputs($request, $converter, $configurations);
+        $this->premiumPass->validate($inputs['slug'], $player);
+        $gameInvite = DB::transaction(fn() => $factory->create($inputs['slug'], $inputs['options'], $player));
+        $responseContent = ['gameInvite' => $gameInvite->toArray()];
 
-            $this->premiumPass->validate($inputs['slug'], $player);
-
-            DB::beginTransaction();
-            $gameInvite = $factory->create($inputs['slug'], $inputs['options'], $player);
-            DB::commit();
-
-            $responseContent = ['gameInvite' => $gameInvite->toArray()];
-            return new Response($responseContent, SymfonyResponse::HTTP_OK);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return new Response($responseContent, SymfonyResponse::HTTP_OK);
     }
 
     public function joinRedirect(string $slug, int|string $gameInviteId): View

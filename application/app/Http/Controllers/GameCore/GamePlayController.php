@@ -52,17 +52,19 @@ class GamePlayController extends Controller
     public function store(Player $player, Request $request): View|Response|RedirectResponse
     {
         try {
-            DB::beginTransaction();
 
-            $gameInvite = $this->gameInviteRepository->getOne($request->input('gameInviteId'));
+            [$gameInvite, $gamePlay] = DB::transaction(function () use ($player, $request) {
 
-            if (!$gameInvite->isPlayer($player) || !$gameInvite->isHost($player)) {
-                throw new AccessDeniedHttpException();
-            }
+                $gameInvite = $this->gameInviteRepository->getOne($request->input('gameInviteId'));
 
-            $gamePlay = $this->gamePlayFactory->create($gameInvite);
+                if (!$gameInvite->isPlayer($player) || !$gameInvite->isHost($player)) {
+                    throw new AccessDeniedHttpException();
+                }
 
-            DB::commit();
+                $gamePlay = $this->gamePlayFactory->create($gameInvite);
+
+                return [$gameInvite, $gamePlay];
+            });
 
             GamePlayStoredEvent::dispatch($gameInvite, $gamePlay);
 
@@ -71,9 +73,6 @@ class GamePlayController extends Controller
         } catch (GamePlayStorageException|GamePlayException $e) {
             throw new Exception($e->getMessage(), previous: $e);
 
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw $e;
         }
     }
 
@@ -86,64 +85,50 @@ class GamePlayController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            $this->validateGamePlayPlayer($gamePlay, $player);
-
-            if ($gamePlay->isFinished()) {
-                return Redirect::route('game-invites.join', [
-                    'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
-                    'gameInviteId' => $gamePlay->getGameInvite()->getId(),
-                ]);
-            }
-
-            $options = array_map(
-                fn($item) => $item->getConfiguredValue(),
-                $gamePlay->getGameInvite()->getGameSetup()->getAllOptions()->toArray()
-            );
-
-            return view('play', [
-                'gamePlayId' => $gamePlayId,
-                'gameInvite' => [
-                    'gameInviteId' => $gamePlay->getGameInvite()->getId(),
-                    'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
-                    'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
-                    'host' => $gamePlay->getGameInvite()->getHost()->getName(),
-                    'options' => $options,
-                ],
-                'situation' => $gamePlay->getSituation($player)
-            ]);
-
         } catch (GamePlayStorageException $e) {
             throw new NotFoundHttpException($e->getMessage(), previous: $e);
 
         }
+
+        $this->validateGamePlayPlayer($gamePlay, $player);
+
+        if ($gamePlay->isFinished()) {
+            return Redirect::route('game-invites.join', [
+                'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
+                'gameInviteId' => $gamePlay->getGameInvite()->getId(),
+            ]);
+        }
+
+        $options = array_map(
+            fn($item) => $item->getConfiguredValue(),
+            $gamePlay->getGameInvite()->getGameSetup()->getAllOptions()->toArray()
+        );
+
+        return view('play', [
+            'gamePlayId' => $gamePlayId,
+            'gameInvite' => [
+                'gameInviteId' => $gamePlay->getGameInvite()->getId(),
+                'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
+                'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
+                'host' => $gamePlay->getGameInvite()->getHost()->getName(),
+                'options' => $options,
+            ],
+            'situation' => $gamePlay->getSituation($player)
+        ]);
     }
 
-    /**
-     * @throws GameBoxException
-     * @throws ControllerValidationException
-     * @throws ValidationException
-     */
     public function move(Player $player, Request $request, int|string $gamePlayId): Response
     {
-        try {
-
-            DB::beginTransaction();
-
+        $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-
             $this->validateGamePlayPlayer($gamePlay, $player);
-
             $gamePlay->handleMove($this->getMove($player, $gamePlay, $this->getValidatedMoveInputs($request)));
-            $this->dispatchGamePlayMovedEvent($gamePlay);
+            return $gamePlay;
+        });
 
-            DB::commit();
+        $this->dispatchGamePlayMovedEvent($gamePlay);
 
-            return new Response([], 200);
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            throw  $e;
-        }
+        return new Response([], 200);
     }
 
     /**
