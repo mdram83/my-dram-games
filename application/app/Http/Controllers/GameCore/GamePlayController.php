@@ -112,12 +112,8 @@ class GamePlayController extends Controller
                 'situation' => $gamePlay->getSituation($player)
             ]);
 
-
         } catch (GamePlayStorageException $e) {
-            return response()->view('errors.404', ['exception' => $e], 404);
-
-        } catch (AccessDeniedHttpException $e) {
-            return response()->view('errors.403', ['exception' => $e], 403);
+            throw new NotFoundHttpException($e->getMessage(), previous: $e);
 
         }
     }
