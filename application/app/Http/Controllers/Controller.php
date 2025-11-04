@@ -11,6 +11,5 @@ class Controller extends BaseController
     use AuthorizesRequests;
     use ValidatesRequests;
 
-    public const MESSAGE_NOT_FOUND = 'Not found';
     public const MESSAGE_UNAUTHORIZED = 'Unauthorized';
 }
