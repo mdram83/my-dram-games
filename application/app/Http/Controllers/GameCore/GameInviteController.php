@@ -69,9 +69,6 @@ class GameInviteController extends Controller
             $responseContent = ['gameInvite' => $gameInvite->toArray()];
             return new Response($responseContent, SymfonyResponse::HTTP_OK);
 
-        } catch (ControllerException $e) {
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;

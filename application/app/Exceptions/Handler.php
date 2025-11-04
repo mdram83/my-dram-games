@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\ControllerException;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectException;
 use App\Services\PremiumPass\PremiumPassException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -48,19 +49,19 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (PremiumPassException $e) {
-            return response()->view('errors.403', ['exception' => $e], 403);
+            return response()->view('errors.403', ['exception' => $e], SymfonyResponse::HTTP_FORBIDDEN);
         });
 
-        $this->renderable(function (GameSetupException|GameBoxException $e) {
-            return new Response(['message' => $e->getMessage()], 400);
+        $this->renderable(function (GameSetupException|GameBoxException|ControllerException $e) {
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
         });
 
         $this->renderable(function (GameInviteException $e) {
-            return new Response(['message' => $e->getMessage()], 500);
+            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR);
         });
 
         $this->renderable(function (GamePlayStorageException|GamePlayDisconnectException $e) {
-            return new Response(['message' => static::MESSAGE_NOT_FOUND], 404);
+            return new Response(['message' => static::MESSAGE_NOT_FOUND], SymfonyResponse::HTTP_NOT_FOUND);
         });
     }
 }

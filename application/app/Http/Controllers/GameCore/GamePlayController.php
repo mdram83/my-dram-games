@@ -142,7 +142,7 @@ class GamePlayController extends Controller
 
             return new Response([], 200);
 
-        } catch (ControllerException|GameMoveException|GameBoardException|GamePlayException $e) {
+        } catch (GameMoveException|GameBoardException|GamePlayException $e) {
             DB::rollBack();
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 

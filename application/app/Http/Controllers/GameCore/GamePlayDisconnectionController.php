@@ -75,10 +75,6 @@ class GamePlayDisconnectionController extends Controller
 
             return new Response([], 200);
 
-        } catch (ControllerException $e) {
-            DB::rollBack();
-            return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
-
         } catch (Exception $e) {
             DB::rollBack();
             throw $e;
@@ -170,7 +166,7 @@ class GamePlayDisconnectionController extends Controller
 
             return new Response([], 200);
 
-        } catch (ControllerException|GameSetupException $e) {
+        } catch (GameSetupException $e) {
             DB::rollBack();
             return new Response(['message' => $e->getMessage()], SymfonyResponse::HTTP_BAD_REQUEST);
 
