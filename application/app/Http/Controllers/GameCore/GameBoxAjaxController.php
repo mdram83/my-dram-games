@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Http\Controllers\Controller;
-use Exception;
 use Illuminate\Http\Response;
 use MyDramGames\Core\GameBox\GameBoxRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
