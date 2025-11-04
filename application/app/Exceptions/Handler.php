@@ -20,7 +20,7 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     public const string MESSAGE_NOT_FOUND = 'Not found';
-    public const string MESSAGE_FORBIDDEN = 'Forbidden';
+
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
