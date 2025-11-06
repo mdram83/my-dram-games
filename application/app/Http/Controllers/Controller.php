@@ -10,6 +10,4 @@ class Controller extends BaseController
 {
     use AuthorizesRequests;
     use ValidatesRequests;
-
-    public const string MESSAGE_FINISHED = 'Game already finished';
 }
