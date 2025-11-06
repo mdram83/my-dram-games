@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Traits;
+namespace App\Services\GamePlay;
 
 use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Utils\Player\Player;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-trait ValidateGamePlayPlayerTrait
+class GamePlayValidationServiceImplementation implements GamePlayValidationService
 {
-    private function validateGamePlayPlayer(GamePlay $gamePlay, Player $player): void
+
+    public function validateGamePlayPlayer(GamePlay $gamePlay, Player $player): void
     {
         if (!$gamePlay->getPlayers()->exist($player->getId())) {
             throw new AccessDeniedHttpException();

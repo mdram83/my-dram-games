@@ -6,7 +6,7 @@ use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerValidationException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
-use App\Http\Controllers\Traits\ValidateGamePlayPlayerTrait;
+use App\Services\GamePlay\GamePlayValidationService;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -32,12 +32,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class GamePlayController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
-    use ValidateGamePlayPlayerTrait;
 
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
         readonly private GameInviteRepository $gameInviteRepository,
         readonly private GamePlayFactory $gamePlayFactory,
+        readonly private GamePlayValidationService $gamePlayValidationService,
     )
     {
 
@@ -87,7 +87,7 @@ class GamePlayController extends Controller
 
         }
 
-        $this->validateGamePlayPlayer($gamePlay, $player);
+        $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
 
         if ($gamePlay->isFinished()) {
             return Redirect::route('game-invites.join', [
@@ -118,7 +118,7 @@ class GamePlayController extends Controller
     {
         $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-            $this->validateGamePlayPlayer($gamePlay, $player);
+            $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
             $gamePlay->handleMove($this->getMove($player, $gamePlay, $this->getValidatedMoveInputs($request)));
             return $gamePlay;
         });
