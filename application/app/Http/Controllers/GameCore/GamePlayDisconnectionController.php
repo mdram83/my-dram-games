@@ -25,10 +25,6 @@ class GamePlayDisconnectionController extends Controller
     use ValidateGamePlayPlayerTrait;
     use ValidateGamePlayNotFinishedTrait;
 
-    public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
-    public const string MESSAGE_FORFEIT_AFTER_DISABLED = 'Option disabled';
-    public const string MESSAGE_FORFEIT_AFTER_EARLY = 'Not yet expired';
-
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
         readonly private GamePlayDisconnectionRepository $gamePlayDisconnectionRepository,
@@ -96,18 +92,18 @@ class GamePlayDisconnectionController extends Controller
                 ->getConfiguredValue();
 
             if ($forfeitAfterOptionValue === GameOptionValueForfeitAfterGeneric::Disabled) {
-                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_DISABLED);
+                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_DISABLED);
             }
 
             $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
             $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
 
             if ($disconnection === null) {
-                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_EARLY);
+                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
-                throw new ControllerValidationException(static::MESSAGE_FORFEIT_AFTER_EARLY);
+                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_EARLY);
             }
 
             $gamePlay->handleForfeit($disconnectedPlayer);
@@ -130,7 +126,7 @@ class GamePlayDisconnectionController extends Controller
             ->filter(fn($item) => $item->getName() === $request->get('disconnected'));
 
         if ($singlePlayerCollection->count() === 0) {
-            throw new ControllerValidationException(static::MESSAGE_INCORRECT_INPUTS);
+            throw new ControllerValidationException(ControllerValidationException::MESSAGE_INCORRECT_INPUTS);
         }
 
         return $singlePlayerCollection->pullFirst();
