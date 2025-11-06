@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
-use App\Http\Controllers\Traits\ValidateGamePlayNotFinishedTrait;
 use App\Services\GamePlay\GamePlayValidationService;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
@@ -22,7 +21,6 @@ use MyDramGames\Utils\Player\Player;
 class GamePlayDisconnectionController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
-    use ValidateGamePlayNotFinishedTrait;
 
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
@@ -40,8 +38,7 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
-            $this->validateGamePlayNotFinished($gamePlay);
+            $this->gamePlayValidationService->validateDisconnectionApplicable($gamePlay, $player);
 
             $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
             $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
@@ -64,12 +61,8 @@ class GamePlayDisconnectionController extends Controller
     public function connect(Player $player, int|string $gamePlayId): Response
     {
         DB::transaction(function () use ($player, $gamePlayId) {
-
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
-
-            $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
-            $this->validateGamePlayNotFinished($gamePlay);
-
+            $this->gamePlayValidationService->validateDisconnectionApplicable($gamePlay, $player);
             $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $player)?->remove();
         });
 
@@ -82,8 +75,7 @@ class GamePlayDisconnectionController extends Controller
 
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
 
-            $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
-            $this->validateGamePlayNotFinished($gamePlay);
+            $this->gamePlayValidationService->validateDisconnectionApplicable($gamePlay, $player);
 
             $forfeitAfterOptionValue = $gamePlay
                 ->getGameInvite()
