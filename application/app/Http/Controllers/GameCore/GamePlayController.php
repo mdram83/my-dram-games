@@ -34,9 +34,6 @@ class GamePlayController extends Controller
     use DispatchGamePlayMovedEventTrait;
     use ValidateGamePlayPlayerTrait;
 
-    public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
-    public const string MESSAGE_FINISHED = 'Gameplay already finished';
-
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
         readonly private GameInviteRepository $gameInviteRepository,
@@ -140,7 +137,10 @@ class GamePlayController extends Controller
         $validator = Validator::make($request->all(), ['move' => 'required|array']);
 
         if ($validator->fails()) {
-            $message = json_encode(['message' => static::MESSAGE_INCORRECT_INPUTS, 'errors' => $validator->errors()]);
+            $message = json_encode([
+                'message' => ControllerValidationException::MESSAGE_INCORRECT_INPUTS,
+                'errors' => $validator->errors()
+            ]);
             throw new ControllerValidationException($message);
         }
 
