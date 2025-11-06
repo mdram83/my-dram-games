@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Middleware;
 
-use App\Http\Controllers\Controller;
 use App\Http\Middleware\AjaxAuth;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class AjaxAuthTest extends TestCase
         $response = $middleware->handle($request, $next);
 
         $this->assertEquals(HttpFoundationResponse::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertEquals(Controller::MESSAGE_UNAUTHORIZED, $response->getContent());
+        $this->assertEquals(HttpFoundationResponse::$statusTexts[HttpFoundationResponse::HTTP_UNAUTHORIZED], $response->getContent());
     }
 
     public function testAjaxNotAuthRequest(): void
@@ -36,7 +35,7 @@ class AjaxAuthTest extends TestCase
         $response = $middleware->handle($request, $next);
 
         $this->assertEquals(HttpFoundationResponse::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertEquals(Controller::MESSAGE_UNAUTHORIZED, $response->getContent());
+        $this->assertEquals(HttpFoundationResponse::$statusTexts[HttpFoundationResponse::HTTP_UNAUTHORIZED], $response->getContent());
     }
 
     public function testNonAjaxAuthRequest(): void
@@ -49,7 +48,7 @@ class AjaxAuthTest extends TestCase
         $response = $middleware->handle($request, $next);
 
         $this->assertEquals(HttpFoundationResponse::HTTP_UNAUTHORIZED, $response->getStatusCode());
-        $this->assertEquals(Controller::MESSAGE_UNAUTHORIZED, $response->getContent());
+        $this->assertEquals(HttpFoundationResponse::$statusTexts[HttpFoundationResponse::HTTP_UNAUTHORIZED], $response->getContent());
     }
 
     public function testAjaxAuthRequest(): void

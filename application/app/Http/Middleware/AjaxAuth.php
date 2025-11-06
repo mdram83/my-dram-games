@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Controllers\Controller;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +17,7 @@ class AjaxAuth
     public function handle(Request $request, Closure $next): Response
     {
         if(!$request->ajax() || !Auth::check()){
-            return new Response(Controller::MESSAGE_UNAUTHORIZED, Response::HTTP_UNAUTHORIZED, );
+            return new Response(Response::$statusTexts[Response::HTTP_UNAUTHORIZED], Response::HTTP_UNAUTHORIZED, );
         }
         return $next($request);
     }
