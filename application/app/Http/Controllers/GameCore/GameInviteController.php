@@ -36,7 +36,6 @@ class GameInviteController extends Controller
     public const string MESSAGE_PLAYER_JOINED = 'You have joined the game!';
     public const string MESSAGE_PLAYER_BACK = 'Welcome back!';
     public const string MESSAGE_REDIRECT_TITLE = 'Join the game!';
-    public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
 
     public function __construct(readonly private PremiumPass $premiumPass)
     {
@@ -125,7 +124,10 @@ class GameInviteController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $message = json_encode(['message' => static::MESSAGE_INCORRECT_INPUTS, 'errors' => $validator->errors()]);
+            $message = json_encode([
+                'message' => ControllerValidationException::MESSAGE_INCORRECT_INPUTS,
+                'errors' => $validator->errors()
+            ]);
             throw new ControllerValidationException($message);
         }
 
