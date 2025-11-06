@@ -23,7 +23,7 @@ class GamePlayDisconnectionController extends Controller
 {
     use DispatchGamePlayMovedEventTrait;
     use ValidateGamePlayPlayerTrait;
-    USE ValidateGamePlayNotFinishedTrait;
+    use ValidateGamePlayNotFinishedTrait;
 
     public const string MESSAGE_INCORRECT_INPUTS = 'Incorrect inputs';
     public const string MESSAGE_FORFEIT_AFTER_DISABLED = 'Option disabled';
