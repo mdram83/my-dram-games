@@ -4,8 +4,8 @@ namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ControllerValidationException;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
+use App\Http\Requests\GameCore\GameMoveRequest;
 use App\Services\GamePlay\GamePlayValidationService;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -14,8 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
@@ -114,37 +112,18 @@ class GamePlayController extends Controller
         ]);
     }
 
-    public function move(Player $player, Request $request, int|string $gamePlayId): Response
+    public function move(Player $player, GameMoveRequest $request, int|string $gamePlayId): Response
     {
         $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
             $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
-            $gamePlay->handleMove($this->getMove($player, $gamePlay, $this->getValidatedMoveInputs($request)));
+            $gamePlay->handleMove($this->getMove($player, $gamePlay, $request->validated('move')));
             return $gamePlay;
         });
 
         $this->dispatchGamePlayMovedEvent($gamePlay);
 
         return new Response([], 200);
-    }
-
-    /**
-     * @throws ControllerValidationException
-     * @throws ValidationException
-     */
-    private function getValidatedMoveInputs(Request $request): array
-    {
-        $validator = Validator::make($request->all(), ['move' => 'required|array']);
-
-        if ($validator->fails()) {
-            $message = json_encode([
-                'message' => ControllerValidationException::MESSAGE_INCORRECT_INPUTS,
-                'errors' => $validator->errors()
-            ]);
-            throw new ControllerValidationException($message);
-        }
-
-        return $validator->validated()['move'];
     }
 
     /**
