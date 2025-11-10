@@ -6,6 +6,7 @@ use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use App\Http\Requests\GameCore\GameMoveRequest;
+use App\Services\GamePlay\GamePlayService;
 use App\Services\GamePlay\GamePlayValidationService;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -18,9 +19,6 @@ use MyDramGames\Core\Exceptions\GameBoxException;
 use MyDramGames\Core\Exceptions\GamePlayException;
 use MyDramGames\Core\Exceptions\GamePlayStorageException;
 use MyDramGames\Core\GameInvite\GameInviteRepository;
-use MyDramGames\Core\GameMove\GameMove;
-use MyDramGames\Core\GameMove\GameMoveFactory;
-use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayFactory;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
 use MyDramGames\Utils\Player\Player;
@@ -36,6 +34,7 @@ class GamePlayController extends Controller
         readonly private GameInviteRepository $gameInviteRepository,
         readonly private GamePlayFactory $gamePlayFactory,
         readonly private GamePlayValidationService $gamePlayValidationService,
+        readonly private GamePlayService $gamePlayService,
     )
     {
 
@@ -51,11 +50,9 @@ class GamePlayController extends Controller
             [$gameInvite, $gamePlay] = DB::transaction(function () use ($player, $request) {
 
                 $gameInvite = $this->gameInviteRepository->getOne($request->input('gameInviteId'));
-
                 if (!$gameInvite->isPlayer($player) || !$gameInvite->isHost($player)) {
                     throw new AccessDeniedHttpException();
                 }
-
                 $gamePlay = $this->gamePlayFactory->create($gameInvite);
 
                 return [$gameInvite, $gamePlay];
@@ -94,22 +91,7 @@ class GamePlayController extends Controller
             ]);
         }
 
-        $options = array_map(
-            fn($item) => $item->getConfiguredValue(),
-            $gamePlay->getGameInvite()->getGameSetup()->getAllOptions()->toArray()
-        );
-
-        return view('play', [
-            'gamePlayId' => $gamePlayId,
-            'gameInvite' => [
-                'gameInviteId' => $gamePlay->getGameInvite()->getId(),
-                'slug' => $gamePlay->getGameInvite()->getGameBox()->getSlug(),
-                'name' => $gamePlay->getGameInvite()->getGameBox()->getName(),
-                'host' => $gamePlay->getGameInvite()->getHost()->getName(),
-                'options' => $options,
-            ],
-            'situation' => $gamePlay->getSituation($player)
-        ]);
+        return view('play', $this->gamePlayService->getShowResponseContent($player, $gamePlay));
     }
 
     public function move(Player $player, GameMoveRequest $request, int|string $gamePlayId): Response
@@ -117,22 +99,12 @@ class GamePlayController extends Controller
         $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);
             $this->gamePlayValidationService->validateGamePlayPlayer($gamePlay, $player);
-            $gamePlay->handleMove($this->getMove($player, $gamePlay, $request->validated('move')));
+            $gamePlay->handleMove($this->gamePlayService->getGameMove($player, $gamePlay, $request->validated('move')));
             return $gamePlay;
         });
 
-        $this->dispatchGamePlayMovedEvent($gamePlay);
+        $this->gamePlayService->dispatchGamePlayMovedEventToAllPlayers($gamePlay);
 
         return new Response([], 200);
-    }
-
-    /**
-     * @throws GameBoxException
-     */
-    private function getMove(Player $player, GamePlay $gamePlay, array $inputs): GameMove
-    {
-        /** @var GameMoveFactory $className */
-        $className = $gamePlay->getGameInvite()->getGameBox()->getGameMoveFactoryClassname();
-        return $className::create($player, $inputs);
     }
 }
