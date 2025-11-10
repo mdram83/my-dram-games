@@ -4,7 +4,6 @@ namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use App\Http\Requests\GameCore\GameMoveRequest;
 use App\Services\GamePlay\GamePlayService;
 use App\Services\GamePlay\GamePlayValidationService;
@@ -27,8 +26,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GamePlayController extends Controller
 {
-    use DispatchGamePlayMovedEventTrait;
-
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
         readonly private GameInviteRepository $gameInviteRepository,

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
+use App\Services\GamePlay\GamePlayService;
 use App\Services\GamePlay\GamePlayValidationService;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllerValidationException;
-use App\Http\Controllers\Traits\DispatchGamePlayMovedEventTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +20,6 @@ use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectionController extends Controller
 {
-    use DispatchGamePlayMovedEventTrait;
-
     public function __construct(
         readonly private GamePlayRepository $gamePlayRepository,
         readonly private GamePlayDisconnectionRepository $gamePlayDisconnectionRepository,
@@ -69,7 +67,12 @@ class GamePlayDisconnectionController extends Controller
         return new Response([], 200);
     }
 
-    public function forfeitAfterDisconnection(Player $player, Request $request, int|string $gamePlayId): Response
+    public function forfeitAfterDisconnection(
+        Player $player,
+        Request $request,
+        GamePlayService $gamePlayService,
+        int|string $gamePlayId
+    ): Response
     {
         $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
 
@@ -103,7 +106,7 @@ class GamePlayDisconnectionController extends Controller
             return $gamePlay;
         });
 
-        $this->dispatchGamePlayMovedEvent($gamePlay);
+        $gamePlayService->dispatchGamePlayMovedEventToAllPlayers($gamePlay);
 
         return new Response([], 200);
     }
