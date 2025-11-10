@@ -4,7 +4,7 @@ namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayStoredEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameCore\GameMoveRequest;
+use App\Http\Requests\GameCore\GamePlayMoveRequest;
 use App\Services\GamePlay\GamePlayService;
 use App\Services\GamePlay\GamePlayValidationService;
 use Exception;
@@ -91,7 +91,7 @@ class GamePlayController extends Controller
         return view('play', $this->gamePlayService->getShowResponseContent($player, $gamePlay));
     }
 
-    public function move(Player $player, GameMoveRequest $request, int|string $gamePlayId): Response
+    public function move(Player $player, GamePlayMoveRequest $request, int|string $gamePlayId): Response
     {
         $gamePlay = DB::transaction(function () use ($player, $request, $gamePlayId) {
             $gamePlay = $this->gamePlayRepository->getOne($gamePlayId);

@@ -3,20 +3,23 @@
 namespace App\Http\Requests\GameCore;
 
 use App\Http\Controllers\ControllerValidationException;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GameMoveRequest extends FormRequest
+class GameInviteStoreRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'move' => 'required|array',
+            'slug' => 'required|string|max:255',
+            'options.numberOfPlayers' => 'required|integer|min:1',
+            'options.autostart' => 'required|boolean',
         ];
     }
 

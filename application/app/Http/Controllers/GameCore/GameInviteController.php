@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Extensions\Core\GameOption\GameOptionValueConverter;
+use App\Http\Requests\GameCore\GameInviteStoreRequest;
 use App\Services\PremiumPass\PremiumPass;
 use App\Services\PremiumPass\PremiumPassException;
 use App\Http\Controllers\Controller;
@@ -48,19 +49,18 @@ class GameInviteController extends Controller
      * @throws ValidationException
      */
     public function store(
-        Request $request,
+        GameInviteStoreRequest $request,
         GameInviteFactory $factory,
         Player $player,
         GameOptionValueConverter $converter,
         GameOptionConfigurationCollection $configurations,
     ): Response
     {
-        $inputs = $this->getValidatedCastedStoreInputs($request, $converter, $configurations);
+        $inputs = $this->getConfiguredInputs($request->get('options'), $request->validated(), $converter, $configurations);
         $this->premiumPass->validate($inputs['slug'], $player);
         $gameInvite = DB::transaction(fn() => $factory->create($inputs['slug'], $inputs['options'], $player));
-        $responseContent = ['gameInvite' => $gameInvite->toArray()];
 
-        return new Response($responseContent, SymfonyResponse::HTTP_OK);
+        return new Response(['gameInvite' => $gameInvite->toArray()], SymfonyResponse::HTTP_OK);
     }
 
     public function joinRedirect(string $slug, int|string $gameInviteId): View
@@ -109,32 +109,18 @@ class GameInviteController extends Controller
     }
 
     /**
-     * @throws ControllerValidationException|ValidationException
+     * @throws ControllerValidationException
      */
-    private function getValidatedCastedStoreInputs(
-        Request $request,
+    private function getConfiguredInputs(
+        array $allOptions,
+        array $validatedInputs,
         GameOptionValueConverter $converter,
         GameOptionConfigurationCollection $configurations,
     ): array
     {
-        $validator = Validator::make($request->all(), [
-            'slug' => 'required|string|max:255',
-            'options.numberOfPlayers' => 'required|integer|min:1',
-            'options.autostart' => 'required|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            $message = json_encode([
-                'message' => ControllerValidationException::MESSAGE_INCORRECT_INPUTS,
-                'errors' => $validator->errors()
-            ]);
-            throw new ControllerValidationException($message);
-        }
-
-        $validated = $validator->validated();
         $inputs = [
-            'slug' => $validated['slug'],
-            'options' => array_merge($request->get('options'), $validated['options']),
+            'slug' => $validatedInputs['slug'],
+            'options' => array_merge($allOptions, $validatedInputs['options']),
         ];
 
         try {
