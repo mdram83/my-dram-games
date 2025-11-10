@@ -3,19 +3,16 @@
 namespace App\Http\Controllers\GameCore;
 
 use App\Events\GamePlay\GamePlayDisconnectedEvent;
+use App\Http\Requests\GameCore\GamePlayDisconnectionRequest;
 use App\Services\GamePlay\GamePlayService;
 use App\Services\GamePlay\GamePlayValidationService;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionFactory;
 use App\Services\GamePlayDisconnection\GamePlayDisconnectionRepository;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ControllerValidationException;
-use Illuminate\Http\Request;
+use App\Services\GamePlayDisconnection\GamePlayDisconnectionService;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use MyDramGames\Core\GameOption\Values\GameOptionValueForfeitAfterGeneric;
-use MyDramGames\Core\GamePlay\GamePlay;
 use MyDramGames\Core\GamePlay\GamePlayRepository;
-use MyDramGames\Utils\Exceptions\CollectionException;
 use MyDramGames\Utils\Player\Player;
 
 class GamePlayDisconnectionController extends Controller
@@ -25,12 +22,13 @@ class GamePlayDisconnectionController extends Controller
         readonly private GamePlayDisconnectionRepository $gamePlayDisconnectionRepository,
         readonly private GamePlayDisconnectionFactory $gamePlayDisconnectionFactory,
         readonly private GamePlayValidationService $gamePlayValidationService,
+        readonly private GamePlayDisconnectionService $gamePlayDisconnectionService,
     )
     {
 
     }
 
-    public function disconnect(Player $player, Request $request, int|string $gamePlayId): Response
+    public function disconnect(Player $player, GamePlayDisconnectionRequest $request, int|string $gamePlayId): Response
     {
         [$gamePlay, $disconnectedPlayer] = DB::transaction(function () use ($player, $request, $gamePlayId) {
 
@@ -38,15 +36,17 @@ class GamePlayDisconnectionController extends Controller
 
             $this->gamePlayValidationService->validateDisconnectionApplicable($gamePlay, $player);
 
-            $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
-            $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
+            $disconnectedPlayer = $this->gamePlayDisconnectionService->getValidatedDisconnectedPlayer(
+                $request->getDisconnectedPlayerName(),
+                $gamePlay
+            );
 
-            if ($disconnection === null) {
-                $this->gamePlayDisconnectionFactory->create($gamePlay, $disconnectedPlayer);
-            } else {
-                $disconnection->setDisconnectedAt();
-                $disconnection->save();
-            }
+            $this->gamePlayDisconnectionService->setDisconnection(
+                $this->gamePlayDisconnectionRepository,
+                $this->gamePlayDisconnectionFactory,
+                $disconnectedPlayer,
+                $gamePlay
+            );
 
             return [$gamePlay, $disconnectedPlayer];
         });
@@ -69,7 +69,7 @@ class GamePlayDisconnectionController extends Controller
 
     public function forfeitAfterDisconnection(
         Player $player,
-        Request $request,
+        GamePlayDisconnectionRequest $request,
         GamePlayService $gamePlayService,
         int|string $gamePlayId
     ): Response
@@ -80,26 +80,16 @@ class GamePlayDisconnectionController extends Controller
 
             $this->gamePlayValidationService->validateDisconnectionApplicable($gamePlay, $player);
 
-            $forfeitAfterOptionValue = $gamePlay
-                ->getGameInvite()
-                ->getGameSetup()
-                ->getOption('forfeitAfter')
-                ->getConfiguredValue();
+            $disconnectedPlayer = $this->gamePlayDisconnectionService->getValidatedDisconnectedPlayer(
+                $request->getDisconnectedPlayerName(),
+                $gamePlay
+            );
 
-            if ($forfeitAfterOptionValue === GameOptionValueForfeitAfterGeneric::Disabled) {
-                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_DISABLED);
-            }
-
-            $disconnectedPlayer = $this->getValidatedDisconnectedPlayer($request, $gamePlay);
-            $disconnection = $this->gamePlayDisconnectionRepository->getOneByGamePlayAndPlayer($gamePlay, $disconnectedPlayer);
-
-            if ($disconnection === null) {
-                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_EARLY);
-            }
-
-            if (!$disconnection->hasExpired($forfeitAfterOptionValue->getValue())) {
-                throw new ControllerValidationException(ControllerValidationException::MESSAGE_FORFEIT_AFTER_EARLY);
-            }
+            $this->gamePlayDisconnectionService->validateForfeitAfterApplicable(
+                $this->gamePlayDisconnectionRepository,
+                $gamePlay,
+                $disconnectedPlayer
+            );
 
             $gamePlay->handleForfeit($disconnectedPlayer);
 
@@ -109,21 +99,5 @@ class GamePlayDisconnectionController extends Controller
         $gamePlayService->dispatchGamePlayMovedEventToAllPlayers($gamePlay);
 
         return new Response([], 200);
-    }
-
-    /**
-     * @throws ControllerValidationException|CollectionException
-     */
-    private function getValidatedDisconnectedPlayer(Request $request, GamePlay $gamePlay): Player
-    {
-        $singlePlayerCollection = $gamePlay
-            ->getPlayers()
-            ->filter(fn($item) => $item->getName() === $request->get('disconnected'));
-
-        if ($singlePlayerCollection->count() === 0) {
-            throw new ControllerValidationException(ControllerValidationException::MESSAGE_INCORRECT_INPUTS);
-        }
-
-        return $singlePlayerCollection->pullFirst();
     }
 }

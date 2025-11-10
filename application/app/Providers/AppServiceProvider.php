@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Services\GamePlay\GamePlayValidationService::class => \App\Services\GamePlay\GamePlayValidationServiceImplementation::class,
         \App\Services\GamePlay\GamePlayService::class => \App\Services\GamePlay\GamePlayServiceImplementation::class,
         \App\Services\GameInvite\GameInviteService::class => \App\Services\GameInvite\GameInviteServiceImplementation::class,
+        \App\Services\GamePlayDisconnection\GamePlayDisconnectionService::class => \App\Services\GamePlayDisconnection\GamePlayDisconnectionServiceImplementation::class,
 
         \App\Extensions\Core\GameOption\GameOptionClassRepository::class => \App\Extensions\Core\GameOption\GameOptionClassRepositoryPhpConfig::class,
         \App\Extensions\Core\GameOption\GameOptionValueConverter::class => \App\Extensions\Core\GameOption\GameOptionValueConverterGeneric::class,
