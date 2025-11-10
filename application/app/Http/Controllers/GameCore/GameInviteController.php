@@ -90,9 +90,8 @@ class GameInviteController extends Controller
 
             $gameInvite = $repository->getOne($gameInviteId);
 
-            $this->premiumPass->validate($gameInvite->getGameBox()->getSlug(), $player);
-
             if (!$gameInvite->isPlayer($player)) {
+                $this->premiumPass->validate($gameInvite->getGameBox()->getSlug(), $player);
                 $gameInvite->addPlayer($player);
                 $message = static::MESSAGE_PLAYER_JOINED;
             }
@@ -106,7 +105,6 @@ class GameInviteController extends Controller
 
         } catch (GameInviteException $e) {
             return Redirect::route('games.show', ['slug' => $slug])->withErrors(['general' => $e->getMessage()]);
-
         }
     }
 }
